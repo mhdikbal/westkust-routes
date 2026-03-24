@@ -3,12 +3,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ExportButton from "@/components/ExportButton";
+import StatisticsPanel from "@/components/StatisticsPanel";
+import ProductFilter from "@/components/ProductFilter";
 
 export default function Sidebar({
   voyages,
+  allVoyages,
   stats,
   selectedPorts,
   setSelectedPorts,
+  selectedProducts,
+  setSelectedProducts,
   searchTerm,
   setSearchTerm,
   onVoyageClick,
@@ -33,109 +40,99 @@ export default function Sidebar({
       data-testid="sidebar-panel"
     >
       <div className="p-6 border-b border-[#E6E2D6]">
-        <div className="flex items-center gap-3 mb-2">
-          <Anchor className="w-6 h-6 text-[#B85D19]" />
-          <h1 className="font-serif text-2xl font-bold text-[#1A2421] tracking-tight">
-            Westkust Routes
-          </h1>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <Anchor className="w-6 h-6 text-[#B85D19]" />
+            <h1 className="font-serif text-2xl font-bold text-[#1A2421] tracking-tight">
+              Westkust Routes
+            </h1>
+          </div>
         </div>
-        <p className="text-sm text-[#5C6A66] leading-relaxed">
+        <p className="text-sm text-[#5C6A66] leading-relaxed mb-3">
           Jalur Pelayaran Sumatra ke Batavia (1700-1789)
         </p>
+        <ExportButton voyages={filteredVoyages} />
       </div>
 
-      {stats && (
-        <div className="p-6 border-b border-[#E6E2D6] space-y-4">
-          <h2 className="font-serif text-lg font-semibold text-[#1A2421] mb-3">
-            Statistik
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            <Card className="p-4 bg-white border border-[#E6E2D6] shadow-none">
-              <div className="flex items-center gap-2 mb-1">
-                <Ship className="w-4 h-4 text-[#B85D19]" />
-                <p className="text-xs uppercase tracking-[0.2em] text-[#8A9A95]">
-                  Kapal
-                </p>
-              </div>
-              <p className="text-2xl font-serif font-bold text-[#1A2421]">
-                {stats.total_voyages}
-              </p>
-            </Card>
-            <Card className="p-4 bg-white border border-[#E6E2D6] shadow-none">
-              <div className="flex items-center gap-2 mb-1">
-                <TrendingUp className="w-4 h-4 text-[#D4AF37]" />
-                <p className="text-xs uppercase tracking-[0.2em] text-[#8A9A95]">
-                  Nilai
-                </p>
-              </div>
-              <p className="text-xl font-serif font-bold text-[#1A2421]">
-                {(stats.total_cargo_value / 1000000).toFixed(1)}M
-              </p>
-            </Card>
-          </div>
-        </div>
-      )}
+      <Tabs defaultValue="voyages" className="flex-1 flex flex-col min-h-0">
+        <TabsList className="mx-6 mt-4 bg-white border border-[#E6E2D6]">
+          <TabsTrigger value="voyages" className="text-xs">Pelayaran</TabsTrigger>
+          <TabsTrigger value="statistics" className="text-xs">Statistik</TabsTrigger>
+        </TabsList>
 
-      <div className="p-6 border-b border-[#E6E2D6]">
-        <h2 className="font-serif text-lg font-semibold text-[#1A2421] mb-3">
-          Filter Pelabuhan
-        </h2>
-        <div className="space-y-3">
-          {ports.map((port) => (
-            <div key={port} className="flex items-center space-x-2">
-              <Checkbox
-                id={port}
-                checked={selectedPorts.includes(port)}
-                onCheckedChange={() => togglePort(port)}
-                data-testid={`port-filter-${port.toLowerCase().replace(" ", "-")}`}
-              />
-              <label
-                htmlFor={port}
-                className="text-sm font-medium text-[#1A2421] leading-none cursor-pointer"
-              >
-                {port}
-              </label>
+        <TabsContent value="voyages" className="flex-1 flex flex-col min-h-0 mt-4">
+          <div className="px-6 space-y-4">
+            <div>
+              <h2 className="font-serif text-sm font-semibold text-[#1A2421] mb-3">
+                Filter Pelabuhan
+              </h2>
+              <div className="space-y-3">
+                {ports.map((port) => (
+                  <div key={port} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={port}
+                      checked={selectedPorts.includes(port)}
+                      onCheckedChange={() => togglePort(port)}
+                      data-testid={`port-filter-${port.toLowerCase().replace(" ", "-")}`}
+                    />
+                    <label
+                      htmlFor={port}
+                      className="text-sm font-medium text-[#1A2421] leading-none cursor-pointer"
+                    >
+                      {port}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      <div className="p-6 flex-1 flex flex-col min-h-0">
-        <div className="mb-4">
-          <Input
-            placeholder="Cari nama kapal..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-white border-[#E6E2D6] focus:ring-[#B85D19]"
-            data-testid="ship-search-input"
-          />
-        </div>
+            <ProductFilter
+              voyages={allVoyages}
+              selectedProducts={selectedProducts}
+              setSelectedProducts={setSelectedProducts}
+            />
 
-        <ScrollArea className="flex-1">
-          <div className="space-y-2 pr-4">
-            {filteredVoyages.map((voyage) => (
-              <button
-                key={voyage.id}
-                onClick={() => onVoyageClick(voyage)}
-                className="w-full text-left p-3 rounded-md border border-[#E6E2D6] bg-white hover:bg-[#FDFBF7] hover:translate-y-[-2px] hover:shadow-md transition-all duration-200"
-                data-testid={`voyage-item-${voyage.id}`}
-              >
-                <p className="font-serif font-semibold text-[#1A2421] text-sm mb-1">
-                  {voyage.nama_kapal}
-                </p>
-                <div className="flex items-center gap-2 text-xs text-[#5C6A66]">
-                  <span>{voyage.tahun}</span>
-                  <span>•</span>
-                  <span>{voyage.asal}</span>
-                </div>
-                <p className="text-xs text-[#B85D19] font-medium mt-1">
-                  {voyage.total_gulden_nl.toLocaleString()} Gulden
-                </p>
-              </button>
-            ))}
+            <div>
+              <Input
+                placeholder="Cari nama kapal..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="bg-white border-[#E6E2D6] focus:ring-[#B85D19]"
+                data-testid="ship-search-input"
+              />
+            </div>
           </div>
-        </ScrollArea>
-      </div>
+
+          <ScrollArea className="flex-1 mt-4 px-6">
+            <div className="space-y-2 pr-4 pb-4">
+              {filteredVoyages.map((voyage) => (
+                <button
+                  key={voyage.id}
+                  onClick={() => onVoyageClick(voyage)}
+                  className="w-full text-left p-3 rounded-md border border-[#E6E2D6] bg-white hover:bg-[#FDFBF7] hover:translate-y-[-2px] hover:shadow-md transition-all duration-200"
+                  data-testid={`voyage-item-${voyage.id}`}
+                >
+                  <p className="font-serif font-semibold text-[#1A2421] text-sm mb-1">
+                    {voyage.nama_kapal}
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-[#5C6A66]">
+                    <span>{voyage.tahun}</span>
+                    <span>•</span>
+                    <span>{voyage.asal}</span>
+                  </div>
+                  <p className="text-xs text-[#B85D19] font-medium mt-1">
+                    {voyage.total_gulden_nl.toLocaleString()} Gulden
+                  </p>
+                </button>
+              ))}
+            </div>
+          </ScrollArea>
+        </TabsContent>
+
+        <TabsContent value="statistics" className="flex-1 overflow-y-auto px-6 pb-4">
+          <StatisticsPanel voyages={filteredVoyages} stats={stats} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

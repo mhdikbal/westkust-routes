@@ -17,9 +17,11 @@ const PORTS = {
 };
 
 export default function MapDashboard() {
+  const [allVoyages, setAllVoyages] = useState([]);
   const [voyages, setVoyages] = useState([]);
   const [stats, setStats] = useState(null);
   const [selectedPorts, setSelectedPorts] = useState(["Padang", "Pulau Cingkuak", "Air Haji"]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [yearRange, setYearRange] = useState([1700, 1789]);
   const [selectedVoyage, setSelectedVoyage] = useState(null);
   const [showWelcome, setShowWelcome] = useState(true);
@@ -29,7 +31,7 @@ export default function MapDashboard() {
   useEffect(() => {
     fetchVoyages();
     fetchStats();
-  }, [yearRange, selectedPorts]);
+  }, [yearRange, selectedPorts, selectedProducts]);
 
   const fetchVoyages = async () => {
     try {
@@ -38,9 +40,18 @@ export default function MapDashboard() {
         year_to: yearRange[1],
       };
       const response = await axios.get(`${API}/voyages`, { params });
-      const filtered = response.data.filter((v) =>
+      setAllVoyages(response.data);
+      
+      let filtered = response.data.filter((v) =>
         selectedPorts.includes(v.asal)
       );
+
+      if (selectedProducts.length > 0) {
+        filtered = filtered.filter((v) =>
+          selectedProducts.includes(v.produk_utama)
+        );
+      }
+
       setVoyages(filtered);
     } catch (error) {
       console.error("Error fetching voyages:", error);
@@ -70,7 +81,7 @@ export default function MapDashboard() {
       // Add slight curve to routes to prevent overlap
       const midLon = (origin[0] + destination[0]) / 2;
       const midLat = (origin[1] + destination[1]) / 2;
-      const offset = (index % 3 - 1) * 0.5; // Small offset for visual separation
+      const offset = (index % 3 - 1) * 0.5;
       
       const curvedMidPoint = [midLon + offset, midLat + offset * 0.3];
 
@@ -115,6 +126,27 @@ export default function MapDashboard() {
     };
   };
 
+  const handleVoyageClick = (voyage) => {
+    setSelectedVoyage(voyage);
+    setHoveredRoute(voyage.id);
+  };
+
+  const portLabelLayer = {
+    id: "port-labels",
+    type: "symbol",
+    layout: {
+      "text-field": ["get", "name"],
+      "text-size": 12,
+      "text-offset": [0, 1.5],
+      "text-anchor": "top",
+    },
+    paint: {
+      "text-color": "#1A2421",
+      "text-halo-color": "#FFFFFF",
+      "text-halo-width": 2,
+    },
+  };
+
   const routeLayer = {
     id: "routes",
     type: "line",
@@ -144,27 +176,6 @@ export default function MapDashboard() {
       "circle-stroke-width": 3,
       "circle-stroke-color": "#FFFFFF",
       "circle-opacity": 0.9,
-    },
-  };
-
-  const handleVoyageClick = (voyage) => {
-    setSelectedVoyage(voyage);
-    setHoveredRoute(voyage.id);
-  };
-
-  const portLabelLayer = {
-    id: "port-labels",
-    type: "symbol",
-    layout: {
-      "text-field": ["get", "name"],
-      "text-size": 12,
-      "text-offset": [0, 1.5],
-      "text-anchor": "top",
-    },
-    paint: {
-      "text-color": "#1A2421",
-      "text-halo-color": "#FFFFFF",
-      "text-halo-width": 2,
     },
   };
 
@@ -228,9 +239,12 @@ export default function MapDashboard() {
 
       <Sidebar
         voyages={voyages}
+        allVoyages={allVoyages}
         stats={stats}
         selectedPorts={selectedPorts}
         setSelectedPorts={setSelectedPorts}
+        selectedProducts={selectedProducts}
+        setSelectedProducts={setSelectedProducts}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         onVoyageClick={handleVoyageClick}
