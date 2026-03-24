@@ -38,22 +38,37 @@ export default function RoutesLayer({ voyages, ports, hoveredRoute, onRouteClick
           maplibreMap.removeSource("ports-source");
         }
 
-        // Create routes GeoJSON
-        const routesFeatures = voyages.map((voyage) => {
+        // Create routes GeoJSON with slight offsets
+        const routesFeatures = voyages.map((voyage, index) => {
           const origin = ports[voyage.asal];
           const destination = ports["Batavia"];
 
           if (!origin || !destination) return null;
+
+          // Add slight curve to make overlapping routes visible
+          const midLon = (origin[0] + destination[0]) / 2;
+          const midLat = (origin[1] + destination[1]) / 2;
+          
+          // Create offset based on index to spread out overlapping routes
+          const offsetRange = 0.8;
+          const offsetLon = ((index % 20) - 10) * offsetRange / 10;
+          const offsetLat = ((index % 15) - 7.5) * offsetRange / 15;
 
           return {
             type: "Feature",
             properties: {
               id: voyage.id,
               warna_asal: voyage.warna_asal,
+              nama_kapal: voyage.nama_kapal,
+              asal: voyage.asal,
             },
             geometry: {
               type: "LineString",
-              coordinates: [origin, destination],
+              coordinates: [
+                origin,
+                [midLon + offsetLon, midLat + offsetLat],
+                destination
+              ],
             },
           };
         }).filter((f) => f !== null);
@@ -90,8 +105,8 @@ export default function RoutesLayer({ voyages, ports, hoveredRoute, onRouteClick
           source: "routes-source",
           paint: {
             "line-color": ["get", "warna_asal"],
-            "line-width": 5,
-            "line-opacity": 0.8,
+            "line-width": 3,
+            "line-opacity": 0.6,
           },
         });
 
