@@ -79,22 +79,26 @@ export default function PortMarkers({ ports, onPortClick }) {
             });
           }
 
-          // Add click handler
-          maplibreMap.on("click", "port-markers", (e) => {
+          // Add click handler with better error handling
+          const handleClick = (e) => {
             if (e.features && e.features.length > 0) {
               const portName = e.features[0].properties.name;
+              console.log("Fort clicked:", portName);
               onPortClick(portName);
             }
-          });
+          };
 
-          // Change cursor on hover
-          maplibreMap.on("mouseenter", "port-markers", () => {
+          const handleMouseEnter = () => {
             maplibreMap.getCanvas().style.cursor = "pointer";
-          });
+          };
 
-          maplibreMap.on("mouseleave", "port-markers", () => {
+          const handleMouseLeave = () => {
             maplibreMap.getCanvas().style.cursor = "grab";
-          });
+          };
+
+          maplibreMap.on("click", "port-markers", handleClick);
+          maplibreMap.on("mouseenter", "port-markers", handleMouseEnter);
+          maplibreMap.on("mouseleave", "port-markers", handleMouseLeave);
 
           markersAdded.current = true;
           console.log("✅ Added fort markers for", Object.keys(ports).length, "ports");

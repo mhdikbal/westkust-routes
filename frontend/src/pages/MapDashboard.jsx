@@ -13,9 +13,9 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const PORTS = {
-  Padang: [-100.3543, -0.9471],
-  "Pulau Cingkuak": [-100.1667, -0.7833],
-  "Air Haji": [-100.4167, -0.5833],
+  Padang: [100.35659, -0.96543],
+  "Pulau Cingkuak": [100.55977, -1.35303],
+  "Air Haji": [100.86801, -1.94012],
   Batavia: [106.8456, -6.2088],
 };
 
@@ -129,9 +129,9 @@ export default function MapDashboard() {
       <Map
         mapLib={import("maplibre-gl")}
         initialViewState={{
-          longitude: 103.5,
-          latitude: -2.5,
-          zoom: 6,
+          longitude: 102,
+          latitude: -3,
+          zoom: 5.2,
         }}
         style={{ width: "100%", height: "100%" }}
         mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"

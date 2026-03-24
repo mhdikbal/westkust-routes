@@ -63,12 +63,12 @@ body {
   background: #B85D19;
 }
 
-/* Hide Made with Emergent badge */
-div[style*="position: fixed"][style*="bottom"][style*="right"],
-div[style*="position:fixed"][style*="bottom"][style*="right"],
-a[href*="emergentagent"] {
+/* Force hide Made with Emergent badge */
+body > div[style*="position"][style*="fixed"],
+body > div[style*="position"][style*="bottom"],
+body > a[style*="position"][style*="fixed"] {
   display: none !important;
-  visibility: hidden !important;
+  z-index: -9999 !important;
   opacity: 0 !important;
-  pointer-events: none !important;
+  visibility: hidden !important;
 }
