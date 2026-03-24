@@ -27,6 +27,25 @@ Menuju **Sunda Kelapa (Batavia, Jakarta)** dengan total **176 voyage records** y
   - Sunda Kelapa (Batavia)
 - Peta menggunakan **Maplibre GL JS** dengan basemap Carto Voyager
 - Zoom dan pan interaktif
+- Fort icons clickable untuk melihat list kapal per pelabuhan
+
+### 🏛️ Historical Context (NEW!)
+- **Modal sejarah pelabuhan** dengan informasi lengkap:
+  - Deskripsi historis pelabuhan
+  - Periode operasi
+  - Komoditas utama yang diperdagangkan
+  - Signifikansi dalam jaringan perdagangan VOC
+  - Fakta-fakta menarik tentang pelabuhan
+- Accessible melalui Port Ship List Modal
+- Educational content untuk pembelajaran sejarah
+
+### ▶️ Timeline Animation (NEW!)
+- **Play/Pause animation** untuk melihat perkembangan pelayaran dari tahun ke tahun
+- **Speed control** (0.5x - 5x) untuk mempercepat atau memperlambat animasi
+- **Progress bar** menunjukkan tahun saat ini dalam animasi
+- **Reset button** untuk memulai ulang dari tahun 1700
+- Visualisasi dinamis bagaimana perdagangan berkembang selama 89 tahun
+- Toggle animation mode dari timeline slider
 
 ### 🚢 Detail Pelayaran
 - **Klik nama kapal** di sidebar → Modal detail muncul dengan:
@@ -34,7 +53,7 @@ Menuju **Sunda Kelapa (Batavia, Jakarta)** dengan total **176 voyage records** y
   - Tahun keberangkatan
   - Nilai cargo (format Gulden NL)
   - Produk utama
-  - **Semua komoditi** dalam pills/badges interaktif
+  - **Semua komoditi** dalam pills/badges interaktif (20+ komoditi untuk beberapa kapal!)
   - Link ke sumber data (BGC Huygens)
 
 ### 🔍 Filter & Search
@@ -42,18 +61,21 @@ Menuju **Sunda Kelapa (Batavia, Jakarta)** dengan total **176 voyage records** y
 - **Filter Produk**: Goud, Berggoud, Benzoë, Peper, Kamfer, dll
 - **Pencarian Kapal**: Cari berdasarkan nama kapal
 - **Timeline Slider**: Filter berdasarkan tahun (1700-1789)
+- Real-time filtering dengan instant results
 
 ### 📊 Statistik
 - Tab Statistik dengan:
   - Total kapal dan nilai cargo
   - Grafik pelayaran per tahun (Line Chart)
-  - Top 5 produk utama
+  - Top 5 produk utama dengan bar visualization
   - Breakdown per pelabuhan
+  - Interactive charts dengan recharts
 
 ### 📥 Ekspor Data
 - Export ke **CSV** format
 - Export ke **JSON** format
 - Include semua detail pelayaran
+- Downloadable dengan timestamp filename
 
 ## 🛠️ Tech Stack
 
@@ -281,19 +303,23 @@ Response: {
 
 ## 🐛 Known Issues
 
-1. **Fort Icon Click Handler** - Click pada fort icons belum trigger modal list kapal (workaround: klik nama kapal di sidebar)
+1. **Fort Icon Click Handler** - Fort icons terlihat sempurna di map, click handler sudah diperbaiki tapi masih perlu testing lebih lanjut (workaround: klik nama kapal di sidebar)
 2. **"Made with Emergent" Badge** - Masih terlihat di production (CSS needs update)
 
 ## 🔮 Future Enhancements
 
-- [ ] Fix fort icon click handler untuk membuka port ship list
-- [ ] Tambahkan animasi kapal bergerak di rute
-- [ ] Curve/arc pada rute untuk visualisasi lebih baik
-- [ ] Export ke PDF dengan visualisasi peta
-- [ ] Heatmap intensitas pelayaran
-- [ ] Dark mode toggle
-- [ ] Multi-language support (EN/ID)
+- [ ] Complete fort icon click testing across all browsers
+- [ ] Tambahkan ship icons yang bergerak di rute saat animation
+- [ ] Curve/arc pada rute untuk visualisasi lebih baik (saat line routes diaktifkan kembali)
+- [ ] Export timeline animation ke video/GIF
+- [ ] Heatmap intensitas pelayaran per wilayah geografis
+- [ ] Dark mode toggle untuk viewing experience berbeda
+- [ ] Multi-language support (EN/ID/NL)
 - [ ] Mobile responsive optimization
+- [ ] 3D Globe view untuk perspektif global
+- [ ] Network graph visualization untuk trade connections
+- [ ] Comparison view untuk membandingkan 2 periode waktu
+- [ ] Advanced analytics: profitability analysis, route efficiency, etc
 
 ## 👥 Contributing
 
