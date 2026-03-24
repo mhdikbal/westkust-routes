@@ -1,0 +1,103 @@
+{
+  "project_type": "Historical Maritime Dashboard",
+  "theme": "Light mode (Archival & Museum Aesthetic)",
+  "typography": {
+    "headings": "Playfair Display or Cormorant Garamond (Serif, authoritative, historical, tracking-tight)",
+    "body": "IBM Plex Sans or Manrope (Clean, legible for data and UI)",
+    "rules": "Never center headings by default. Use tracking-tight for large headings. UI labels use tracking-[0.2em] uppercase. Avoid Inter, Roboto, Lato for headings."
+  },
+  "colors": {
+    "archetype": "Organic & Earthy (Archival Variant)",
+    "background": {
+      "base": "#FDFBF7",
+      "panel": "#FFFFFF",
+      "overlay": "rgba(253, 251, 247, 0.90)"
+    },
+    "text": {
+      "primary": "#1A2421",
+      "secondary": "#5C6A66",
+      "muted": "#8A9A95"
+    },
+    "accents": {
+      "primary": "#B85D19",
+      "secondary": "#D4AF37",
+      "ocean": "#4A6D7C"
+    },
+    "borders": "#E6E2D6",
+    "forbidden": ["#1B93A4", "#7351B7", "Default SaaS Blue", "Pure Black"]
+  },
+  "visual_enhancers": {
+    "surfaces": "Glassmorphism with heavy blur (backdrop-blur-xl) and high opacity white/paper tint (bg-[#FDFBF7]/90) over the map. Crisp 1px solid border (#E6E2D6). Do not use complete transparent background.",
+    "shadows": "Subtle, diffuse ambient shadows: shadow-[0_8px_32px_rgba(26,36,33,0.08)].",
+    "textures": "Subtle svg noise or grain overlay over the map container to kill the pure digital flatness."
+  },
+  "grids_and_layouts": {
+    "main_structure": "Full viewport (100vw, 100vh) absolute map container. Floating UI panels layered on top (z-index hierarchy).",
+    "sidebar": "Absolute left, w-80 or w-96. Internal padding p-6 or p-8.",
+    "bottom_bar": "Absolute bottom, stretching across for the timeline slider. Padding p-6.",
+    "spacing": "Generous spacing. p-6 or p-8 inside panels. gap-6 between dashboard widgets."
+  },
+  "motion_and_interactions": {
+    "map_routes": "Animate Maplibre dash-array to simulate ships sailing from origin to destination.",
+    "panels": "Slide in from edges on mount with Framer Motion.",
+    "hover_states": "Buttons and list items slightly translate-y-[-2px] with increased shadow and darker border.",
+    "reduced_motion": "Respect prefers-reduced-motion."
+  },
+  "accessibility": {
+    "contrast": "Ensure #B85D19 text meets 4.5:1 against #FDFBF7.",
+    "focus": "focus:ring-2 focus:ring-[#B85D19] focus:outline-none",
+    "data_testid": "ALL interactive elements must use kebab-case data-testid (e.g., 'timeline-slider', 'port-filter-padang', 'ship-details-close')."
+  },
+  "components": {
+    "map": "Maplibre GL JS (react-map-gl). Use a minimalist light base map (e.g., Carto Positron or a custom vintage MapTiler style) to let terracotta routes stand out.",
+    "timeline_slider": "Shadcn Slider customized. Warm terracotta track.",
+    "port_filter": "Shadcn ToggleGroup or Checkbox list.",
+    "ship_popup": "Shadcn Popover or custom Maplibre Popup with glassmorphism surface.",
+    "stats_panel": "Bento-style grid of simple stats (Total Cargo, Total Ships) using Shadcn Cards (flat, 1px border)."
+  },
+  "image_urls": [
+    {
+      "url": "https://images.unsplash.com/photo-1773593625870-bb7549da24d9?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "category": "Welcome Modal / Empty State",
+      "description": "A large vintage sailing ship on the blue ocean. Use this in an introductory modal before the user enters the map, setting the historical scene."
+    },
+    {
+      "url": "https://images.pexels.com/photos/2858925/pexels-photo-2858925.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "category": "Background Texture/Fallback",
+      "description": "Grand sailing ship navigating open sea. Can be used in side-panel header or hero graphic."
+    }
+  ],
+  "instructions_to_main_agent": [
+    "Use Javascript (.js/.jsx) exclusively. NO TypeScript (.ts/.tsx).",
+    "Install and use Maplibre GL JS ('maplibre-gl' and 'react-map-gl').",
+    "Install lucide-react for icons (Anchors, Ships, Waves, Map).",
+    "Build the dashboard as a full-screen map application with floating UI overlays.",
+    "The timeline slider should be prominent at the bottom to filter the 1700-1789 dataset.",
+    "Ensure the JSON data is parsed and visualised as GeoJSON LineStrings (routes) and Points (ports).",
+    "Customize Shadcn components heavily: remove default borders/shadows, apply the 'Archival' theme (p-6, 1px borders, #FDFBF7 background).",
+    "Animate the shipping routes along the map if possible using Maplibre layer styling.",
+    "Data structure involves ships, years, cargo values, and specific departure ports (Padang, Pulau Cingkuak, Air Haji) to Batavia."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. Make creative, distinctive frontends that surprise and delight.",
+    "Do not make generic centered layouts or simplistic gradients.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters (12-24px blur) combined with solid opacity to prevent text illegibility.",
+    "NEVER apply universal transition ('transition: all').",
+    "NEVER center align the app container (.App { text-align: center; }).",
+    "Always use modern pill-shaped or sharp buttons with interaction animations.",
+    "NEVER use AI assistant Emoji characters.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "Subtle grain textures, custom cursors, and loading animations separate good from extraordinary.",
+    "Prioritize using pre-existing components from src/components/ui.",
+    "Components MUST use named exports, Pages MUST use default exports.",
+    "Use 'sonner' for toasts in /app/src/components/ui/sonner.jsx.",
+    "Ensure all interactive elements have data-testid attributes."
+  ],
+  "GENERAL UI UX DESIGN GUIDELINES": [
+    "Prioritize intuitive navigation. The Map should be the hero, with tools framing it unobtrusively.",
+    "Use tooltips to explain historical context (e.g., what 'cargo value' historically means).",
+    "Ensure active states are clearly visible via color contrast and weight.",
+    "Maintain strict optical alignment across all floating bento boxes and widgets."
+  ]
+}
