@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Query
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -6,7 +6,7 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 
@@ -27,44 +27,115 @@ api_router = APIRouter(prefix="/api")
 
 
 # Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
+class Voyage(BaseModel):
+    model_config = ConfigDict(extra="ignore")
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    asal: str
+    tujuan: str
+    nama_kapal: str
+    kapten: Optional[str] = ""
+    tahun: int
+    total_gulden_nl: float
+    produk_utama: str
+    semua_produk: str
+    durasi_hari: Optional[int] = None
+    warna_asal: str
+    url: str
 
-class StatusCheckCreate(BaseModel):
-    client_name: str
 
-# Add your routes to the router instead of directly to app
+class VoyageStats(BaseModel):
+    total_voyages: int
+    total_cargo_value: float
+    year_range: dict
+    ports: dict
+    top_products: List[dict]
+
+
+# Voyage endpoints
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Westkust Maritime Routes API"}
 
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
 
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
+@api_router.get("/voyages", response_model=List[Voyage])
+async def get_voyages(
+    year_from: Optional[int] = Query(None),
+    year_to: Optional[int] = Query(None),
+    port: Optional[str] = Query(None),
+    search: Optional[str] = Query(None)
+):
+    query = {}
     
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
+    if year_from or year_to:
+        query["tahun"] = {}
+        if year_from:
+            query["tahun"]["$gte"] = year_from
+        if year_to:
+            query["tahun"]["$lte"] = year_to
     
-    return status_checks
+    if port:
+        query["asal"] = port
+    
+    if search:
+        query["nama_kapal"] = {"$regex": search, "$options": "i"}
+    
+    voyages = await db.voyages.find(query, {"_id": 0}).to_list(1000)
+    return voyages
+
+
+@api_router.get("/voyages/stats", response_model=VoyageStats)
+async def get_voyage_stats(
+    year_from: Optional[int] = Query(None),
+    year_to: Optional[int] = Query(None)
+):
+    query = {}
+    if year_from or year_to:
+        query["tahun"] = {}
+        if year_from:
+            query["tahun"]["$gte"] = year_from
+        if year_to:
+            query["tahun"]["$lte"] = year_to
+    
+    voyages = await db.voyages.find(query, {"_id": 0}).to_list(10000)
+    
+    total_voyages = len(voyages)
+    total_cargo = sum(v["total_gulden_nl"] for v in voyages)
+    
+    years = [v["tahun"] for v in voyages]
+    year_range = {
+        "min": min(years) if years else 0,
+        "max": max(years) if years else 0
+    }
+    
+    ports = {}
+    for v in voyages:
+        port = v["asal"]
+        if port not in ports:
+            ports[port] = {"count": 0, "value": 0}
+        ports[port]["count"] += 1
+        ports[port]["value"] += v["total_gulden_nl"]
+    
+    product_counts = {}
+    for v in voyages:
+        product = v["produk_utama"]
+        if product not in product_counts:
+            product_counts[product] = 0
+        product_counts[product] += 1
+    
+    top_products = [
+        {"name": k, "count": v}
+        for k, v in sorted(product_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+    ]
+    
+    return VoyageStats(
+        total_voyages=total_voyages,
+        total_cargo_value=total_cargo,
+        year_range=year_range,
+        ports=ports,
+        top_products=top_products
+    )
+
 
 # Include the router in the main app
 app.include_router(api_router)
