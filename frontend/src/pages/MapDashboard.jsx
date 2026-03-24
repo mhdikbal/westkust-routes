@@ -5,7 +5,8 @@ import Sidebar from "@/components/Sidebar";
 import TimelineSlider from "@/components/TimelineSlider";
 import WelcomeModal from "@/components/WelcomeModal";
 import VoyageDetailModal from "@/components/VoyageDetailModal";
-import RoutesLayer from "@/components/RoutesLayer";
+import PortMarkers from "@/components/PortMarkers";
+import PortShipListModal from "@/components/PortShipListModal";
 import axios from "axios";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -29,6 +30,8 @@ export default function MapDashboard() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [hoveredRoute, setHoveredRoute] = useState(null);
+  const [selectedPort, setSelectedPort] = useState(null);
+  const [portShips, setPortShips] = useState([]);
 
   useEffect(() => {
     fetchVoyages();
@@ -78,6 +81,24 @@ export default function MapDashboard() {
     setHoveredRoute(voyage.id);
   };
 
+  const handlePortClick = (portName) => {
+    // Get all ships from this port
+    const shipsFromPort = allVoyages.filter((v) => {
+      if (portName === "Batavia") {
+        return v.tujuan.includes("Batavia");
+      }
+      return v.asal === portName;
+    });
+    
+    setSelectedPort(portName);
+    setPortShips(shipsFromPort);
+  };
+
+  const handleViewShipDetail = (ship) => {
+    setSelectedPort(null); // Close port list modal
+    setSelectedVoyage(ship); // Open ship detail modal
+  };
+
   const handleRouteClick = (routeId) => {
     const voyage = voyages.find((v) => v.id === routeId);
     if (voyage) {
@@ -114,15 +135,18 @@ export default function MapDashboard() {
         }}
         style={{ width: "100%", height: "100%" }}
         mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+        attributionControl={false}
       >
-        <RoutesLayer
-          voyages={voyages}
-          ports={PORTS}
-          hoveredRoute={hoveredRoute}
-          onRouteClick={handleRouteClick}
-          onRouteHover={handleRouteHover}
-        />
+        <PortMarkers ports={PORTS} onPortClick={handlePortClick} />
       </Map>
+
+      <PortShipListModal
+        port={selectedPort}
+        ships={portShips}
+        open={!!selectedPort}
+        onClose={() => setSelectedPort(null)}
+        onViewDetail={handleViewShipDetail}
+      />
 
       <VoyageDetailModal
         voyage={selectedVoyage}
