@@ -77,28 +77,31 @@ export default function PortMarkers({ ports, onPortClick }) {
                 "text-halo-width": 2,
               },
             });
+
+            // Add click handler - FIXED with proper event attachment
+            const clickHandler = (e) => {
+              if (e.features && e.features.length > 0) {
+                const portName = e.features[0].properties.name;
+                console.log("Fort clicked:", portName);
+                onPortClick(portName);
+                e.originalEvent.stopPropagation();
+              }
+            };
+
+            const mouseEnterHandler = () => {
+              maplibreMap.getCanvas().style.cursor = "pointer";
+            };
+
+            const mouseLeaveHandler = () => {
+              maplibreMap.getCanvas().style.cursor = "";
+            };
+
+            maplibreMap.on("click", "port-markers", clickHandler);
+            maplibreMap.on("mouseenter", "port-markers", mouseEnterHandler);
+            maplibreMap.on("mouseleave", "port-markers", mouseLeaveHandler);
+
+            console.log("✅ Fort click handlers attached");
           }
-
-          // Add click handler with better error handling
-          const handleClick = (e) => {
-            if (e.features && e.features.length > 0) {
-              const portName = e.features[0].properties.name;
-              console.log("Fort clicked:", portName);
-              onPortClick(portName);
-            }
-          };
-
-          const handleMouseEnter = () => {
-            maplibreMap.getCanvas().style.cursor = "pointer";
-          };
-
-          const handleMouseLeave = () => {
-            maplibreMap.getCanvas().style.cursor = "grab";
-          };
-
-          maplibreMap.on("click", "port-markers", handleClick);
-          maplibreMap.on("mouseenter", "port-markers", handleMouseEnter);
-          maplibreMap.on("mouseleave", "port-markers", handleMouseLeave);
 
           markersAdded.current = true;
           console.log("✅ Added fort markers for", Object.keys(ports).length, "ports");

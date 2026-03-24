@@ -1,7 +1,8 @@
 import { Slider } from "@/components/ui/slider";
-import { Calendar } from "lucide-react";
+import { Calendar, Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-export default function TimelineSlider({ yearRange, setYearRange, minYear, maxYear }) {
+export default function TimelineSlider({ yearRange, setYearRange, minYear, maxYear, onToggleAnimation, showAnimation }) {
   return (
     <div
       className="absolute bottom-6 left-[27rem] right-6 bg-[#FDFBF7]/90 backdrop-blur-xl rounded-lg border border-[#E6E2D6] shadow-[0_8px_32px_rgba(26,36,33,0.08)] p-6"
@@ -15,6 +16,15 @@ export default function TimelineSlider({ yearRange, setYearRange, minYear, maxYe
           </h3>
         </div>
         <div className="flex items-center gap-4">
+          <Button
+            onClick={onToggleAnimation}
+            size="sm"
+            variant={showAnimation ? "default" : "outline"}
+            className={showAnimation ? "bg-[#B85D19] hover:bg-[#9a4d15]" : "border-[#E6E2D6]"}
+          >
+            <Play className="w-4 h-4 mr-1" />
+            {showAnimation ? "Mode Animasi" : "Animasi"}
+          </Button>
           <span className="text-sm font-medium text-[#5C6A66]">
             {yearRange[0]} - {yearRange[1]}
           </span>

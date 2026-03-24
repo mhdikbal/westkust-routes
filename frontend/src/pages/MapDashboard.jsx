@@ -3,10 +3,12 @@ import Map, { Popup, useMap } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Sidebar from "@/components/Sidebar";
 import TimelineSlider from "@/components/TimelineSlider";
+import TimelineAnimationControl from "@/components/TimelineAnimationControl";
 import WelcomeModal from "@/components/WelcomeModal";
 import VoyageDetailModal from "@/components/VoyageDetailModal";
 import PortMarkers from "@/components/PortMarkers";
 import PortShipListModal from "@/components/PortShipListModal";
+import HistoricalContextModal from "@/components/HistoricalContextModal";
 import axios from "axios";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -32,6 +34,8 @@ export default function MapDashboard() {
   const [hoveredRoute, setHoveredRoute] = useState(null);
   const [selectedPort, setSelectedPort] = useState(null);
   const [portShips, setPortShips] = useState([]);
+  const [historicalPort, setHistoricalPort] = useState(null);
+  const [showAnimation, setShowAnimation] = useState(false);
 
   useEffect(() => {
     fetchVoyages();
@@ -146,6 +150,13 @@ export default function MapDashboard() {
         open={!!selectedPort}
         onClose={() => setSelectedPort(null)}
         onViewDetail={handleViewShipDetail}
+        onViewHistory={(port) => setHistoricalPort(port)}
+      />
+
+      <HistoricalContextModal
+        port={historicalPort}
+        open={!!historicalPort}
+        onClose={() => setHistoricalPort(null)}
       />
 
       <VoyageDetailModal
@@ -175,7 +186,18 @@ export default function MapDashboard() {
         setYearRange={setYearRange}
         minYear={1700}
         maxYear={1789}
+        onToggleAnimation={() => setShowAnimation(!showAnimation)}
+        showAnimation={showAnimation}
       />
+
+      {showAnimation && (
+        <TimelineAnimationControl
+          yearRange={yearRange}
+          setYearRange={setYearRange}
+          minYear={1700}
+          maxYear={1789}
+        />
+      )}
     </div>
   );
 }

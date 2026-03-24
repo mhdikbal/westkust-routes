@@ -1,9 +1,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Ship, Package, Calendar } from "lucide-react";
+import { Ship, Package, Calendar, Info } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 
-export default function PortShipListModal({ port, ships, open, onClose, onViewDetail }) {
+export default function PortShipListModal({ port, ships, open, onClose, onViewDetail, onViewHistory }) {
   if (!port || !ships) return null;
 
   const displayPortName = port === "Batavia" ? "Sunda Kelapa (Batavia)" : port;
@@ -42,6 +42,19 @@ export default function PortShipListModal({ port, ships, open, onClose, onViewDe
               <p className="text-xs text-[#8A9A95]">Gulden</p>
             </div>
           </div>
+
+          {/* Historical Context Button */}
+          <Button
+            onClick={() => {
+              onClose();
+              onViewHistory(port);
+            }}
+            variant="outline"
+            className="w-full border-[#B85D19] text-[#B85D19] hover:bg-[#B85D19] hover:text-white"
+          >
+            <Info className="w-4 h-4 mr-2" />
+            Lihat Sejarah Pelabuhan {displayPortName}
+          </Button>
 
           {/* Ships List */}
           <div className="bg-white rounded-lg border border-[#E6E2D6] p-4">
