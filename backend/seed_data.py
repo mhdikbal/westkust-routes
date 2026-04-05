@@ -1,64 +1,180 @@
-import asyncio
-from motor.motor_asyncio import AsyncIOMotorClient
-import os
-from dotenv import load_dotenv
-from pathlib import Path
+"""
+Seed script — inserts fort metadata and voyage data from JSON into PostgreSQL.
+Safe to run multiple times (idempotent via upsert logic).
+"""
 import json
+import os
+import sys
+from pathlib import Path
 
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+from sqlalchemy import create_engine, text, select
+from sqlalchemy.orm import Session
 
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# Sync URL for seeding (psycopg2)
+DATABASE_SYNC_URL = os.getenv(
+    "DATABASE_SYNC_URL", 
+    "postgresql://vocuser:vocpassword@localhost:5432/vocdb"
+)
 
-async def seed_voyages():
-    # Load data from JSON file
-    json_file = ROOT_DIR / 'voyages_data.json'
+# Resolve path to the JSON data file
+DATA_FILE = Path(__file__).parent.parent / "scrawling" / "Data_BGS_Sumatra_Full.json"
+if not DATA_FILE.exists():
+    DATA_FILE = Path("/app/scrawling/Data_BGS_Sumatra_Full.json")
+
+FORTS_META = [
+    # ── Westkust Sumatra Ports ─────────────────────────────
+    {
+        "name": "Barus",
+        "latitude":  2.0144566458864355,
+        "longitude": 98.39931988670789,
+        "color": "#16a085",
+        "port_type": "departure",
+        "description": "Barus (Fansur) adalah pelabuhan historis kamfer dan benzoin.",
+    },
+    {
+        "name": "Air Bangis",
+        "latitude":  0.1974875340994538,
+        "longitude": 99.37555542252645,
+        "color": "#2980b9",
+        "port_type": "departure",
+        "description": "Air Bangis adalah pos pengumpulan hasil bumi di wilayah Pasaman.",
+    },
+    {
+        "name": "Padang",
+        "latitude": -0.9655545283543475,
+        "longitude": 100.35388946846183,
+        "color": "#c0392b",
+        "port_type": "both",
+        "description": "Fort de Goede Hoop di Padang adalah pusat administrasi VOC di Westkust.",
+    },
+    {
+        "name": "Pulau Cingkuak",
+        "latitude": -1.3528370592631371,
+        "longitude": 100.5599951812238,
+        "color": "#e67e22",
+        "port_type": "departure",
+        "description": "Pulau Cingkuak adalah pos perdagangan lada utama dekat Painan.",
+    },
+    {
+        "name": "Air Haji",
+        "latitude": -1.9339388926360865,
+        "longitude": 100.86698214155489,
+        "color": "#27ae60",
+        "port_type": "departure",
+        "description": "Air Haji merupakan pos perdagangan VOC di wilayah selatan Sumatera Barat.",
+    },
+    # ── Destination Center ──────────────────────────────────────────────
+    {
+        "name": "Batavia",
+        "latitude": -6.116501909271064,
+        "longitude": 106.81651216615884,
+        "color": "#2c3e50",
+        "port_type": "arrival",
+        "description": "Batavia adalah pusat kekuasaan dan perdagangan VOC di Asia.",
+    },
+]
+
+
+def seed():
+    from models import Fort, Voyage, Base
+
+    engine = create_engine(DATABASE_SYNC_URL, echo=False)
+
+    # Ensure PostGIS and Schema
+    with engine.begin() as conn:
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis"))
     
-    with open(json_file, 'r', encoding='utf-8') as f:
-        raw_data = json.load(f)
-    
-    # Transform data to match our schema
-    voyages_data = []
-    for idx, item in enumerate(raw_data):
-        voyage = {
-            "id": f"voyage-{item.get('Tahun', 0)}-{idx}",
-            "asal": item.get("Asal", ""),
-            "tujuan": item.get("Tujuan", ""),
-            "nama_kapal": item.get("Nama_Kapal", ""),
-            "kapten": item.get("Kapten", ""),
-            "tahun": item.get("Tahun", 0),
-            "total_gulden_nl": item.get("Total_Gulden_NL", 0.0),
-            "produk_utama": item.get("Produk_Utama", ""),
-            "semua_produk": item.get("Semua_Produk", ""),
-            "durasi_hari": item.get("Durasi_Hari"),
-            "warna_asal": item.get("Warna_Asal", "#c0392b"),
-            "url": item.get("URL", "")
-        }
-        voyages_data.append(voyage)
-    
-    # Clear existing data
-    await db.voyages.delete_many({})
-    
-    # Insert new data
-    if voyages_data:
-        await db.voyages.insert_many(voyages_data)
-        print(f"✅ Seeded {len(voyages_data)} voyages successfully!")
+    Base.metadata.create_all(engine)
+
+    with Session(engine) as session:
+        # ---------- Seed forts ----------
+        fort_map: dict[str, Fort] = {}
+
+        for meta in FORTS_META:
+            existing = session.execute(
+                select(Fort).where(Fort.name == meta["name"])
+            ).scalar_one_or_none()
+
+            if existing:
+                existing.port_type = meta["port_type"]
+                existing.color = meta["color"]
+                fort_map[meta["name"]] = existing
+                continue
+
+            fort = Fort(
+                name=meta["name"],
+                latitude=meta["latitude"],
+                longitude=meta["longitude"],
+                color=meta["color"],
+                description=meta["description"],
+                port_type=meta["port_type"],
+            )
+            session.add(fort)
+            session.flush()
+            fort_map[meta["name"]] = fort
+            print(f"  ✔ Fort added: {meta['name']}")
+
+        session.commit()
+
+        # ---------- Seed voyages ----------
+        # Logic: Clean start for voyages to ensure directionality logic is applied correctly
+        session.execute(text("TRUNCATE TABLE voyages RESTART IDENTITY"))
         
-        # Print summary
-        years = [v["tahun"] for v in voyages_data]
-        ports = set(v["asal"] for v in voyages_data)
-        total_value = sum(v["total_gulden_nl"] for v in voyages_data)
+        if not DATA_FILE.exists():
+            print(f"  ⚠️  Data file not found: {DATA_FILE}")
+            return
+
+        with open(DATA_FILE, encoding="utf-8") as f:
+            records = json.load(f)
+
+        added = 0
+        skipped = 0
         
-        print(f"📊 Summary:")
-        print(f"  - Period: {min(years)} - {max(years)}")
-        print(f"  - Ports: {', '.join(sorted(ports))}")
-        print(f"  - Total Cargo Value: {total_value:,.2f} Gulden")
-    else:
-        print("⚠️ No voyages data to seed")
-    
-    client.close()
+        # Ports that define our "Sumatra Westkust" region
+        sumatra_ports = {"Barus", "Air Bangis", "Padang", "Pulau Cingkuak", "Air Haji"}
+
+        for rec in records:
+            origin_name = rec.get("Asal", "").strip()
+            dest_name = rec.get("Tujuan", "").strip()
+
+            origin_fort = fort_map.get(origin_name)
+            dest_fort = fort_map.get(dest_name)
+
+            # Check directional logic
+            direction = None
+            if origin_name in sumatra_ports:
+                direction = "outbound"
+            elif dest_name in sumatra_ports:
+                direction = "inbound"
+
+            # We only seed if at least one port is recognized in our system
+            if not origin_fort and not dest_fort:
+                skipped += 1
+                continue
+
+            voyage = Voyage(
+                origin_id=origin_fort.id if origin_fort else None,
+                destination_id=dest_fort.id if dest_fort else None,
+                origin_name_raw=origin_name,
+                destination_name_raw=dest_name,
+                ship_name=rec.get("Nama_Kapal", "Unknown"),
+                captain=rec.get("Kapten") or None,
+                year=rec.get("Tahun"),
+                total_gulden=rec.get("Total_Gulden_NL"),
+                main_product=rec.get("Produk_Utama"),
+                all_products=rec.get("Semua_Produk"),
+                duration_days=rec.get("Durasi_Hari"),
+                direction=direction,
+                source_url=rec.get("URL"),
+            )
+            session.add(voyage)
+            added += 1
+
+        session.commit()
+        print(f"  ✔ Voyages seeded: {added} added (with direction logic), {skipped} skipped.")
+
 
 if __name__ == "__main__":
-    asyncio.run(seed_voyages())
+    print("🌱 Seeding database...")
+    seed()
+    print("✅ Done!")

@@ -1,25 +1,31 @@
-# Dependencies
-node_modules/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
-.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.env
+.venv/
 venv/
 env/
-ENV/
 
-# Production
-build/
-dist/
-*.log
+# Django
+staticfiles/
+*.sqlite3
 
-# Environment
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Testing
+.pytest_cache/
+htmlcov/
+.coverage
+test_output*.txt
+
+# Docker volumes / temp
+pgdata/
 
 # IDE
 .vscode/
@@ -32,16 +38,8 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Testing
-coverage/
-.pytest_cache/
+# Logs
+*.log
 
-# Misc
-*.pid
-*.seed
-*.pid.lock
-.npm
-.eslintcache
-frontend/node_modules/.cache/default-development/9.pack
-frontend/node_modules/.cache/default-development/11.pack
-frontend/node_modules/.cache/default-development/6.pack
+# Node (if ever)
+node_modules/
