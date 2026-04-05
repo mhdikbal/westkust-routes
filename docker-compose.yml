@@ -10,8 +10,6 @@ services:
       POSTGRES_PASSWORD: vocpassword
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U vocuser -d vocdb"]
       interval: 10s
