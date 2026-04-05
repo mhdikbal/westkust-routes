@@ -355,6 +355,9 @@ def parse_voyage_detail(url: str, departure_meta: dict) -> Optional[dict]:
             g_nl = parse_gulden(val_nl)
             g_in = parse_gulden(val_in)
 
+            # Gunakan gulden NL jika ada, jika 0 gunakan gulden India
+            g_used = g_nl if g_nl > 0 else g_in
+
             kargo_item = {
                 "produk":       prod_txt,
                 "produk_url":   prod_url,
@@ -365,6 +368,7 @@ def parse_voyage_detail(url: str, departure_meta: dict) -> Optional[dict]:
                 "gram":         kq["gram"],
                 "gulden_nl":    g_nl,
                 "gulden_india": g_in,
+                "gulden_used":  g_used,
                 "catatan":      kq["catatan"],
             }
             kargo_list.append(kargo_item)
@@ -373,9 +377,9 @@ def parse_voyage_detail(url: str, departure_meta: dict) -> Optional[dict]:
             if produk_bersih:
                 semua_produk.add(produk_bersih)
 
-            total_gulden += g_nl
-            if g_nl > max_gulden:
-                max_gulden   = g_nl
+            total_gulden += g_used
+            if g_used > max_gulden:
+                max_gulden   = g_used
                 produk_utama = prod_txt
 
     # ── Durasi pelayaran ─────────────────────────────────────────────
@@ -409,7 +413,7 @@ def parse_voyage_detail(url: str, departure_meta: dict) -> Optional[dict]:
 
         # ── Tanggal lengkap ───────────────────────────────────────
         "Tahun_Buku":      tahun_buku_info.get("tahun"),
-        "Tahun":           tgl_brgkt.get("tahun"),
+        "Tahun":           tgl_brgkt.get("tahun") or tgl_tiba.get("tahun") or tahun_buku_info.get("tahun"),
         "Tgl_Berangkat":   tgl_brgkt,   # { hari, bulan, tahun, iso }
         "Tgl_Tiba":        tgl_tiba,
         "Durasi_Hari":     durasi_hari,
@@ -417,7 +421,7 @@ def parse_voyage_detail(url: str, departure_meta: dict) -> Optional[dict]:
         # ── Komoditi (ringkasan) ──────────────────────────────────
         "Produk_Utama":    produk_utama or (list(semua_produk)[0] if semua_produk else ""),
         "Semua_Produk":    " | ".join(sorted(semua_produk)),
-        "Total_Gulden_NL": round(total_gulden, 4),
+        "Total_Gulden_NL": round(total_gulden, 4), # now uses g_used (either NL or India)
         "Jumlah_Item_Kargo": len(kargo_list),
 
         # ── Detail kargo lengkap ──────────────────────────────────
