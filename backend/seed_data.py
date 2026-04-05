@@ -1,10 +1,12 @@
 """
 Seed script — inserts fort metadata and voyage data from JSON into PostgreSQL.
 Safe to run multiple times (idempotent via upsert logic).
+Includes retry logic so it waits for the DB to be ready.
 """
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 from sqlalchemy import create_engine, text, select
@@ -73,6 +75,24 @@ FORTS_META = [
         "description": "Batavia adalah pusat kekuasaan dan perdagangan VOC di Asia.",
     },
 ]
+
+
+def wait_for_db(max_retries: int = 30, delay: float = 2.0):
+    """Wait until PostgreSQL is accepting connections."""
+    from sqlalchemy import create_engine, text as sa_text
+    engine = create_engine(DATABASE_SYNC_URL, echo=False)
+    for attempt in range(1, max_retries + 1):
+        try:
+            with engine.connect() as conn:
+                conn.execute(sa_text("SELECT 1"))
+            print(f"  ✅ Database ready (attempt {attempt})")
+            engine.dispose()
+            return
+        except Exception as e:
+            print(f"  ⏳ Waiting for DB... attempt {attempt}/{max_retries}: {e.__class__.__name__}")
+            time.sleep(delay)
+    engine.dispose()
+    raise RuntimeError("❌ Database not available after max retries. Aborting seed.")
 
 
 def seed():
@@ -175,6 +195,9 @@ def seed():
 
 
 if __name__ == "__main__":
+    print("🌱 Waiting for database...")
+    wait_for_db()
     print("🌱 Seeding database...")
     seed()
     print("✅ Done!")
+
