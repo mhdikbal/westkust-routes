@@ -4,179 +4,282 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jalur Perdagangan VOC — Sumatera Westkust</title>
-  <meta name="description" content="Atlas jalur perdagangan VOC di Sumatera Barat abad ke-18. Visualisasi interaktif rute kapal, komoditi dagang, dan benteng-benteng VOC di Sumatera Westkust.">
+  <meta name="description" content="Atlas interaktif jalur perdagangan VOC di Sumatera Barat abad ke-18. Visualisasi rute kapal, komoditi dagang, dan benteng-benteng VOC di Sumatera Westkust.">
 
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <!-- Leaflet -->
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Playfair Display + IBM Plex Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
+    /* ── Design Tokens (Museum Archival) ─────────────────────────────────── */
     :root {
-      --voc-red:      #c0392b;
-      --voc-orange:   #e67e22;
-      --voc-green:    #27ae60;
-      --voc-purple:   #8e44ad;
-      --parchment:    #f4e4bc;
-      --parchment-dk: #e8d4a0;
-      --ink-dark:     #2c1810;
-      --ink-mid:      #5c3317;
-      --sidebar-bg:   #1a120b;
-      --sidebar-bg2:  #231810;
-      --gold:         #d4a853;
-      --gold-lt:      #f0c876;
-      --panel-w:      420px;
+      --bg-base:      #FDFBF7;
+      --bg-panel:     #FFFFFF;
+      --bg-overlay:   rgba(253,251,247,0.92);
+      --text-primary: #1A2421;
+      --text-secondary:#5C6A66;
+      --text-muted:   #8A9A95;
+      --accent:       #B85D19;
+      --accent-hover: #9A4D14;
+      --gold:         #D4AF37;
+      --gold-lt:      #EDD95A;
+      --ocean:        #4A6D7C;
+      --border:       #E6E2D6;
+      --shadow:       0 8px 32px rgba(26,36,33,0.10);
+      --shadow-sm:    0 2px 12px rgba(26,36,33,0.07);
+      --panel-w:      380px;
+      --radius:       12px;
+      --radius-sm:    8px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: 'Crimson Text', Georgia, serif;
-      background: var(--ink-dark);
-      color: var(--parchment);
+    html, body {
+      width: 100%; height: 100%;
       overflow: hidden;
-      height: 100vh;
-      width: 100vw;
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-base);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Navbar ── */
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-base); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ── Navbar ─────────────────────────────────────────────────────────── */
     #navbar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 1100;
-      height: 58px;
-      background: linear-gradient(135deg, #1a0a05 0%, #2d1208 50%, #1a0a05 100%);
-      border-bottom: 2px solid var(--gold);
-      display: flex; align-items: center; padding: 0 1.5rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,.6);
+      height: 56px;
+      background: var(--bg-overlay);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 1.5rem;
+      box-shadow: var(--shadow-sm);
     }
-    #navbar .brand {
-      font-family: 'Cinzel', serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--gold-lt);
-      letter-spacing: .05em;
-      text-shadow: 0 2px 8px rgba(0,0,0,.5);
-      display: flex; align-items: center; gap: .6rem;
+    .nav-brand {
+      display: flex; align-items: center; gap: .75rem;
+      text-decoration: none;
     }
-    #navbar .brand-sub {
-      font-family: 'Inter', sans-serif;
-      font-size: .7rem;
-      font-weight: 300;
-      color: var(--parchment-dk);
-      opacity: .7;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      margin-left: .4rem;
-      align-self: flex-end;
-      margin-bottom: .15rem;
-    }
-    #navbar .voc-monogram {
-      width: 36px; height: 36px;
-      background: var(--voc-red);
+    .nav-brand .voc-seal {
+      width: 34px; height: 34px;
+      background: var(--accent);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Cinzel', serif;
-      font-weight: 900; font-size: .95rem;
-      color: var(--gold-lt);
-      border: 2px solid var(--gold);
-      box-shadow: 0 0 12px rgba(192,57,43,.4);
-    }
-    #navbar .nav-pills {
-      margin-left: auto; gap: .4rem;
-    }
-    #navbar .nav-link {
-      font-family: 'Inter', sans-serif;
-      font-size: .78rem;
-      font-weight: 500;
-      color: var(--parchment-dk);
-      padding: .3rem .9rem;
-      border-radius: 20px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 800; font-size: .8rem;
+      color: #fff;
       letter-spacing: .05em;
-      transition: all .2s;
+      box-shadow: 0 2px 8px rgba(184,93,25,.35);
+      flex-shrink: 0;
     }
-    #navbar .nav-link:hover {
-      background: rgba(212,168,83,.15);
-      color: var(--gold-lt);
+    .nav-brand-text {
+      display: flex; flex-direction: column; line-height: 1;
+    }
+    .nav-brand-title {
+      font-family: 'Playfair Display', serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -.01em;
+    }
+    .nav-brand-sub {
+      font-size: .65rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-top: .18rem;
+    }
+    .nav-links {
+      margin-left: auto;
+      display: flex; gap: .25rem; align-items: center;
+    }
+    .nav-pill {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: .3rem .8rem;
+      border-radius: 20px;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: color .2s, border-color .2s, background .2s;
+      letter-spacing: .03em;
+    }
+    .nav-pill:hover {
+      color: var(--accent);
+      border-color: rgba(184,93,25,.2);
+      background: rgba(184,93,25,.05);
+    }
+    .nav-pill-accent {
+      color: var(--accent);
+      border-color: rgba(184,93,25,.25);
+      background: rgba(184,93,25,.07);
+    }
+    .nav-pill-accent:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
     }
 
-    /* ── Layout ── */
+    /* ── Layout ─────────────────────────────────────────────────────────── */
     #app {
+      position: fixed;
+      top: 56px; left: 0; right: 0; bottom: 0;
       display: flex;
-      height: calc(100vh - 58px);
-      margin-top: 58px;
     }
 
     /* ── Map ── */
     #map {
       flex: 1;
       position: relative;
-      z-index: 1;
     }
-    .leaflet-container { background: #1a1208; }
+    .leaflet-container { background: #eae6dc; }
 
-    /* ── Sidebar ── */
+    /* ── Sidebar ─────────────────────────────────────────────────────────── */
     #sidebar {
       width: var(--panel-w);
       min-width: var(--panel-w);
-      background: var(--sidebar-bg);
-      border-left: 2px solid rgba(212,168,83,.3);
+      background: var(--bg-overlay);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-left: 1px solid var(--border);
       display: flex; flex-direction: column;
       position: relative; z-index: 100;
-      transform: translateX(0);
-      transition: transform .36s cubic-bezier(.4,0,.2,1), width .36s;
+      box-shadow: -4px 0 24px rgba(26,36,33,0.07);
       overflow: hidden;
-      box-shadow: -8px 0 30px rgba(0,0,0,.5);
+      transition: width .35s cubic-bezier(.4,0,.2,1), min-width .35s;
     }
     #sidebar.collapsed {
-      width: 0; min-width: 0;
-      border-left: none;
+      width: 0; min-width: 0; border-left: none;
     }
 
-    /* ── Sidebar — Welcome panel ── */
+    /* ── Welcome panel ── */
     #welcome-panel {
       flex: 1;
+      overflow-y: auto;
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 2.5rem 2rem;
-      text-align: center;
-      gap: 1.2rem;
-    }
-    #welcome-panel .compass-icon {
-      font-size: 4rem;
-      color: var(--gold);
-      filter: drop-shadow(0 0 16px rgba(212,168,83,.4));
-      animation: float 4s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-    #welcome-panel h2 {
-      font-family: 'Cinzel', serif;
-      font-size: 1.3rem;
-      color: var(--gold-lt);
-      line-height: 1.4;
-    }
-    #welcome-panel p {
-      font-size: 1rem;
-      color: var(--parchment-dk);
-      opacity: .8;
-      line-height: 1.7;
-    }
-    #welcome-panel .legend-item {
-      display: flex; align-items: center; gap: .6rem;
-      font-size: .9rem; color: var(--parchment-dk);
-    }
-    #welcome-panel .legend-dot {
-      width: 14px; height: 14px; border-radius: 50%;
-      flex-shrink: 0;
-      border: 2px solid rgba(255,255,255,.3);
     }
 
-    /* ── Sidebar — Fort panel ── */
+    .welcome-hero {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .welcome-hero img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: sepia(20%) brightness(.92) contrast(1.05);
+    }
+    .welcome-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(26,36,33,0) 40%, rgba(253,251,247,1) 100%);
+    }
+    .welcome-hero-badge {
+      position: absolute; top: 1rem; left: 1rem;
+      background: rgba(253,251,247,.9);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .3rem .7rem;
+      font-size: .65rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .welcome-content {
+      padding: 1.5rem;
+      flex: 1;
+    }
+    .welcome-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin-bottom: .6rem;
+    }
+    .welcome-content p {
+      font-size: .875rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 1.2rem;
+    }
+
+    .welcome-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: .75rem; margin-bottom: 1.5rem;
+    }
+    .welcome-stat {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .85rem 1rem;
+    }
+    .welcome-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .welcome-stat-label {
+      font-size: .7rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-top: .25rem;
+    }
+
+    .legend-label {
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      margin-bottom: .75rem;
+    }
+    .legend-list {
+      display: flex; flex-direction: column; gap: .5rem;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: .6rem;
+      font-size: .82rem; color: var(--text-secondary);
+    }
+    .legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%; flex-shrink: 0;
+      border: 2px solid rgba(255,255,255,.6);
+      box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    }
+
+    .welcome-hint {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(184,93,25,.06);
+      border: 1px solid rgba(184,93,25,.15);
+      border-radius: var(--radius-sm);
+      font-size: .8rem;
+      color: var(--accent);
+      display: flex; gap: .6rem; align-items: flex-start;
+    }
+    .welcome-hint i { margin-top: .1rem; flex-shrink: 0; }
+
+    /* ── Fort panel ── */
     #fort-panel {
       display: none;
       flex-direction: column;
@@ -186,301 +289,327 @@
     #fort-panel.active { display: flex; }
 
     .fort-header {
-      padding: 1.4rem 1.5rem 1rem;
-      background: linear-gradient(180deg, #231008 0%, var(--sidebar-bg2) 100%);
-      border-bottom: 1px solid rgba(212,168,83,.2);
+      flex-shrink: 0;
+      padding: 1.2rem 1.4rem .9rem;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
       position: relative;
     }
-    .fort-header .fort-icon-wrapper {
-      width: 52px; height: 52px;
-      border-radius: 50%;
+    .fort-header-top {
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: .6rem;
+    }
+    .fort-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem;
-      margin-bottom: .8rem;
-      border: 2px solid rgba(255,255,255,.2);
-      box-shadow: 0 0 20px rgba(0,0,0,.4);
+      font-size: 1.3rem;
+      flex-shrink: 0;
     }
     .fort-header h3 {
-      font-family: 'Cinzel', serif;
-      font-size: 1.4rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: var(--gold-lt);
-      margin-bottom: .2rem;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: .15rem;
     }
-    .fort-header .fort-coords {
-      font-family: 'Inter', sans-serif;
-      font-size: .72rem;
-      color: var(--parchment-dk);
-      opacity: .6;
-      letter-spacing: .05em;
+    .fort-coords {
+      font-size: .68rem;
+      color: var(--text-muted);
+      font-family: 'IBM Plex Sans', sans-serif;
+      letter-spacing: .04em;
     }
-    .fort-header .btn-close-panel {
+    .btn-close-panel {
       position: absolute; top: 1rem; right: 1rem;
-      background: rgba(255,255,255,.07);
-      border: none; color: var(--parchment-dk);
-      width: 32px; height: 32px; border-radius: 50%;
-      cursor: pointer; font-size: 1.1rem;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-base);
+      color: var(--text-secondary);
+      font-size: .9rem;
+      cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      transition: background .2s;
+      transition: all .2s;
     }
-    .fort-header .btn-close-panel:hover { background: rgba(255,255,255,.15); }
+    .btn-close-panel:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
 
     /* Stats bar */
     .stats-bar {
       display: flex;
-      background: rgba(0,0,0,.3);
-      border-bottom: 1px solid rgba(212,168,83,.1);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
     .stat-item {
-      flex: 1; padding: .75rem 1rem;
+      flex: 1; padding: .8rem .75rem;
       text-align: center;
-      border-right: 1px solid rgba(212,168,83,.1);
+      border-right: 1px solid var(--border);
     }
     .stat-item:last-child { border-right: none; }
     .stat-value {
-      font-family: 'Cinzel', serif;
-      font-size: 1.25rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
       font-weight: 700;
-      color: var(--gold-lt);
+      color: var(--accent);
       line-height: 1;
     }
     .stat-label {
-      font-family: 'Inter', sans-serif;
-      font-size: .65rem;
-      color: var(--parchment-dk);
-      opacity: .6;
+      font-size: .63rem;
+      font-weight: 500;
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: .08em;
+      letter-spacing: .09em;
       margin-top: .2rem;
     }
 
     /* Description */
     .fort-desc {
-      padding: 1rem 1.5rem .8rem;
-      font-size: .95rem;
-      line-height: 1.75;
-      color: var(--parchment-dk);
-      opacity: .85;
-      border-bottom: 1px solid rgba(212,168,83,.1);
+      padding: 1rem 1.4rem;
+      font-size: .83rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
 
-    /* Filters */
+    /* Filter bar */
     .filter-bar {
-      padding: .75rem 1rem;
-      background: rgba(0,0,0,.2);
-      border-bottom: 1px solid rgba(212,168,83,.1);
+      padding: .65rem 1rem;
+      background: var(--bg-base);
+      border-bottom: 1px solid var(--border);
       display: flex; gap: .5rem; align-items: center; flex-wrap: wrap;
+      flex-shrink: 0;
     }
     .filter-bar label {
-      font-family: 'Inter', sans-serif;
-      font-size: .72rem;
+      font-size: .68rem;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--parchment-dk);
-      opacity: .7;
+      letter-spacing: .1em;
+      color: var(--text-muted);
     }
-    .filter-bar input, .filter-bar select {
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(212,168,83,.25);
-      color: var(--parchment);
+    .filter-input {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
       border-radius: 6px;
-      padding: .25rem .6rem;
-      font-size: .8rem;
-      font-family: 'Inter', sans-serif;
+      padding: .25rem .55rem;
+      font-size: .78rem;
+      font-family: 'IBM Plex Sans', sans-serif;
       outline: none;
-      max-width: 90px;
+      max-width: 80px;
     }
-    .filter-bar input::placeholder { color: rgba(244,228,188,.4); }
-    .filter-bar input:focus, .filter-bar select:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 2px rgba(212,168,83,.15);
+    .filter-input::placeholder { color: var(--text-muted); }
+    .filter-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(184,93,25,.12);
     }
-    .filter-bar select option { background: #231810; }
+    .btn-filter {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: .28rem .65rem;
+      font-size: .72rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'IBM Plex Sans', sans-serif;
+      transition: background .2s;
+      letter-spacing: .03em;
+    }
+    .btn-filter:hover { background: var(--accent-hover); }
+    .btn-reset {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .28rem .55rem;
+      font-size: .72rem;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-reset:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
 
-    /* Table */
+    /* Voyages list */
     .voyages-wrapper {
       flex: 1;
       overflow-y: auto;
-      padding: 0;
+      padding: .5rem 0 1rem;
     }
-    .voyages-wrapper::-webkit-scrollbar { width: 6px; }
-    .voyages-wrapper::-webkit-scrollbar-track { background: rgba(0,0,0,.2); }
-    .voyages-wrapper::-webkit-scrollbar-thumb { background: rgba(212,168,83,.3); border-radius: 3px; }
-
-    .voyage-section-title {
-      font-family: 'Cinzel', serif;
-      font-size: .78rem;
+    .section-title {
+      font-size: .68rem;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: .12em;
-      color: var(--gold);
-      padding: .75rem 1.2rem .4rem;
-      border-top: 1px solid rgba(212,168,83,.1);
+      letter-spacing: .15em;
+      color: var(--text-muted);
+      padding: .75rem 1.4rem .4rem;
     }
 
     .voyage-card {
-      margin: .4rem .8rem;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(212,168,83,.1);
-      border-radius: 8px;
-      padding: .7rem 1rem;
+      margin: .3rem .8rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .85rem 1rem;
       cursor: pointer;
-      transition: all .2s;
-      animation: fadeSlideIn .3s ease both;
+      transition: border-color .2s, box-shadow .2s, transform .15s;
+      animation: fadeIn .25s ease both;
     }
     .voyage-card:hover {
-      background: rgba(212,168,83,.08);
-      border-color: rgba(212,168,83,.3);
-      transform: translateX(2px);
+      border-color: rgba(184,93,25,.3);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
     }
-    @keyframes fadeSlideIn {
-      from { opacity: 0; transform: translateY(6px); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .voyage-card .ship-name {
-      font-family: 'Cinzel', serif;
+    .ship-name {
+      font-family: 'Playfair Display', serif;
       font-size: .95rem;
-      font-weight: 600;
-      color: var(--gold-lt);
-      margin-bottom: .3rem;
-    }
-    .voyage-card .voyage-meta {
-      display: flex; flex-wrap: wrap; gap: .4rem;
+      font-weight: 700;
+      color: var(--text-primary);
       margin-bottom: .4rem;
     }
-    .voyage-badge {
-      font-family: 'Inter', sans-serif;
-      font-size: .68rem;
-      font-weight: 500;
-      padding: .15rem .55rem;
+    .voyage-badges {
+      display: flex; flex-wrap: wrap; gap: .3rem; margin-bottom: .4rem;
+    }
+    .badge-year {
+      background: rgba(74,109,124,.1);
+      color: var(--ocean);
+      border: 1px solid rgba(74,109,124,.2);
       border-radius: 12px;
-      letter-spacing: .03em;
+      font-size: .66rem;
+      font-weight: 600;
+      padding: .12rem .5rem;
+      letter-spacing: .02em;
     }
-    .badge-year  { background: rgba(192,57,43,.25); color: #e88; border: 1px solid rgba(192,57,43,.4); }
-    .badge-prod  { background: rgba(212,168,83,.2); color: var(--gold-lt); border: 1px solid rgba(212,168,83,.3); }
-    .badge-gulden { background: rgba(39,174,96,.15); color: #7de8a0; border: 1px solid rgba(39,174,96,.3); }
+    .badge-prod {
+      background: rgba(184,93,25,.08);
+      color: var(--accent);
+      border: 1px solid rgba(184,93,25,.18);
+      border-radius: 12px;
+      font-size: .66rem;
+      font-weight: 600;
+      padding: .12rem .5rem;
+    }
+    .badge-gulden {
+      background: rgba(212,175,55,.1);
+      color: #8a7010;
+      border: 1px solid rgba(212,175,55,.25);
+      border-radius: 12px;
+      font-size: .66rem;
+      font-weight: 600;
+      padding: .12rem .5rem;
+    }
     .voyage-products {
-      font-size: .8rem;
-      color: var(--parchment-dk);
-      opacity: .7;
-      line-height: 1.5;
+      font-size: .76rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: .3rem;
     }
-    .voyage-card a.src-link {
-      font-family: 'Inter', sans-serif;
+    .src-link {
       font-size: .68rem;
-      color: var(--gold);
-      opacity: .7;
+      color: var(--ocean);
       text-decoration: none;
       float: right;
-      margin-top: .2rem;
+      font-weight: 500;
+      transition: color .2s;
     }
-    .voyage-card a.src-link:hover { opacity: 1; text-decoration: underline; }
+    .src-link:hover { color: var(--accent); }
 
     /* Empty state */
     .empty-state {
       text-align: center;
-      padding: 2.5rem 1rem;
-      color: var(--parchment-dk);
-      opacity: .5;
-      font-size: .9rem;
+      padding: 3rem 1.5rem;
+      color: var(--text-muted);
+      font-size: .85rem;
     }
-    .empty-state i { font-size: 2.5rem; margin-bottom: .8rem; display: block; }
+    .empty-state i {
+      font-size: 2.5rem;
+      margin-bottom: .75rem;
+      display: block;
+      opacity: .4;
+    }
 
-    /* Loading spinner */
-    #loading-overlay {
-      display: none;
-      position: absolute; inset: 0;
-      background: rgba(26,9,5,.7);
-      z-index: 200;
-      align-items: center; justify-content: center;
-      flex-direction: column; gap: 1rem;
-    }
-    #loading-overlay.active { display: flex; }
-    .spinner-ring {
-      width: 48px; height: 48px;
-      border: 4px solid rgba(212,168,83,.2);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Custom fort marker */
-    .fort-marker-icon {
-      background: none !important;
-      border: none !important;
-    }
-    .fort-marker-svg {
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,.7));
-      transition: transform .2s;
-      cursor: pointer;
-    }
-    .fort-marker-svg:hover { transform: scale(1.15); }
-    .fort-marker-svg.active-marker { filter: drop-shadow(0 0 12px gold) drop-shadow(0 4px 8px rgba(0,0,0,.7)); }
-
-    /* Sidebar toggle button */
-    #sidebar-toggle {
-      position: absolute; right: calc(var(--panel-w) + 12px); top: 50%;
-      transform: translateY(-50%);
-      z-index: 500;
-      background: var(--sidebar-bg);
-      border: 1px solid rgba(212,168,83,.3);
-      color: var(--gold-lt);
-      width: 28px; height: 52px;
-      border-radius: 6px 0 0 6px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: .8rem;
-      transition: right .36s cubic-bezier(.4,0,.2,1), background .2s;
-    }
-    #sidebar.collapsed ~ #sidebar-toggle,
-    #app.sidebar-collapsed #sidebar-toggle { right: 12px; }
-    #sidebar-toggle:hover { background: rgba(212,168,83,.15); }
-
-    /* Tooltip */
+    /* ── Leaflet overrides ── */
     .leaflet-tooltip {
-      background: var(--ink-dark) !important;
-      border: 1px solid var(--gold) !important;
-      color: var(--gold-lt) !important;
-      font-family: 'Cinzel', serif !important;
-      font-size: .8rem !important;
-      border-radius: 4px !important;
+      background: var(--bg-panel) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--text-primary) !important;
+      font-family: 'Playfair Display', serif !important;
+      font-size: .78rem !important;
+      font-weight: 600 !important;
+      border-radius: 6px !important;
       padding: .3rem .7rem !important;
-      box-shadow: 0 4px 12px rgba(0,0,0,.5) !important;
+      box-shadow: var(--shadow-sm) !important;
     }
-    .leaflet-tooltip-bottom:before {
-      border-bottom-color: var(--gold) !important;
-    }
+    .leaflet-tooltip::before { display: none; }
 
-    /* Map attribution */
+    .leaflet-control-zoom a {
+      background: var(--bg-panel) !important;
+      color: var(--text-primary) !important;
+      border-color: var(--border) !important;
+      font-family: 'IBM Plex Sans', sans-serif !important;
+    }
+    .leaflet-control-zoom a:hover {
+      background: var(--bg-base) !important;
+      color: var(--accent) !important;
+    }
     .leaflet-control-attribution {
-      background: rgba(26,9,5,.8) !important;
-      color: rgba(244,228,188,.5) !important;
+      background: rgba(253,251,247,.85) !important;
+      color: var(--text-muted) !important;
       font-size: .65rem !important;
     }
-    .leaflet-control-attribution a { color: var(--gold) !important; }
+    .leaflet-control-attribution a { color: var(--ocean) !important; }
 
-    /* Zoom control */
-    .leaflet-control-zoom a {
-      background: var(--sidebar-bg) !important;
-      color: var(--gold-lt) !important;
-      border-color: rgba(212,168,83,.3) !important;
-    }
-    .leaflet-control-zoom a:hover { background: rgba(212,168,83,.15) !important; }
+    /* ── Fort marker ── */
+    .fort-marker-icon { background: none !important; border: none !important; }
 
-    /* Route lines pulse */
-    .trade-route-line {
-      animation: routePulse 3s ease-in-out infinite;
+    /* ── Loading ── */
+    #loading-overlay {
+      display: none;
+      position: absolute; inset: 0; z-index: 200;
+      background: rgba(253,251,247,.8);
+      backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; flex-direction: column; gap: .75rem;
     }
-    @keyframes routePulse {
-      0%,100% { opacity: .4; }
-      50%      { opacity: .9; }
+    #loading-overlay.active { display: flex; }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text {
+      font-size: .75rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: .08em;
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
+    /* ── Noise texture overlay on map ── */
+    #map::after {
+      content: '';
+      position: absolute; inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      opacity: .025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
       :root { --panel-w: 100vw; }
-      #sidebar { position: absolute; right: 0; top: 0; height: 100%; }
-      #sidebar:not(.collapsed) { box-shadow: -20px 0 60px rgba(0,0,0,.8); }
+      #sidebar { position: absolute; right: 0; top: 0; bottom: 0; }
     }
   </style>
 </head>
@@ -488,33 +617,27 @@
 
 <!-- ── Navbar ── -->
 <nav id="navbar">
-  <div class="brand">
-    <div class="voc-monogram">VOC</div>
-    <div>
-      Jalur Perdagangan
-      <span class="brand-sub">Sumatera Westkust · Abad XVIII</span>
+  <a href="#" class="nav-brand" onclick="resetView(); return false;">
+    <div class="voc-seal">VOC</div>
+    <div class="nav-brand-text">
+      <span class="nav-brand-title">Jalur Perdagangan VOC</span>
+      <span class="nav-brand-sub">Sumatera Westkust · Abad XVIII</span>
     </div>
+  </a>
+  <div class="nav-links">
+    <a href="#" class="nav-pill" onclick="resetView(); return false;">
+      <i class="bi bi-map me-1"></i>Peta
+    </a>
+    <a href="/api/docs" target="_blank" class="nav-pill">
+      <i class="bi bi-file-code me-1"></i>API
+    </a>
+    <a href="https://www.atlasofmutualheritage.nl/" target="_blank" class="nav-pill nav-pill-accent">
+      <i class="bi bi-box-arrow-up-right me-1"></i>AMH
+    </a>
   </div>
-  <ul class="nav nav-pills ms-auto">
-    <li class="nav-item">
-      <a class="nav-link" href="#" onclick="resetView(); return false;">
-        <i class="bi bi-globe-asia-australia me-1"></i>Peta
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/api/docs" target="_blank">
-        <i class="bi bi-file-code me-1"></i>API
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="https://www.atlasofmutualheritage.nl/" target="_blank">
-        <i class="bi bi-box-arrow-up-right me-1"></i>AMH
-      </a>
-    </li>
-  </ul>
 </nav>
 
-<!-- ── App Layout ── -->
+<!-- ── App ── -->
 <div id="app">
 
   <!-- Map -->
@@ -523,35 +646,66 @@
   <!-- Sidebar -->
   <div id="sidebar">
     <div id="loading-overlay">
-      <div class="spinner-ring"></div>
-      <span style="font-family:'Inter',sans-serif;font-size:.8rem;color:var(--gold-lt);letters-spacing:.1em;">Memuat data...</span>
+      <div class="spinner"></div>
+      <span class="loading-text">MEMUAT DATA…</span>
     </div>
 
     <!-- Welcome -->
     <div id="welcome-panel">
-      <div class="compass-icon">⚓</div>
-      <h2>Atlas Perdagangan<br>VOC Sumatera</h2>
-      <p>Klik salah satu ikon benteng pada peta untuk melihat informasi pos perdagangan dan daftar kapal VOC yang pernah berlayar dari pelabuhan tersebut.</p>
-      <hr style="width:100%;border-color:rgba(212,168,83,.2);">
-      <div style="width:100%;text-align:left">
-        <p style="font-family:'Cinzel',serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.8rem;">Legenda</p>
-        <div style="display:flex;flex-direction:column;gap:.55rem;">
+      <div class="welcome-hero">
+        <img src="https://images.unsplash.com/photo-1773593625870-bb7549da24d9?crop=entropy&cs=srgb&fm=jpg&q=85&w=600"
+             alt="Kapal layar VOC di lautan"
+             onerror="this.src='https://images.pexels.com/photos/2858925/pexels-photo-2858925.jpeg?auto=compress&cs=tinysrgb&w=600'">
+        <div class="welcome-hero-overlay"></div>
+        <span class="welcome-hero-badge">VOC · 1700–1789</span>
+      </div>
+
+      <div class="welcome-content">
+        <h2>Atlas Perdagangan<br>Sumatera Westkust</h2>
+        <p>Visualisasi interaktif jalur perdagangan Compagnie Oost-Indische (VOC) dari pelabuhan Sumatera Barat menuju Batavia sepanjang abad ke-18.</p>
+
+        <div class="welcome-stats">
+          <div class="welcome-stat" id="total-voyages-stat">
+            <div class="welcome-stat-num" id="total-voyages-num">—</div>
+            <div class="welcome-stat-label">Perjalanan</div>
+          </div>
+          <div class="welcome-stat">
+            <div class="welcome-stat-num">4</div>
+            <div class="welcome-stat-label">Pos Benteng</div>
+          </div>
+          <div class="welcome-stat" id="total-value-stat">
+            <div class="welcome-stat-num" id="total-value-num">—</div>
+            <div class="welcome-stat-label">Total Nilai (ƒ)</div>
+          </div>
+          <div class="welcome-stat">
+            <div class="welcome-stat-num">~90</div>
+            <div class="welcome-stat-label">Tahun Aktif</div>
+          </div>
+        </div>
+
+        <div class="legend-label">Pos Perdagangan</div>
+        <div class="legend-list" id="legend-list">
           <div class="legend-item">
             <div class="legend-dot" style="background:#c0392b;"></div>
-            <span>Padang — Pos dagang utama VOC</span>
+            <span>Padang — Fort de Goede Hoop</span>
           </div>
           <div class="legend-item">
             <div class="legend-dot" style="background:#e67e22;"></div>
-            <span>Pulau Cingkuak — Pos lada Indrapura</span>
+            <span>Pulau Cingkuak — Fort Indrapura</span>
           </div>
           <div class="legend-item">
             <div class="legend-dot" style="background:#27ae60;"></div>
-            <span>Air Haji — Pos selatan Sumatera Barat</span>
+            <span>Air Haji — Pos Selatan</span>
           </div>
           <div class="legend-item">
             <div class="legend-dot" style="background:#8e44ad;"></div>
-            <span>Batavia — Pusat VOC di Asia</span>
+            <span>Batavia — Pusat VOC Asia</span>
           </div>
+        </div>
+
+        <div class="welcome-hint">
+          <i class="bi bi-cursor-fill"></i>
+          <span>Klik salah satu ikon benteng pada peta untuk melihat daftar kapal dan komoditi dagang dari pos tersebut.</span>
         </div>
       </div>
     </div>
@@ -560,9 +714,13 @@
     <div id="fort-panel">
       <div class="fort-header">
         <button class="btn-close-panel" onclick="closeFortPanel()" title="Tutup">✕</button>
-        <div id="fort-icon-wrapper" class="fort-icon-wrapper">🏰</div>
-        <h3 id="fort-name">—</h3>
-        <div class="fort-coords" id="fort-coords"></div>
+        <div class="fort-header-top">
+          <div class="fort-icon" id="fort-icon-el">🏰</div>
+          <div>
+            <h3 id="fort-name">—</h3>
+            <div class="fort-coords" id="fort-coords"></div>
+          </div>
+        </div>
       </div>
 
       <div class="stats-bar">
@@ -572,7 +730,7 @@
         </div>
         <div class="stat-item">
           <div class="stat-value" id="stat-value">—</div>
-          <div class="stat-label">Total Gulden</div>
+          <div class="stat-label">Gulden</div>
         </div>
         <div class="stat-item">
           <div class="stat-value" id="stat-years">—</div>
@@ -584,315 +742,291 @@
 
       <div class="filter-bar">
         <label>Tahun:</label>
-        <input type="number" id="filter-year-from" placeholder="dari" min="1600" max="1800">
-        <input type="number" id="filter-year-to"   placeholder="s/d"  min="1600" max="1800">
-        <label style="margin-left:.3rem">Produk:</label>
-        <input type="text" id="filter-product" placeholder="cth: goud">
-        <button class="btn btn-sm" id="btn-filter"
-          style="background:var(--gold);color:var(--ink-dark);font-family:'Inter',sans-serif;font-size:.72rem;font-weight:600;padding:.25rem .7rem;border-radius:6px;"
-          onclick="applyFilters()">
+        <input class="filter-input" type="number" id="filter-from" placeholder="dari" min="1600" max="1800">
+        <input class="filter-input" type="number" id="filter-to"   placeholder="s/d"  min="1600" max="1800">
+        <label style="margin-left:.2rem">Produk:</label>
+        <input class="filter-input" type="text" id="filter-product" placeholder="goud…" style="max-width:72px">
+        <button class="btn-filter" onclick="applyFilters()">
           <i class="bi bi-funnel-fill"></i>
         </button>
-        <button class="btn btn-sm" id="btn-reset"
-          style="background:rgba(255,255,255,.07);color:var(--parchment-dk);font-family:'Inter',sans-serif;font-size:.72rem;padding:.25rem .6rem;border-radius:6px;"
-          onclick="resetFilters()">
-          ✕
-        </button>
+        <button class="btn-reset" onclick="resetFilters()">✕</button>
       </div>
 
       <div class="voyages-wrapper" id="voyages-list">
-        <div class="empty-state"><i class="bi bi-compass"></i>Pilih benteng untuk melihat data kapal.</div>
+        <div class="empty-state"><i class="bi bi-compass"></i>Pilih benteng di peta.</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Leaflet -->
+<!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-// ── Config ──────────────────────────────────────────────────────────────────
+// ── Config ───────────────────────────────────────────────────────────────────
 const API_BASE = "{{ api_base_url }}";
 
-const FORT_POSITIONS = {
+const FORT_COORDS = {
   "Padang":         [-0.9655545283543475, 100.35388946846183],
   "Pulau Cingkuak": [-1.3528370592631371, 100.5599951812238],
   "Air Haji":       [-1.9339388926360865, 100.86698214155489],
   "Batavia":        [-6.116501909271064,  106.81651216615884],
 };
 
-// ── State ────────────────────────────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────────────────
 let currentFortId = null;
 let allVoyages    = [];
 let activeMarker  = null;
 let routeLines    = [];
+let allForts      = [];
 
-// ── Map Init ─────────────────────────────────────────────────────────────────
+// ── Map ───────────────────────────────────────────────────────────────────────
 const map = L.map("map", {
-  center: [-2.5, 103.0],
-  zoom: 7,
+  center: [-2.8, 103.0], zoom: 7,
   zoomControl: true,
-  attributionControl: true,
 });
 
-// Antique-style tile
-L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+// CartoDB Positron — light, clean, archival feel
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
   attribution: '© <a href="https://carto.com/">CARTO</a> | © <a href="https://www.openstreetmap.org/">OSM</a>',
   subdomains: "abcd",
   maxZoom: 19,
 }).addTo(map);
 
-// ── Fort SVG Marker ──────────────────────────────────────────────────────────
-function createFortIcon(color, active = false) {
-  const glow = active ? `filter:drop-shadow(0 0 10px ${color});` : "";
-  const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="44" height="54" viewBox="0 0 44 54" style="${glow}">
-    <!-- Shadow -->
-    <ellipse cx="22" cy="52" rx="10" ry="3" fill="rgba(0,0,0,0.4)"/>
-    <!-- Pin body -->
-    <path d="M22 50 C22 50 4 32 4 19 C4 9.6 12.1 2 22 2 C31.9 2 40 9.6 40 19 C40 32 22 50 22 50Z"
-      fill="${color}" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
-    <!-- Inner circle -->
-    <circle cx="22" cy="19" r="13" fill="rgba(0,0,0,0.25)"/>
-    <!-- Battlements top -->
-    <rect x="13" y="8"  width="4" height="5" rx="1" fill="rgba(255,255,255,0.85)"/>
-    <rect x="20" y="8"  width="4" height="5" rx="1" fill="rgba(255,255,255,0.85)"/>
-    <rect x="27" y="8"  width="4" height="5" rx="1" fill="rgba(255,255,255,0.85)"/>
-    <!-- Walls -->
-    <rect x="13" y="13" width="18" height="12" rx="1" fill="rgba(255,255,255,0.75)"/>
-    <!-- Gate -->
-    <rect x="19" y="19" width="6" height="6" rx="3" fill="${color}"/>
-    <!-- Windows -->
-    <rect x="14.5" y="15" width="3" height="3" rx=".5" fill="${color}"/>
-    <rect x="26.5" y="15" width="3" height="3" rx=".5" fill="${color}"/>
-    <!-- Flag pole -->
-    <line x1="22" y1="8" x2="22" y2="4" stroke="rgba(255,255,255,0.9)" stroke-width="1.2"/>
-    <polygon points="22,4 29,6 22,8" fill="#f0c876"/>
-  </svg>`;
+// ── Fort SVG Marker ───────────────────────────────────────────────────────────
+function createFortSVG(color, isActive) {
+  const ringColor   = isActive ? color : color;
+  const glowFilter  = isActive
+    ? `filter:drop-shadow(0 0 8px ${color}) drop-shadow(0 3px 6px rgba(0,0,0,.25));`
+    : `filter:drop-shadow(0 3px 6px rgba(0,0,0,.2));`;
 
+  return `
+  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="56" viewBox="0 0 46 56" style="${glowFilter}">
+    <ellipse cx="23" cy="53.5" rx="9" ry="2.5" fill="rgba(0,0,0,0.18)"/>
+    <path d="M23 52 C23 52 5 34 5 20 C5 10.1 13.1 2 23 2 C32.9 2 41 10.1 41 20 C41 34 23 52 23 52Z"
+      fill="${color}" stroke="white" stroke-width="2"/>
+    <circle cx="23" cy="20" r="13.5" fill="rgba(255,255,255,0.18)"/>
+    <!-- Battlements -->
+    <rect x="13" y="9"  width="4.5" height="5.5" rx="1" fill="white" opacity=".9"/>
+    <rect x="20.75" y="9" width="4.5" height="5.5" rx="1" fill="white" opacity=".9"/>
+    <rect x="28.5" y="9" width="4.5" height="5.5" rx="1" fill="white" opacity=".9"/>
+    <!-- Wall -->
+    <rect x="13" y="14" width="20" height="11" rx="1.5" fill="white" opacity=".82"/>
+    <!-- Gate arch -->
+    <path d="M20 25 L20 19 Q23 16 26 19 L26 25Z" fill="${color}"/>
+    <!-- Windows -->
+    <rect x="14.5" y="16" width="3.5" height="3.5" rx=".75" fill="${color}" opacity=".8"/>
+    <rect x="28" y="16" width="3.5" height="3.5" rx=".75" fill="${color}" opacity=".8"/>
+    <!-- Flagpole + flag -->
+    <line x1="23" y1="9" x2="23" y2="5" stroke="white" stroke-width="1.5"/>
+    <polygon points="23,5 30.5,7 23,9" fill="#D4AF37"/>
+    ${isActive ? `<circle cx="23" cy="20" r="14" fill="none" stroke="white" stroke-width="1.5" opacity=".5"/>` : ''}
+  </svg>`;
+}
+
+function fortIcon(color, active = false) {
   return L.divIcon({
-    html: svg,
+    html: createFortSVG(color, active),
     className: "fort-marker-icon",
-    iconSize: [44, 54],
-    iconAnchor: [22, 52],
-    tooltipAnchor: [0, -50],
+    iconSize: [46, 56],
+    iconAnchor: [23, 54],
+    tooltipAnchor: [0, -52],
   });
 }
 
-// ── Route Lines ───────────────────────────────────────────────────────────────
-function drawRouteLines(forts) {
+// ── Route lines ───────────────────────────────────────────────────────────────
+function drawRoutes(forts) {
   routeLines.forEach(l => map.removeLayer(l));
   routeLines = [];
-
   const batavia = forts.find(f => f.name === "Batavia");
   if (!batavia) return;
-
   forts.forEach(fort => {
     if (fort.name === "Batavia") return;
-    const coords = FORT_POSITIONS[fort.name];
-    const bCoords = FORT_POSITIONS["Batavia"];
-    if (!coords || !bCoords) return;
-
-    // Dashed animated route line
-    const line = L.polyline([coords, bCoords], {
-      color: fort.color,
-      weight: 1.5,
-      opacity: 0.45,
-      dashArray: "8 10",
-      className: "trade-route-line",
+    const from = FORT_COORDS[fort.name];
+    const to   = FORT_COORDS["Batavia"];
+    if (!from || !to) return;
+    // Shadow line
+    const shadow = L.polyline([from, to], {
+      color: "#1A2421", weight: 2, opacity: .06, dashArray: null,
     }).addTo(map);
-    routeLines.push(line);
+    // Main terracotta dashed line
+    const line = L.polyline([from, to], {
+      color: fort.color || "#B85D19",
+      weight: 1.8,
+      opacity: .55,
+      dashArray: "7 9",
+    }).addTo(map);
+    routeLines.push(shadow, line);
   });
 }
 
-// ── Load Forts ────────────────────────────────────────────────────────────────
+// ── Load forts ────────────────────────────────────────────────────────────────
 async function loadForts() {
   try {
     const res = await fetch(`${API_BASE}/forts/`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const forts = await res.json();
+    allForts = await res.json();
 
-    drawRouteLines(forts);
+    // Update welcome stats
+    const totalVoyages = allForts.reduce((s, f) => s + (f.voyage_count || 0), 0);
+    const totalValue   = allForts.reduce((s, f) => s + (f.total_value || 0), 0);
+    document.getElementById("total-voyages-num").textContent = totalVoyages.toLocaleString("id-ID");
+    document.getElementById("total-value-num").textContent   = formatGulden(totalValue);
 
-    forts.forEach(fort => {
-      const coords = FORT_POSITIONS[fort.name];
+    drawRoutes(allForts);
+
+    allForts.forEach(fort => {
+      const coords = FORT_COORDS[fort.name];
       if (!coords) return;
-
-      const marker = L.marker(coords, {
-        icon: createFortIcon(fort.color, false),
-        title: fort.name,
-      }).addTo(map);
-
-      marker.bindTooltip(fort.name, {
-        permanent: false,
-        direction: "top",
-        className: "",
-      });
-
-      marker.on("click", () => openFort(fort.id, fort.name, fort.color, coords, fort, marker));
+      const marker = L.marker(coords, { icon: fortIcon(fort.color, false), title: fort.name }).addTo(map);
+      marker.bindTooltip(fort.name, { permanent: false, direction: "top" });
+      marker.on("click", () => openFort(fort, marker));
       marker._fortData = fort;
-      marker._fortCoords = coords;
     });
   } catch (err) {
-    console.warn("API not reachable, using fallback demo data", err);
-    loadFallback();
+    console.warn("API unavailable, using demo mode:", err);
+    loadDemo();
   }
 }
 
-// ── Fallback (demo mode without API) ─────────────────────────────────────────
-function loadFallback() {
-  const demoForts = [
-    { id:1, name:"Padang",         latitude:-0.9655545, longitude:100.3538895, color:"#c0392b", voyage_count:150, total_value:12500000, description:"Fort de Goede Hoop di Padang adalah pos perdagangan utama VOC." },
-    { id:2, name:"Pulau Cingkuak", latitude:-1.3528371, longitude:100.5599952, color:"#e67e22", voyage_count:15,  total_value:500000,   description:"Benteng VOC di Pulau Cingkuak dekat Painan." },
-    { id:3, name:"Air Haji",       latitude:-1.9339389, longitude:100.8669821, color:"#27ae60", voyage_count:5,   total_value:200000,   description:"Pos perdagangan VOC di selatan Sumatera Barat." },
-    { id:4, name:"Batavia",        latitude:-6.1165019, longitude:106.8165122, color:"#8e44ad", voyage_count:500, total_value:50000000, description:"Pusat kekuasaan dan perdagangan VOC di Asia." },
+function loadDemo() {
+  const demo = [
+    { id:1, name:"Padang",         color:"#c0392b", voyage_count:150, total_value:12800000,
+      description:"Fort de Goede Hoop di Padang adalah pos perdagangan utama VOC di pantai barat Sumatera." },
+    { id:2, name:"Pulau Cingkuak", color:"#e67e22", voyage_count:15,  total_value:490000,
+      description:"Benteng VOC di Pulau Cingkuak, pos pengumpulan lada dari wilayah Indrapura." },
+    { id:3, name:"Air Haji",       color:"#27ae60", voyage_count:5,   total_value:200000,
+      description:"Pos perdagangan VOC di selatan Sumatera Barat, jalur komoditi dari pedalaman." },
+    { id:4, name:"Batavia",        color:"#8e44ad", voyage_count:500, total_value:50000000,
+      description:"Pusat kekuasaan dan perdagangan VOC di Asia, tujuan utama semua rute dari Westkust." },
   ];
-  drawRouteLines(demoForts);
-  demoForts.forEach(fort => {
-    const coords = [fort.latitude, fort.longitude];
-    const marker = L.marker(coords, {
-      icon: createFortIcon(fort.color, false),
-    }).addTo(map);
+  allForts = demo;
+  const total = demo.reduce((s, f) => s + f.voyage_count, 0);
+  document.getElementById("total-voyages-num").textContent = total.toLocaleString("id-ID");
+  document.getElementById("total-value-num").textContent   = formatGulden(demo.reduce((s,f) => s+f.total_value, 0));
+  drawRoutes(demo);
+  demo.forEach(fort => {
+    const coords = FORT_COORDS[fort.name];
+    const marker = L.marker(coords, { icon: fortIcon(fort.color, false), title: fort.name }).addTo(map);
     marker.bindTooltip(fort.name, { permanent: false, direction: "top" });
-    marker.on("click", () => openFort(fort.id, fort.name, fort.color, coords, fort, marker));
+    marker.on("click", () => openFort(fort, marker));
+    marker._fortData = fort;
   });
 }
 
-// ── Open Fort Panel ───────────────────────────────────────────────────────────
-async function openFort(fortId, name, color, coords, fortData, marker) {
-  currentFortId = fortId;
+// ── Open fort detail ──────────────────────────────────────────────────────────
+async function openFort(fortData, marker) {
+  currentFortId = fortData.id;
 
-  // Reset active marker
-  if (activeMarker) {
-    activeMarker.setIcon(createFortIcon(activeMarker._fortData?.color || "#c0392b", false));
+  // Reset previous active marker
+  if (activeMarker && activeMarker !== marker) {
+    const prev = activeMarker._fortData;
+    if (prev) activeMarker.setIcon(fortIcon(prev.color, false));
   }
   activeMarker = marker;
-  marker._fortData = fortData;
-  marker.setIcon(createFortIcon(color, true));
+  marker.setIcon(fortIcon(fortData.color, true));
 
   // Fly to fort
-  map.flyTo(coords, Math.max(map.getZoom(), 8), { duration: 1.2 });
+  const coords = FORT_COORDS[fortData.name];
+  if (coords) map.flyTo(coords, Math.max(map.getZoom(), 9), { duration: 1.0 });
 
-  // Show fort panel
+  // Show panel
   document.getElementById("welcome-panel").style.display = "none";
-  const fortPanel = document.getElementById("fort-panel");
-  fortPanel.classList.add("active");
-
-  // Loading
+  const fp = document.getElementById("fort-panel");
+  fp.classList.add("active");
   showLoading(true);
 
-  // Set header
-  document.getElementById("fort-name").textContent = name;
-  document.getElementById("fort-coords").textContent =
-    `${coords[0].toFixed(4)}°, ${coords[1].toFixed(4)}°`;
+  // Header
+  document.getElementById("fort-name").textContent = fortData.name;
+  if (coords) {
+    document.getElementById("fort-coords").textContent = `${coords[0].toFixed(4)}°, ${coords[1].toFixed(4)}°`;
+  }
+  const iconEl = document.getElementById("fort-icon-el");
+  iconEl.style.background = fortData.color + "18";
+  iconEl.textContent = "🏰";
 
-  const iconWrapper = document.getElementById("fort-icon-wrapper");
-  iconWrapper.style.background = color;
-  iconWrapper.textContent = "🏰";
+  // Description
+  document.getElementById("fort-desc").textContent = fortData.description || "";
 
-  // Set description
-  document.getElementById("fort-desc").textContent =
-    fortData.description || "Pos perdagangan VOC di Sumatera Westkust.";
-
-  // Fetch full detail
+  // Fetch detail
   try {
-    const res = await fetch(`${API_BASE}/forts/${fortId}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch(`${API_BASE}/forts/${fortData.id}`);
+    if (!res.ok) throw new Error();
     const detail = await res.json();
     allVoyages = detail.voyages || [];
-
-    // Stats
-    document.getElementById("stat-voyages").textContent =
-      detail.voyage_count?.toLocaleString("id-ID") || "—";
-    document.getElementById("stat-value").textContent =
-      detail.total_value ? formatGulden(detail.total_value) : "—";
-    document.getElementById("stat-years").textContent =
-      detail.year_min && detail.year_max
-        ? `${detail.year_min}–${detail.year_max}`
-        : "—";
-  } catch (err) {
-    allVoyages = fortData.voyages || [];
-    document.getElementById("stat-voyages").textContent = fortData.voyage_count?.toLocaleString("id-ID") || "—";
-    document.getElementById("stat-value").textContent = formatGulden(fortData.total_value || 0);
-    document.getElementById("stat-years").textContent = "—";
+    document.getElementById("stat-voyages").textContent = (detail.voyage_count || 0).toLocaleString("id-ID");
+    document.getElementById("stat-value").textContent   = formatGulden(detail.total_value || 0);
+    document.getElementById("stat-years").textContent   =
+      (detail.year_min && detail.year_max) ? `${detail.year_min}–${detail.year_max}` : "—";
+  } catch {
+    allVoyages = [];
+    document.getElementById("stat-voyages").textContent = (fortData.voyage_count || 0).toLocaleString("id-ID");
+    document.getElementById("stat-value").textContent   = formatGulden(fortData.total_value || 0);
+    document.getElementById("stat-years").textContent   = "—";
   }
 
   showLoading(false);
   renderVoyages(allVoyages);
 
-  // Open sidebar if collapsed
+  // Make sure sidebar is open
   document.getElementById("sidebar").classList.remove("collapsed");
 }
 
-// ── Render Voyages ────────────────────────────────────────────────────────────
+// ── Render voyages ────────────────────────────────────────────────────────────
 function renderVoyages(voyages) {
-  const container = document.getElementById("voyages-list");
+  const el = document.getElementById("voyages-list");
   if (!voyages || voyages.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <i class="bi bi-ship"></i>
-        Tidak ada data perjalanan kapal.
-      </div>`;
+    el.innerHTML = `<div class="empty-state"><i class="bi bi-ship"></i>Tidak ada data perjalanan.</div>`;
     return;
   }
-
-  let html = `<div class="voyage-section-title">🚢 Daftar Kapal (${voyages.length})</div>`;
+  let html = `<div class="section-title">Daftar Kapal &mdash; ${voyages.length} Perjalanan</div>`;
   voyages.forEach((v, i) => {
-    const products = v.all_products
-      ? v.all_products.split("|").map(p => `<span class="badge-prod voyage-badge">${p.trim()}</span>`).join(" ")
-      : "—";
-    const delay = Math.min(i * 30, 500);
+    const products = (v.all_products || "")
+      .split("|")
+      .map(p => `<span class="badge-prod">${esc(p.trim())}</span>`)
+      .join(" ");
+    const delay = Math.min(i * 25, 400);
     html += `
     <div class="voyage-card" style="animation-delay:${delay}ms">
-      <div class="ship-name">${escHtml(v.ship_name)}</div>
-      <div class="voyage-meta">
-        ${v.year    ? `<span class="badge-year voyage-badge">📅 ${v.year}</span>` : ""}
-        ${v.main_product ? `<span class="badge-prod voyage-badge">⚓ ${escHtml(v.main_product)}</span>` : ""}
-        ${v.total_gulden ? `<span class="badge-gulden voyage-badge">ƒ ${formatGulden(v.total_gulden)}</span>` : ""}
+      <div class="ship-name">${esc(v.ship_name)}</div>
+      <div class="voyage-badges">
+        ${v.year        ? `<span class="badge-year">📅 ${v.year}</span>` : ""}
+        ${v.main_product? `<span class="badge-prod">⚓ ${esc(v.main_product)}</span>` : ""}
+        ${v.total_gulden? `<span class="badge-gulden">ƒ ${formatGulden(v.total_gulden)}</span>` : ""}
       </div>
-      <div class="voyage-products">${products}</div>
-      ${v.source_url ? `<a class="src-link" href="${escHtml(v.source_url)}" target="_blank" rel="noopener">Sumber ↗</a>` : ""}
+      <div class="voyage-products">${products || "—"}</div>
+      ${v.source_url ? `<a class="src-link" href="${esc(v.source_url)}" target="_blank" rel="noopener">Sumber ↗</a>` : ""}
     </div>`;
   });
-  container.innerHTML = html;
+  el.innerHTML = html;
 }
 
-// ── Filters ────────────────────────────────────────────────────────────────────
+// ── Filters ───────────────────────────────────────────────────────────────────
 async function applyFilters() {
   if (!currentFortId) return;
-  const yearFrom = document.getElementById("filter-year-from").value;
-  const yearTo   = document.getElementById("filter-year-to").value;
-  const product  = document.getElementById("filter-product").value.trim();
-
+  const from    = document.getElementById("filter-from").value;
+  const to      = document.getElementById("filter-to").value;
+  const product = document.getElementById("filter-product").value.trim();
   let params = new URLSearchParams();
-  if (yearFrom) params.set("year_from", yearFrom);
-  if (yearTo)   params.set("year_to", yearTo);
-  if (product)  params.set("product", product);
-
+  if (from)    params.set("year_from", from);
+  if (to)      params.set("year_to", to);
+  if (product) params.set("product", product);
   showLoading(true);
   try {
     const res = await fetch(`${API_BASE}/forts/${currentFortId}/voyages?${params}`);
-    const filtered = await res.json();
-    renderVoyages(filtered);
+    renderVoyages(await res.json());
   } catch {
-    // local filter fallback
-    const filtered = allVoyages.filter(v => {
-      if (yearFrom && v.year < parseInt(yearFrom)) return false;
-      if (yearTo   && v.year > parseInt(yearTo))   return false;
-      if (product  && !v.all_products?.toLowerCase().includes(product.toLowerCase())) return false;
+    renderVoyages(allVoyages.filter(v => {
+      if (from    && v.year < parseInt(from))    return false;
+      if (to      && v.year > parseInt(to))      return false;
+      if (product && !v.all_products?.toLowerCase().includes(product.toLowerCase())) return false;
       return true;
-    });
-    renderVoyages(filtered);
+    }));
   }
   showLoading(false);
 }
 
 function resetFilters() {
-  document.getElementById("filter-year-from").value = "";
-  document.getElementById("filter-year-to").value   = "";
-  document.getElementById("filter-product").value   = "";
+  ["filter-from","filter-to","filter-product"].forEach(id => document.getElementById(id).value = "");
   renderVoyages(allVoyages);
 }
 
@@ -901,31 +1035,32 @@ function closeFortPanel() {
   document.getElementById("fort-panel").classList.remove("active");
   document.getElementById("welcome-panel").style.display = "";
   if (activeMarker) {
-    activeMarker.setIcon(createFortIcon(activeMarker._fortData?.color || "#c0392b", false));
+    const prev = activeMarker._fortData;
+    if (prev) activeMarker.setIcon(fortIcon(prev.color, false));
     activeMarker = null;
   }
   currentFortId = null;
 }
 
 function resetView() {
-  map.flyTo([-2.5, 103.0], 7, { duration: 1.5 });
+  map.flyTo([-2.8, 103.0], 7, { duration: 1.3 });
   closeFortPanel();
 }
 
 function showLoading(show) {
-  const el = document.getElementById("loading-overlay");
-  el.classList.toggle("active", show);
+  document.getElementById("loading-overlay").classList.toggle("active", show);
 }
 
 function formatGulden(n) {
+  if (!n) return "—";
   if (n >= 1_000_000) return (n/1_000_000).toFixed(1) + "M";
   if (n >= 1_000)     return (n/1_000).toFixed(0) + "K";
   return n.toFixed(0);
 }
 
-function escHtml(str) {
-  if (!str) return "";
-  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+function esc(s) {
+  if (!s) return "";
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
