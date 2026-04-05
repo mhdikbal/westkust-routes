@@ -1,0 +1,36 @@
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text
+from sqlalchemy.orm import relationship
+from geoalchemy2 import Geometry
+from database import Base
+
+
+class Fort(Base):
+    __tablename__ = "forts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), unique=True, nullable=False, index=True)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    color = Column(String(20), nullable=False, default="#c0392b")
+    description = Column(Text, nullable=True)
+    location = Column(Geometry(geometry_type="POINT", srid=4326), nullable=True)
+
+    voyages = relationship("Voyage", back_populates="fort", cascade="all, delete-orphan")
+
+
+class Voyage(Base):
+    __tablename__ = "voyages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    fort_id = Column(Integer, ForeignKey("forts.id", ondelete="CASCADE"), nullable=False, index=True)
+    ship_name = Column(String(200), nullable=False)
+    captain = Column(String(200), nullable=True)
+    year = Column(Integer, nullable=True, index=True)
+    total_gulden = Column(Float, nullable=True)
+    main_product = Column(String(200), nullable=True)
+    all_products = Column(Text, nullable=True)
+    destination = Column(String(200), nullable=True)
+    duration_days = Column(Integer, nullable=True)
+    source_url = Column(Text, nullable=True)
+
+    fort = relationship("Fort", back_populates="voyages")
