@@ -538,6 +538,42 @@
       opacity: .4;
     }
 
+    /* ── Modal (Voyage Detail) ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(26,36,33,0.4); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: var(--bg-base); width: 100%; max-width: 520px;
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      border: 1px solid var(--border); overflow: hidden;
+      animation: slideUp .25s ease-out;
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; }}
+    .modal-header {
+      background: var(--bg-panel); padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .modal-header-content h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: .2rem;
+    }
+    .modal-header-content p { font-size: .8rem; color: var(--text-secondary); margin: 0; }
+    .btn-close-modal {
+      background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; transition: color .2s;
+    }
+    .btn-close-modal:hover { color: var(--accent); }
+    .modal-body { padding: 1.5rem; max-height: 60vh; overflow-y: auto; font-size: .85rem; color: var(--text-secondary); line-height: 1.6; }
+    .modal-data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .modal-data-item .lbl { font-size: .65rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing:.05em; margin-bottom:.1rem; }
+    .modal-data-item .val { font-size: .95rem; font-weight: 500; color: var(--text-primary); }
+    .cargo-list { border-top: 1px solid var(--border); padding-top: 1rem; }
+    .cargo-item { display: flex; justify-content: space-between; padding: .6rem 0; border-bottom: 1px dashed var(--border); }
+    .cargo-item:last-child { border-bottom: none; }
+    .cargo-name { font-weight: 600; color: var(--text-primary); text-transform: capitalize; }
+    .cargo-specs { font-size: .75rem; color: var(--text-muted); }
+
     /* ── Leaflet overrides ── */
     .leaflet-tooltip {
       background: var(--bg-panel) !important;
@@ -759,6 +795,36 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div id="voyage-modal" class="modal-overlay" onclick="if(event.target===this) this.classList.remove('active')">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-header-content">
+        <h3 id="modal-ship-name">Nama Kapal</h3>
+        <p id="modal-ship-meta">Tahun • Kapten</p>
+      </div>
+      <button class="btn-close-modal" onclick="document.getElementById('voyage-modal').classList.remove('active')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-data-grid">
+        <div class="modal-data-item"><div class="lbl">Tujuan</div><div class="val" id="modal-dest">—</div></div>
+        <div class="modal-data-item"><div class="lbl">Durasi Perjalanan</div><div class="val" id="modal-duration">—</div></div>
+        <div class="modal-data-item"><div class="lbl">Total Nilai Kargo</div><div class="val" id="modal-value" style="color:var(--accent); font-weight:700">—</div></div>
+        <div class="modal-data-item"><div class="lbl">Komoditi Utama</div><div class="val" id="modal-main-prod" style="text-transform:capitalize">—</div></div>
+      </div>
+      <div class="cargo-list">
+        <div class="lbl" style="margin-bottom:.5rem;">Detail Kargo (Semua Komoditi)</div>
+        <div id="modal-cargo-box">
+          <!-- items -->
+        </div>
+      </div>
+      <div style="margin-top:1.5rem; text-align:right;">
+        <a id="modal-src-link" href="#" target="_blank" class="nav-pill nav-pill-accent" style="display:inline-block">Lihat Arsip BGB ↗</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Scripts -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -766,10 +832,21 @@
 const API_BASE = "{{ api_base_url }}";
 
 const FORT_COORDS = {
-  "Padang":         [-0.9655545283543475, 100.35388946846183],
-  "Pulau Cingkuak": [-1.3528370592631371, 100.5599951812238],
-  "Air Haji":       [-1.9339388926360865, 100.86698214155489],
-  "Batavia":        [-6.116501909271064,  106.81651216615884],
+  "Barus":          [2.0144566, 98.3993198],
+  "Air Bangis":     [0.1974875, 99.3755554],
+  "Padang":         [-0.9655545, 100.3538894],
+  "Pulau Cingkuak": [-1.3528370, 100.5599951],
+  "Air Haji":       [-1.9339388, 100.8669821],
+  "Jambi":          [-1.0984482, 104.1757178],
+  "Palembang":      [-3.0029119, 104.7801890],
+  "Lampung":        [-5.3578004, 105.2803866],
+  "Batavia":        [-6.1165019, 106.8165121],
+};
+
+const SEA_BENDS = {
+  "Barus": 0.45, "Air Bangis": 0.35, "Padang": 0.3, 
+  "Pulau Cingkuak": 0.3, "Air Haji": 0.3,
+  "Jambi": -0.15, "Palembang": -0.15, "Lampung": 0.1
 };
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -823,14 +900,56 @@ function createFortSVG(color, isActive) {
   </svg>`;
 }
 
-function fortIcon(color, active = false) {
+function createAnchorSVG(color, isActive) {
+  const glowFilter = isActive
+    ? `filter:drop-shadow(0 0 8px ${color}) drop-shadow(0 3px 6px rgba(0,0,0,.25));`
+    : `filter:drop-shadow(0 3px 6px rgba(0,0,0,.2));`;
+  return `
+  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="48" viewBox="0 0 40 48" style="${glowFilter}">
+    <ellipse cx="20" cy="45" rx="8" ry="2" fill="rgba(0,0,0,0.2)"/>
+    <circle cx="20" cy="20" r="18" fill="white" stroke="${color}" stroke-width="2"/>
+    <path d="M20 10 L20 32 M13 15 L27 15 M12 28 Q20 38 28 28" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="12" cy="28" r="2" fill="${color}"/>
+    <circle cx="28" cy="28" r="2" fill="${color}"/>
+    <circle cx="20" cy="8" r="2.5" fill="none" stroke="${color}" stroke-width="2"/>
+    ${isActive ? `<circle cx="20" cy="20" r="14" fill="none" stroke="${color}" stroke-width="1.5" opacity=".4"/>` : ''}
+  </svg>`;
+}
+
+function fortIcon(fortData, active = false) {
+  const color = fortData.color || "#c0392b";
+  const type  = fortData.port_type || "departure";
+  const svg   = type === "arrival" ? createAnchorSVG(color, active) : createFortSVG(color, active);
+  const size  = type === "arrival" ? [40, 48] : [46, 56];
+  const anch  = type === "arrival" ? [20, 46] : [23, 54];
+  const ttip  = type === "arrival" ? [0, -44] : [0, -52];
+
   return L.divIcon({
-    html: createFortSVG(color, active),
+    html: svg,
     className: "fort-marker-icon",
-    iconSize: [46, 56],
-    iconAnchor: [23, 54],
-    tooltipAnchor: [0, -52],
+    iconSize: size,
+    iconAnchor: anch,
+    tooltipAnchor: ttip,
   });
+}
+
+// ── Bezier / Curved Lines ─────────────────────────────────────────────────────
+function getBezierCurve(start, end, bend) {
+  const lat1 = start[0], lng1 = start[1];
+  const lat2 = end[0], lng2 = end[1];
+  const mlat = (lat1+lat2)/2, mlng = (lng1+lng2)/2;
+  const dlat = lat2-lat1, dlng = lng2-lng1;
+  const clat = mlat - dlng*bend;
+  const clng = mlng + dlat*bend;
+  
+  const points = [];
+  for (let t=0; t<=1.01; t+=0.05) {
+    const t2 = 1-t;
+    const plat = t2*t2*lat1 + 2*t2*t*clat + t*t*lat2;
+    const plng = t2*t2*lng1 + 2*t2*t*clng + t*t*lng2;
+    points.push([plat, plng]);
+  }
+  return points;
 }
 
 // ── Route lines ───────────────────────────────────────────────────────────────
@@ -840,16 +959,21 @@ function drawRoutes(forts) {
   const batavia = forts.find(f => f.name === "Batavia");
   if (!batavia) return;
   forts.forEach(fort => {
-    if (fort.name === "Batavia") return;
+    if (fort.name === "Batavia" || fort.port_type === "arrival") return;
     const from = FORT_COORDS[fort.name];
     const to   = FORT_COORDS["Batavia"];
     if (!from || !to) return;
+    
+    // Create curved sea path
+    const bend = SEA_BENDS[fort.name] || 0;
+    const pathPoints = bend ? getBezierCurve(from, to, bend) : [from, to];
+
     // Shadow line
-    const shadow = L.polyline([from, to], {
+    const shadow = L.polyline(pathPoints, {
       color: "#1A2421", weight: 2, opacity: .06, dashArray: null,
     }).addTo(map);
     // Main terracotta dashed line
-    const line = L.polyline([from, to], {
+    const line = L.polyline(pathPoints, {
       color: fort.color || "#B85D19",
       weight: 1.8,
       opacity: .55,
@@ -877,7 +1001,7 @@ async function loadForts() {
     allForts.forEach(fort => {
       const coords = FORT_COORDS[fort.name];
       if (!coords) return;
-      const marker = L.marker(coords, { icon: fortIcon(fort.color, false), title: fort.name }).addTo(map);
+      const marker = L.marker(coords, { icon: fortIcon(fort, false), title: fort.name }).addTo(map);
       marker.bindTooltip(fort.name, { permanent: false, direction: "top" });
       marker.on("click", () => openFort(fort, marker));
       marker._fortData = fort;
@@ -906,7 +1030,8 @@ function loadDemo() {
   drawRoutes(demo);
   demo.forEach(fort => {
     const coords = FORT_COORDS[fort.name];
-    const marker = L.marker(coords, { icon: fortIcon(fort.color, false), title: fort.name }).addTo(map);
+    if (!coords) return;
+    const marker = L.marker(coords, { icon: fortIcon(fort, false), title: fort.name }).addTo(map);
     marker.bindTooltip(fort.name, { permanent: false, direction: "top" });
     marker.on("click", () => openFort(fort, marker));
     marker._fortData = fort;
@@ -920,10 +1045,10 @@ async function openFort(fortData, marker) {
   // Reset previous active marker
   if (activeMarker && activeMarker !== marker) {
     const prev = activeMarker._fortData;
-    if (prev) activeMarker.setIcon(fortIcon(prev.color, false));
+    if (prev) activeMarker.setIcon(fortIcon(prev, false));
   }
   activeMarker = marker;
-  marker.setIcon(fortIcon(fortData.color, true));
+  marker.setIcon(fortIcon(fortData, true));
 
   // Fly to fort
   const coords = FORT_COORDS[fortData.name];
@@ -942,7 +1067,7 @@ async function openFort(fortData, marker) {
   }
   const iconEl = document.getElementById("fort-icon-el");
   iconEl.style.background = fortData.color + "18";
-  iconEl.textContent = "🏰";
+  iconEl.textContent = fortData.port_type === 'arrival' ? "⚓" : "🏰";
 
   // Description
   document.getElementById("fort-desc").textContent = fortData.description || "";
@@ -985,8 +1110,9 @@ function renderVoyages(voyages) {
       .map(p => `<span class="badge-prod">${esc(p.trim())}</span>`)
       .join(" ");
     const delay = Math.min(i * 25, 400);
+    const vStr = JSON.stringify(v).replace(/"/g, '&quot;');
     html += `
-    <div class="voyage-card" style="animation-delay:${delay}ms">
+    <div class="voyage-card" style="animation-delay:${delay}ms" onclick="openVoyageModal(${vStr})">
       <div class="ship-name">${esc(v.ship_name)}</div>
       <div class="voyage-badges">
         ${v.year        ? `<span class="badge-year">📅 ${v.year}</span>` : ""}
@@ -994,10 +1120,38 @@ function renderVoyages(voyages) {
         ${v.total_gulden? `<span class="badge-gulden">ƒ ${formatGulden(v.total_gulden)}</span>` : ""}
       </div>
       <div class="voyage-products">${products || "—"}</div>
-      ${v.source_url ? `<a class="src-link" href="${esc(v.source_url)}" target="_blank" rel="noopener">Sumber ↗</a>` : ""}
+      ${v.source_url ? `<a class="src-link" href="${esc(v.source_url)}" onclick="event.stopPropagation()" target="_blank" rel="noopener">Sumber BGB ↗</a>` : ""}
     </div>`;
   });
   el.innerHTML = html;
+}
+
+function openVoyageModal(v) {
+  document.getElementById("modal-ship-name").textContent = v.ship_name || "Kapal Tak Bernama";
+  const capt = v.captain ? ` • Apt. ${v.captain}` : "";
+  document.getElementById("modal-ship-meta").textContent = `Keberangkatan ${v.year || "?"}${capt}`;
+  
+  document.getElementById("modal-dest").textContent = v.destination || "Batavia";
+  document.getElementById("modal-duration").textContent = v.duration_days ? `${v.duration_days} hari` : "—";
+  document.getElementById("modal-value").textContent = v.total_gulden ? `ƒ ${formatGulden(v.total_gulden)}` : "—";
+  document.getElementById("modal-main-prod").textContent = v.main_product || "—";
+  
+  const link = document.getElementById("modal-src-link");
+  if (v.source_url) { link.href = v.source_url; link.style.display = "inline-block"; }
+  else { link.style.display = "none"; }
+  
+  let cHtml = "";
+  if (v.all_products) {
+    const arr = v.all_products.split("|").map(s => s.trim());
+    arr.forEach(p => {
+      cHtml += `<div class="cargo-item"><span class="cargo-name">${esc(p)}</span></div>`;
+    });
+  } else {
+    cHtml = `<div style="text-align:center; padding:1rem; opacity:.5">Data kargo detail tidak direkam</div>`;
+  }
+  document.getElementById("modal-cargo-box").innerHTML = cHtml;
+  
+  document.getElementById("voyage-modal").classList.add("active");
 }
 
 // ── Filters ───────────────────────────────────────────────────────────────────
@@ -1036,7 +1190,7 @@ function closeFortPanel() {
   document.getElementById("welcome-panel").style.display = "";
   if (activeMarker) {
     const prev = activeMarker._fortData;
-    if (prev) activeMarker.setIcon(fortIcon(prev.color, false));
+    if (prev) activeMarker.setIcon(fortIcon(prev, false));
     activeMarker = null;
   }
   currentFortId = null;

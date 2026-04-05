@@ -24,11 +24,41 @@ if not DATA_FILE.exists():
     DATA_FILE = Path("/app/data/Data_Westkust_Map.json")
 
 FORTS_META = [
+    # ── Departure ports (west coast Sumatra) ─────────────────────────────
+    {
+        "name": "Barus",
+        "latitude":  2.0144566458864355,
+        "longitude": 98.39931988670789,
+        "color": "#16a085",
+        "port_type": "departure",
+        "description": (
+            "Barus (Fansur/Baros) adalah salah satu pelabuhan tertua di Nusantara, "
+            "terkenal sejak abad ke-7 sebagai penghasil kamfer (kapur barus) berkualitas "
+            "tinggi yang diperdagangkan hingga ke Arab dan Cina. Pada era VOC, Barus "
+            "menjadi pos pengumpulan kamfer dan benzoin dari pedalaman Sumatera Barat "
+            "bagian utara sebelum dikirim ke Padang atau langsung ke Batavia."
+        ),
+    },
+    {
+        "name": "Air Bangis",
+        "latitude":  0.1974875340994538,
+        "longitude": 99.37555542252645,
+        "color": "#2980b9",
+        "port_type": "departure",
+        "description": (
+            "Air Bangis (Airbangis) adalah pelabuhan kecil di pantai barat Sumatera, "
+            "terletak di antara Padang dan Barus. Pada masa VOC, Air Bangis berfungsi "
+            "sebagai pos pengumpulan hasil bumi dari wilayah Pasaman dan sekitarnya, "
+            "terutama kamfer, lada, dan hasil hutan. Kapal-kapal VOC singgah di sini "
+            "dalam perjalanan antara Padang dan Barus."
+        ),
+    },
     {
         "name": "Padang",
         "latitude": -0.9655545283543475,
         "longitude": 100.35388946846183,
         "color": "#c0392b",
+        "port_type": "both",
         "description": (
             "Fort de Goede Hoop (Benteng Paulus) di Padang adalah pos perdagangan utama VOC "
             "di pantai barat Sumatera. Didirikan sekitar tahun 1666, benteng ini menjadi pusat "
@@ -42,6 +72,7 @@ FORTS_META = [
         "latitude": -1.3528370592631371,
         "longitude": 100.5599951812238,
         "color": "#e67e22",
+        "port_type": "departure",
         "description": (
             "Pulau Cingkuak adalah pulau kecil di dekat Painan yang menjadi pos perdagangan lada VOC. "
             "Benteng VOC di Pulau Cingkuak (juga dikenal sebagai Fort van Indrapura) berfungsi "
@@ -55,6 +86,7 @@ FORTS_META = [
         "latitude": -1.9339388926360865,
         "longitude": 100.86698214155489,
         "color": "#27ae60",
+        "port_type": "departure",
         "description": (
             "Air Haji merupakan pos perdagangan VOC di wilayah selatan Sumatera Barat. "
             "Terletak di kawasan yang kaya hasil hutan dan lada, pos ini berperan sebagai "
@@ -63,11 +95,54 @@ FORTS_META = [
             "VOC dalam mengontrol jalur perdagangan di sepanjang pantai barat Sumatera."
         ),
     },
+    # ── Arrival / both ports ──────────────────────────────────────────────
+    {
+        "name": "Jambi",
+        "latitude": -1.0984482519567516,
+        "longitude": 104.1757178771618,
+        "color": "#d35400",
+        "port_type": "arrival",
+        "description": (
+            "Jambi adalah Kesultanan dan pelabuhan di pantai timur Sumatera. "
+            "Kota ini merupakan penghasil utama lada hitam dan benzoin yang diperdagangkan "
+            "melalui Selat Malaka dan Selat Bangka menuju Batavia. "
+            "VOC memiliki loji (kantor dagang) di Jambi sejak abad ke-17."
+        ),
+    },
+    {
+        "name": "Palembang",
+        "latitude": -3.002911966341772,
+        "longitude": 104.78018903090859,
+        "color": "#8e44ad",
+        "port_type": "arrival",
+        "description": (
+            "Palembang adalah ibukota Kesultanan Palembang, salah satu pusat perdagangan "
+            "terpenting di Sumatera Selatan. Kota ini menghasilkan lada, timah, damar, "
+            "dan benjuang. VOC memiliki perjanjian dagang dengan Kesultanan Palembang "
+            "dan kapal-kapalnya secara rutin singgah di Palembang dalam perjalanan "
+            "antara Sumatera dan Batavia."
+        ),
+    },
+    {
+        "name": "Lampung",
+        "latitude": -5.357800466943823,
+        "longitude": 105.28038662236222,
+        "color": "#7f8c8d",
+        "port_type": "arrival",
+        "description": (
+            "Lampung (Lampong Toulang Bawang) adalah wilayah di ujung selatan Sumatera "
+            "yang terkenal sebagai penghasil lada terbaik. Terletak dekat Selat Sunda, "
+            "kapal-kapal VOC singgah di Lampung sebelum atau sesudah melewati Selat Sunda "
+            "menuju Batavia. VOC bersaing keras dengan pedagang lokal dan Banten "
+            "untuk menguasai perdagangan lada Lampung."
+        ),
+    },
     {
         "name": "Batavia",
         "latitude": -6.116501909271064,
         "longitude": 106.81651216615884,
-        "color": "#8e44ad",
+        "color": "#2c3e50",
+        "port_type": "arrival",
         "description": (
             "Batavia (kini Jakarta) adalah pusat kekuasaan dan perdagangan VOC di Asia. "
             "Didirikan pada tahun 1619 di atas reruntuhan kota Jayakarta, Batavia menjadi "
@@ -108,6 +183,16 @@ def seed():
 
     Base.metadata.create_all(engine)
 
+    # Handle migration: add port_type column if it doesn't exist
+    with engine.begin() as conn:
+        try:
+            conn.execute(text(
+                "ALTER TABLE forts ADD COLUMN IF NOT EXISTS port_type VARCHAR(20) "
+                "NOT NULL DEFAULT 'departure'"
+            ))
+        except Exception:
+            pass  # Column already exists
+
     with Session(engine) as session:
         # ---------- Seed forts ----------
         fort_map: dict[str, Fort] = {}
@@ -118,6 +203,9 @@ def seed():
             ).scalar_one_or_none()
 
             if existing:
+                # Update port_type if it changed
+                existing.port_type = meta.get("port_type", "departure")
+                existing.color     = meta.get("color", existing.color)
                 fort_map[meta["name"]] = existing
                 continue
 
@@ -127,13 +215,15 @@ def seed():
                 longitude=meta["longitude"],
                 color=meta["color"],
                 description=meta["description"],
+                port_type=meta.get("port_type", "departure"),
             )
             session.add(fort)
             session.flush()
             fort_map[meta["name"]] = fort
-            print(f"  ✔ Fort added: {meta['name']}")
+            print(f"  ✔ Fort added: {meta['name']} ({meta.get('port_type','departure')})")
 
         session.commit()
+
 
         # Re-fetch fort_map after commit
         for meta in FORTS_META:

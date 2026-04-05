@@ -18,6 +18,7 @@ class FortBase(BaseModel):
     longitude: float
     color: str
     description: Optional[str] = None
+    port_type: str = "departure"
 
 
 class FortSummary(FortBase):
@@ -37,6 +38,7 @@ class VoyageBrief(BaseModel):
     main_product: Optional[str]
     all_products: Optional[str]
     destination: Optional[str]
+    duration_days: Optional[int]
     source_url: Optional[str]
 
 
@@ -72,6 +74,7 @@ async def list_forts(db: AsyncSession = Depends(get_db)):
             longitude=fort.longitude,
             color=fort.color,
             description=fort.description,
+            port_type=fort.port_type,
             voyage_count=count,
             total_value=float(total or 0),
         ))
@@ -108,6 +111,7 @@ async def get_fort(fort_id: int, db: AsyncSession = Depends(get_db)):
         longitude=fort.longitude,
         color=fort.color,
         description=fort.description,
+        port_type=fort.port_type,
         voyages=[VoyageBrief.model_validate(v) for v in voyages],
         voyage_count=count,
         total_value=float(total or 0),
