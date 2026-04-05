@@ -1,0 +1,7 @@
+* scrawlingdata
+  sumatrawestkust
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/feature/enhanced-features
+  remotes/origin/main
+  remotes/origin/scrawlingdata
+  remotes/origin/sumatrawestkust

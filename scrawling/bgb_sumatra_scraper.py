@@ -49,26 +49,18 @@ HEADERS = {
     "Referer":         f"{BASE_URL}/bgb/search",
 }
 
-# ── Pos keberangkatan di / terkait Sumatera ──────────────────────────────────
+# ── Pos pelabuhan di Sumatera ────────────────────────────────────────────────
 # Format: { "ID": ("Nama tampil", lat, lon, "wilayah", "keterangan") }
-# ID diambil dari <select id="departure_place_id"> di /bgb/search
-DEPARTURE_PLACES = {
-    "926":  ("Padang",         -0.9655545,  100.353889, "Sumatera Barat",
-             "Fort de Goede Hoop; pos VOC utama pantai barat"),
-    "858":  ("Pulau Cingkuak", -1.352837,   100.559995, "Sumatera Barat",
-             "Pulau Tjinkuk; fort Indrapura, pengumpul lada"),
-    "854":  ("Air Haji",       -1.933939,   100.866982, "Sumatera Barat",
-             "Airhadji; pos selatan pantai Barat Sumatera"),
-    "850":  ("Jambi",          -1.602930,   103.613056, "Sumatera Tengah",
-             "Pos dagang di Jambi, lada & benzoin"),
-    "851":  ("Palembang",      -2.989615,   104.756554, "Sumatera Selatan",
-             "Kesultanan Palembang; lada, tin, benzoin"),
-    # Uncomment untuk wilayah tambahan:
-    # "860": ("Bantam",         -6.040130,  106.146660, "Jawa",
-    #          "Banten, masih dekat jalur Sumatera"),
-    # Catatan: Aceh, Barus, Tiku, Pasaman TIDAK ada dalam daftar BGB sebagai
-    # departure place. Data dari wilayah tsb mungkin tercatat di bawah "Padang"
-    # atau tidak terekam — perlu pengecekan manual di /bgb/search.
+# Kita akan scrape kapal yang berangkat DARI atau tiba DI pos-pos berikut.
+SUMATRA_PORTS = {
+    "926":  ("Padang",         -0.9655545,  100.353889, "Sumatera Barat", "Fort de Goede Hoop"),
+    "858":  ("Pulau Cingkuak", -1.352837,   100.559995, "Sumatera Barat", "Pulau Tjinkuk"),
+    "854":  ("Air Haji",       -1.933939,   100.866982, "Sumatera Barat", "Airhadji"),
+    "856":  ("Air Bangis",      0.1974875,   99.375555, "Sumatera Barat", "Airbangis"),
+    "855":  ("Barus",           2.0144566,   98.399319, "Sumatera Utara", "Baros"),
+    "850":  ("Jambi",          -1.0984482,  104.175717, "Sumatera Tengah","Jambi"),
+    "851":  ("Palembang",      -3.0029119,  104.780189, "Sumatera Selatan","Palembang"),
+    "948":  ("Lampung",        -5.3578004,  105.280386, "Sumatera Selatan","Lampong Toulang Bawang"),
 }
 
 # Komoditi yang ingin dikumpulkan (None = ambil semua)
@@ -437,23 +429,25 @@ def parse_voyage_detail(url: str, departure_meta: dict) -> Optional[dict]:
 
 
 # ── Crawl daftar voyage untuk satu tempat ────────────────────────────────────
-def crawl_voyage_urls(place_id: str, place_name: str,
+def crawl_voyage_urls(place_id: str, place_name: str, 
+                      arah: str = "departure_place_id",
                       product: Optional[str] = None) -> list[str]:
     """
     Ambil semua URL voyage dari halaman daftar BGB.
-    Mendukung pagination 'next page'.
+    Mendukung arah: departure_place_id atau arrival_place_id.
     """
     urls    = []
     seen    = set()
     page    = 0
     params  = {
-        "departure_place_id": place_id,
-        "group_by_all":       "on",
+        arah:           place_id,
+        "group_by_all": "on",
     }
     if product:
         params["product_name"] = product
 
-    print(f"  Crawling URL untuk: {place_name} (id={place_id})"
+    dir_label = "Keberangkatan" if arah == "departure_place_id" else "Kedatangan"
+    print(f"  Crawling URL ({dir_label}): {place_name} (id={place_id})"
           + (f" produk={product}" if product else " semua produk"))
 
     while page < MAX_PAGES_PER_PLACE:
@@ -508,7 +502,7 @@ def muat_checkpoint() -> tuple[list, set]:
 def main():
     print("=" * 72)
     print("  BGB SUMATRA COMPREHENSIVE SCRAPER")
-    print(f"  Lokasi: {', '.join(v[0] for v in DEPARTURE_PLACES.values())}")
+    print(f"  Lokasi: {', '.join(v[0] for v in SUMATRA_PORTS.values())}")
     print(f"  Output: {OUTPUT_FILE}")
     print(f"  Filter produk: {PRODUCT_FILTER or 'semua'}")
     print("=" * 72)
@@ -516,9 +510,9 @@ def main():
     # Resume dari checkpoint jika ada
     semua_data, done_urls = muat_checkpoint()
 
-    for place_id, meta in DEPARTURE_PLACES.items():
+    for place_id, meta in SUMATRA_PORTS.items():
         place_name, lat, lon, wilayah, keterangan = meta
-        departure_meta = {
+        port_meta = {
             "id": place_id, "nama": place_name,
             "lat": lat, "lon": lon,
             "wilayah": wilayah, "keterangan": keterangan,
@@ -528,23 +522,29 @@ def main():
         print(f"[TEMPAT] {place_name} (id={place_id}) — {wilayah}")
         print(f"{'─'*72}")
 
-        # Kumpulkan URL
-        voyage_urls = crawl_voyage_urls(place_id, place_name, PRODUCT_FILTER)
-        voyage_urls = [u for u in voyage_urls if u not in done_urls]
-        print(f"  → {len(voyage_urls)} voyage baru untuk di-scrape")
+        # Kumpulkan URL sebagai Departure
+        urls_dep = crawl_voyage_urls(place_id, place_name, "departure_place_id", PRODUCT_FILTER)
+        urls_arr = crawl_voyage_urls(place_id, place_name, "arrival_place_id", PRODUCT_FILTER)
+        
+        # Gabung dan hapus duplikat
+        semua_url_port = list(set(urls_dep + urls_arr))
+        
+        url_untuk_discrape = [u for u in semua_url_port if u not in done_urls]
+        print(f"  → Ditemukan {len(urls_dep)} depart, {len(urls_arr)} arrive.")
+        print(f"  → Total {len(url_untuk_discrape)} voyage baru yang akan di-scrape.")
 
-        for i, url in enumerate(voyage_urls):
+        for i, url in enumerate(url_untuk_discrape):
             if url in done_urls:
                 continue
 
-            detail = parse_voyage_detail(url, departure_meta)
+            detail = parse_voyage_detail(url, port_meta)
             if detail:
                 semua_data.append(detail)
                 done_urls.add(url)
 
             # Progress
-            if (i + 1) % 10 == 0 or (i + 1) == len(voyage_urls):
-                print(f"  [{i+1}/{len(voyage_urls)}] "
+            if (i + 1) % 10 == 0 or (i + 1) == len(url_untuk_discrape):
+                print(f"  [{i+1}/{len(url_untuk_discrape)}] "
                       f"total terkumpul: {len(semua_data)} voyage")
                 # Simpan checkpoint setiap 10 voyage
                 simpan_checkpoint(semua_data, done_urls)
