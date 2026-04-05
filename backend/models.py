@@ -13,6 +13,7 @@ class Fort(Base):
     longitude = Column(Float, nullable=False)
     color = Column(String(20), nullable=False, default="#c0392b")
     description = Column(Text, nullable=True)
+    # "departure" | "arrival" | "both"
     port_type = Column(String(20), nullable=False, server_default="departure")
     location = Column(Geometry(geometry_type="POINT", srid=4326), nullable=True)
 

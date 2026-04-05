@@ -218,8 +218,56 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* Modal (Voyage Detail) */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(26,36,33,0.4); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: var(--bg-base); width: 100%; max-width: 520px;
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      border: 1px solid var(--border); overflow: hidden;
+      animation: slideUp .25s ease-out;
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; }}
+    .modal-header {
+      background: var(--bg-panel); padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .modal-header-content h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: .2rem;
+    }
+    .modal-header-content p { font-size: .8rem; color: var(--text-secondary); margin: 0; }
+    .btn-close-modal {
+      background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; transition: color .2s;
+    }
+    .btn-close-modal:hover { color: var(--accent); }
+    .modal-body { padding: 1.5rem; max-height: 60vh; overflow-y: auto; font-size: .85rem; color: var(--text-secondary); line-height: 1.6; }
+    .modal-data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .modal-data-item .lbl { font-size: .65rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing:.05em; margin-bottom:.1rem; }
+    .modal-data-item .val { font-size: .95rem; font-weight: 500; color: var(--text-primary); }
+    .cargo-list { border-top: 1px solid var(--border); padding-top: 1rem; }
+    .cargo-item { display: flex; justify-content: space-between; padding: .6rem 0; border-bottom: 1px dashed var(--border); }
+    .cargo-item:last-child { border-bottom: none; }
+    .cargo-name { font-weight: 600; color: var(--text-primary); text-transform: capitalize; }
+
     /* Map Elements */
     .fort-marker-icon { background: none; border: none; }
+    
+    /* Leaflet overrides */
+    .leaflet-tooltip {
+      background: var(--bg-panel) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--text-primary) !important;
+      font-family: 'Playfair Display', serif !important;
+      font-size: .78rem !important;
+      font-weight: 600 !important;
+      border-radius: 6px !important;
+      padding: .3rem .7rem !important;
+      box-shadow: var(--shadow-sm) !important;
+    }
   </style>
 </head>
 <body>
@@ -289,27 +337,131 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div id="voyage-modal" class="modal-overlay" onclick="if(event.target===this) this.classList.remove('active')">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="modal-header-content">
+        <h3 id="modal-ship-name">Nama Kapal</h3>
+        <p id="modal-ship-meta">Tahun • Kapten</p>
+      </div>
+      <button class="btn-close-modal" onclick="document.getElementById('voyage-modal').classList.remove('active')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-data-grid">
+        <div class="modal-data-item"><div class="lbl">Tujuan</div><div class="val" id="modal-dest">—</div></div>
+        <div class="modal-data-item"><div class="lbl">Durasi Perjalanan</div><div class="val" id="modal-duration">—</div></div>
+        <div class="modal-data-item"><div class="lbl">Total Nilai Kargo</div><div class="val" id="modal-value" style="color:var(--accent); font-weight:700">—</div></div>
+        <div class="modal-data-item"><div class="lbl">Komoditi Utama</div><div class="val" id="modal-main-prod" style="text-transform:capitalize">—</div></div>
+      </div>
+      <div class="cargo-list">
+        <div class="lbl" style="margin-bottom:.5rem;">Detail Kargo (Semua Komoditi)</div>
+        <div id="modal-cargo-box"></div>
+      </div>
+      <div style="margin-top:1.5rem; text-align:right;">
+        <a id="modal-src-link" href="#" target="_blank" class="btn btn-sm btn-outline-dark" style="display:inline-block">Lihat Arsip BGB ↗</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-ant-path@1.3.0/dist/leaflet-ant-path.min.js"></script>
 
 <script>
 const API = "/api";
-const COORDS = {
-  "Padang": [-0.9655, 100.3538],
-  "Pulau Cingkuak": [-1.3528, 100.5599],
-  "Air Haji": [-1.9339, 100.8669],
-  "Barus": [2.0144, 98.3993],
-  "Air Bangis": [0.1974, 99.3755],
-  "Batavia": [-6.1165, 106.8165]
+const FORT_COORDS = {
+  "Barus":          [2.0144566, 98.3993198],
+  "Air Bangis":     [0.1974875, 99.3755554],
+  "Padang":         [-0.9655545, 100.3538894],
+  "Pulau Cingkuak": [-1.3528370, 100.5599951],
+  "Air Haji":       [-1.9339388, 100.8669821],
+  "Jambi":          [-1.0984482, 104.1757178],
+  "Palembang":      [-3.0029119, 104.7801890],
+  "Lampung":        [-5.3578004, 105.2803866],
+  "Batavia":        [-6.1165019, 106.8165121],
 };
 
-let map, routes = [];
+const SEA_BENDS = {
+  "Barus": 0.45, "Air Bangis": 0.35, "Padang": 0.3, 
+  "Pulau Cingkuak": 0.3, "Air Haji": 0.3,
+  "Jambi": -0.15, "Palembang": -0.15, "Lampung": 0.1
+};
+
+let map, activeMarker, routeLines = [];
 let activeTab = 'outbound', currentData = { outbound: [], inbound: [], info: "" };
 
 function init() {
   map = L.map("map", { center: [-2.5, 103.0], zoom: 7 });
   L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png").addTo(map);
   load();
+}
+
+function createFortSVG(color, isActive) {
+  const glow = isActive ? `filter:drop-shadow(0 0 8px ${color});` : "";
+  return `
+  <svg xmlns="http://www.w3.org/2000/svg" width="46" height="56" viewBox="0 0 46 56" style="${glow}">
+    <path d="M23 54 L10 42 Q2 32 2 18 A18 18 0 1 1 44 18 Q44 32 36 42 Z" fill="white" stroke="${color}" stroke-width="2.5"/>
+    <rect x="16" y="12" width="14" height="12" rx="1" fill="${color}"/>
+    <path d="M14 24 L32 24 M18 12 L18 10 M28 12 L28 10" stroke="${color}" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="23" cy="30" r="3" fill="${color}"/>
+  </svg>`;
+}
+
+function createAnchorSVG(color, isActive) {
+  const glow = isActive ? `filter:drop-shadow(0 0 8px ${color});` : "";
+  return `
+  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="48" viewBox="0 0 40 48" style="${glow}">
+    <circle cx="20" cy="20" r="18" fill="white" stroke="${color}" stroke-width="2"/>
+    <path d="M20 10 L20 32 M13 15 L27 15 M12 28 Q20 38 28 28" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="12" cy="28" r="2" fill="${color}"/>
+    <circle cx="28" cy="28" r="2" fill="${color}"/>
+  </svg>`;
+}
+
+function fortIcon(f, active = false) {
+  const isArrival = f.port_type === 'arrival';
+  return L.divIcon({
+    html: isArrival ? createAnchorSVG(f.color, active) : createFortSVG(f.color, active),
+    className: "fort-marker-icon",
+    iconSize: isArrival ? [40, 48] : [46, 56],
+    iconAnchor: isArrival ? [20, 46] : [23, 54]
+  });
+}
+
+function getBezierCurve(start, end, bend) {
+  const [lat1, lng1] = start, [lat2, lng2] = end;
+  const mlat = (lat1+lat2)/2, mlng = (lng1+lng2)/2;
+  const dlat = lat2-lat1, dlng = lng2-lng1;
+  const clat = mlat - dlng*bend, clng = mlng + dlat*bend;
+  let pts = [];
+  for (let t=0; t<=1.01; t+=0.05) {
+    const t2 = 1-t;
+    pts.push([t2*t2*lat1 + 2*t2*t*clat + t*t*lat2, t2*t2*lng1 + 2*t2*t*clng + t*t*lng2]);
+  }
+  return pts;
+}
+
+async function drawRoutes() {
+  routeLines.forEach(l => map.removeLayer(l));
+  routeLines = [];
+  const res = await fetch(`${API}/forts/routes/all`);
+  const routesData = await res.json();
+
+  routesData.forEach(r => {
+    const s = FORT_COORDS[r.origin_name], e = FORT_COORDS[r.destination_name];
+    if (!s || !e) return;
+    const isOut = ["Barus", "Air Bangis", "Padang", "Pulau Cingkuak", "Air Haji"].includes(r.origin_name);
+    const bend = SEA_BENDS[r.origin_name] || 0.25;
+    const pts = getBezierCurve(s, e, bend);
+    
+    // Ant Path for animation
+    const ant = L.polyline.antPath(pts, {
+      delay: isOut ? 2800 : 2200, color: isOut ? "#2C5364" : "#D48166",
+      weight: Math.min(2 + r.count/20, 7), opacity: 0.65
+    }).addTo(map);
+    routeLines.push(ant);
+  });
 }
 
 async function load() {
@@ -319,51 +471,22 @@ async function load() {
   await drawRoutes();
 
   forts.forEach(f => {
-    const pos = COORDS[f.name];
-    if (!pos) return;
-    
-    const icon = L.divIcon({
-      className: 'fort-marker-icon',
-      html: `<div style="background:${f.color}; width:18px; height:18px; border-radius:50%; border:2.5px solid #fff; box-shadow:0 2px 10px rgba(0,0,0,0.2)"></div>`,
-      iconSize: [18, 18], iconAnchor: [9, 9]
-    });
-
-    L.marker(pos, { icon }).addTo(map).bindTooltip(f.name).on("click", () => openFort(f));
+    const coords = FORT_COORDS[f.name];
+    if (!coords) return;
+    const marker = L.marker(coords, { icon: fortIcon(f, false) }).addTo(map);
+    marker.bindTooltip(f.name);
+    marker.on("click", () => openFort(f, marker));
+    marker._fortData = f;
   });
 }
 
-function getPath(start, end, bend) {
-  const [lat1, lng1] = start, [lat2, lng2] = end;
-  const mlat = (lat1+lat2)/2, mlng = (lng1+lng2)/2;
-  const dlat = lat2-lat1, dlng = lng2-lng1;
-  const clat = mlat - dlng*bend, clng = mlng + dlat*bend;
-  let pts = [];
-  for (let t=0; t<=1.01; t+=0.04) {
-    const t2 = 1-t;
-    pts.push([t2*t2*lat1 + 2*t2*t*clat + t*t*lat2, t2*t2*lng1 + 2*t2*t*clng + t*t*lng2]);
+async function openFort(f, marker) {
+  if (activeMarker && activeMarker !== marker) {
+    activeMarker.setIcon(fortIcon(activeMarker._fortData, false));
   }
-  return pts;
-}
+  activeMarker = marker;
+  marker.setIcon(fortIcon(f, true));
 
-async function drawRoutes() {
-  routes.forEach(l => map.removeLayer(l));
-  const res = await fetch(`${API}/forts/routes/all`);
-  const data = await res.json();
-
-  data.forEach(r => {
-    const s = COORDS[r.origin_name], e = COORDS[r.destination_name];
-    if (!s || !e) return;
-    const isOut = ["Padang", "Pulau Cingkuak", "Air Haji", "Barus", "Air Bangis"].includes(r.origin_name);
-    const pts = getPath(s, e, 0.25);
-    const ant = L.polyline.antPath(pts, {
-      delay: isOut ? 2800 : 2200, color: isOut ? "#2C5364" : "#D48166",
-      weight: Math.min(2 + r.count/20, 7), opacity: 0.75
-    }).addTo(map);
-    routes.push(ant);
-  });
-}
-
-async function openFort(f) {
   document.getElementById("welcome-panel").style.display = "none";
   document.getElementById("fort-panel").classList.add("active");
   document.getElementById("ft-name").textContent = f.name;
@@ -374,7 +497,7 @@ async function openFort(f) {
   
   currentData.outbound = d.outbound_voyages;
   currentData.inbound = d.inbound_voyages;
-  currentData.info = d.description;
+  currentData.info = f.description;
 
   document.getElementById("st-out-count").textContent = d.outbound_count;
   document.getElementById("st-in-count").textContent = d.inbound_count;
@@ -383,7 +506,7 @@ async function openFort(f) {
 
   toggleLoader(false);
   setTab('outbound');
-  map.flyTo(COORDS[f.name], 9);
+  map.flyTo(FORT_COORDS[f.name], 9);
 }
 
 function setTab(t) {
@@ -407,24 +530,56 @@ function render(data) {
     el.innerHTML = `<div style="padding:3rem; text-align:center; color:var(--text-muted); font-size:.85rem;">Tidak ada catatan pelayaran.</div>`;
     return;
   }
-  el.innerHTML = data.map(v => `
-    <div class="voyage-item">
-      <div class="voyage-ship">${v.ship_name}</div>
-      <div class="voyage-routes">${v.origin_name_raw} → ${v.destination_name_raw}</div>
+  el.innerHTML = data.map(v => {
+    const vStr = JSON.stringify(v).replace(/"/g, '&quot;');
+    return `
+    <div class="voyage-item" onclick="openVoyageModal(${vStr})">
+      <div class="voyage-ship">${esc(v.ship_name)}</div>
+      <div class="voyage-routes">${esc(v.origin_name_raw)} → ${esc(v.destination_name_raw)}</div>
       <div class="voyage-meta">
-        <span class="tag tag-year">📅 ${v.year}</span>
+        <span class="tag tag-year">📅 ${v.year || "?"}</span>
         ${v.total_gulden ? `<span class="tag tag-val">ƒ ${fmt(v.total_gulden)}</span>` : ""}
       </div>
-    </div>`).join("");
+    </div>`;
+  }).join("");
+}
+
+function openVoyageModal(v) {
+  document.getElementById("modal-ship-name").textContent = v.ship_name || "Unknown Ship";
+  const capt = v.captain ? ` • Capt. ${v.captain}` : "";
+  document.getElementById("modal-ship-meta").textContent = `${v.year || "?"}${capt}`;
+  document.getElementById("modal-dest").textContent = v.destination || v.destination_name_raw || "Batavia";
+  document.getElementById("modal-duration").textContent = v.duration_days ? `${v.duration_days} hari` : "—";
+  document.getElementById("modal-value").textContent = v.total_gulden ? `ƒ ${v.total_gulden.toLocaleString("nl-NL")}` : "—";
+  document.getElementById("modal-main-prod").textContent = v.main_product || "—";
+  
+  const link = document.getElementById("modal-src-link");
+  if (v.source_url) { link.href = v.source_url; link.style.display = "inline-block"; }
+  else { link.style.display = "none"; }
+  
+  let cHtml = "";
+  if (v.all_products) {
+    const arr = v.all_products.split("|").map(s => s.trim());
+    cHtml = arr.map(p => `<div class="cargo-item"><span class="cargo-name">${esc(p)}</span></div>`).join("");
+  } else {
+    cHtml = `<div style="text-align:center; padding:1rem; opacity:.5">Data kargo detail tidak ditemukan.</div>`;
+  }
+  document.getElementById("modal-cargo-box").innerHTML = cHtml;
+  document.getElementById("voyage-modal").classList.add("active");
 }
 
 function closeFortPanel() {
   document.getElementById("fort-panel").classList.remove("active");
   document.getElementById("welcome-panel").style.display = "block";
+  if (activeMarker) {
+    activeMarker.setIcon(fortIcon(activeMarker._fortData, false));
+    activeMarker = null;
+  }
 }
 
 function resetView() { map.flyTo([-2.5, 103.0], 7); closeFortPanel(); }
 function toggleLoader(s) { document.getElementById("loader").classList.toggle("active", s); }
+function esc(s) { return s ? s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") : ""; }
 
 function fmt(n) {
   if (!n) return "0";
