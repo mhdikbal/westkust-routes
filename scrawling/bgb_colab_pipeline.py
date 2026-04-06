@@ -33,10 +33,10 @@
 # Atau clone dari GitHub:
 
 # %%
-# # Clone dari repo (setelah branch scrawlingdata di-push)
-# !git clone --branch scrawlingdata --depth 1 \
-#     https://github.com/mhdikbal/westkust-routes.git westkust
-# import sys; sys.path.insert(0, "westkust/scrawling")
+# Clone dari repo (otomatis terhubung ke branch terbaru)
+!git clone --branch scrapping --depth 1 \
+    https://github.com/mhdikbal/westkust-routes.git westkust
+import sys; sys.path.insert(0, "westkust/scrawling")
 
 # %% [markdown]
 # ## Sel 3 — Konfigurasi & Jalankan
