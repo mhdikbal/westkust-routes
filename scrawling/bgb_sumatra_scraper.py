@@ -61,6 +61,7 @@ SUMATRA_PORTS = {
     "850":  ("Jambi",          -1.0984482,  104.175717, "Sumatera Tengah","Jambi"),
     "851":  ("Palembang",      -3.0029119,  104.780189, "Sumatera Selatan","Palembang"),
     "948":  ("Lampung",        -5.3578004,  105.280386, "Sumatera Selatan","Lampong Toulang Bawang"),
+    "861":  ("Batavia",        -6.133649,   106.816666, "Jawa Barat", "Batavia"),
 }
 
 # Komoditi yang ingin dikumpulkan (None = ambil semua)
