@@ -48,17 +48,16 @@ CONFIG = {
     # Tempat berangkat yang ingin di-scrape
     # Format: { "ID": ("Nama", lat, lon, "Wilayah", "Keterangan") }
     # ID dari dropdown di https://resources.huygens.knaw.nl/bgb/search
-    "DEPARTURE_PLACES": {
-        "926": ("Padang",         -0.9655545,  100.353889, "Sumatera Barat",
-                "Fort de Goede Hoop — pos VOC utama pantai barat"),
-        "858": ("Pulau Cingkuak", -1.352837,   100.559995, "Sumatera Barat",
-                "Pulau Tjinkuk — fort Indrapura, pengumpul lada"),
-        "854": ("Air Haji",       -1.933939,   100.866982, "Sumatera Barat",
-                "Airhadji — pos selatan pantai Barat Sumatera"),
-        "850": ("Jambi",          -1.602930,   103.613056, "Sumatera Tengah",
-                "Pos dagang Jambi — lada & benzoin"),
-        "851": ("Palembang",      -2.989615,   104.756554, "Sumatera Selatan",
-                "Kesultanan Palembang — lada, tin, benzoin"),
+    "TARGET_PORTS": {
+        "926": ("Padang",         -0.9655545,  100.353889, "Sumatera Barat", "Fort de Goede Hoop"),
+        "858": ("Pulau Cingkuak", -1.352837,   100.559995, "Sumatera Barat", "Pulau Tjinkuk"),
+        "854": ("Air Haji",       -1.933939,   100.866982, "Sumatera Barat", "Airhadji"),
+        "856": ("Air Bangis",      0.1974875,   99.375555, "Sumatera Barat", "Airbangis"),
+        "855": ("Barus",           2.0144566,   98.399319, "Sumatera Utara", "Baros"),
+        "850": ("Jambi",          -1.0984482,  104.175717, "Sumatera Tengah", "Jambi"),
+        "851": ("Palembang",      -3.0029119,  104.780189, "Sumatera Selatan", "Palembang"),
+        "948": ("Lampung",        -5.3578004,  105.280386, "Sumatera Selatan", "Lampong Toulang Bawang"),
+        "861": ("Batavia",        -6.133649,   106.816666, "Jawa Barat", "Batavia"),
     },
     # None = ambil semua komoditi, atau: "goud", "peper", "kamfer"
     "PRODUCT_FILTER":     None,
@@ -70,7 +69,7 @@ CONFIG = {
 }
 
 print("Konfigurasi siap.")
-print(f"Tempat: {[v[0] for v in CONFIG['DEPARTURE_PLACES'].values()]}")
+print(f"Tempat: {[v[0] for v in CONFIG['TARGET_PORTS'].values()]}")
 print(f"Produk filter: {CONFIG['PRODUCT_FILTER'] or 'semua'}")
 
 # %% [markdown]
@@ -82,7 +81,7 @@ import sys, importlib
 # Patch konfigurasi ke modul scraper
 import bgb_sumatra_scraper as scraper
 
-scraper.DEPARTURE_PLACES   = CONFIG["DEPARTURE_PLACES"]
+scraper.SUMATRA_PORTS      = CONFIG["TARGET_PORTS"]
 scraper.PRODUCT_FILTER     = CONFIG["PRODUCT_FILTER"]
 scraper.MAX_PAGES_PER_PLACE= CONFIG["MAX_PAGES_PER_PLACE"]
 scraper.DELAY_DETIK        = CONFIG["DELAY_DETIK"]
