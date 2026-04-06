@@ -177,5 +177,7 @@ print(f"  Punya durasi: {df['Durasi_Hari'].notna().sum():5d} / {len(df)}")
 
 # %%
 from google.colab import files
+import os
 files.download(CONFIG["OUTPUT_FILE"])
-files.download("bgb_checkpoint.json")  # jika ada (proses belum selesai)
+if os.path.exists("bgb_checkpoint.json"):
+    files.download("bgb_checkpoint.json")
