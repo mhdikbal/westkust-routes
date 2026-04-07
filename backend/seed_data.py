@@ -257,17 +257,17 @@ def seed():
             origin_fort = fort_map.get(origin_name)
             dest_fort = fort_map.get(dest_name)
 
+            # Skip if we don't have AT LEAST one Sumatra fort in the loop
+            if not origin_fort and not dest_fort:
+                skipped += 1
+                continue
+
             # Check directional logic
             direction = None
             if origin_name in sumatra_ports:
                 direction = "outbound"
             elif dest_name in sumatra_ports:
                 direction = "inbound"
-
-            # We only seed if at least one port is recognized in our system
-            if not origin_fort and not dest_fort:
-                skipped += 1
-                continue
 
             voyage = Voyage(
                 origin_id=origin_fort.id if origin_fort else None,
@@ -280,6 +280,7 @@ def seed():
                 total_gulden=rec.get("Total_Gulden_NL"),
                 main_product=rec.get("Produk_Utama"),
                 all_products=rec.get("Semua_Produk"),
+                destination=rec.get("Tujuan"),
                 duration_days=rec.get("Durasi_Hari"),
                 direction=direction,
                 source_url=rec.get("URL"),

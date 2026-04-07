@@ -47,7 +47,6 @@ async def list_voyages(
 ):
     """List all voyages with optional filters."""
     query = select(Voyage)
-    
     if origin_id is not None:
         query = query.where(Voyage.origin_id == origin_id)
     if destination_id is not None:

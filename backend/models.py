@@ -19,7 +19,6 @@ class Fort(Base):
 
     outbound_voyages = relationship("Voyage", foreign_keys="Voyage.origin_id", back_populates="origin_fort", cascade="all, delete-orphan")
     inbound_voyages = relationship("Voyage", foreign_keys="Voyage.destination_id", back_populates="destination_fort", cascade="all, delete-orphan")
-
     def __repr__(self):
         return f"<Fort(name='{self.name}', type='{self.port_type}')>"
 
@@ -44,6 +43,5 @@ class Voyage(Base):
 
     origin_fort = relationship("Fort", foreign_keys=[origin_id], back_populates="outbound_voyages")
     destination_fort = relationship("Fort", foreign_keys=[destination_id], back_populates="inbound_voyages")
-
     def __repr__(self):
         return f"<Voyage(ship='{self.ship_name}', {self.origin_name_raw} -> {self.destination_name_raw})>"

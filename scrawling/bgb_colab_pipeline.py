@@ -34,8 +34,8 @@
 
 # %%
 # Clone dari repo (otomatis terhubung ke branch terbaru)
-!git clone --branch scrapping --depth 1 \
-    https://github.com/mhdikbal/westkust-routes.git westkust
+import os
+os.system("git clone --branch scrapping --depth 1 https://github.com/mhdikbal/westkust-routes.git westkust")
 import sys; sys.path.insert(0, "westkust/scrawling")
 
 # %% [markdown]

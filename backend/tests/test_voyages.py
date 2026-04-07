@@ -21,26 +21,29 @@ def make_voyage(**kw):
 
 
 MOCK_VOYAGE_A = make_voyage(
-    id=1, fort_id=1, ship_name="Theeboom", captain=None, year=1700,
+    id=1, origin_id=1, destination_id=9, origin_name_raw="Padang", 
+    destination_name_raw="Batavia", ship_name="Theeboom", captain=None, year=1700,
     total_gulden=98358.05, main_product="goud",
     all_products="goud | peper | kamfer | benzoë",
-    destination="Batavia,Batavia", duration_days=None,
+    duration_days=None,
     source_url="https://resources.huygens.knaw.nl/bgb/voyage/13447",
 )
 
 MOCK_VOYAGE_B = make_voyage(
-    id=2, fort_id=1, ship_name="Rijnenburg", captain=None, year=1707,
+    id=2, origin_id=1, destination_id=None, origin_name_raw="Padang",
+    destination_name_raw="Bengalen", ship_name="Rijnenburg", captain=None, year=1707,
     total_gulden=228.93, main_product="peper",
     all_products="peper",
-    destination="-,Bengalen", duration_days=None,
+    duration_days=None,
     source_url="https://resources.huygens.knaw.nl/bgb/voyage/15968",
 )
 
 MOCK_VOYAGE_C = make_voyage(
-    id=3, fort_id=2, ship_name="Prins Eugenius", captain=None, year=1721,
+    id=3, origin_id=2, destination_id=9, origin_name_raw="Pulau Cingkuak",
+    destination_name_raw="Batavia", ship_name="Prins Eugenius", captain=None, year=1721,
     total_gulden=136892.23, main_product="goud",
     all_products="goud | peper | benzoë",
-    destination="Batavia,Batavia", duration_days=None,
+    duration_days=None,
     source_url="https://resources.huygens.knaw.nl/bgb/voyage/16234",
 )
 
@@ -82,8 +85,8 @@ async def test_list_voyages_returns_list():
 
 
 @pytest.mark.asyncio
-async def test_list_voyages_filter_by_fort():
-    """GET /api/voyages/?fort_id=1 should filter by fort."""
+async def test_list_voyages_filter_by_origin():
+    """GET /api/voyages/?origin_id=1 should filter by origin."""
     async def mock_get_db():
         session = AsyncMock()
         session.execute.return_value = voyages_result_mock([MOCK_VOYAGE_A, MOCK_VOYAGE_B])
@@ -93,14 +96,14 @@ async def test_list_voyages_filter_by_fort():
     app.dependency_overrides[get_db] = mock_get_db
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        response = await client.get("/api/voyages/?fort_id=1")
+        response = await client.get("/api/voyages/?origin_id=1")
 
     app.dependency_overrides.clear()
 
     assert response.status_code == 200
     data = response.json()
     assert isinstance(data, list)
-    assert all(v["fort_id"] == 1 for v in data)
+    assert all(v["origin_id"] == 1 for v in data)
 
 
 @pytest.mark.asyncio
@@ -194,7 +197,10 @@ async def test_get_voyage_detail():
     assert data["year"] == 1700
     assert data["main_product"] == "goud"
     assert data["total_gulden"] == pytest.approx(98358.05, rel=1e-3)
-    assert data["fort_id"] == 1
+    assert data["origin_id"] == 1
+    assert data["destination_id"] == 9
+    assert data["origin_name_raw"] == "Padang"
+    assert data["destination_name_raw"] == "Batavia"
     assert "source_url" in data
     assert "huygens" in data["source_url"]
 
@@ -237,8 +243,9 @@ async def test_voyage_has_all_required_fields():
 
     assert response.status_code == 200
     data = response.json()
-    required_fields = ["id", "fort_id", "ship_name", "year", "total_gulden",
-                       "main_product", "all_products", "destination", "source_url"]
+    required_fields = ["id", "origin_id", "destination_id", "origin_name_raw", 
+                       "destination_name_raw", "ship_name", "year", "total_gulden",
+                       "main_product", "all_products", "source_url"]
     for field in required_fields:
         assert field in data, f"Missing field: {field}"
 
