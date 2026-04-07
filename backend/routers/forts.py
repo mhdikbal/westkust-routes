@@ -43,7 +43,7 @@ class VoyageBrief(BaseModel):
     total_gulden: Optional[float]
     main_product: Optional[str]
     all_products: Optional[str]
-    destination: Optional[str]
+    destination: Optional[str] = None
     duration_days: Optional[int]
     source_url: Optional[str]
 
