@@ -18,7 +18,6 @@ class Fort(Base):
     location = Column(Geometry(geometry_type="POINT", srid=4326), nullable=True)
 
     outbound_voyages = relationship("Voyage", foreign_keys="Voyage.origin_id", back_populates="origin_fort", cascade="all, delete-orphan")
-    inbound_voyages = relationship("Voyage", foreign_keys="Voyage.destination_id", back_populates="destination_fort", cascade="all, delete-orphan")
     def __repr__(self):
         return f"<Fort(name='{self.name}', type='{self.port_type}')>"
 
@@ -42,6 +41,5 @@ class Voyage(Base):
     source_url = Column(Text, nullable=True)
 
     origin_fort = relationship("Fort", foreign_keys=[origin_id], back_populates="outbound_voyages")
-    destination_fort = relationship("Fort", foreign_keys=[destination_id], back_populates="inbound_voyages")
     def __repr__(self):
         return f"<Voyage(ship='{self.ship_name}', {self.origin_name_raw} -> {self.destination_name_raw})>"

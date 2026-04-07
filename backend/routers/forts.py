@@ -191,6 +191,7 @@ async def list_fort_voyages(
 @router.get("/routes/all", tags=["Map"])
 async def list_all_routes(db: AsyncSession = Depends(get_db)):
     """A summary of all voyage routes for map visualization."""
+    # We aggregate by origin/destination to get route counts
     query = (
         select(
             Voyage.origin_name_raw.label("origin_name"),
