@@ -280,7 +280,7 @@ def seed():
                 total_gulden=rec.get("Total_Gulden_NL"),
                 main_product=rec.get("Produk_Utama"),
                 all_products=rec.get("Semua_Produk"),
-                destination=rec.get("Tujuan"),
+                destination=dest_name, # Use cleaned dest_name
                 duration_days=rec.get("Durasi_Hari"),
                 direction=direction,
                 source_url=rec.get("URL"),
