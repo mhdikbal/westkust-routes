@@ -37,7 +37,7 @@ class VoyageSchema(BaseModel):
 async def list_voyages(
     origin_id: Optional[int] = None,
     destination_id: Optional[int] = None,
-    direction: Optional[str] = None,
+    direction: Optional[str] = None,  # "outbound" or "inbound"
     year_from: Optional[int] = None,
     year_to: Optional[int] = None,
     product: Optional[str] = None,
@@ -47,12 +47,14 @@ async def list_voyages(
 ):
     """List all voyages with optional filters."""
     query = select(Voyage)
+    
     if origin_id is not None:
         query = query.where(Voyage.origin_id == origin_id)
     if destination_id is not None:
         query = query.where(Voyage.destination_id == destination_id)
     if direction:
-        query = query.where(Voyage.direction == direction)
+        query = query.where(Voyage.direction == direction.lower())
+        
     if year_from:
         query = query.where(Voyage.year >= year_from)
     if year_to:
@@ -60,9 +62,7 @@ async def list_voyages(
     if product:
         query = query.where(Voyage.all_products.ilike(f"%{product}%"))
 
-    # Default sort by year descending
-    query = query.order_by(desc(Voyage.year)).offset(skip).limit(limit)
-    
+    query = query.order_by(Voyage.year.desc()).offset(skip).limit(limit)
     result = await db.execute(query)
     return result.scalars().all()
 

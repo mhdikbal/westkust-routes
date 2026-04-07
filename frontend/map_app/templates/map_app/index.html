@@ -453,15 +453,33 @@ async function drawRoutes() {
   routesData.forEach(r => {
     const s = FORT_COORDS[r.origin_name], e = FORT_COORDS[r.destination_name];
     if (!s || !e) return;
-    const isOut = ["Barus", "Air Bangis", "Padang", "Pulau Cingkuak", "Air Haji"].includes(r.origin_name);
+    const sumatraPorts = ["Barus", "Air Bangis", "Padang", "Pulau Cingkuak", "Air Haji"];
+    const isOut = sumatraPorts.includes(r.origin_name);
     const bend = SEA_BENDS[r.origin_name] || 0.25;
     const pts = getBezierCurve(s, e, bend);
     
+    const count = r.count || 1;
+    const weight = Math.min(2 + count/20, 7);
+    
     // Ant Path for animation
     const ant = L.polyline.antPath(pts, {
-      delay: isOut ? 2800 : 2200, color: isOut ? "#2C5364" : "#D48166",
-      weight: Math.min(2 + r.count/20, 7), opacity: 0.65
+      delay: isOut ? 2800 : 2200, 
+      color: isOut ? "#2C5364" : "#D48166",
+      weight: weight, 
+      opacity: 0.65,
+      pulseColor: "#FFFFFF"
     }).addTo(map);
+
+    ant.bindTooltip(`
+        <div style="font-family:'Playfair Display', serif; font-weight:700; border-bottom:1px solid #eee; padding-bottom:3px; margin-bottom:3px;">
+          ${r.origin_name} &rarr; ${r.destination_name}
+        </div>
+        <div style="font-size:0.75rem;">
+          <span style="font-weight:700;">${r.count}</span> Pelayaran
+          <br>Volume: <span style="color:#B85D19;">ƒ ${fmt(r.total_value)}</span>
+        </div>
+      `, { sticky: true });
+
     routeLines.push(ant);
   });
 }
