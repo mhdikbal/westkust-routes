@@ -1,5 +1,0 @@
-ca33aaa 🤖 auto-data: sinkronisasi 500+ data BGB terbaru
-0952b33 feat: interactive sea routes, dynamic popup modal, and two-way scraper support
-97e04d6 feat(scraping): comprehensive BGB Sumatra scraper with full dates, cargo detail, multi-location pipeline
-6a4e9ad redesign: museum archival light theme - parchment bg, Playfair Display, CartoDB Positron, glassmorphism panels, terracotta accents
-f7a2ebf fix: port 80->8084 for nginx, add DB wait/retry in seed_data.py

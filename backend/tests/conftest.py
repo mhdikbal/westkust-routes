@@ -1,0 +1,8 @@
+"""
+Shared test configuration and fixtures.
+"""
+import sys
+import os
+
+# Ensure backend module is importable
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

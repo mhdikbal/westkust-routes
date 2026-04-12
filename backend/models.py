@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text, Date
 from sqlalchemy.orm import relationship
 from geoalchemy2 import Geometry
 from database import Base
@@ -39,6 +39,7 @@ class Voyage(Base):
     __tablename__ = "voyages"
 
     id = Column(Integer, primary_key=True, index=True)
+    voyage_ref = Column(Integer, unique=True, nullable=True, index=True)  # Original ID from JSON
     origin_id = Column(Integer, ForeignKey("forts.id", ondelete="CASCADE"), nullable=True, index=True)
     destination_id = Column(Integer, ForeignKey("forts.id", ondelete="CASCADE"), nullable=True, index=True)
     
@@ -47,10 +48,16 @@ class Voyage(Base):
     
     ship_name = Column(String(200), nullable=False)
     captain = Column(String(200), nullable=True)
+    tonnage = Column(String(100), nullable=True)
     year = Column(Integer, nullable=True, index=True)
+    
+    departure_date = Column(String(30), nullable=True)   # ISO date string from JSON
+    arrival_date = Column(String(30), nullable=True)      # ISO date string from JSON
+    
     total_gulden = Column(Float, nullable=True)
     main_product = Column(String(200), nullable=True)
     all_products = Column(Text, nullable=True)
+    cargo_count = Column(Integer, nullable=True)          # Number of cargo items
     
     # Redundant field for backward compatibility/simplicity
     destination = Column(String(200), nullable=True)
@@ -64,4 +71,4 @@ class Voyage(Base):
     destination_fort = relationship("Fort", foreign_keys=[destination_id], back_populates="inbound_voyages")
 
     def __repr__(self):
-        return f"<Voyage(ship='{self.ship_name}', {self.origin_name_raw} -> {self.destination_name_raw})>"
+        return f"<Voyage(ship='{self.ship_name}', {self.origin_name_raw} -> {self.destination_name_raw}, dir={self.direction})>"

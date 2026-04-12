@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import Map, { Popup, useMap } from "react-map-gl/maplibre";
+import { useState, useEffect, useCallback } from "react";
+import Map from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Sidebar from "@/components/Sidebar";
 import TimelineSlider from "@/components/TimelineSlider";
@@ -9,23 +9,47 @@ import VoyageDetailModal from "@/components/VoyageDetailModal";
 import PortMarkers from "@/components/PortMarkers";
 import PortShipListModal from "@/components/PortShipListModal";
 import HistoricalContextModal from "@/components/HistoricalContextModal";
+import RoutesLayer from "@/components/RoutesLayer";
+import RouteLegend from "@/components/RouteLegend";
 import axios from "axios";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 const API = `${BACKEND_URL}/api`;
 
+// All 9 ports with coordinates — must match FORTS_META in seed_data.py
 const PORTS = {
-  Padang: [100.35659, -0.96543],
-  "Pulau Cingkuak": [100.55977, -1.35303],
-  "Air Haji": [100.86801, -1.94012],
-  Batavia: [106.8456, -6.2088],
+  Barus:           [98.3993198,  2.0144566],
+  "Air Bangis":    [99.3755554,  0.1974875],
+  Padang:          [100.3538894, -0.9655545],
+  "Pulau Cingkuak":[100.5599951, -1.3528370],
+  "Air Haji":      [100.8669821, -1.9339388],
+  Jambi:           [104.1757178, -1.0984482],
+  Palembang:       [104.7801890, -3.0029119],
+  Lampung:         [105.2803866, -5.3578004],
+  Batavia:         [106.8165121, -6.1165019],
+};
+
+// Port colors matching seed_data.py
+const PORT_COLORS = {
+  Barus: "#16a085",
+  "Air Bangis": "#2980b9",
+  Padang: "#c0392b",
+  "Pulau Cingkuak": "#e67e22",
+  "Air Haji": "#27ae60",
+  Jambi: "#d35400",
+  Palembang: "#8e44ad",
+  Lampung: "#7f8c8d",
+  Batavia: "#2c3e50",
 };
 
 export default function MapDashboard() {
   const [allVoyages, setAllVoyages] = useState([]);
   const [voyages, setVoyages] = useState([]);
+  const [routes, setRoutes] = useState([]);
   const [stats, setStats] = useState(null);
-  const [selectedPorts, setSelectedPorts] = useState(["Padang", "Pulau Cingkuak", "Air Haji"]);
+  const [selectedPorts, setSelectedPorts] = useState([
+    "Padang", "Pulau Cingkuak", "Air Haji", "Barus", "Air Bangis",
+  ]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [yearRange, setYearRange] = useState([1700, 1789]);
   const [selectedVoyage, setSelectedVoyage] = useState(null);
@@ -36,34 +60,59 @@ export default function MapDashboard() {
   const [portShips, setPortShips] = useState([]);
   const [historicalPort, setHistoricalPort] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [directionFilter, setDirectionFilter] = useState("all"); // "all" | "outbound" | "inbound"
 
+  // Fetch data on filter changes
   useEffect(() => {
     fetchVoyages();
+    fetchRoutes();
     fetchStats();
-  }, [yearRange, selectedPorts, selectedProducts]);
+  }, [yearRange, directionFilter]);
 
   const fetchVoyages = async () => {
     try {
       const params = {
         year_from: yearRange[0],
         year_to: yearRange[1],
+        limit: 5000,
       };
-      const response = await axios.get(`${API}/voyages`, { params });
+      if (directionFilter !== "all") {
+        params.direction = directionFilter;
+      }
+      const response = await axios.get(`${API}/voyages/`, { params });
       setAllVoyages(response.data);
-      
-      let filtered = response.data.filter((v) =>
-        selectedPorts.includes(v.asal)
-      );
 
-      if (selectedProducts.length > 0) {
+      let filtered = response.data;
+      if (selectedPorts.length > 0) {
         filtered = filtered.filter((v) =>
-          selectedProducts.includes(v.produk_utama)
+          selectedPorts.includes(v.origin_name_raw) ||
+          selectedPorts.includes(v.destination_name_raw)
         );
       }
-
+      if (selectedProducts.length > 0) {
+        filtered = filtered.filter((v) =>
+          selectedProducts.includes(v.main_product)
+        );
+      }
       setVoyages(filtered);
     } catch (error) {
       console.error("Error fetching voyages:", error);
+    }
+  };
+
+  const fetchRoutes = async () => {
+    try {
+      const params = {
+        year_from: yearRange[0],
+        year_to: yearRange[1],
+      };
+      if (directionFilter !== "all") {
+        params.direction = directionFilter;
+      }
+      const response = await axios.get(`${API}/voyages/routes`, { params });
+      setRoutes(response.data);
+    } catch (error) {
+      console.error("Error fetching routes:", error);
     }
   };
 
@@ -73,6 +122,9 @@ export default function MapDashboard() {
         year_from: yearRange[0],
         year_to: yearRange[1],
       };
+      if (directionFilter !== "all") {
+        params.direction = directionFilter;
+      }
       const response = await axios.get(`${API}/voyages/stats`, { params });
       setStats(response.data);
     } catch (error) {
@@ -80,69 +132,83 @@ export default function MapDashboard() {
     }
   };
 
+  // Re-filter locally when ports/products change (no API call needed)
+  useEffect(() => {
+    let filtered = allVoyages;
+    if (selectedPorts.length > 0) {
+      filtered = filtered.filter((v) =>
+        selectedPorts.includes(v.origin_name_raw) ||
+        selectedPorts.includes(v.destination_name_raw)
+      );
+    }
+    if (selectedProducts.length > 0) {
+      filtered = filtered.filter((v) =>
+        selectedProducts.includes(v.main_product)
+      );
+    }
+    setVoyages(filtered);
+  }, [selectedPorts, selectedProducts, allVoyages]);
+
   const handleVoyageClick = (voyage) => {
     setSelectedVoyage(voyage);
     setHoveredRoute(voyage.id);
   };
 
   const handlePortClick = (portName) => {
-    // Get all ships from this port
     const shipsFromPort = allVoyages.filter((v) => {
-      if (portName === "Batavia") {
-        return v.tujuan.includes("Batavia");
-      }
-      return v.asal === portName;
+      return v.origin_name_raw === portName || v.destination_name_raw === portName;
     });
-    
     setSelectedPort(portName);
     setPortShips(shipsFromPort);
   };
 
   const handleViewShipDetail = (ship) => {
-    setSelectedPort(null); // Close port list modal
-    setSelectedVoyage(ship); // Open ship detail modal
+    setSelectedPort(null);
+    setSelectedVoyage(ship);
   };
 
-  const handleRouteClick = (routeId) => {
+  const handleRouteClick = useCallback((routeId) => {
     const voyage = voyages.find((v) => v.id === routeId);
     if (voyage) {
       handleVoyageClick(voyage);
     }
-  };
+  }, [voyages]);
 
-  const handleRouteHover = (routeId) => {
+  const handleRouteHover = useCallback((routeId) => {
     setHoveredRoute(routeId);
-  };
-
-  // Get map bounds to fit the route
-  const getRouteBounds = (voyage) => {
-    if (!voyage) return null;
-    const origin = PORTS[voyage.asal];
-    const destination = PORTS["Batavia"];
-    
-    return [
-      [Math.min(origin[0], destination[0]) - 2, Math.min(origin[1], destination[1]) - 1],
-      [Math.max(origin[0], destination[0]) + 2, Math.max(origin[1], destination[1]) + 1]
-    ];
-  };
+  }, []);
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#FDFBF7]">
+    <div className="relative w-screen h-screen overflow-hidden bg-[#0a0e1a]">
       <WelcomeModal open={showWelcome} onClose={() => setShowWelcome(false)} />
 
       <Map
         mapLib={import("maplibre-gl")}
         initialViewState={{
-          longitude: 102,
-          latitude: -3,
-          zoom: 5.2,
+          longitude: 103,
+          latitude: -2.5,
+          zoom: 5.5,
         }}
         style={{ width: "100%", height: "100%" }}
-        mapStyle="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+        mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
         attributionControl={false}
       >
-        <PortMarkers ports={PORTS} onPortClick={handlePortClick} />
+        <RoutesLayer
+          routes={routes}
+          ports={PORTS}
+          portColors={PORT_COLORS}
+          hoveredRoute={hoveredRoute}
+          directionFilter={directionFilter}
+        />
+        <PortMarkers ports={PORTS} onPortClick={handlePortClick} portColors={PORT_COLORS} />
       </Map>
+
+      {/* Direction Legend + Toggle */}
+      <RouteLegend
+        directionFilter={directionFilter}
+        setDirectionFilter={setDirectionFilter}
+        stats={stats}
+      />
 
       <PortShipListModal
         port={selectedPort}

@@ -28,6 +28,7 @@ services:
       PYTHONUNBUFFERED: "1"
     volumes:
       - ./data:/app/data
+      - ./scrawling:/app/scrawling
     depends_on:
       db:
         condition: service_healthy

@@ -3,9 +3,10 @@ import { Card } from "@/components/ui/card";
 import { Package } from "lucide-react";
 
 export default function ProductFilter({ voyages, selectedProducts, setSelectedProducts }) {
-  // Get unique products
+  // Get unique products — use new field name
   const productCounts = voyages.reduce((acc, voyage) => {
-    const product = voyage.produk_utama;
+    const product = voyage.main_product;
+    if (!product) return acc;
     if (!acc[product]) {
       acc[product] = 0;
     }
@@ -27,10 +28,10 @@ export default function ProductFilter({ voyages, selectedProducts, setSelectedPr
   };
 
   return (
-    <Card className="p-4 bg-white border border-[#E6E2D6] shadow-none">
+    <Card className="p-4 bg-white/5 border border-white/10 shadow-none">
       <div className="flex items-center gap-2 mb-3">
-        <Package className="w-4 h-4 text-[#B85D19]" />
-        <h3 className="font-serif text-sm font-semibold text-[#1A2421]">
+        <Package className="w-4 h-4 text-[#00D4AA]" />
+        <h3 className="font-serif text-sm font-semibold text-white">
           Filter Produk
         </h3>
       </div>
@@ -46,12 +47,12 @@ export default function ProductFilter({ voyages, selectedProducts, setSelectedPr
               />
               <label
                 htmlFor={`product-${product.name}`}
-                className="text-xs text-[#5C6A66] capitalize cursor-pointer"
+                className="text-xs text-white/60 capitalize cursor-pointer"
               >
                 {product.name}
               </label>
             </div>
-            <span className="text-xs text-[#8A9A95]">({product.count})</span>
+            <span className="text-xs text-white/30">({product.count})</span>
           </div>
         ))}
       </div>
