@@ -1,7 +1,11 @@
 """
 Seed script — inserts fort metadata and voyage data from JSON into PostgreSQL.
 Safe to run multiple times (idempotent via upsert logic).
-Includes robust name cleaning for fuzzy JSON matches.
+
+Data source: scrawling/Data_BGS_Sumatra_Full.json (31MB, 4700+ records)
+Direction algorithm:
+  - OUTBOUND = origin is a Sumatera Westkust port (Padang, Barus, Air Bangis, etc.)
+  - INBOUND  = destination is a Sumatera Westkust port
 """
 import json
 import os
@@ -18,11 +22,23 @@ DATABASE_SYNC_URL = os.getenv(
     "postgresql://vocuser:vocpassword@localhost:5432/vocdb"
 )
 
-# Resolve path to the JSON data file
-DATA_FILE = Path(__file__).parent.parent / "scrawling" / "Data_BGS_Sumatra_Full.json"
-if not DATA_FILE.exists():
-    DATA_FILE = Path("/app/scrawling/Data_BGS_Sumatra_Full.json")
+# ── Data file resolution ─────────────────────────────────────────────────────
+# Priority: scrawling folder (full dataset) > data folder > docker path
+_BASE = Path(__file__).parent.parent
+DATA_FILE_CANDIDATES = [
+    _BASE / "scrawling" / "Data_BGS_Sumatra_Full.json",
+    _BASE / "data" / "Data_Westkust_Map.json",
+    Path("/app/scrawling/Data_BGS_Sumatra_Full.json"),
+    Path("/app/data/Data_Westkust_Map.json"),
+]
+DATA_FILE = None
+for candidate in DATA_FILE_CANDIDATES:
+    if candidate.exists():
+        DATA_FILE = candidate
+        break
 
+
+# ── Port definitions ─────────────────────────────────────────────────────────
 FORTS_META = [
     # ── Departure ports (west coast Sumatra) ─────────────────────────────
     {
@@ -65,7 +81,7 @@ FORTS_META = [
         "port_type": "departure",
         "description": "Pos perdagangan VOC di wilayah selatan yang mengumpulkan lada dan hasil hutan."
     },
-    # ── Arrival ports ─────────────────────────────────────────────────────
+    # ── Arrival ports ────────────────────────────────────────────────────
     {
         "name": "Jambi",
         "latitude": -1.0984482,
@@ -100,20 +116,82 @@ FORTS_META = [
     },
 ]
 
+# ── Name cleaning & direction classification ─────────────────────────────────
+
+# Ports that define "Sumatera Westkust" — the focus area
+SUMATRA_WESTKUST_PORTS = {"Padang", "Barus", "Air Bangis", "Pulau Cingkuak", "Air Haji"}
+# All known ports for matching
+ALL_KNOWN_PORTS = {f["name"] for f in FORTS_META}
+
+# Spelling mapping from raw JSON variants → canonical name
+NAME_MAPPING = {
+    "Baros":           "Barus",
+    "Airbangis":       "Air Bangis",
+    "Aijer Bangis":    "Air Bangis",
+    "Air-Bangis":      "Air Bangis",
+    "Djambi":          "Jambi",
+    "Jamby":           "Jambi",
+    "Lampongs":        "Lampung",
+    "Lampong":         "Lampung",
+    "Sunda Kelapa":    "Batavia",
+    "Jakarta":         "Batavia",
+    "Poeloe Tjinkoek": "Pulau Cingkuak",
+    "Poelau Cingkuak": "Pulau Cingkuak",
+    "P. Cingkuak":     "Pulau Cingkuak",
+    "Indrapoera":      "Pulau Cingkuak",
+    "Indrapura":       "Pulau Cingkuak",
+    "Ajer Hadji":      "Air Haji",
+    "Aijer Hadji":     "Air Haji",
+    "Ayer Haji":       "Air Haji",
+    "Air Hadji":       "Air Haji",
+}
+
+
 def clean_name(raw_name: str) -> str:
-    """Cleans names like 'Batavia,Batavia' or 'Baros' to match FORTS_META."""
-    if not raw_name: return ""
-    # Split by comma and take first part: "Padang,Sumatra's Westkust" -> "Padang"
-    name = raw_name.split(',')[0].strip()
+    """
+    Normalize port names from raw JSON data to match canonical fort names.
     
-    # Manual Spell Mapping
-    mapping = {
-        "Baros":     "Barus",
-        "Airbangis": "Air Bangis",
-        "Aijer Bangis": "Air Bangis",
-        "Djambi":    "Jambi",
-    }
-    return mapping.get(name, name)
+    Handles patterns like:
+      - "Batavia,Batavia" → "Batavia"
+      - "Padang,Sumatra's Westkust" → "Padang"
+      - "Baros" → "Barus"
+      - "-,Bengalen" → "Bengalen" (unmapped, will be skipped)
+    """
+    if not raw_name:
+        return ""
+    
+    # Split by comma and take first meaningful part
+    parts = [p.strip() for p in raw_name.split(",")]
+    name = parts[0] if parts[0] and parts[0] != "-" else (parts[1] if len(parts) > 1 else "")
+    name = name.strip()
+    
+    # Apply spelling mapping
+    return NAME_MAPPING.get(name, name)
+
+
+def classify_direction(origin_clean: str, dest_clean: str) -> str:
+    """
+    Classify voyage direction based on origin and destination.
+    
+    OUTBOUND = ship departs FROM Sumatera Westkust port
+    INBOUND  = ship arrives AT Sumatera Westkust port
+    
+    Returns: "outbound", "inbound", or "transit" (neither endpoint is Westkust)
+    """
+    origin_is_westkust = origin_clean in SUMATRA_WESTKUST_PORTS
+    dest_is_westkust = dest_clean in SUMATRA_WESTKUST_PORTS
+    
+    if origin_is_westkust and not dest_is_westkust:
+        return "outbound"
+    elif dest_is_westkust and not origin_is_westkust:
+        return "inbound"
+    elif origin_is_westkust and dest_is_westkust:
+        return "outbound"  # Internal Westkust, treat as outbound
+    else:
+        return "transit"   # e.g. Palembang → Batavia
+
+
+# ── Database helpers ─────────────────────────────────────────────────────────
 
 def wait_for_db(max_retries: int = 30, delay: float = 2.0):
     engine = create_engine(DATABASE_SYNC_URL, echo=False)
@@ -129,6 +207,7 @@ def wait_for_db(max_retries: int = 30, delay: float = 2.0):
             time.sleep(delay)
     engine.dispose()
     raise RuntimeError("❌ Database not available.")
+
 
 def seed():
     from models import Fort, Voyage, Base
@@ -147,6 +226,7 @@ def seed():
             if existing:
                 existing.port_type = meta["port_type"]
                 existing.color = meta["color"]
+                existing.description = meta["description"]
                 fort_map[meta["name"]] = existing
             else:
                 f = Fort(**meta)
@@ -154,19 +234,23 @@ def seed():
                 session.flush()
                 fort_map[meta["name"]] = f
         session.commit()
+        print(f"  ✔ Forts seeded: {len(fort_map)} ports")
 
         # ---------- Seed voyages ----------
         session.execute(text("TRUNCATE TABLE voyages RESTART IDENTITY"))
         
-        if not DATA_FILE.exists():
-            print(f"  ⚠️  Data file not found: {DATA_FILE}")
+        if not DATA_FILE or not DATA_FILE.exists():
+            print(f"  ⚠️  Data file not found. Searched: {[str(c) for c in DATA_FILE_CANDIDATES]}")
             return
 
+        print(f"  📂 Loading data from: {DATA_FILE}")
         with open(DATA_FILE, encoding="utf-8") as f:
             records = json.load(f)
+        print(f"  📊 Loaded {len(records)} records from JSON")
 
-        added, skipped = 0, 0
-        sumatra_ports = {"Barus", "Air Bangis", "Padang", "Pulau Cingkuak", "Air Haji"}
+        added = 0
+        skipped = 0
+        direction_counts = {"outbound": 0, "inbound": 0, "transit": 0}
 
         for rec in records:
             raw_asal = rec.get("Asal", "").strip()
@@ -182,23 +266,35 @@ def seed():
                 skipped += 1
                 continue
 
-            direction = None
-            if origin_name in sumatra_ports:
-                direction = "outbound"
-            elif dest_name in sumatra_ports:
-                direction = "inbound"
+            direction = classify_direction(origin_name, dest_name)
+            direction_counts[direction] += 1
+
+            # Extract dates from nested JSON objects
+            dep_date = None
+            arr_date = None
+            tgl_berangkat = rec.get("Tgl_Berangkat")
+            tgl_tiba = rec.get("Tgl_Tiba")
+            if isinstance(tgl_berangkat, dict):
+                dep_date = tgl_berangkat.get("iso")
+            if isinstance(tgl_tiba, dict):
+                arr_date = tgl_tiba.get("iso")
 
             voyage = Voyage(
+                voyage_ref=rec.get("ID"),
                 origin_id=origin_fort.id if origin_fort else None,
                 destination_id=dest_fort.id if dest_fort else None,
                 origin_name_raw=raw_asal,
                 destination_name_raw=raw_tujuan,
                 ship_name=rec.get("Nama_Kapal", "Unknown"),
                 captain=rec.get("Kapten"),
+                tonnage=str(rec.get("Tonaj", "")) if rec.get("Tonaj") else None,
                 year=rec.get("Tahun"),
+                departure_date=dep_date,
+                arrival_date=arr_date,
                 total_gulden=rec.get("Total_Gulden_NL"),
                 main_product=rec.get("Produk_Utama"),
                 all_products=rec.get("Semua_Produk"),
+                cargo_count=rec.get("Jumlah_Item_Kargo"),
                 destination=dest_name,
                 duration_days=rec.get("Durasi_Hari"),
                 direction=direction,
@@ -208,7 +304,17 @@ def seed():
             added += 1
 
         session.commit()
-        print(f"  ✔ Seeding Done: {added} voyages added. {skipped} records skipped.")
+        
+        print(f"\n  ══════════════════════════════════════════")
+        print(f"  ✔ Seeding Complete!")
+        print(f"  ──────────────────────────────────────────")
+        print(f"  📦 Total added:    {added}")
+        print(f"  ⏭️  Total skipped:  {skipped}")
+        print(f"  🚢 Outbound:       {direction_counts['outbound']}")
+        print(f"  🏠 Inbound:        {direction_counts['inbound']}")
+        print(f"  🔄 Transit:        {direction_counts['transit']}")
+        print(f"  ══════════════════════════════════════════\n")
+
 
 if __name__ == "__main__":
     wait_for_db()

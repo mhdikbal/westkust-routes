@@ -33,19 +33,23 @@ class FortSummary(FortBase):
 class VoyageBrief(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
-    origin_id: Optional[int]
-    destination_id: Optional[int]
-    origin_name_raw: Optional[str]
-    destination_name_raw: Optional[str]
+    origin_id: Optional[int] = None
+    destination_id: Optional[int] = None
+    origin_name_raw: Optional[str] = None
+    destination_name_raw: Optional[str] = None
     ship_name: str
-    captain: Optional[str]
-    year: Optional[int]
-    total_gulden: Optional[float]
-    main_product: Optional[str]
-    all_products: Optional[str]
+    captain: Optional[str] = None
+    year: Optional[int] = None
+    total_gulden: Optional[float] = None
+    main_product: Optional[str] = None
+    all_products: Optional[str] = None
     destination: Optional[str] = None
-    duration_days: Optional[int]
-    source_url: Optional[str]
+    duration_days: Optional[int] = None
+    direction: Optional[str] = None
+    departure_date: Optional[str] = None
+    arrival_date: Optional[str] = None
+    cargo_count: Optional[int] = None
+    source_url: Optional[str] = None
 
 
 class FortDetail(FortBase):

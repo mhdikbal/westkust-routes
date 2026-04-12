@@ -31,12 +31,18 @@ def make_fort(id, name, latitude, longitude, color, description,
     )
 
 def make_voyage(id, fort_id, ship_name, captain, year, total_gulden,
-                main_product, all_products, destination, duration_days, source_url):
+                main_product, all_products, destination, duration_days, source_url,
+                direction="outbound", departure_date=None, arrival_date=None, cargo_count=None,
+                origin_id=None, destination_id=None, origin_name_raw=None, destination_name_raw=None):
     return SimpleNamespace(
         id=id, fort_id=fort_id, ship_name=ship_name, captain=captain,
         year=year, total_gulden=total_gulden, main_product=main_product,
         all_products=all_products, destination=destination,
         duration_days=duration_days, source_url=source_url,
+        direction=direction, departure_date=departure_date,
+        arrival_date=arrival_date, cargo_count=cargo_count,
+        origin_id=origin_id or fort_id, destination_id=destination_id,
+        origin_name_raw=origin_name_raw, destination_name_raw=destination_name_raw,
     )
 
 

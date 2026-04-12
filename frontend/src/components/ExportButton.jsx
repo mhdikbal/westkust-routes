@@ -14,23 +14,29 @@ export default function ExportButton({ voyages }) {
       "Tahun",
       "Asal",
       "Tujuan",
+      "Arah",
       "Nilai Cargo (Gulden)",
       "Produk Utama",
       "Semua Produk",
+      "Tgl Berangkat",
+      "Tgl Tiba",
       "URL"
     ];
 
     const csvContent = [
       headers.join(","),
       ...voyages.map(v => [
-        `"${v.nama_kapal}"`,
-        v.tahun,
-        `"${v.asal}"`,
-        `"${v.tujuan}"`,
-        v.total_gulden_nl,
-        `"${v.produk_utama}"`,
-        `"${v.semua_produk}"`,
-        `"${v.url}""`
+        `"${v.ship_name || ''}"`,
+        v.year || '',
+        `"${v.origin_name_raw || ''}"`,
+        `"${v.destination_name_raw || v.destination || ''}"`,
+        `"${v.direction || ''}"`,
+        v.total_gulden || 0,
+        `"${v.main_product || ''}"`,
+        `"${(v.all_products || '').replace(/"/g, '""')}"`,
+        `"${v.departure_date || ''}"`,
+        `"${v.arrival_date || ''}"`,
+        `"${v.source_url || ''}"`
       ].join(","))
     ].join("\n");
 
@@ -56,17 +62,17 @@ export default function ExportButton({ voyages }) {
         <Button
           variant="outline"
           size="sm"
-          className="bg-white border-[#E6E2D6] hover:bg-[#FDFBF7] text-[#1A2421]"
+          className="bg-white/5 border-white/10 hover:bg-white/10 text-white"
           data-testid="export-button"
         >
           <Download className="w-4 h-4 mr-2" />
           Ekspor Data
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="bg-[#FDFBF7] border-[#E6E2D6]">
+      <DropdownMenuContent className="bg-[#0d1221] border-white/10">
         <DropdownMenuItem 
           onClick={exportToCSV}
-          className="cursor-pointer hover:bg-white"
+          className="cursor-pointer text-white/70 hover:bg-white/10 hover:text-white"
           data-testid="export-csv"
         >
           <FileText className="w-4 h-4 mr-2" />
@@ -74,7 +80,7 @@ export default function ExportButton({ voyages }) {
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={exportToJSON}
-          className="cursor-pointer hover:bg-white"
+          className="cursor-pointer text-white/70 hover:bg-white/10 hover:text-white"
           data-testid="export-json"
         >
           <FileText className="w-4 h-4 mr-2" />
