@@ -29,6 +29,7 @@ export default function Sidebar({
   onOpenNetworkGraph,
   onOpenHeatmap,
   onOpenPortComparison,
+  onOpenSankey,
 }) {
   // All 9 ports for filtering
   const ports = ["Padang", "Barus", "Air Bangis", "Pulau Cingkuak", "Air Haji"];
@@ -238,6 +239,28 @@ export default function Sidebar({
                 <p className="text-xs text-white/50 leading-relaxed">
                   Bandingkan 2-5 pelabuhan secara langsung: volume, komoditas, tren tahunan.
                   Untuk analisis kompetisi antar pelabuhan — misal Padang vs Barus vs Air Bangis.
+                </p>
+              </Card>
+            </button>
+
+            {/* Sankey Commodity Flow Card */}
+            <button
+              onClick={onOpenSankey}
+              className="w-full text-left group"
+              data-testid="open-sankey-diagram"
+            >
+              <Card className="p-4 bg-gradient-to-br from-[#9b59b6]/10 to-transparent border border-[#9b59b6]/20 shadow-none hover:border-[#9b59b6]/40 hover:bg-[#9b59b6]/5 transition-all group-hover:translate-y-[-2px] group-hover:shadow-lg">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-[#9b59b6]/20 flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-[#9b59b6]" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif font-bold text-white text-sm">Alir Komoditas (Sankey)</h3>
+                    <p className="text-[11px] text-white/40">Asal → Produk → Tujuan</p>
+                  </div>
+                </div>
+                <p className="text-xs text-white/50 leading-relaxed">
+                  Visualisasi aliran volume perdagangan makro yang menyambungkan wilayah pasokan dengan pusat distribusi berdasarkan kategori komoditas.
                 </p>
               </Card>
             </button>

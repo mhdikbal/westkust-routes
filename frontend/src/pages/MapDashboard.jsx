@@ -14,6 +14,7 @@ import RouteLegend from "@/components/RouteLegend";
 import NetworkGraph from "@/components/NetworkGraph";
 import TemporalHeatmap from "@/components/TemporalHeatmap";
 import PortComparison from "@/components/PortComparison";
+import CommoditySankey from "@/components/CommoditySankey";
 import axios from "axios";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
@@ -65,10 +66,10 @@ export default function MapDashboard() {
   const [showAnimation, setShowAnimation] = useState(false);
   const [directionFilter, setDirectionFilter] = useState("all"); // "all" | "outbound" | "inbound"
 
-  // Analytics overlay states
   const [showNetworkGraph, setShowNetworkGraph] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [showPortComparison, setShowPortComparison] = useState(false);
+  const [showSankey, setShowSankey] = useState(false);
 
   // Fetch data on filter changes
   useEffect(() => {
@@ -262,6 +263,10 @@ export default function MapDashboard() {
         open={showPortComparison}
         onClose={() => setShowPortComparison(false)}
       />
+      <CommoditySankey
+        open={showSankey}
+        onClose={() => setShowSankey(false)}
+      />
 
       <Sidebar
         voyages={voyages}
@@ -277,6 +282,7 @@ export default function MapDashboard() {
         onOpenNetworkGraph={() => setShowNetworkGraph(true)}
         onOpenHeatmap={() => setShowHeatmap(true)}
         onOpenPortComparison={() => setShowPortComparison(true)}
+        onOpenSankey={() => setShowSankey(true)}
       />
 
       <TimelineSlider

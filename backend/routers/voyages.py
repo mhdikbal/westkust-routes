@@ -113,6 +113,21 @@ class HeatmapResponse(BaseModel):
     data: List[HeatmapCell]
 
 
+class SankeyNode(BaseModel):
+    name: str
+
+
+class SankeyLink(BaseModel):
+    source: int
+    target: int
+    value: float
+
+
+class SankeyResponse(BaseModel):
+    nodes: List[SankeyNode]
+    links: List[SankeyLink]
+
+
 # ---------- Endpoints ----------
 
 @router.get("/", response_model=List[VoyageSchema])
@@ -524,3 +539,69 @@ async def get_heatmap(
     ]
 
     return HeatmapResponse(years=years, ports=port_names, data=data)
+
+
+@router.get("/analytics/sankey", response_model=SankeyResponse)
+async def get_sankey_data(
+    year_from: Optional[int] = None,
+    year_to: Optional[int] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Generate nodes and links for Sankey commodity flow.
+    Origin Port -> Product Category -> Destination Port
+    """
+    filters = [
+        Voyage.main_product.isnot(None), 
+        Voyage.origin_name_raw.isnot(None),
+        Voyage.destination_name_raw.isnot(None)
+    ]
+    if year_from:
+        filters.append(Voyage.year >= year_from)
+    if year_to:
+        filters.append(Voyage.year <= year_to)
+        
+    query = (
+        select(
+            Voyage.origin_name_raw,
+            Voyage.main_product,
+            Voyage.destination_name_raw,
+            func.coalesce(func.sum(Voyage.total_gulden), 0).label("val")
+        )
+        .where(*filters)
+        .group_by(Voyage.origin_name_raw, Voyage.main_product, Voyage.destination_name_raw)
+    )
+    result = await db.execute(query)
+    rows = result.all()
+    
+    node_names = []
+    
+    def get_or_add_node(name):
+        if name not in node_names:
+            node_names.append(name)
+        return node_names.index(name)
+        
+    from collections import defaultdict
+    link_map = defaultdict(float)
+    
+    for row in rows:
+        orig = f"{row.origin_name_raw} (Asal)"
+        prod = str(row.main_product).capitalize()
+        dest = f"{row.destination_name_raw} (Tujuan)"
+        val = float(row.val)
+        if val <= 0:
+            continue
+        
+        # Build flow maps
+        link_map[(orig, prod)] += val
+        link_map[(prod, dest)] += val
+        
+    links = []
+    for (src, tgt), val in link_map.items():
+        s_idx = get_or_add_node(src)
+        t_idx = get_or_add_node(tgt)
+        links.append({"source": s_idx, "target": t_idx, "value": val})
+        
+    nodes = [{"name": n} for n in node_names]
+    
+    return SankeyResponse(nodes=nodes, links=links)
