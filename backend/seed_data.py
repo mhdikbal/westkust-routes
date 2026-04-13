@@ -236,6 +236,13 @@ def seed():
         session.commit()
         print(f"  ✔ Forts seeded: {len(fort_map)} ports")
 
+        # ---------- Check if data already exists to speed up boot ----------
+        from sqlalchemy import func
+        existing_voyages = session.execute(select(func.count()).select_from(Voyage)).scalar()
+        if existing_voyages > 0:
+            print(f"  ✔ Database already contains {existing_voyages} voyages. Skipping seed.")
+            return
+
         # ---------- Seed voyages + cargo ----------
         session.execute(text("TRUNCATE TABLE cargo_items RESTART IDENTITY CASCADE"))
         session.execute(text("TRUNCATE TABLE voyages RESTART IDENTITY CASCADE"))
