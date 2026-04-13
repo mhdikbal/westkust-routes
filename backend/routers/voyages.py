@@ -5,7 +5,7 @@ from sqlalchemy import select, desc, func
 from pydantic import BaseModel, ConfigDict
 
 from database import get_db
-from models import Voyage, Fort
+from models import Voyage, Fort, CargoItem
 
 router = APIRouter()
 
@@ -59,6 +59,58 @@ class VoyageStatsResponse(BaseModel):
     year_max: Optional[int] = None
     top_products: List[dict]
     ports: List[dict]
+
+
+class CargoItemSchema(BaseModel):
+    """Individual cargo item on a voyage."""
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    voyage_id: int
+    produk: str
+    spesifikasi: Optional[str] = None
+    qty_asli: Optional[str] = None
+    unit: Optional[str] = None
+    nilai_numerik: Optional[float] = None
+    gram: Optional[float] = None
+    gulden_nl: Optional[float] = None
+    gulden_india: Optional[float] = None
+    catatan: Optional[str] = None
+
+
+class NetworkNode(BaseModel):
+    id: str
+    lat: float
+    lon: float
+    port_type: str
+    color: str
+    total_voyages: int
+    total_value: float
+
+
+class NetworkEdge(BaseModel):
+    source: str
+    target: str
+    weight: int
+    total_value: float
+    direction: Optional[str] = None
+
+
+class NetworkResponse(BaseModel):
+    nodes: List[NetworkNode]
+    edges: List[NetworkEdge]
+
+
+class HeatmapCell(BaseModel):
+    year: int
+    port: str
+    count: int
+    value: float
+
+
+class HeatmapResponse(BaseModel):
+    years: List[int]
+    ports: List[str]
+    data: List[HeatmapCell]
 
 
 # ---------- Endpoints ----------
@@ -261,3 +313,214 @@ async def get_voyage(voyage_id: int, db: AsyncSession = Depends(get_db)):
     if not voyage:
         raise HTTPException(status_code=404, detail=f"Voyage with id={voyage_id} not found")
     return voyage
+
+
+@router.get("/{voyage_id}/cargo", response_model=List[CargoItemSchema])
+async def get_voyage_cargo(voyage_id: int, db: AsyncSession = Depends(get_db)):
+    """Get all cargo items for a specific voyage."""
+    # Verify voyage exists
+    voyage_check = await db.execute(select(Voyage.id).where(Voyage.id == voyage_id))
+    if not voyage_check.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail=f"Voyage with id={voyage_id} not found")
+    
+    result = await db.execute(
+        select(CargoItem)
+        .where(CargoItem.voyage_id == voyage_id)
+        .order_by(CargoItem.gulden_india.desc().nullslast())
+    )
+    return result.scalars().all()
+
+
+@router.get("/analytics/network", response_model=NetworkResponse)
+async def get_network_graph(
+    year_from: Optional[int] = None,
+    year_to: Optional[int] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """Get network graph data: nodes (ports) and edges (routes) with weights."""
+    # Build base filters
+    filters = []
+    if year_from:
+        filters.append(Voyage.year >= year_from)
+    if year_to:
+        filters.append(Voyage.year <= year_to)
+
+    # Nodes: all forts with voyage counts
+    forts_result = await db.execute(select(Fort))
+    forts = forts_result.scalars().all()
+    
+    nodes = []
+    for fort in forts:
+        # Count voyages where this fort is origin or destination
+        count_q = select(func.count(Voyage.id)).where(
+            (Voyage.origin_id == fort.id) | (Voyage.destination_id == fort.id)
+        )
+        value_q = select(func.coalesce(func.sum(Voyage.total_gulden), 0)).where(
+            (Voyage.origin_id == fort.id) | (Voyage.destination_id == fort.id)
+        )
+        for f in filters:
+            count_q = count_q.where(f)
+            value_q = value_q.where(f)
+        
+        count_res = await db.execute(count_q)
+        value_res = await db.execute(value_q)
+        total_voyages = count_res.scalar() or 0
+        total_value = float(value_res.scalar() or 0)
+        
+        if total_voyages > 0:
+            nodes.append(NetworkNode(
+                id=fort.name,
+                lat=fort.latitude,
+                lon=fort.longitude,
+                port_type=fort.port_type,
+                color=fort.color,
+                total_voyages=total_voyages,
+                total_value=total_value,
+            ))
+
+    # Edges: aggregated routes
+    edge_q = (
+        select(
+            Fort.name.label("origin_name"),
+            func.min(Fort.name).label("_dummy"),  # placeholder
+            Voyage.direction,
+            func.count(Voyage.id).label("weight"),
+            func.coalesce(func.sum(Voyage.total_gulden), 0).label("total_value"),
+        )
+        .join(Fort, Voyage.origin_id == Fort.id)
+        .where(Voyage.origin_id.isnot(None), Voyage.destination_id.isnot(None))
+    )
+    for f in filters:
+        edge_q = edge_q.where(f)
+    
+    # Need a subquery approach for both fort names
+    OriginFort = Fort.__table__.alias("of")
+    DestFort = Fort.__table__.alias("df")
+    edge_q = (
+        select(
+            OriginFort.c.name.label("source"),
+            DestFort.c.name.label("target"),
+            Voyage.direction,
+            func.count(Voyage.id).label("weight"),
+            func.coalesce(func.sum(Voyage.total_gulden), 0).label("total_value"),
+        )
+        .join(OriginFort, Voyage.origin_id == OriginFort.c.id)
+        .join(DestFort, Voyage.destination_id == DestFort.c.id)
+    )
+    for f in filters:
+        edge_q = edge_q.where(f)
+    edge_q = edge_q.group_by(
+        OriginFort.c.name, DestFort.c.name, Voyage.direction
+    ).order_by(desc("weight"))
+
+    edge_result = await db.execute(edge_q)
+    edges = [
+        NetworkEdge(
+            source=r.source,
+            target=r.target,
+            weight=r.weight,
+            total_value=float(r.total_value),
+            direction=r.direction,
+        )
+        for r in edge_result.all()
+    ]
+
+    return NetworkResponse(nodes=nodes, edges=edges)
+
+
+@router.get("/analytics/heatmap", response_model=HeatmapResponse)
+async def get_heatmap(
+    metric: str = Query(default="count", regex="^(count|value)$"),
+    year_from: Optional[int] = None,
+    year_to: Optional[int] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Temporal heatmap: year × port matrix.
+    Returns count or value for each year-port combination.
+    """
+    # Get all forts
+    forts_result = await db.execute(select(Fort).order_by(Fort.id))
+    forts = forts_result.scalars().all()
+    port_names = [f.name for f in forts]
+    fort_id_map = {f.id: f.name for f in forts}
+
+    # Build query: group by year and port
+    # Union of origin and destination to capture both directions
+    filters = []
+    if year_from:
+        filters.append(Voyage.year >= year_from)
+    if year_to:
+        filters.append(Voyage.year <= year_to)
+
+    # Query for origin port activity
+    origin_q = (
+        select(
+            Voyage.year,
+            Voyage.origin_id.label("fort_id"),
+            func.count(Voyage.id).label("cnt"),
+            func.coalesce(func.sum(Voyage.total_gulden), 0).label("val"),
+        )
+        .where(Voyage.origin_id.isnot(None), Voyage.year.isnot(None))
+    )
+    for f in filters:
+        origin_q = origin_q.where(f)
+    origin_q = origin_q.group_by(Voyage.year, Voyage.origin_id)
+    
+    origin_result = await db.execute(origin_q)
+    
+    # Destination port activity
+    dest_q = (
+        select(
+            Voyage.year,
+            Voyage.destination_id.label("fort_id"),
+            func.count(Voyage.id).label("cnt"),
+            func.coalesce(func.sum(Voyage.total_gulden), 0).label("val"),
+        )
+        .where(Voyage.destination_id.isnot(None), Voyage.year.isnot(None))
+    )
+    for f in filters:
+        dest_q = dest_q.where(f)
+    dest_q = dest_q.group_by(Voyage.year, Voyage.destination_id)
+    
+    dest_result = await db.execute(dest_q)
+
+    # Merge results
+    matrix = {}  # (year, port_name) -> {count, value}
+    years_set = set()
+    
+    for row in origin_result.all():
+        port_name = fort_id_map.get(row.fort_id)
+        if not port_name:
+            continue
+        key = (row.year, port_name)
+        years_set.add(row.year)
+        if key not in matrix:
+            matrix[key] = {"count": 0, "value": 0.0}
+        matrix[key]["count"] += row.cnt
+        matrix[key]["value"] += float(row.val)
+    
+    for row in dest_result.all():
+        port_name = fort_id_map.get(row.fort_id)
+        if not port_name:
+            continue
+        key = (row.year, port_name)
+        years_set.add(row.year)
+        if key not in matrix:
+            matrix[key] = {"count": 0, "value": 0.0}
+        matrix[key]["count"] += row.cnt
+        matrix[key]["value"] += float(row.val)
+
+    years = sorted(years_set)
+    data = [
+        HeatmapCell(
+            year=year,
+            port=port,
+            count=matrix.get((year, port), {}).get("count", 0),
+            value=matrix.get((year, port), {}).get("value", 0.0),
+        )
+        for year in years
+        for port in port_names
+    ]
+
+    return HeatmapResponse(years=years, ports=port_names, data=data)

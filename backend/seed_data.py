@@ -210,7 +210,7 @@ def wait_for_db(max_retries: int = 30, delay: float = 2.0):
 
 
 def seed():
-    from models import Fort, Voyage, Base
+    from models import Fort, Voyage, CargoItem, Base
     engine = create_engine(DATABASE_SYNC_URL, echo=False)
 
     with engine.begin() as conn:
@@ -236,8 +236,9 @@ def seed():
         session.commit()
         print(f"  ✔ Forts seeded: {len(fort_map)} ports")
 
-        # ---------- Seed voyages ----------
-        session.execute(text("TRUNCATE TABLE voyages RESTART IDENTITY"))
+        # ---------- Seed voyages + cargo ----------
+        session.execute(text("TRUNCATE TABLE cargo_items RESTART IDENTITY CASCADE"))
+        session.execute(text("TRUNCATE TABLE voyages RESTART IDENTITY CASCADE"))
         
         if not DATA_FILE or not DATA_FILE.exists():
             print(f"  ⚠️  Data file not found. Searched: {[str(c) for c in DATA_FILE_CANDIDATES]}")
@@ -250,6 +251,7 @@ def seed():
 
         added = 0
         skipped = 0
+        cargo_total = 0
         direction_counts = {"outbound": 0, "inbound": 0, "transit": 0}
 
         for rec in records:
@@ -301,18 +303,45 @@ def seed():
                 source_url=rec.get("URL"),
             )
             session.add(voyage)
+            session.flush()  # Get voyage.id for cargo items
+
+            # Seed cargo items from Kargo[] array
+            kargo_list = rec.get("Kargo", [])
+            if kargo_list and isinstance(kargo_list, list):
+                for kargo in kargo_list:
+                    cargo_item = CargoItem(
+                        voyage_id=voyage.id,
+                        produk=kargo.get("produk", "unknown"),
+                        spesifikasi=kargo.get("spesifikasi"),
+                        qty_asli=kargo.get("qty_asli"),
+                        unit=kargo.get("unit"),
+                        nilai_numerik=kargo.get("nilai_numerik"),
+                        gram=kargo.get("gram"),
+                        gulden_nl=kargo.get("gulden_nl"),
+                        gulden_india=kargo.get("gulden_india"),
+                        catatan=kargo.get("catatan"),
+                    )
+                    session.add(cargo_item)
+                    cargo_total += 1
+
             added += 1
+
+            # Batch commit every 500 voyages for performance
+            if added % 500 == 0:
+                session.commit()
+                print(f"    ... {added} voyages, {cargo_total} cargo items seeded")
 
         session.commit()
         
         print(f"\n  ══════════════════════════════════════════")
         print(f"  ✔ Seeding Complete!")
         print(f"  ──────────────────────────────────────────")
-        print(f"  📦 Total added:    {added}")
-        print(f"  ⏭️  Total skipped:  {skipped}")
-        print(f"  🚢 Outbound:       {direction_counts['outbound']}")
-        print(f"  🏠 Inbound:        {direction_counts['inbound']}")
-        print(f"  🔄 Transit:        {direction_counts['transit']}")
+        print(f"  📦 Total voyages added:  {added}")
+        print(f"  📋 Total cargo items:    {cargo_total}")
+        print(f"  ⏭️  Total skipped:        {skipped}")
+        print(f"  🚢 Outbound:             {direction_counts['outbound']}")
+        print(f"  🏠 Inbound:              {direction_counts['inbound']}")
+        print(f"  🔄 Transit:              {direction_counts['transit']}")
         print(f"  ══════════════════════════════════════════\n")
 
 

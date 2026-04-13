@@ -11,6 +11,9 @@ import PortShipListModal from "@/components/PortShipListModal";
 import HistoricalContextModal from "@/components/HistoricalContextModal";
 import RoutesLayer from "@/components/RoutesLayer";
 import RouteLegend from "@/components/RouteLegend";
+import NetworkGraph from "@/components/NetworkGraph";
+import TemporalHeatmap from "@/components/TemporalHeatmap";
+import PortComparison from "@/components/PortComparison";
 import axios from "axios";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
@@ -61,6 +64,11 @@ export default function MapDashboard() {
   const [historicalPort, setHistoricalPort] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
   const [directionFilter, setDirectionFilter] = useState("all"); // "all" | "outbound" | "inbound"
+
+  // Analytics overlay states
+  const [showNetworkGraph, setShowNetworkGraph] = useState(false);
+  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [showPortComparison, setShowPortComparison] = useState(false);
 
   // Fetch data on filter changes
   useEffect(() => {
@@ -234,6 +242,20 @@ export default function MapDashboard() {
         }}
       />
 
+      {/* Analytics Overlays */}
+      <NetworkGraph
+        open={showNetworkGraph}
+        onClose={() => setShowNetworkGraph(false)}
+      />
+      <TemporalHeatmap
+        open={showHeatmap}
+        onClose={() => setShowHeatmap(false)}
+      />
+      <PortComparison
+        open={showPortComparison}
+        onClose={() => setShowPortComparison(false)}
+      />
+
       <Sidebar
         voyages={voyages}
         allVoyages={allVoyages}
@@ -245,6 +267,9 @@ export default function MapDashboard() {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         onVoyageClick={handleVoyageClick}
+        onOpenNetworkGraph={() => setShowNetworkGraph(true)}
+        onOpenHeatmap={() => setShowHeatmap(true)}
+        onOpenPortComparison={() => setShowPortComparison(true)}
       />
 
       <TimelineSlider

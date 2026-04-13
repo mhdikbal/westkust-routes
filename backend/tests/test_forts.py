@@ -103,9 +103,9 @@ async def test_list_forts_returns_list():
         session = AsyncMock()
         session.execute.side_effect = [
             make_scalar_result(ALL_MOCK_FORTS),
-            # Stats per fort (8 forts)
+            # Stats per fort (Outbound and Inbound for 8 forts)
             *[MagicMock(one=MagicMock(return_value=(10, 500000.0)))
-              for _ in ALL_MOCK_FORTS],
+              for _ in range(len(ALL_MOCK_FORTS) * 2)],
         ]
         yield session
 
@@ -129,8 +129,10 @@ async def test_list_forts_contains_port_type():
         session = AsyncMock()
         session.execute.side_effect = [
             make_scalar_result([MOCK_FORT_PADANG, MOCK_FORT_BATAVIA]),
-            MagicMock(one=MagicMock(return_value=(5, 100000.0))),
-            MagicMock(one=MagicMock(return_value=(2, 50000.0))),
+            MagicMock(one=MagicMock(return_value=(5, 100000.0))), # Outbound Padang
+            MagicMock(one=MagicMock(return_value=(1, 10000.0))),  # Inbound Padang
+            MagicMock(one=MagicMock(return_value=(2, 50000.0))),  # Outbound Batavia
+            MagicMock(one=MagicMock(return_value=(3, 20000.0))),  # Inbound Batavia
         ]
         yield session
 
@@ -158,7 +160,7 @@ async def test_list_forts_departure_ports_present():
         session.execute.side_effect = [
             make_scalar_result(ALL_MOCK_FORTS),
             *[MagicMock(one=MagicMock(return_value=(0, 0.0)))
-              for _ in ALL_MOCK_FORTS],
+              for _ in range(len(ALL_MOCK_FORTS) * 2)],
         ]
         yield session
 
@@ -222,10 +224,19 @@ async def test_get_fort_detail():
         voyages_result = MagicMock()
         voyages_result.scalars.return_value.all.return_value = [MOCK_VOYAGE_1, MOCK_VOYAGE_2]
 
-        stats_result = MagicMock()
-        stats_result.one.return_value = (2, 116696.63, 1700, 1701)
+        inbound_voyages_result = MagicMock()
+        inbound_voyages_result.scalars.return_value.all.return_value = []
 
-        session.execute.side_effect = [fort_result, voyages_result, stats_result]
+        out_stats_result = MagicMock()
+        out_stats_result.one.return_value = (2, 116696.63, 1700, 1701)
+
+        in_stats_result = MagicMock()
+        in_stats_result.one.return_value = (0, 0.0, None, None)
+
+        session.execute.side_effect = [
+            fort_result, voyages_result, inbound_voyages_result,
+            out_stats_result, in_stats_result
+        ]
         yield session
 
     from database import get_db
@@ -242,8 +253,8 @@ async def test_get_fort_detail():
     assert data["port_type"] == "both"
     assert data["latitude"]  == pytest.approx(-0.9655545, rel=1e-4)
     assert data["longitude"] == pytest.approx(100.3538895, rel=1e-4)
-    assert "voyages" in data
-    assert len(data["voyages"]) == 2
+    assert "outbound_voyages" in data
+    assert len(data["outbound_voyages"]) == 2
 
 
 @pytest.mark.asyncio
@@ -255,9 +266,20 @@ async def test_voyage_has_duration_days():
         fort_result.scalar_one_or_none.return_value = MOCK_FORT_PADANG
         voyages_result = MagicMock()
         voyages_result.scalars.return_value.all.return_value = [MOCK_VOYAGE_1]
-        stats_result = MagicMock()
-        stats_result.one.return_value = (1, 98358.05, 1700, 1700)
-        session.execute.side_effect = [fort_result, voyages_result, stats_result]
+        
+        inbound_voyages_result = MagicMock()
+        inbound_voyages_result.scalars.return_value.all.return_value = []
+        
+        out_stats_result = MagicMock()
+        out_stats_result.one.return_value = (1, 98358.05, 1700, 1700)
+        
+        in_stats_result = MagicMock()
+        in_stats_result.one.return_value = (0, 0.0, None, None)
+        
+        session.execute.side_effect = [
+            fort_result, voyages_result, inbound_voyages_result,
+            out_stats_result, in_stats_result
+        ]
         yield session
 
     from database import get_db
@@ -269,8 +291,8 @@ async def test_voyage_has_duration_days():
     app.dependency_overrides.clear()
 
     data = response.json()
-    assert "duration_days" in data["voyages"][0]
-    assert data["voyages"][0]["duration_days"] == 44
+    assert "duration_days" in data["outbound_voyages"][0]
+    assert data["outbound_voyages"][0]["duration_days"] == 44
 
 
 @pytest.mark.asyncio
@@ -282,9 +304,20 @@ async def test_get_fort_barus_departure():
         fort_result.scalar_one_or_none.return_value = MOCK_FORT_BARUS
         voyages_result = MagicMock()
         voyages_result.scalars.return_value.all.return_value = [MOCK_VOYAGE_3]
-        stats_result = MagicMock()
-        stats_result.one.return_value = (1, 55000.0, 1720, 1720)
-        session.execute.side_effect = [fort_result, voyages_result, stats_result]
+
+        inbound_voyages_result = MagicMock()
+        inbound_voyages_result.scalars.return_value.all.return_value = []
+
+        out_stats_result = MagicMock()
+        out_stats_result.one.return_value = (1, 55000.0, 1720, 1720)
+
+        in_stats_result = MagicMock()
+        in_stats_result.one.return_value = (0, 0.0, None, None)
+
+        session.execute.side_effect = [
+            fort_result, voyages_result, inbound_voyages_result,
+            out_stats_result, in_stats_result
+        ]
         yield session
 
     from database import get_db
@@ -298,7 +331,7 @@ async def test_get_fort_barus_departure():
     data = response.json()
     assert data["name"]      == "Barus"
     assert data["port_type"] == "departure"
-    assert data["voyages"][0]["duration_days"] == 62
+    assert data["outbound_voyages"][0]["duration_days"] == 62
 
 
 @pytest.mark.asyncio
