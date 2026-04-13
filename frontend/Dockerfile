@@ -4,11 +4,10 @@ FROM node:20-slim AS react-build
 WORKDIR /app/frontend
 
 # Copy package files first (better layer caching)
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
-# Install dependencies — use yarn since yarn.lock exists
-RUN yarn install --frozen-lockfile --network-timeout 120000 || \
-    yarn install --network-timeout 120000
+# Install dependencies — use npm with legacy-peer-deps flag to resolve date-fns conflict
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -19,7 +18,7 @@ COPY . .
 ENV CI=false
 ENV REACT_APP_BACKEND_URL=""
 ENV GENERATE_SOURCEMAP=false
-RUN yarn build
+RUN npm run build
 
 # Stage 2: Django serves the built React app
 FROM python:3.11-slim
