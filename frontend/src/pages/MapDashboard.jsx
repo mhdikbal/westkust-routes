@@ -251,6 +251,8 @@ export default function MapDashboard() {
           longitude: 103,
           latitude: -2.5,
           zoom: 5.5,
+          pitch: 60,
+          bearing: 15,
         }}
         style={{ width: "100%", height: "100%" }}
         mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
