@@ -1,4 +1,4 @@
-import { Anchor, Ship, TrendingUp, Package, Network, Grid3X3, GitCompareArrows } from "lucide-react";
+import { Anchor, Ship, TrendingUp, Package, Network, Grid3X3, GitCompareArrows, Compass } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -30,6 +30,7 @@ export default function Sidebar({
   onOpenHeatmap,
   onOpenPortComparison,
   onOpenSankey,
+  onStartTour,
 }) {
   // All 9 ports for filtering
   const ports = ["Padang", "Barus", "Air Bangis", "Pulau Cingkuak", "Air Haji"];
@@ -63,6 +64,18 @@ export default function Sidebar({
         <p className="text-sm text-white/50 leading-relaxed mb-3">
           Jalur Pelayaran VOC Sumatera Westkust (1700-1789)
         </p>
+        
+        <div className="mb-4">
+          <Button
+            onClick={() => onStartTour("tour-padang-barus")}
+            className="w-full bg-gradient-to-r from-[#D4AF37] to-[#B3932E] hover:from-[#E5C158] hover:to-[#C4A43D] text-black font-bold border-none shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all hover:scale-[1.02]"
+            data-testid="start-historic-tour"
+          >
+            <Compass className="w-4 h-4 mr-2" />
+            Mulai Tur Sejarah Berpandu
+          </Button>
+        </div>
+
         <ExportButton voyages={filteredVoyages} />
       </div>
 

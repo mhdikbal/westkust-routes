@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Map from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Sidebar from "@/components/Sidebar";
@@ -15,6 +15,8 @@ import NetworkGraph from "@/components/NetworkGraph";
 import TemporalHeatmap from "@/components/TemporalHeatmap";
 import PortComparison from "@/components/PortComparison";
 import CommoditySankey from "@/components/CommoditySankey";
+import StorytellingOverlay from "@/components/StorytellingOverlay";
+import { HISTORIC_TOURS } from "@/data/tours";
 import axios from "axios";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
@@ -70,6 +72,11 @@ export default function MapDashboard() {
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [showPortComparison, setShowPortComparison] = useState(false);
   const [showSankey, setShowSankey] = useState(false);
+
+  // Storytelling Tour States
+  const mapRef = useRef(null);
+  const [activeTour, setActiveTour] = useState(null);
+  const [tourStepIndex, setTourStepIndex] = useState(0);
 
   // Fetch data on filter changes
   useEffect(() => {
@@ -194,11 +201,51 @@ export default function MapDashboard() {
     setHoveredRoute(routeId);
   }, []);
 
+  const handleStartTour = (tourId) => {
+    const tour = HISTORIC_TOURS.find((t) => t.id === tourId);
+    if (tour && tour.steps.length > 0) {
+      setActiveTour(tour);
+      setTourStepIndex(0);
+      executeTourStep(tour.steps[0]);
+    }
+  };
+
+  const executeTourStep = (step) => {
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        center: [step.camera.longitude, step.camera.latitude],
+        zoom: step.camera.zoom,
+        pitch: step.camera.pitch || 0,
+        bearing: step.camera.bearing || 0,
+        duration: 3500,
+        essential: true
+      });
+    }
+    setYearRange(step.yearSpan); // Sync the timeline with the story
+  };
+
+  const handleNextTourStep = () => {
+    if (activeTour && tourStepIndex < activeTour.steps.length - 1) {
+      const nextIdx = tourStepIndex + 1;
+      setTourStepIndex(nextIdx);
+      executeTourStep(activeTour.steps[nextIdx]);
+    }
+  };
+
+  const handlePrevTourStep = () => {
+    if (activeTour && tourStepIndex > 0) {
+      const prevIdx = tourStepIndex - 1;
+      setTourStepIndex(prevIdx);
+      executeTourStep(activeTour.steps[prevIdx]);
+    }
+  };
+
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-[#0a0e1a]">
       <WelcomeModal open={showWelcome} onClose={() => setShowWelcome(false)} />
 
       <Map
+        ref={mapRef}
         mapLib={import("maplibre-gl")}
         initialViewState={{
           longitude: 103,
@@ -268,6 +315,14 @@ export default function MapDashboard() {
         onClose={() => setShowSankey(false)}
       />
 
+      <StorytellingOverlay
+        tour={activeTour}
+        stepIndex={tourStepIndex}
+        onNext={handleNextTourStep}
+        onPrev={handlePrevTourStep}
+        onClose={() => setActiveTour(null)}
+      />
+
       <Sidebar
         voyages={voyages}
         allVoyages={allVoyages}
@@ -283,6 +338,7 @@ export default function MapDashboard() {
         onOpenHeatmap={() => setShowHeatmap(true)}
         onOpenPortComparison={() => setShowPortComparison(true)}
         onOpenSankey={() => setShowSankey(true)}
+        onStartTour={handleStartTour}
       />
 
       <TimelineSlider
