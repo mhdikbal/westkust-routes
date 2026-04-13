@@ -3,14 +3,23 @@ FROM node:20-slim AS react-build
 
 WORKDIR /app/frontend
 
-# Copy package files and install dependencies
-COPY package.json yarn.lock* ./
-RUN npm install --legacy-peer-deps 2>/dev/null || yarn install --frozen-lockfile 2>/dev/null || npm install
+# Copy package files first (better layer caching)
+COPY package.json yarn.lock ./
 
-# Copy source and build
+# Install dependencies — use yarn since yarn.lock exists
+RUN yarn install --frozen-lockfile --network-timeout 120000 || \
+    yarn install --network-timeout 120000
+
+# Copy source code
 COPY . .
+
+# Build React app
+# CI=false prevents ESLint warnings from failing the build
+# REACT_APP_BACKEND_URL="" means API calls use relative paths (nginx proxies /api/)
+ENV CI=false
 ENV REACT_APP_BACKEND_URL=""
-RUN npm run build || yarn build
+ENV GENERATE_SOURCEMAP=false
+RUN yarn build
 
 # Stage 2: Django serves the built React app
 FROM python:3.11-slim
@@ -24,7 +33,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Copy React build output into Django static
+# Copy React build output into Django static serving path
 COPY --from=react-build /app/frontend/build /app/build
 
 RUN python manage.py collectstatic --noinput || true
