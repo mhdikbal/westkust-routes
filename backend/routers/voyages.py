@@ -574,6 +574,14 @@ async def get_sankey_data(
     result = await db.execute(query)
     rows = result.all()
     
+    from collections import defaultdict
+
+    # Calculate top 12 products by value
+    prod_totals = defaultdict(float)
+    for row in rows:
+        prod_totals[str(row.main_product).strip().capitalize()] += float(row.val)
+    top_prods = dict(sorted(prod_totals.items(), key=lambda item: item[1], reverse=True)[:12])
+    
     node_names = []
     
     def get_or_add_node(name):
@@ -581,12 +589,12 @@ async def get_sankey_data(
             node_names.append(name)
         return node_names.index(name)
         
-    from collections import defaultdict
     link_map = defaultdict(float)
     
     for row in rows:
         orig = f"{row.origin_name_raw} (Asal)"
-        prod = str(row.main_product).capitalize()
+        prod_raw = str(row.main_product).strip().capitalize()
+        prod = prod_raw if prod_raw in top_prods else "Lainnya"
         dest = f"{row.destination_name_raw} (Tujuan)"
         val = float(row.val)
         if val <= 0:
