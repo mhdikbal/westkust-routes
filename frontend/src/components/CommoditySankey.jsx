@@ -175,19 +175,21 @@ export default function CommoditySankey({ open, onClose }) {
           )}
 
           {!loading && data && data.nodes.length > 0 && (
-            <div className="w-full h-full min-h-[500px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <Sankey
-                  data={data}
-                  nodePadding={25}
-                  margin={{ top: 20, bottom: 20, left: 40, right: 60 }}
-                  node={<CustomNode />}
-                  link={{ stroke: 'rgba(255, 255, 255, 0.1)', strokeWidth: '10' }}
-                  linkCurvature={0.4}
-                >
-                  <Tooltip content={<CustomTooltip />} />
-                </Sankey>
-              </ResponsiveContainer>
+            <div className="w-full h-full overflow-y-auto overflow-x-hidden custom-scrollbar">
+              <div style={{ height: Math.max(600, data.nodes.length * 35), minWidth: 800 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <Sankey
+                    data={data}
+                    nodePadding={25}
+                    margin={{ top: 20, bottom: 20, left: 40, right: 60 }}
+                    node={<CustomNode />}
+                    link={{ stroke: 'rgba(255, 255, 255, 0.15)' }}
+                    linkCurvature={0.4}
+                  >
+                    <Tooltip content={<CustomTooltip />} />
+                  </Sankey>
+                </ResponsiveContainer>
+              </div>
             </div>
           )}
         </div>
