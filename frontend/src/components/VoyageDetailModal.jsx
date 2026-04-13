@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { X, Ship, Calendar, DollarSign, Package, MapPin, Compass, Clock, Anchor, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import axios from "axios";
-
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 const API = `${BACKEND_URL}/api`;
 
@@ -115,7 +113,7 @@ export default function VoyageDetailModal({ voyage, open, onClose }) {
           </DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 pr-4">
+        <div className="flex-1 overflow-y-auto pr-4">
           <div className="space-y-6 mt-4">
             {/* Route Visualization */}
             <div className="bg-white/5 p-4 rounded-lg border border-white/10">
@@ -440,7 +438,7 @@ export default function VoyageDetailModal({ voyage, open, onClose }) {
               Tutup
             </Button>
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

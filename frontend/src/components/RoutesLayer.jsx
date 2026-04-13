@@ -31,6 +31,13 @@ function getDirectionColor(direction) {
  * Generate a curved path (quadratic Bezier approximation) between two points.
  * The curve bows perpendicular to the line, giving a natural "arc" appearance.
  */
+const SEA_BENDS = {
+  "Barus": 0.45, "Air Bangis": 0.35, "Padang": 0.3, 
+  "Pulau Cingkuak": 0.3, "Air Haji": 0.3,
+  "Jambi": -0.15, "Palembang": -0.15, "Lampung": 0.1,
+  "Batavia": 0.2
+};
+
 function generateBezierCurve(start, end, curveStrength = 0.3, numPoints = 40) {
   const [x1, y1] = start;
   const [x2, y2] = end;
@@ -39,18 +46,15 @@ function generateBezierCurve(start, end, curveStrength = 0.3, numPoints = 40) {
   const mx = (x1 + x2) / 2;
   const my = (y1 + y2) / 2;
   
-  // Perpendicular offset for curve
+  // Diff using Longitude/Latitude
   const dx = x2 - x1;
   const dy = y2 - y1;
-  const dist = Math.sqrt(dx * dx + dy * dy);
   
-  // Control point offset perpendicular to the line
-  const offsetX = -dy * curveStrength;
-  const offsetY = dx * curveStrength;
+  // Control point offset - applied perpendicularly via the multiplier.
+  const cx = mx - dy * curveStrength;
+  const cy = my + dx * curveStrength;
   
-  // Control point
-  const cx = mx + offsetX;
-  const cy = my + offsetY;
+
   
   // Generate points along quadratic Bezier: B(t) = (1-t)²P0 + 2(1-t)tP1 + t²P2
   const points = [];
@@ -85,10 +89,20 @@ export default function RoutesLayer({ routes, ports, portColors, hoveredRoute, d
         const start = [route.origin_lon, route.origin_lat];
         const end = [route.dest_lon, route.dest_lat];
         
-        // Vary curve strength based on index to prevent overlap
-        const baseCurve = 0.15;
-        const variation = ((index % 7) - 3) * 0.05;
-        const curveStrength = baseCurve + variation;
+        // Get designated bend for this route
+        const sumatraPorts = ["Barus", "Air Bangis", "Padang", "Pulau Cingkuak", "Air Haji"];
+        const isOut = sumatraPorts.includes(route.origin_name);
+        
+        let curveStrength = 0.25;
+        if (SEA_BENDS[route.origin_name]) {
+          curveStrength = SEA_BENDS[route.origin_name];
+        } else if (SEA_BENDS[route.destination_name]) {
+          curveStrength = SEA_BENDS[route.destination_name] * -1; // Reverse bend for incoming
+        }
+        
+        // Add minimal variation to prevent total overlap of identical endpoints
+        const variation = ((index % 5) - 2) * 0.02;
+        curveStrength += variation;
         
         const coordinates = generateBezierCurve(start, end, curveStrength, 40);
         

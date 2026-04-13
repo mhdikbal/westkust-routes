@@ -16,16 +16,16 @@ import axios from "axios";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 const API = `${BACKEND_URL}/api`;
 
-const PORTS = [
-  { id: 1, name: "Barus", color: "#16a085" },
-  { id: 2, name: "Air Bangis", color: "#2980b9" },
-  { id: 3, name: "Padang", color: "#c0392b" },
-  { id: 4, name: "Pulau Cingkuak", color: "#e67e22" },
-  { id: 5, name: "Air Haji", color: "#27ae60" },
-  { id: 6, name: "Jambi", color: "#d35400" },
-  { id: 7, name: "Palembang", color: "#8e44ad" },
-  { id: 8, name: "Lampung", color: "#7f8c8d" },
-  { id: 9, name: "Batavia", color: "#2c3e50" },
+const PORTS_DATA = [
+  { name: "Barus", color: "#16a085" },
+  { name: "Air Bangis", color: "#2980b9" },
+  { name: "Padang", color: "#c0392b" },
+  { name: "Pulau Cingkuak", color: "#e67e22" },
+  { name: "Air Haji", color: "#27ae60" },
+  { name: "Jambi", color: "#d35400" },
+  { name: "Palembang", color: "#8e44ad" },
+  { name: "Lampung", color: "#7f8c8d" },
+  { name: "Batavia", color: "#2c3e50" },
 ];
 
 const CHART_TOOLTIP_STYLE = {
@@ -39,10 +39,28 @@ const CHART_TOOLTIP_STYLE = {
 };
 
 export default function PortComparison({ open, onClose }) {
-  const [selectedIds, setSelectedIds] = useState([3, 1, 2]); // Padang, Barus, Air Bangis
+  const [selectedIds, setSelectedIds] = useState([]);
   const [yearRange, setYearRange] = useState([1700, 1789]);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [dynamicPorts, setDynamicPorts] = useState([]);
+
+  // Fetch true port IDs from backend to avoid autoincrement sequence mismatch
+  useEffect(() => {
+    if (open && dynamicPorts.length === 0) {
+      axios.get(`${API}/forts/`).then(res => {
+        const ports = res.data.map(p => {
+          const matched = PORTS_DATA.find(pd => pd.name === p.name);
+          return { id: p.id, name: p.name, color: matched ? matched.color : p.color };
+        });
+        setDynamicPorts(ports);
+        // Default select first 3
+        if (ports.length >= 3) {
+          setSelectedIds([ports[0].id, ports[1].id, ports[2].id]);
+        }
+      }).catch(err => console.error("Error fetching ports for comparison:", err));
+    }
+  }, [open, dynamicPorts.length]);
 
   const togglePort = (id) => {
     if (selectedIds.includes(id)) {
@@ -150,7 +168,7 @@ export default function PortComparison({ open, onClose }) {
 
   const portColorMap = useMemo(() => {
     const m = {};
-    PORTS.forEach((p) => (m[p.name] = p.color));
+    dynamicPorts.forEach((p) => (m[p.name] = p.color));
     if (data?.ports) data.ports.forEach((p) => (m[p.name] = p.color));
     return m;
   }, [data]);
@@ -173,7 +191,7 @@ export default function PortComparison({ open, onClose }) {
           {/* Port selector */}
           <div className="flex items-center gap-3 flex-wrap">
             <span className="text-xs text-white/50">Pelabuhan:</span>
-            {PORTS.map((port) => (
+            {dynamicPorts.map((port) => (
               <label
                 key={port.id}
                 className={`flex items-center gap-1.5 px-2 py-1 rounded-full border text-xs cursor-pointer transition-all ${
