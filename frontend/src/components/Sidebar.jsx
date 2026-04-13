@@ -1,7 +1,6 @@
 import { Anchor, Ship, TrendingUp, Package, Network, Grid3X3, GitCompareArrows } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -118,8 +117,8 @@ export default function Sidebar({
             </div>
           </div>
 
-          <ScrollArea className="flex-1 mt-4 px-6">
-            <div className="space-y-2 pr-4 pb-4">
+          <div className="flex-1 overflow-y-auto mt-4 px-6 border-t border-white/10 pt-4">
+            <div className="space-y-2 pb-4">
               {filteredVoyages.slice(0, 100).map((voyage) => {
                 const badge = DIRECTION_BADGE[voyage.direction] || DIRECTION_BADGE.transit;
                 return (
@@ -130,36 +129,36 @@ export default function Sidebar({
                     data-testid={`voyage-item-${voyage.id}`}
                   >
                     <div className="flex items-start justify-between">
-                      <p className="font-serif font-semibold text-white text-sm mb-1">
+                      <p className="font-serif font-semibold text-white text-sm mb-1 line-clamp-2 pr-2">
                         {voyage.ship_name}
                       </p>
                       <span
-                        className="text-[10px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap"
+                        className="text-[10px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap shrink-0"
                         style={{ backgroundColor: badge.bg, color: badge.color }}
                       >
                         {badge.label}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-white/50">
-                      <span>{voyage.year}</span>
+                    <div className="flex items-center gap-2 text-[11px] text-white/50 mt-1 flex-wrap">
+                      <span className="font-mono text-white/70">{voyage.year}</span>
                       <span>•</span>
-                      <span>{voyage.origin_name_raw || "—"}</span>
+                      <span className="truncate max-w-[80px]">{voyage.origin_name_raw || "—"}</span>
                       <span>→</span>
-                      <span>{voyage.destination_name_raw || "—"}</span>
+                      <span className="truncate max-w-[80px]">{voyage.destination_name_raw || "—"}</span>
                     </div>
-                    <p className="text-xs text-[#00D4AA] font-medium mt-1">
-                      {(voyage.total_gulden || 0).toLocaleString()} Gulden
+                    <p className="text-xs font-mono text-[#00D4AA] font-bold mt-2">
+                      +{(voyage.total_gulden || 0).toLocaleString()} ƒ
                     </p>
                   </button>
                 );
               })}
               {filteredVoyages.length > 100 && (
-                <p className="text-center text-xs text-white/30 py-2">
-                  + {filteredVoyages.length - 100} pelayaran lainnya
+                <p className="text-center text-xs text-white/30 py-4 font-mono">
+                  + {filteredVoyages.length - 100} riwayat lainnya
                 </p>
               )}
             </div>
-          </ScrollArea>
+          </div>
         </TabsContent>
 
         <TabsContent value="statistics" className="flex-1 overflow-y-auto px-6 pb-4">
