@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, TrendingUp, PackageSearch, Filter } from "lucide-react";
+import { Loader2, TrendingUp, PackageSearch, Filter, ZoomIn, ZoomOut, Maximize } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sankey, Tooltip, ResponsiveContainer } from "recharts";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import axios from "axios";
 import { Slider } from "@/components/ui/slider";
 
@@ -175,21 +176,53 @@ export default function CommoditySankey({ open, onClose }) {
           )}
 
           {!loading && data && data.nodes.length > 0 && (
-            <div className="w-full h-full overflow-y-auto overflow-x-hidden custom-scrollbar">
-              <div style={{ height: Math.max(600, data.nodes.length * 35), minWidth: 800 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <Sankey
-                    data={data}
-                    nodePadding={25}
-                    margin={{ top: 20, bottom: 20, left: 40, right: 60 }}
-                    node={<CustomNode />}
-                    link={{ stroke: 'rgba(255, 255, 255, 0.15)' }}
-                    linkCurvature={0.4}
-                  >
-                    <Tooltip content={<CustomTooltip />} />
-                  </Sankey>
-                </ResponsiveContainer>
-              </div>
+            <div className="w-full h-full relative overflow-hidden bg-[#0d1221]/50 border border-white/5 rounded-lg">
+              <TransformWrapper
+                initialScale={0.9}
+                minScale={0.2}
+                maxScale={4}
+                centerOnInit={true}
+                wheel={{ step: 0.1 }}
+              >
+                {({ zoomIn, zoomOut, resetTransform }) => (
+                  <>
+                    <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 bg-[#0d1221]/80 backdrop-blur-md p-2 rounded-lg border border-white/10 shadow-lg">
+                      <button onClick={() => zoomIn(0.2)} className="p-2 bg-white/5 hover:bg-[#00D4AA]/20 text-white rounded transition-colors" title="Zoom In">
+                        <ZoomIn className="w-5 h-5" />
+                      </button>
+                      <button onClick={() => zoomOut(0.2)} className="p-2 bg-white/5 hover:bg-[#FF6B6B]/20 text-white rounded transition-colors" title="Zoom Out">
+                        <ZoomOut className="w-5 h-5" />
+                      </button>
+                      <button onClick={() => resetTransform()} className="p-2 bg-white/5 hover:bg-white/20 text-white rounded transition-colors" title="Reset View">
+                        <Maximize className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
+                      <div
+                        style={{
+                          width: 1400,
+                          height: Math.max(700, data.nodes.length * 40),
+                        }}
+                        className="relative px-12 py-8"
+                      >
+                        <ResponsiveContainer width="100%" height="100%">
+                          <Sankey
+                            data={data}
+                            nodePadding={30}
+                            margin={{ top: 20, bottom: 20, left: 40, right: 60 }}
+                            node={<CustomNode />}
+                            link={{ stroke: 'rgba(255, 255, 255, 0.15)' }}
+                            linkCurvature={0.4}
+                          >
+                            <Tooltip content={<CustomTooltip />} />
+                          </Sankey>
+                        </ResponsiveContainer>
+                      </div>
+                    </TransformComponent>
+                  </>
+                )}
+              </TransformWrapper>
             </div>
           )}
         </div>
