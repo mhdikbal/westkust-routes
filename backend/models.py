@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text, Date
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from geoalchemy2 import Geometry
 from database import Base
@@ -66,9 +66,35 @@ class Voyage(Base):
     direction = Column(String(20), nullable=True, index=True)  # "outbound" or "inbound"
     source_url = Column(Text, nullable=True)
 
+    # Relationship to cargo items
+    cargo_items = relationship("CargoItem", back_populates="voyage", cascade="all, delete-orphan")
+
     # Relationships
     origin_fort = relationship("Fort", foreign_keys=[origin_id], back_populates="outbound_voyages")
     destination_fort = relationship("Fort", foreign_keys=[destination_id], back_populates="inbound_voyages")
 
     def __repr__(self):
         return f"<Voyage(ship='{self.ship_name}', {self.origin_name_raw} -> {self.destination_name_raw}, dir={self.direction})>"
+
+
+class CargoItem(Base):
+    """Individual cargo item carried on a voyage."""
+    __tablename__ = "cargo_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    voyage_id = Column(Integer, ForeignKey("voyages.id", ondelete="CASCADE"), nullable=False, index=True)
+    produk = Column(String(200), nullable=False, index=True)
+    spesifikasi = Column(String(300), nullable=True)
+    qty_asli = Column(String(100), nullable=True)
+    unit = Column(String(50), nullable=True)
+    nilai_numerik = Column(Float, nullable=True)
+    gram = Column(Float, nullable=True)
+    gulden_nl = Column(Float, nullable=True)
+    gulden_india = Column(Float, nullable=True)
+    catatan = Column(Text, nullable=True)
+
+    # Relationship
+    voyage = relationship("Voyage", back_populates="cargo_items")
+
+    def __repr__(self):
+        return f"<CargoItem(produk='{self.produk}', qty='{self.qty_asli}', unit='{self.unit}')>"

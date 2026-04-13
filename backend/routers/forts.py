@@ -1,5 +1,5 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from pydantic import BaseModel, ConfigDict
@@ -190,6 +190,104 @@ async def list_fort_voyages(
     voy_result = await db.execute(query.order_by(Voyage.year))
     voyages = voy_result.scalars().all()
     return [VoyageBrief.model_validate(v) for v in voyages]
+
+
+@router.get("/compare", response_model=dict)
+async def compare_ports(
+    ids: str = Query(..., description="Comma-separated fort IDs, e.g. '1,3,9'"),
+    year_from: Optional[int] = None,
+    year_to: Optional[int] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Side-by-side comparison of multiple ports.
+    Returns stats, trends, and top products for each selected port.
+    """
+    fort_ids = [int(x.strip()) for x in ids.split(",") if x.strip().isdigit()]
+    if len(fort_ids) < 2:
+        raise HTTPException(status_code=400, detail="At least 2 port IDs required")
+    if len(fort_ids) > 5:
+        raise HTTPException(status_code=400, detail="Maximum 5 ports for comparison")
+
+    year_filters = []
+    if year_from:
+        year_filters.append(Voyage.year >= year_from)
+    if year_to:
+        year_filters.append(Voyage.year <= year_to)
+
+    ports = []
+    for fid in fort_ids:
+        fort_res = await db.execute(select(Fort).where(Fort.id == fid))
+        fort = fort_res.scalar_one_or_none()
+        if not fort:
+            continue
+
+        # Base query for this port
+        base = (Voyage.origin_id == fid) | (Voyage.destination_id == fid)
+
+        # Total stats
+        stats_q = select(
+            func.count(Voyage.id),
+            func.coalesce(func.sum(Voyage.total_gulden), 0),
+        ).where(base)
+        for yf in year_filters:
+            stats_q = stats_q.where(yf)
+        stats_res = await db.execute(stats_q)
+        total_voyages, total_value = stats_res.one()
+
+        # Outbound/inbound counts
+        out_q = select(func.count(Voyage.id)).where(Voyage.origin_id == fid)
+        in_q = select(func.count(Voyage.id)).where(Voyage.destination_id == fid)
+        for yf in year_filters:
+            out_q = out_q.where(yf)
+            in_q = in_q.where(yf)
+        out_count = (await db.execute(out_q)).scalar() or 0
+        in_count = (await db.execute(in_q)).scalar() or 0
+
+        # Top products
+        prod_q = (
+            select(Voyage.main_product, func.count(Voyage.id).label("cnt"))
+            .where(base, Voyage.main_product.isnot(None))
+        )
+        for yf in year_filters:
+            prod_q = prod_q.where(yf)
+        prod_q = prod_q.group_by(Voyage.main_product).order_by(func.count(Voyage.id).desc()).limit(8)
+        prod_res = await db.execute(prod_q)
+        top_products = [{"name": r[0], "count": r[1]} for r in prod_res.all()]
+
+        # Yearly trend
+        trend_q = (
+            select(
+                Voyage.year,
+                func.count(Voyage.id).label("count"),
+                func.coalesce(func.sum(Voyage.total_gulden), 0).label("value"),
+            )
+            .where(base, Voyage.year.isnot(None))
+        )
+        for yf in year_filters:
+            trend_q = trend_q.where(yf)
+        trend_q = trend_q.group_by(Voyage.year).order_by(Voyage.year)
+        trend_res = await db.execute(trend_q)
+        yearly_trend = [
+            {"year": r.year, "count": r.count, "value": float(r.value)}
+            for r in trend_res.all()
+        ]
+
+        ports.append({
+            "id": fort.id,
+            "name": fort.name,
+            "color": fort.color,
+            "port_type": fort.port_type,
+            "total_voyages": total_voyages,
+            "outbound": out_count,
+            "inbound": in_count,
+            "total_value": float(total_value),
+            "avg_cargo_value": round(float(total_value) / total_voyages, 2) if total_voyages > 0 else 0,
+            "top_products": top_products,
+            "yearly_trend": yearly_trend,
+        })
+
+    return {"ports": ports}
 
 
 @router.get("/routes/all", tags=["Map"])

@@ -1,8 +1,9 @@
-import { Anchor, Ship, TrendingUp, Package } from "lucide-react";
+import { Anchor, Ship, TrendingUp, Package, Network, Grid3X3, GitCompareArrows } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ExportButton from "@/components/ExportButton";
 import StatisticsPanel from "@/components/StatisticsPanel";
@@ -26,6 +27,9 @@ export default function Sidebar({
   searchTerm,
   setSearchTerm,
   onVoyageClick,
+  onOpenNetworkGraph,
+  onOpenHeatmap,
+  onOpenPortComparison,
 }) {
   // All 9 ports for filtering
   const ports = ["Padang", "Barus", "Air Bangis", "Pulau Cingkuak", "Air Haji"];
@@ -66,6 +70,9 @@ export default function Sidebar({
         <TabsList className="mx-6 mt-4 bg-white/5 border border-white/10">
           <TabsTrigger value="voyages" className="text-xs text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10">Pelayaran</TabsTrigger>
           <TabsTrigger value="statistics" className="text-xs text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10">Statistik</TabsTrigger>
+          <TabsTrigger value="analytics" className="text-xs text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/10">
+            Analitik
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="voyages" className="flex-1 flex flex-col min-h-0 mt-4">
@@ -157,6 +164,124 @@ export default function Sidebar({
 
         <TabsContent value="statistics" className="flex-1 overflow-y-auto px-6 pb-4">
           <StatisticsPanel voyages={filteredVoyages} stats={stats} />
+        </TabsContent>
+
+        {/* ═══════════════ Analytics Tab ═══════════════ */}
+        <TabsContent value="analytics" className="flex-1 overflow-y-auto px-6 pb-4">
+          <div className="space-y-4 mt-4">
+            <p className="text-xs text-white/40 leading-relaxed">
+              Visualisasi analitik interaktif untuk mengeksplorasi pola perdagangan VOC
+              di Sumatera Westkust secara mendalam.
+            </p>
+
+            {/* Network Graph Card */}
+            <button
+              onClick={onOpenNetworkGraph}
+              className="w-full text-left group"
+              data-testid="open-network-graph"
+            >
+              <Card className="p-4 bg-gradient-to-br from-[#00D4AA]/10 to-transparent border border-[#00D4AA]/20 shadow-none hover:border-[#00D4AA]/40 hover:bg-[#00D4AA]/5 transition-all group-hover:translate-y-[-2px] group-hover:shadow-lg">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-[#00D4AA]/20 flex items-center justify-center">
+                    <Network className="w-5 h-5 text-[#00D4AA]" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif font-bold text-white text-sm">Network Graph</h3>
+                    <p className="text-[11px] text-white/40">Jaringan pelabuhan & rute</p>
+                  </div>
+                </div>
+                <p className="text-xs text-white/50 leading-relaxed">
+                  Visualisasi force-directed graph yang menunjukkan pola hubungan perdagangan
+                  antar pelabuhan. Node = pelabuhan, edge = rute, ketebalan = frekuensi.
+                </p>
+              </Card>
+            </button>
+
+            {/* Heatmap Card */}
+            <button
+              onClick={onOpenHeatmap}
+              className="w-full text-left group"
+              data-testid="open-heatmap"
+            >
+              <Card className="p-4 bg-gradient-to-br from-[#FFD93D]/10 to-transparent border border-[#FFD93D]/20 shadow-none hover:border-[#FFD93D]/40 hover:bg-[#FFD93D]/5 transition-all group-hover:translate-y-[-2px] group-hover:shadow-lg">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-[#FFD93D]/20 flex items-center justify-center">
+                    <Grid3X3 className="w-5 h-5 text-[#FFD93D]" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif font-bold text-white text-sm">Heatmap Temporal</h3>
+                    <p className="text-[11px] text-white/40">Aktivitas per tahun × pelabuhan</p>
+                  </div>
+                </div>
+                <p className="text-xs text-white/50 leading-relaxed">
+                  Grid heatmap di mana sumbu X = tahun, sumbu Y = pelabuhan, dan warna
+                  menunjukkan intensitas perdagangan. Langsung terlihat kapan pelabuhan mana paling aktif.
+                </p>
+              </Card>
+            </button>
+
+            {/* Port Comparison Card */}
+            <button
+              onClick={onOpenPortComparison}
+              className="w-full text-left group"
+              data-testid="open-port-comparison"
+            >
+              <Card className="p-4 bg-gradient-to-br from-[#FF6B6B]/10 to-transparent border border-[#FF6B6B]/20 shadow-none hover:border-[#FF6B6B]/40 hover:bg-[#FF6B6B]/5 transition-all group-hover:translate-y-[-2px] group-hover:shadow-lg">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-[#FF6B6B]/20 flex items-center justify-center">
+                    <GitCompareArrows className="w-5 h-5 text-[#FF6B6B]" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif font-bold text-white text-sm">Perbandingan Pelabuhan</h3>
+                    <p className="text-[11px] text-white/40">Side-by-side analysis</p>
+                  </div>
+                </div>
+                <p className="text-xs text-white/50 leading-relaxed">
+                  Bandingkan 2-5 pelabuhan secara langsung: volume, komoditas, tren tahunan.
+                  Untuk analisis kompetisi antar pelabuhan — misal Padang vs Barus vs Air Bangis.
+                </p>
+              </Card>
+            </button>
+
+            {/* Quick stats from API */}
+            {stats && (
+              <Card className="p-4 bg-white/5 border border-white/10 shadow-none">
+                <h3 className="font-serif text-xs font-semibold text-white/60 mb-3 uppercase tracking-wider">
+                  Ringkasan Dataset
+                </h3>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Total Pelayaran</span>
+                    <span className="text-white font-mono">{stats.total_voyages}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Total Nilai</span>
+                    <span className="text-[#FFD93D] font-mono">
+                      {(stats.total_cargo_value / 1000000).toFixed(1)}M ƒ
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Outbound</span>
+                    <span className="text-[#00D4AA] font-mono">{stats.outbound_count}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Inbound</span>
+                    <span className="text-[#FF6B6B] font-mono">{stats.inbound_count}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Periode</span>
+                    <span className="text-white font-mono">
+                      {stats.year_min}–{stats.year_max}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Pelabuhan</span>
+                    <span className="text-white font-mono">{stats.ports?.length || 0}</span>
+                  </div>
+                </div>
+              </Card>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </div>
