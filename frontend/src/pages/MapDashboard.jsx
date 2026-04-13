@@ -163,12 +163,19 @@ export default function MapDashboard() {
   };
 
   const handlePortClick = (portName) => {
-    const shipsFromPort = allVoyages.filter((v) => {
-      return v.origin_name_raw === portName || v.destination_name_raw === portName;
-    });
     setSelectedPort(portName);
-    setPortShips(shipsFromPort);
   };
+
+  useEffect(() => {
+    if (selectedPort) {
+      const shipsFromPort = allVoyages.filter((v) => {
+        return v.origin_name_raw === selectedPort || v.destination_name_raw === selectedPort;
+      });
+      setPortShips(shipsFromPort);
+    } else {
+      setPortShips([]);
+    }
+  }, [selectedPort, allVoyages]);
 
   const handleViewShipDetail = (ship) => {
     setSelectedPort(null);
