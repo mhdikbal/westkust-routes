@@ -241,7 +241,7 @@ export default function MapDashboard() {
   };
 
   return (
-    <div className="position-relative vw-100 vh-100 overflow-hidden" style={{ backgroundColor: "#0a0e1a" }}>
+    <div className="relative w-screen h-screen overflow-hidden bg-[#0a0e1a]">
       <WelcomeModal open={showWelcome} onClose={() => setShowWelcome(false)} />
 
       <Map
@@ -251,8 +251,8 @@ export default function MapDashboard() {
           longitude: 103,
           latitude: -2.5,
           zoom: 5.5,
-          pitch: 60,
-          bearing: 15,
+          pitch: 0,
+          bearing: 0,
         }}
         style={{ width: "100%", height: "100%" }}
         mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
