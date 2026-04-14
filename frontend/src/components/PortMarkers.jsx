@@ -1,230 +1,117 @@
 import { useEffect, useRef } from "react";
 import { useMap } from "react-map-gl/maplibre";
 
-/**
- * PortMarkers — Fort/port icons on the map
- *
- * Renders all 9 ports with SVG fort icons.
- * Port type indicated by color ring:
- *   - Departure ports: teal ring
- *   - Arrival ports: coral ring
- *   - Both: gold ring (Padang)
- */
-
-const PORT_TYPE_MAP = {
-  Barus: "departure",
-  "Air Bangis": "departure",
-  Padang: "both",
-  "Pulau Cingkuak": "departure",
-  "Air Haji": "departure",
-  Jambi: "arrival",
-  Palembang: "arrival",
-  Lampung: "arrival",
-  Batavia: "arrival",
-};
-
-const TYPE_RING_COLOR = {
-  departure: "#00D4AA",
-  arrival: "#FF6B6B",
-  both: "#FFD93D",
-};
-
-// Function to generate Star Fort (Benteng Bintang) GeoJSON
-function createFortGeometry(name, coords, color) {
-  const [lng, lat] = coords;
-  
-  // Ratios for rendering the star trace
-  const rOuter = 0.015; // Outer bastion radius
-  const rInner = 0.006;  // Inner curtain wall radius
-  const rCore = 0.004;   // Central keep radius
-  
-  // Height configurations (in meters)
-  const baseHeight = 0;
-  const bastionHeight = 35; 
-  const coreHeight = 85; 
-
-  const features = [];
-
-  // Generate a Star Star Polygon (4 points Bastion)
-  const starCoords = [];
-  const numPoints = 4;
-  for (let i = 0; i <= numPoints * 2; i++) {
-    const angle = (i * Math.PI) / numPoints;
-    // Alternate between outer bastion and inner indent
-    const radius = i % 2 === 0 ? rInner : rOuter;
-    // We adjust by PI/4 so the bastions point diagonally or cardinally
-    const adjustedAngle = angle + (Math.PI / 4);
-    starCoords.push([
-      lng + radius * Math.cos(adjustedAngle),
-      lat + radius * Math.sin(adjustedAngle)
-    ]);
-  }
-  
-  features.push({
-    type: "Feature",
-    properties: {
-      name,
-      color: color,
-      height: bastionHeight,
-      base_height: baseHeight,
-      isCore: false
-    },
-    geometry: {
-      type: "Polygon",
-      coordinates: [starCoords]
-    }
-  });
-
-  // Generate Central Keep (Octagon core inside the star)
-  const coreCoords = [];
-  for (let i = 0; i <= 8; i++) {
-    const angle = (i * Math.PI) / 4;
-    coreCoords.push([
-      lng + rCore * Math.cos(angle),
-      lat + rCore * Math.sin(angle)
-    ]);
-  }
-
-  // To give it a gleaming crown, we make the core slightly brighter or distinct
-  features.push({
-    type: "Feature",
-    properties: {
-      name,
-      // A brighter tint of the main color for the inner dome
-      color: "#FFFFFF",
-      height: coreHeight,
-      base_height: bastionHeight, // Sits on top of the bastion!
-      isCore: true
-    },
-    geometry: {
-      type: "Polygon",
-      coordinates: [coreCoords]
-    }
-  });
-
-  return {
-    type: "FeatureCollection",
-    features
-  };
-}
-
-export default function PortMarkers({ ports, onPortClick, portColors }) {
+export default function PortMarkers({ ports, onPortClick }) {
   const { current: map } = useMap();
   const markersAdded = useRef(false);
 
   useEffect(() => {
     if (!map || !map.getMap || markersAdded.current) return;
-
+    
     const maplibreMap = map.getMap();
     if (!maplibreMap) return;
 
-    const setupMarkers = async () => {
+    const setupMarkers = () => {
       try {
-        const portEntries = Object.entries(ports);
-        
-        portEntries.forEach(([name, coords]) => {
-          const color = portColors?.[name] || "#B85D19";
-          const portType = PORT_TYPE_MAP[name] || "departure";
-          const displayName = name === "Batavia" ? "Sunda Kelapa (Batavia)" : name;
+        const portFeatures = Object.entries(ports).map(([name, coords]) => ({
+          type: "Feature",
+          properties: { 
+            name,
+            displayName: name === "Batavia" ? "Sunda Kelapa (Batavia)" : name
+          },
+          geometry: {
+            type: "Point",
+            coordinates: coords,
+          },
+        }));
+
+        const portsGeoJSON = {
+          type: "FeatureCollection",
+          features: portFeatures,
+        };
+
+        // Create fort SVG icon
+        const fortSvg = `
+          <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="24" cy="24" r="20" fill="#B85D19" stroke="#FFFFFF" stroke-width="3"/>
+            <g transform="translate(24, 24)">
+              <rect x="-8" y="-6" width="16" height="12" fill="#FFFFFF"/>
+              <rect x="-10" y="-10" width="4" height="4" fill="#FFFFFF"/>
+              <rect x="6" y="-10" width="4" height="4" fill="#FFFFFF"/>
+              <rect x="-2" y="-2" width="4" height="6" fill="#B85D19"/>
+            </g>
+          </svg>
+        `;
+
+        const img = new Image(48, 48);
+        img.onload = () => {
+          if (!maplibreMap.hasImage("fort-icon")) {
+            maplibreMap.addImage("fort-icon", img);
+          }
           
-          const sourceId = `port-3d-src-${name.replace(/\\s/g, "-").toLowerCase()}`;
-          const glowLayerId = `port-3d-glow-lyr-${name.replace(/\\s/g, "-").toLowerCase()}`;
-          const extrusionLayerId = `port-3d-extrusion-lyr-${name.replace(/\\s/g, "-").toLowerCase()}`;
-          const textLayerId = `port-3d-text-lyr-${name.replace(/\\s/g, "-").toLowerCase()}`;
-
-          // Create the 3D fortress block geometries
-          const geojsonData = createFortGeometry(name, coords, color);
-
-          if (!maplibreMap.getSource(sourceId)) {
-            maplibreMap.addSource(sourceId, {
-              type: "geojson",
-              data: geojsonData
+          if (!maplibreMap.getSource("port-markers-source")) {
+            maplibreMap.addSource("port-markers-source", {
+               type: "geojson",
+               data: portsGeoJSON,
             });
           }
 
-          // Add a holographic glowing base under the fort
-          if (!maplibreMap.getLayer(glowLayerId)) {
+          if (!maplibreMap.getLayer("port-markers")) {
             maplibreMap.addLayer({
-              id: glowLayerId,
-              type: "circle",
-              source: sourceId,
-              filter: ["==", ["get", "isCore"], true], // Target only the core point wrapper
-              paint: {
-                "circle-color": color,
-                "circle-radius": 35,
-                "circle-blur": 1.5,
-                "circle-opacity": 0.5,
-                "circle-pitch-alignment": "map" // Lays flat on the ground
-              }
-            });
-          }
-
-          // Add the 3D Fill Extrusion Layer
-          if (!maplibreMap.getLayer(extrusionLayerId)) {
-            maplibreMap.addLayer({
-              id: extrusionLayerId,
-              type: "fill-extrusion",
-              source: sourceId,
-              paint: {
-                // Get the fill-extrusion-color from the source 'color' property.
-                "fill-extrusion-color": ["get", "color"],
-                // Get fill-extrusion-height from the source 'height' property.
-                "fill-extrusion-height": ["get", "height"],
-                // Get fill-extrusion-base from the source 'base_height' property.
-                "fill-extrusion-base": ["get", "base_height"],
-                // Make extrusions slightly opaque
-                "fill-extrusion-opacity": 0.9,
-                // Add ambient Light interaction
-                "fill-extrusion-vertical-gradient": true
-              }
-            });
-
-            // Make the 3D object clickable
-            maplibreMap.on("click", extrusionLayerId, (e) => {
-              if (e.features && e.features.length > 0) {
-                const portName = e.features[0].properties.name;
-                onPortClick(portName);
-                e.originalEvent.stopPropagation();
-              }
-            });
-
-            maplibreMap.on("mouseenter", extrusionLayerId, () => {
-              maplibreMap.getCanvas().style.cursor = "pointer";
-            });
-
-            maplibreMap.on("mouseleave", extrusionLayerId, () => {
-              maplibreMap.getCanvas().style.cursor = "";
-            });
-          }
-
-          // Add a floating text label layer hovering above the fortress
-          if (!maplibreMap.getLayer(textLayerId)) {
-            // We just need one label per port. We can use a separate feature or just reference the center point.
-            // Maplibre handles labels on polygons by placing it at the centroid!
-            maplibreMap.addLayer({
-              id: textLayerId,
+              id: "port-markers",
               type: "symbol",
-              source: sourceId,
+              source: "port-markers-source",
               layout: {
-                "text-field": displayName,
+                "icon-image": "fort-icon",
+                "icon-size": 1,
+                "icon-allow-overlap": true,
+                "text-field": ["get", "displayName"],
                 "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
-                "text-size": 13,
-                "text-offset": [0, -3], // Lift it high above the structure
-                "text-anchor": "bottom",
-                "text-allow-overlap": false
+                "text-size": 14,
+                "text-offset": [0, 2.5],
+                "text-anchor": "top",
               },
               paint: {
-                "text-color": "#FFFFFF",
-                "text-halo-color": "rgba(0,0,0,0.8)", 
+                "text-color": "#1A2421",
+                "text-halo-color": "#FFFFFF",
                 "text-halo-width": 2,
               },
-              filter: ["==", ["get", "isCore"], true] // Only place label on the Core Geometry
             });
           }
-        });
 
-        markersAdded.current = true;
-        console.log(`✅ Added 3D Fortress blocks for ${portEntries.length} ports`);
+          // Add click handler with proper event attachment
+          const clickHandler = (e) => {
+            if (e.features && e.features.length > 0) {
+              const portName = e.features[0].properties.name;
+              console.log("Fort clicked:", portName);
+              onPortClick(portName);
+              e.originalEvent.stopPropagation();
+            }
+          };
+
+          const mouseEnterHandler = () => {
+            maplibreMap.getCanvas().style.cursor = "pointer";
+          };
+
+          const mouseLeaveHandler = () => {
+            maplibreMap.getCanvas().style.cursor = "";
+          };
+
+          maplibreMap.on("click", "port-markers", clickHandler);
+          maplibreMap.on("mouseenter", "port-markers", mouseEnterHandler);
+          maplibreMap.on("mouseleave", "port-markers", mouseLeaveHandler);
+
+          console.log("✅ Fort click handlers attached");
+          
+          markersAdded.current = true;
+          console.log("✅ Added fort markers for", Object.keys(ports).length, "ports");
+        };
+        
+        img.onerror = (e) => {
+          console.error("Failed to load fort icon:", e);
+        };
+        
+        img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(fortSvg);
       } catch (error) {
         console.error("Error adding port markers:", error);
       }
@@ -237,7 +124,7 @@ export default function PortMarkers({ ports, onPortClick, portColors }) {
     }
 
     return () => {};
-  }, [map, ports, onPortClick, portColors]);
+  }, [map, ports, onPortClick]);
 
   return null;
 }

@@ -241,7 +241,7 @@ export default function MapDashboard() {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#0a0e1a]">
+    <div className="position-relative vw-100 vh-100 overflow-hidden" style={{ backgroundColor: "#0a0e1a" }}>
       <WelcomeModal open={showWelcome} onClose={() => setShowWelcome(false)} />
 
       <Map
