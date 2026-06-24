@@ -44,8 +44,8 @@ services:
     container_name: voc_frontend
     restart: always
     environment:
-      DJANGO_SECRET_KEY: "voc-westkust-django-secret-key-2024"
-      DEBUG: "True"
+      DJANGO_SECRET_KEY: "***REDACTED***"
+      DEBUG: "False"
       API_BASE_URL: "http://backend:8000"
     depends_on:
       - backend

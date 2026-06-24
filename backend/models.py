@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import INT4RANGE
 from geoalchemy2 import Geometry
 from database import Base
 
@@ -16,6 +17,13 @@ class Fort(Base):
     # "departure" | "arrival" | "both"
     port_type = Column(String(20), nullable=False, server_default="departure")
     location = Column(Geometry(geometry_type="POINT", srid=4326), nullable=True)
+
+    # AMH enrichment fields (US-06 — Sprint ATM)
+    nama_historis   = Column(String(255), nullable=True)
+    designasi_voc   = Column(String(100), nullable=True)
+    fungsi_historis = Column(Text,        nullable=True)
+    periode_aktif   = Column(INT4RANGE,   nullable=True)
+    amh_url         = Column(String(500), nullable=True)
 
     # Relationships
     outbound_voyages = relationship(

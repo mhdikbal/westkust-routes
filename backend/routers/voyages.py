@@ -253,6 +253,7 @@ async def get_voyage_routes(
     year_from: Optional[int] = None,
     year_to: Optional[int] = None,
     direction: Optional[str] = None,
+    limit: int = Query(default=50, ge=1, le=200),
     db: AsyncSession = Depends(get_db),
 ):
     """
@@ -303,6 +304,7 @@ async def get_voyage_routes(
 
     result = await db.execute(query)
     routes = result.all()
+    routes = routes[:limit]
 
     return [
         RouteAggregation(
