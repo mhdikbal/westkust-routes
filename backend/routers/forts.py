@@ -99,10 +99,11 @@ async def list_forts(db: AsyncSession = Depends(get_db)):
         )
         out_count, out_total = out_res.one()
         
-        # Inbound stats
+        # Inbound stats — exclude self-referential (origin == destination same fort)
         in_res = await db.execute(
             select(func.count(Voyage.id), func.coalesce(func.sum(Voyage.total_gulden), 0))
             .where(Voyage.destination_id == fort.id)
+            .where(Voyage.origin_id != fort.id)
         )
         in_count, in_total = in_res.one()
 
@@ -165,9 +166,9 @@ async def compare_ports(
         stats_res = await db.execute(stats_q)
         total_voyages, total_value = stats_res.one()
 
-        # Outbound/inbound counts
+        # Outbound/inbound counts — exclude self-referential from inbound
         out_q = select(func.count(Voyage.id)).where(Voyage.origin_id == fid)
-        in_q = select(func.count(Voyage.id)).where(Voyage.destination_id == fid)
+        in_q = select(func.count(Voyage.id)).where(Voyage.destination_id == fid).where(Voyage.origin_id != fid)
         for yf in year_filters:
             out_q = out_q.where(yf)
             in_q = in_q.where(yf)
@@ -265,6 +266,7 @@ async def get_fort_enrichment(fort_id: int, db: AsyncSession = Depends(get_db)):
     in_res = await db.execute(
         select(func.count(Voyage.id), func.coalesce(func.sum(Voyage.total_gulden), 0))
         .where(Voyage.destination_id == fort_id)
+        .where(Voyage.origin_id != fort_id)
     )
     in_count, in_total = in_res.one()
 
@@ -312,7 +314,10 @@ async def get_fort(fort_id: int, db: AsyncSession = Depends(get_db)):
     outbound_voyages = outbound_res.scalars().all()
 
     inbound_res = await db.execute(
-        select(Voyage).where(Voyage.destination_id == fort_id).order_by(Voyage.year)
+        select(Voyage)
+        .where(Voyage.destination_id == fort_id)
+        .where(Voyage.origin_id != fort_id)
+        .order_by(Voyage.year)
     )
     inbound_voyages = inbound_res.scalars().all()
 
@@ -332,7 +337,9 @@ async def get_fort(fort_id: int, db: AsyncSession = Depends(get_db)):
             func.coalesce(func.sum(Voyage.total_gulden), 0),
             func.min(Voyage.year),
             func.max(Voyage.year),
-        ).where(Voyage.destination_id == fort_id)
+        )
+        .where(Voyage.destination_id == fort_id)
+        .where(Voyage.origin_id != fort_id)
     )
     in_count, in_total, in_min, in_max = in_stats.one()
 

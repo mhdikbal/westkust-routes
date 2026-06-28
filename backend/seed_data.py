@@ -2,7 +2,9 @@
 Seed script — inserts fort metadata and voyage data from JSON into PostgreSQL.
 Safe to run multiple times (idempotent via upsert logic).
 
-Data source: scrawling/Data_BGS_Sumatra_Full.json (31MB, 4700+ records)
+Data sources:
+  - scrawling/Data_BGS_Sumatra_Full.json  (4700+ outbound/transit records)
+  - scrawling/Data_BGS_Inbound_Full.json  (375 Batavia→Westkust inbound records)
 Direction algorithm:
   - OUTBOUND = origin is a Sumatera Westkust port (Padang, Barus, Air Bangis, etc.)
   - INBOUND  = destination is a Sumatera Westkust port
@@ -23,8 +25,8 @@ DATABASE_SYNC_URL = os.getenv(
 )
 
 # ── Data file resolution ─────────────────────────────────────────────────────
-# Priority: scrawling folder (full dataset) > data folder > docker path
 _BASE = Path(__file__).parent.parent
+
 DATA_FILE_CANDIDATES = [
     _BASE / "scrawling" / "Data_BGS_Sumatra_Full.json",
     _BASE / "data" / "Data_Westkust_Map.json",
@@ -35,6 +37,16 @@ DATA_FILE = None
 for candidate in DATA_FILE_CANDIDATES:
     if candidate.exists():
         DATA_FILE = candidate
+        break
+
+INBOUND_FILE_CANDIDATES = [
+    _BASE / "scrawling" / "Data_BGS_Inbound_Full.json",
+    Path("/app/scrawling/Data_BGS_Inbound_Full.json"),
+]
+INBOUND_FILE = None
+for candidate in INBOUND_FILE_CANDIDATES:
+    if candidate.exists():
+        INBOUND_FILE = candidate
         break
 
 
@@ -144,6 +156,9 @@ NAME_MAPPING = {
     "Aijer Hadji":     "Air Haji",
     "Ayer Haji":       "Air Haji",
     "Air Hadji":       "Air Haji",
+    "Airhadji":        "Air Haji",
+    "Pulau Tjinkuk":   "Pulau Cingkuak",
+    "Poeloe Tjinkuk":  "Pulau Cingkuak",
 }
 
 
@@ -209,13 +224,101 @@ def wait_for_db(max_retries: int = 30, delay: float = 2.0):
     raise RuntimeError("❌ Database not available.")
 
 
+def _insert_records(session, records, fort_map, label="", existing_refs=None):
+    """Insert voyage records from a list of JSON dicts. Returns (added, skipped, cargo_total, dir_counts)."""
+    from models import Voyage, CargoItem
+    added = 0
+    skipped = 0
+    cargo_total = 0
+    direction_counts = {"outbound": 0, "inbound": 0, "transit": 0}
+
+    for rec in records:
+        # Skip if voyage_ref already in DB (avoid UniqueViolation on overlap)
+        if existing_refs is not None and rec.get("ID") in existing_refs:
+            skipped += 1
+            continue
+        raw_asal = rec.get("Asal", "").strip()
+        raw_tujuan = rec.get("Tujuan", "").strip()
+
+        origin_name = clean_name(raw_asal)
+        dest_name = clean_name(raw_tujuan)
+
+        origin_fort = fort_map.get(origin_name)
+        dest_fort = fort_map.get(dest_name)
+
+        if not origin_fort and not dest_fort:
+            skipped += 1
+            continue
+
+        direction = classify_direction(origin_name, dest_name)
+        direction_counts[direction] += 1
+
+        dep_date = arr_date = None
+        tgl_berangkat = rec.get("Tgl_Berangkat")
+        tgl_tiba = rec.get("Tgl_Tiba")
+        if isinstance(tgl_berangkat, dict):
+            dep_date = tgl_berangkat.get("iso")
+        if isinstance(tgl_tiba, dict):
+            arr_date = tgl_tiba.get("iso")
+
+        voyage = Voyage(
+            voyage_ref=rec.get("ID"),
+            origin_id=origin_fort.id if origin_fort else None,
+            destination_id=dest_fort.id if dest_fort else None,
+            origin_name_raw=raw_asal,
+            destination_name_raw=raw_tujuan,
+            ship_name=rec.get("Nama_Kapal", "Unknown"),
+            captain=rec.get("Kapten"),
+            tonnage=str(rec.get("Tonaj", "")) if rec.get("Tonaj") else None,
+            year=rec.get("Tahun"),
+            departure_date=dep_date,
+            arrival_date=arr_date,
+            total_gulden=rec.get("Total_Gulden_NL"),
+            main_product=rec.get("Produk_Utama"),
+            all_products=rec.get("Semua_Produk"),
+            cargo_count=rec.get("Jumlah_Item_Kargo"),
+            destination=dest_name,
+            duration_days=rec.get("Durasi_Hari"),
+            direction=direction,
+            source_url=rec.get("URL"),
+        )
+        session.add(voyage)
+        session.flush()
+
+        kargo_list = rec.get("Kargo", [])
+        if kargo_list and isinstance(kargo_list, list):
+            for kargo in kargo_list:
+                session.add(CargoItem(
+                    voyage_id=voyage.id,
+                    produk=kargo.get("produk", "unknown"),
+                    spesifikasi=kargo.get("spesifikasi"),
+                    qty_asli=kargo.get("qty_asli"),
+                    unit=kargo.get("unit"),
+                    nilai_numerik=kargo.get("nilai_numerik"),
+                    gram=kargo.get("gram"),
+                    gulden_nl=kargo.get("gulden_nl"),
+                    gulden_india=kargo.get("gulden_india"),
+                    catatan=kargo.get("catatan"),
+                ))
+                cargo_total += 1
+
+        added += 1
+        if added % 500 == 0:
+            session.commit()
+            print(f"    {label}... {added} voyages, {cargo_total} cargo items")
+
+    session.commit()
+    return added, skipped, cargo_total, direction_counts
+
+
 def seed():
-    from models import Fort, Voyage, CargoItem, Base
+    from models import Fort, Voyage, Base
+    from sqlalchemy import func
     engine = create_engine(DATABASE_SYNC_URL, echo=False)
 
     with engine.begin() as conn:
         conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis"))
-    
+
     Base.metadata.create_all(engine)
 
     with Session(engine) as session:
@@ -236,120 +339,114 @@ def seed():
         session.commit()
         print(f"  ✔ Forts seeded: {len(fort_map)} ports")
 
-        # ---------- Check if data already exists to speed up boot ----------
-        from sqlalchemy import func
-        existing_voyages = session.execute(select(func.count()).select_from(Voyage)).scalar()
-        if existing_voyages > 0:
-            print(f"  ✔ Database already contains {existing_voyages} voyages. Skipping seed.")
-            return
+        # ---------- Seed outbound/transit voyages ----------
+        existing_total = session.execute(select(func.count()).select_from(Voyage)).scalar()
+        if existing_total == 0:
+            if not DATA_FILE or not DATA_FILE.exists():
+                print(f"  ⚠️  Outbound data file not found.")
+            else:
+                session.execute(text("TRUNCATE TABLE cargo_items RESTART IDENTITY CASCADE"))
+                session.execute(text("TRUNCATE TABLE voyages RESTART IDENTITY CASCADE"))
+                print(f"  📂 Loading outbound data: {DATA_FILE}")
+                with open(DATA_FILE, encoding="utf-8") as f:
+                    records = json.load(f)
+                print(f"  📊 {len(records)} outbound records")
+                added, skipped, cargo_total, dir_counts = _insert_records(session, records, fort_map, "outbound")
+                print(f"  ✔ Outbound: {added} voyages ({dir_counts['outbound']} out, {dir_counts['transit']} transit), {skipped} skipped, {cargo_total} cargo items")
+        else:
+            print(f"  ✔ Outbound/transit voyages already present ({existing_total}). Skipping.")
 
-        # ---------- Seed voyages + cargo ----------
-        session.execute(text("TRUNCATE TABLE cargo_items RESTART IDENTITY CASCADE"))
-        session.execute(text("TRUNCATE TABLE voyages RESTART IDENTITY CASCADE"))
-        
-        if not DATA_FILE or not DATA_FILE.exists():
-            print(f"  ⚠️  Data file not found. Searched: {[str(c) for c in DATA_FILE_CANDIDATES]}")
-            return
+        # ---------- Fix inbound voyages (UPDATE mis-scraped records) ----------
+        # The outbound scraper captured arrival_place as Asal for 375 Batavia→Westkust voyages.
+        # The inbound scraper has the correct data (Asal=Batavia).
+        # We UPDATE those records rather than INSERT (same voyage_ref, wrong origin).
+        existing_inbound = session.execute(
+            select(func.count()).select_from(Voyage).where(Voyage.direction == "inbound")
+        ).scalar()
+        if existing_inbound == 0:
+            if not INBOUND_FILE or not INBOUND_FILE.exists():
+                print(f"  ⚠️  Inbound data file not found.")
+            else:
+                print(f"  📂 Loading inbound data (UPDATE mode): {INBOUND_FILE}")
+                with open(INBOUND_FILE, encoding="utf-8") as f:
+                    inbound_records = json.load(f)
+                print(f"  📊 {len(inbound_records)} inbound records to reconcile")
 
-        print(f"  📂 Loading data from: {DATA_FILE}")
-        with open(DATA_FILE, encoding="utf-8") as f:
-            records = json.load(f)
-        print(f"  📊 Loaded {len(records)} records from JSON")
+                updated = 0
+                inserted = 0
+                skipped_ib = 0
 
-        added = 0
-        skipped = 0
-        cargo_total = 0
-        direction_counts = {"outbound": 0, "inbound": 0, "transit": 0}
+                existing_refs = {
+                    row[0]: row[1]
+                    for row in session.execute(
+                        select(Voyage.voyage_ref, Voyage.id).where(Voyage.voyage_ref.isnot(None))
+                    ).all()
+                }
 
-        for rec in records:
-            raw_asal = rec.get("Asal", "").strip()
-            raw_tujuan = rec.get("Tujuan", "").strip()
-            
-            origin_name = clean_name(raw_asal)
-            dest_name = clean_name(raw_tujuan)
+                for rec in inbound_records:
+                    raw_asal  = rec.get("Asal", "").strip()
+                    raw_tujuan = rec.get("Tujuan", "").strip()
+                    origin_name = clean_name(raw_asal)
+                    dest_name   = clean_name(raw_tujuan)
+                    origin_fort = fort_map.get(origin_name)
+                    dest_fort   = fort_map.get(dest_name)
 
-            origin_fort = fort_map.get(origin_name)
-            dest_fort = fort_map.get(dest_name)
+                    if not origin_fort and not dest_fort:
+                        skipped_ib += 1
+                        continue
 
-            if not origin_fort and not dest_fort:
-                skipped += 1
-                continue
+                    direction = classify_direction(origin_name, dest_name)
 
-            direction = classify_direction(origin_name, dest_name)
-            direction_counts[direction] += 1
+                    voyage_ref = rec.get("ID")
+                    if voyage_ref in existing_refs:
+                        # UPDATE existing record with correct origin data
+                        voyage_id = existing_refs[voyage_ref]
+                        voyage = session.get(Voyage, voyage_id)
+                        if voyage:
+                            voyage.origin_name_raw = raw_asal
+                            voyage.destination_name_raw = raw_tujuan
+                            voyage.origin_id = origin_fort.id if origin_fort else None
+                            voyage.destination_id = dest_fort.id if dest_fort else None
+                            voyage.direction = direction
+                            voyage.destination = dest_name
+                            updated += 1
+                    else:
+                        # New record — insert
+                        dep_date = arr_date = None
+                        tgl_b = rec.get("Tgl_Berangkat")
+                        tgl_t = rec.get("Tgl_Tiba")
+                        if isinstance(tgl_b, dict): dep_date = tgl_b.get("iso")
+                        if isinstance(tgl_t, dict): arr_date = tgl_t.get("iso")
+                        session.add(Voyage(
+                            voyage_ref=voyage_ref,
+                            origin_id=origin_fort.id if origin_fort else None,
+                            destination_id=dest_fort.id if dest_fort else None,
+                            origin_name_raw=raw_asal,
+                            destination_name_raw=raw_tujuan,
+                            ship_name=rec.get("Nama_Kapal", "Unknown"),
+                            captain=rec.get("Kapten"),
+                            year=rec.get("Tahun"),
+                            departure_date=dep_date,
+                            arrival_date=arr_date,
+                            total_gulden=rec.get("Total_Gulden_NL"),
+                            main_product=rec.get("Produk_Utama"),
+                            all_products=rec.get("Semua_Produk"),
+                            cargo_count=rec.get("Jumlah_Item_Kargo"),
+                            destination=dest_name,
+                            duration_days=rec.get("Durasi_Hari"),
+                            direction=direction,
+                            source_url=rec.get("URL"),
+                        ))
+                        inserted += 1
 
-            # Extract dates from nested JSON objects
-            dep_date = None
-            arr_date = None
-            tgl_berangkat = rec.get("Tgl_Berangkat")
-            tgl_tiba = rec.get("Tgl_Tiba")
-            if isinstance(tgl_berangkat, dict):
-                dep_date = tgl_berangkat.get("iso")
-            if isinstance(tgl_tiba, dict):
-                arr_date = tgl_tiba.get("iso")
-
-            voyage = Voyage(
-                voyage_ref=rec.get("ID"),
-                origin_id=origin_fort.id if origin_fort else None,
-                destination_id=dest_fort.id if dest_fort else None,
-                origin_name_raw=raw_asal,
-                destination_name_raw=raw_tujuan,
-                ship_name=rec.get("Nama_Kapal", "Unknown"),
-                captain=rec.get("Kapten"),
-                tonnage=str(rec.get("Tonaj", "")) if rec.get("Tonaj") else None,
-                year=rec.get("Tahun"),
-                departure_date=dep_date,
-                arrival_date=arr_date,
-                total_gulden=rec.get("Total_Gulden_NL"),
-                main_product=rec.get("Produk_Utama"),
-                all_products=rec.get("Semua_Produk"),
-                cargo_count=rec.get("Jumlah_Item_Kargo"),
-                destination=dest_name,
-                duration_days=rec.get("Durasi_Hari"),
-                direction=direction,
-                source_url=rec.get("URL"),
-            )
-            session.add(voyage)
-            session.flush()  # Get voyage.id for cargo items
-
-            # Seed cargo items from Kargo[] array
-            kargo_list = rec.get("Kargo", [])
-            if kargo_list and isinstance(kargo_list, list):
-                for kargo in kargo_list:
-                    cargo_item = CargoItem(
-                        voyage_id=voyage.id,
-                        produk=kargo.get("produk", "unknown"),
-                        spesifikasi=kargo.get("spesifikasi"),
-                        qty_asli=kargo.get("qty_asli"),
-                        unit=kargo.get("unit"),
-                        nilai_numerik=kargo.get("nilai_numerik"),
-                        gram=kargo.get("gram"),
-                        gulden_nl=kargo.get("gulden_nl"),
-                        gulden_india=kargo.get("gulden_india"),
-                        catatan=kargo.get("catatan"),
-                    )
-                    session.add(cargo_item)
-                    cargo_total += 1
-
-            added += 1
-
-            # Batch commit every 500 voyages for performance
-            if added % 500 == 0:
                 session.commit()
-                print(f"    ... {added} voyages, {cargo_total} cargo items seeded")
+                print(f"  ✔ Inbound reconcile: {updated} updated, {inserted} inserted, {skipped_ib} skipped")
+        else:
+            print(f"  ✔ Inbound voyages already present ({existing_inbound}). Skipping.")
 
-        session.commit()
-        
-        print(f"\n  ══════════════════════════════════════════")
-        print(f"  ✔ Seeding Complete!")
-        print(f"  ──────────────────────────────────────────")
-        print(f"  📦 Total voyages added:  {added}")
-        print(f"  📋 Total cargo items:    {cargo_total}")
-        print(f"  ⏭️  Total skipped:        {skipped}")
-        print(f"  🚢 Outbound:             {direction_counts['outbound']}")
-        print(f"  🏠 Inbound:              {direction_counts['inbound']}")
-        print(f"  🔄 Transit:              {direction_counts['transit']}")
-        print(f"  ══════════════════════════════════════════\n")
+    print(f"\n  ══════════════════════════════════════════")
+    print(f"  ✔ Seed complete.")
+    print(f"  ══════════════════════════════════════════\n")
 
 
 if __name__ == "__main__":
