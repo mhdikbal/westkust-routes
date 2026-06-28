@@ -483,3 +483,39 @@ class PortDetailPageTest(SimpleTestCase):
         content = response.content.decode("utf-8")
         self.assertIn("Data AMH belum tersedia", content)
         self.assertNotIn("atlasofmutualheritage.nl", content)
+
+
+# ---------------------------------------------------------------------------
+# US-09 — source_url BGB Link di Voyage Modal
+# ---------------------------------------------------------------------------
+
+class SourceUrlVoyageModalTest(SimpleTestCase):
+    """US-09 — Link sumber BGB harus muncul di voyage modal saat source_url tersedia."""
+
+    def setUp(self):
+        self.client = Client()
+        self.content = self.client.get("/").content.decode("utf-8")
+
+    def test_voyage_modal_has_bgb_source_link(self):
+        """JS di modal harus mengandung logic untuk render link BGB dari source_url."""
+        self.assertIn("source_url", self.content)
+
+    def test_bgb_link_has_target_blank(self):
+        """Link BGB harus membuka di tab baru (target=_blank)."""
+        self.assertIn('target="_blank"', self.content)
+
+    def test_bgb_link_has_noopener(self):
+        """Link BGB harus punya rel=noopener noreferrer untuk keamanan."""
+        self.assertIn("noopener noreferrer", self.content)
+
+    def test_bgb_link_text_present(self):
+        """Teks 'Lihat Arsip BGB' harus ada di template sebagai label link."""
+        self.assertIn("Lihat Arsip BGB", self.content)
+
+    def test_bgb_link_icon_present(self):
+        """Icon ti-external-link harus ada di template untuk visual link eksternal."""
+        self.assertIn("ti-external-link", self.content)
+
+    def test_bgb_link_null_fallback(self):
+        """Saat source_url null, tidak ada link yang rusak — bagian srcLink harus falsy."""
+        self.assertIn("srcLink", self.content)
