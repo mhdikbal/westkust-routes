@@ -1,9 +1,16 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from database import init_db
 from routers import forts, voyages
+
+# Baca ALLOWED_ORIGINS dari env var, parse sebagai comma-separated list.
+# Default: hanya Nginx entry point. Tambahkan origin lain via env var di .env.
+_origins_raw = os.getenv("ALLOWED_ORIGINS", "http://localhost:8084")
+ALLOWED_ORIGINS = [o.strip() for o in _origins_raw.split(",") if o.strip()]
 
 
 @asynccontextmanager
@@ -21,9 +28,9 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=False,   # tidak ada cookie/session — sesuai temuan audit
+    allow_methods=["GET", "OPTIONS"],  # API read-only; OPTIONS wajib untuk preflight
     allow_headers=["*"],
 )
 

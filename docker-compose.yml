@@ -25,6 +25,7 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-vocuser}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-vocdb}
       DATABASE_SYNC_URL: postgresql://${POSTGRES_USER:-vocuser}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-vocdb}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8084}
       PYTHONUNBUFFERED: "1"
     volumes:
       - ./data:/app/data
@@ -32,8 +33,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - "8000:8000"
+    # Port 8000 tidak di-expose ke host — nginx dan frontend menjangkau backend
+    # via Docker internal network (container name 'backend:8000').
+    # Untuk debug langsung: docker compose exec backend curl localhost:8000/docs
+    expose:
+      - "8000"
     command: >
       sh -c "python seed_data.py && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
 
