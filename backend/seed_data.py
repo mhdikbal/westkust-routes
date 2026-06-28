@@ -19,10 +19,9 @@ from sqlalchemy import create_engine, text, select
 from sqlalchemy.orm import Session
 
 # Sync URL for seeding (psycopg2)
-DATABASE_SYNC_URL = os.getenv(
-    "DATABASE_SYNC_URL", 
-    "postgresql://vocuser:***REDACTED***@localhost:5432/vocdb"
-)
+DATABASE_SYNC_URL = os.getenv("DATABASE_SYNC_URL")
+if not DATABASE_SYNC_URL:
+    raise RuntimeError("DATABASE_SYNC_URL env var is required but not set")
 
 # ── Data file resolution ─────────────────────────────────────────────────────
 _BASE = Path(__file__).parent.parent

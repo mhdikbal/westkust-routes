@@ -34,6 +34,13 @@ pgdata/
 *.swo
 *~
 
+# Environment secrets — JANGAN commit file .env ke git
+.env
+.env.local
+.env.production
+.env.staging
+docker-compose.override.yml
+
 # OS
 .DS_Store
 Thumbs.db

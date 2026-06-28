@@ -5,13 +5,13 @@ services:
     container_name: voc_db
     restart: always
     environment:
-      POSTGRES_DB: vocdb
-      POSTGRES_USER: vocuser
-      POSTGRES_PASSWORD: ***REDACTED***
+      POSTGRES_DB: ${POSTGRES_DB:-vocdb}
+      POSTGRES_USER: ${POSTGRES_USER:-vocuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U vocuser -d vocdb"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-vocuser} -d ${POSTGRES_DB:-vocdb}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,8 +23,8 @@ services:
     container_name: voc_backend
     restart: always
     environment:
-      DATABASE_URL: postgresql+asyncpg://vocuser:***REDACTED***@db:5432/vocdb
-      DATABASE_SYNC_URL: postgresql://vocuser:***REDACTED***@db:5432/vocdb
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-vocuser}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-vocdb}
+      DATABASE_SYNC_URL: postgresql://${POSTGRES_USER:-vocuser}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-vocdb}
       PYTHONUNBUFFERED: "1"
     volumes:
       - ./data:/app/data
@@ -44,9 +44,9 @@ services:
     container_name: voc_frontend
     restart: always
     environment:
-      DJANGO_SECRET_KEY: "***REDACTED***"
-      DEBUG: "False"
-      API_BASE_URL: "http://backend:8000"
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DEBUG: ${DEBUG:-False}
+      API_BASE_URL: ${API_BASE_URL:-http://backend:8000}
     depends_on:
       - backend
     ports:
