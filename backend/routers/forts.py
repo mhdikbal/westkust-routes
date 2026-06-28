@@ -76,6 +76,7 @@ class FortEnrichmentResponse(BaseModel):
     fungsi_historis: Optional[str] = None
     periode_aktif: Optional[str] = None
     amh_url: Optional[str] = None
+    amh_images: Optional[list] = None
     outbound_count: int = 0
     inbound_count: int = 0
     total_value_out: float = 0.0
@@ -293,6 +294,7 @@ async def get_fort_enrichment(fort_id: int, db: AsyncSession = Depends(get_db)):
         fungsi_historis=fort.fungsi_historis,
         periode_aktif=periode_str,
         amh_url=fort.amh_url,
+        amh_images=fort.amh_images,
         outbound_count=out_count,
         inbound_count=in_count,
         total_value_out=float(out_total or 0),

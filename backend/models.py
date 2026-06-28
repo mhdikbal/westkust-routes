@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import INT4RANGE
+from sqlalchemy.dialects.postgresql import INT4RANGE, JSONB
 from geoalchemy2 import Geometry
 from database import Base
 
@@ -24,6 +24,7 @@ class Fort(Base):
     fungsi_historis = Column(Text,        nullable=True)
     periode_aktif   = Column(INT4RANGE,   nullable=True)
     amh_url         = Column(String(500), nullable=True)
+    amh_images      = Column(JSONB,        nullable=True)
 
     # Relationships
     outbound_voyages = relationship(

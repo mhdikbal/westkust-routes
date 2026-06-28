@@ -35,6 +35,7 @@ def make_fort_enriched(
     fungsi_historis="Markas komandan perdagangan Pantai Barat Sumatra",
     periode_aktif=None,
     amh_url="https://www.atlasofmutualheritage.nl/page/5751/padang",
+    amh_images=None,
 ):
     """Create a Fort SimpleNamespace with all enrichment fields."""
     return SimpleNamespace(
@@ -50,6 +51,7 @@ def make_fort_enriched(
         fungsi_historis=fungsi_historis,
         periode_aktif=periode_aktif,
         amh_url=amh_url,
+        amh_images=amh_images,
     )
 
 
@@ -266,3 +268,56 @@ async def test_enrichment_does_not_break_existing_detail():
     assert data["name"] == "Padang"
     assert "outbound_voyages" in data
     assert "inbound_voyages" in data
+
+
+# ─── Tests: US-10 AMH Gallery — amh_images field ─────────────────────────────
+
+MOCK_FORT_WITH_AMH_IMAGES = make_fort_enriched(
+    id=1,
+    name="Padang",
+    amh_url="https://www.atlasofmutualheritage.nl/page/5751/padang",
+    amh_images=[
+        {
+            "title": "Kaart Westkust",
+            "creator": "VOC",
+            "year": "1780",
+            "thumbnail_url": None,
+            "page_url": "https://www.atlasofmutualheritage.nl/page/5751/padang",
+        }
+    ],
+)
+
+
+@pytest.mark.asyncio
+async def test_enrichment_returns_amh_images_field():
+    """GET /api/forts/{id}/enrichment harus punya key 'amh_images' di response (boleh null atau list)."""
+    from database import get_db
+    app.dependency_overrides[get_db] = _mock_db_found(MOCK_FORT_WITH_AMH_IMAGES)
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/1/enrichment")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "amh_images" in data, "Field 'amh_images' harus ada di response enrichment"
+
+
+@pytest.mark.asyncio
+async def test_enrichment_amh_images_list_or_null():
+    """Nilai amh_images harus list atau null — bukan tipe lain (int, str, bool, dll.)."""
+    from database import get_db
+    app.dependency_overrides[get_db] = _mock_db_found(MOCK_FORT_WITH_AMH_IMAGES)
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/1/enrichment")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    value = data.get("amh_images")
+    assert value is None or isinstance(value, list), (
+        f"amh_images harus bertipe list atau null, dapat: {type(value).__name__}"
+    )

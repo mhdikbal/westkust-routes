@@ -506,6 +506,22 @@
     }
     .modal-loading i { font-size: 2rem; animation: spin 1s linear infinite; }
 
+    /* BGB source link footer */
+    .modal-bgb-footer {
+      padding: .65rem 1.5rem .9rem;
+      border-top: 1px solid var(--border);
+      background: rgba(44,83,100,0.03);
+    }
+    #modal-bgb-link {
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: var(--ocean); font-size: .8rem; font-weight: 600;
+      text-decoration: none;
+      transition: color .18s;
+    }
+    #modal-bgb-link:hover { color: var(--accent); text-decoration: underline; }
+    #modal-bgb-link:focus-visible { outline: 2px solid var(--ocean); outline-offset: 2px; border-radius: 3px; }
+    #modal-bgb-link i { font-size: .9rem; }
+
     /* Map elements */
     .fort-marker-icon { background: none; border: none; }
     .leaflet-tooltip {
@@ -765,6 +781,17 @@
         <i class="ti ti-loader-2"></i>
         <span>Memuat detail pelayaran...</span>
       </div>
+    </div>
+    <div id="modal-bgb-footer" class="modal-bgb-footer">
+      <a id="modal-bgb-link"
+         href="#"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Buka sumber arsip Bookkeeper-General Batavia di tab baru"
+         style="display:none;">
+        <i class="ti ti-external-link" aria-hidden="true"></i>
+        Lihat sumber di BGB
+      </a>
     </div>
   </div>
 </div>
@@ -1293,10 +1320,11 @@ async function openVoyageModal(voyageId) {
   const modal = document.getElementById("voyage-modal");
   const body = document.getElementById("modal-body-content");
 
-  // Reset header
+  // Reset header and BGB link
   document.getElementById("modal-ship-name").textContent = "Memuat...";
   document.getElementById("modal-ship-meta").textContent = "";
   body.innerHTML = `<div class="modal-loading"><i class="ti ti-loader-2"></i><span>Memuat detail pelayaran...</span></div>`;
+  document.getElementById("modal-bgb-link").style.display = "none";
   modal.classList.add("active");
 
   let voyage, cargo;
@@ -1342,13 +1370,6 @@ async function openVoyageModal(voyageId) {
     cargoHtml = `<div class="empty-state" style="padding:1rem 0;"><i class="ti ti-package"></i>Data kargo detail tidak tersedia.</div>`;
   }
 
-  const srcLink = voyage.source_url
-    ? `<a href="${esc(voyage.source_url)}" target="_blank" rel="noopener noreferrer"
-          style="display:inline-flex;align-items:center;gap:.4rem;color:var(--ocean);font-size:.8rem;font-weight:600;">
-         <i class="ti ti-external-link"></i> Lihat Arsip BGB
-       </a>`
-    : "";
-
   body.innerHTML = `
     <div class="modal-data-grid">
       <div class="modal-data-item">
@@ -1371,8 +1392,16 @@ async function openVoyageModal(voyageId) {
     <div class="cargo-list">
       <div class="cargo-list-label"><i class="ti ti-package" aria-hidden="true"></i> Detail Kargo</div>
       ${cargoHtml}
-    </div>
-    ${srcLink ? `<div style="margin-top:1.25rem;">${srcLink}</div>` : ""}`;
+    </div>`;
+
+  // BGB source link — show only when source_url is present
+  const bgbLink = document.getElementById("modal-bgb-link");
+  if (voyage.source_url) {
+    bgbLink.href = voyage.source_url;
+    bgbLink.style.display = "";
+  } else {
+    bgbLink.style.display = "none";
+  }
 }
 
 function closeModal() {

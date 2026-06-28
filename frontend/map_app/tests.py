@@ -496,6 +496,10 @@ class SourceUrlVoyageModalTest(SimpleTestCase):
         self.client = Client()
         self.content = self.client.get("/").content.decode("utf-8")
 
+    def test_voyage_modal_has_bgb_link_element(self):
+        """Elemen #modal-bgb-link harus ada di DOM sebagai anchor link sumber BGB."""
+        self.assertIn('id="modal-bgb-link"', self.content)
+
     def test_voyage_modal_has_bgb_source_link(self):
         """JS di modal harus mengandung logic untuk render link BGB dari source_url."""
         self.assertIn("source_url", self.content)
@@ -509,13 +513,83 @@ class SourceUrlVoyageModalTest(SimpleTestCase):
         self.assertIn("noopener noreferrer", self.content)
 
     def test_bgb_link_text_present(self):
-        """Teks 'Lihat Arsip BGB' harus ada di template sebagai label link."""
-        self.assertIn("Lihat Arsip BGB", self.content)
+        """Teks link BGB harus ada di template sebagai label link."""
+        self.assertIn("Lihat sumber di BGB", self.content)
 
     def test_bgb_link_icon_present(self):
         """Icon ti-external-link harus ada di template untuk visual link eksternal."""
         self.assertIn("ti-external-link", self.content)
 
     def test_bgb_link_null_fallback(self):
-        """Saat source_url null, tidak ada link yang rusak — bagian srcLink harus falsy."""
-        self.assertIn("srcLink", self.content)
+        """Saat source_url null, tidak ada link yang rusak — bgbLink.style.display none."""
+        self.assertIn("bgbLink", self.content)
+
+
+# ---------------------------------------------------------------------------
+# US-10 — AMH Gallery (Sumber Kartografi)
+# ---------------------------------------------------------------------------
+
+_AMH_IMAGE_ITEM = {
+    "title": "Kaart Westkust",
+    "creator": "VOC",
+    "year": "1780",
+    "thumbnail_url": None,
+    "page_url": "https://www.atlasofmutualheritage.nl/page/5751/padang",
+}
+
+MOCK_FORT_PADANG_WITH_GALLERY = {
+    **MOCK_FORT_PADANG_ENRICHED,
+    "amh_images": [_AMH_IMAGE_ITEM],
+}
+
+MOCK_FORT_PADANG_EMPTY_GALLERY = {
+    **MOCK_FORT_PADANG_ENRICHED,
+    "amh_images": [],
+}
+
+
+class AmhGalleryTemplateTest(SimpleTestCase):
+    """
+    US-10 — Gallery kartografi AMH di halaman detail pelabuhan.
+
+    Verifikasi:
+      1. Saat amh_images berisi item → seksi "Sumber Kartografi" muncul.
+      2. Saat amh_images kosong ([]) → seksi tidak dirender.
+      3. page_url dari item gallery muncul sebagai link di halaman.
+    """
+
+    def setUp(self):
+        self.client = Client()
+
+    @patch("map_app.views.httpx.get")
+    def test_gallery_renders_when_amh_images_present(self, mock_get):
+        """Jika amh_images berisi ≥1 item, 'Sumber Kartografi' harus muncul di halaman."""
+        mock_get.side_effect = [
+            _make_httpx_response([MOCK_FORT_PADANG_WITH_GALLERY]),
+            _make_httpx_response(MOCK_FORT_PADANG_WITH_GALLERY),
+        ]
+        response = self.client.get("/ports/padang/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Sumber Kartografi", content)
+
+    @patch("map_app.views.httpx.get")
+    def test_gallery_hidden_when_amh_images_empty(self, mock_get):
+        """Jika amh_images = [] (kosong), 'Sumber Kartografi' TIDAK boleh muncul di halaman."""
+        mock_get.side_effect = [
+            _make_httpx_response([MOCK_FORT_PADANG_EMPTY_GALLERY]),
+            _make_httpx_response(MOCK_FORT_PADANG_EMPTY_GALLERY),
+        ]
+        response = self.client.get("/ports/padang/")
+        content = response.content.decode("utf-8")
+        self.assertNotIn("Sumber Kartografi", content)
+
+    @patch("map_app.views.httpx.get")
+    def test_gallery_card_has_external_link(self, mock_get):
+        """page_url dari item gallery harus muncul sebagai href di halaman."""
+        mock_get.side_effect = [
+            _make_httpx_response([MOCK_FORT_PADANG_WITH_GALLERY]),
+            _make_httpx_response(MOCK_FORT_PADANG_WITH_GALLERY),
+        ]
+        response = self.client.get("/ports/padang/")
+        content = response.content.decode("utf-8")
+        self.assertIn(_AMH_IMAGE_ITEM["page_url"], content)
