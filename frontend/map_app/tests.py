@@ -13,17 +13,16 @@ Covers:
   - Security: CSP meta tag, no sensitive data in page source
   - Accessibility markup (aria-* attributes, keyboard handler hooks)
 
-NOTE: The database teardown error "settings.DATABASES is improperly configured"
-is an infrastructure issue with the container environment (no DATABASES ENGINE
-set for tests). It does NOT affect whether the test assertions pass or fail.
+All test classes use SimpleTestCase — no database required since views fetch
+from FastAPI backend via httpx (mocked in tests that hit view logic).
 """
 import json
 from unittest.mock import patch, MagicMock
-from django.test import TestCase, Client
+from django.test import SimpleTestCase, Client
 from django.urls import reverse
 
 
-class IndexViewStatusTest(TestCase):
+class IndexViewStatusTest(SimpleTestCase):
     """Basic smoke tests — the page must load without error."""
 
     def setUp(self):
@@ -50,7 +49,7 @@ class IndexViewStatusTest(TestCase):
         self.assertNotEqual(response.status_code, 500)
 
 
-class LayoutBNavbarTest(TestCase):
+class LayoutBNavbarTest(SimpleTestCase):
     """Verify navbar elements introduced in Layout B are present in the HTML."""
 
     def setUp(self):
@@ -88,7 +87,7 @@ class LayoutBNavbarTest(TestCase):
         self.assertIn('value="1789"', self.content)
 
 
-class LayoutBWelcomePanelTest(TestCase):
+class LayoutBWelcomePanelTest(SimpleTestCase):
     """Verify the floating welcome panel with port grid is rendered."""
 
     def setUp(self):
@@ -112,7 +111,7 @@ class LayoutBWelcomePanelTest(TestCase):
         self.assertIn("Atlas Maritim", self.content)
 
 
-class LayoutBFortPanelTest(TestCase):
+class LayoutBFortPanelTest(SimpleTestCase):
     """Verify the slide-over fort panel structure is in the DOM."""
 
     def setUp(self):
@@ -157,7 +156,7 @@ class LayoutBFortPanelTest(TestCase):
         self.assertIn('id="load-more-btn"', self.content)
 
 
-class LayoutBVoyageModalTest(TestCase):
+class LayoutBVoyageModalTest(SimpleTestCase):
     """Verify the voyage detail modal is present in the DOM."""
 
     def setUp(self):
@@ -181,7 +180,7 @@ class LayoutBVoyageModalTest(TestCase):
         self.assertIn('id="modal-ship-name"', self.content)
 
 
-class LayoutBMapTest(TestCase):
+class LayoutBMapTest(SimpleTestCase):
     """Verify the full-screen map container is rendered."""
 
     def setUp(self):
@@ -201,7 +200,7 @@ class LayoutBMapTest(TestCase):
         self.assertIn("ant-path", self.content.lower())
 
 
-class LayoutBSecurityTest(TestCase):
+class LayoutBSecurityTest(SimpleTestCase):
     """Security checks for Layout B template."""
 
     def setUp(self):
@@ -230,7 +229,7 @@ class LayoutBSecurityTest(TestCase):
         self.assertNotIn('"total_gulden":', self.content)
 
 
-class LayoutBAccessibilityTest(TestCase):
+class LayoutBAccessibilityTest(SimpleTestCase):
     """Basic accessibility checks for Layout B markup."""
 
     def setUp(self):
@@ -266,7 +265,7 @@ class LayoutBAccessibilityTest(TestCase):
 # US-05 — Direction Toggle
 # ---------------------------------------------------------------------------
 
-class DirectionToggleTest(TestCase):
+class DirectionToggleTest(SimpleTestCase):
     """US-05 — 3 toggle buttons untuk filter arah pelayaran di navbar."""
 
     def setUp(self):
@@ -378,7 +377,7 @@ def _make_httpx_response(data, status_code=200):
     return mock_resp
 
 
-class PortDetailPageTest(TestCase):
+class PortDetailPageTest(SimpleTestCase):
     """
     US-02 & US-03 — /ports/<slug>/ halaman detail pelabuhan historis.
 
