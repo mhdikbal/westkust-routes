@@ -17,9 +17,14 @@ All test classes use SimpleTestCase — no database required since views fetch
 from FastAPI backend via httpx (mocked in tests that hit view logic).
 """
 import json
+from pathlib import Path
 from unittest.mock import patch, MagicMock
 from django.test import SimpleTestCase, Client
 from django.urls import reverse
+
+# atlas.js content — read once for tests that verify JS logic extracted from index.html (US-11)
+_ATLAS_JS_PATH = Path(__file__).parent / "static" / "map_app" / "js" / "atlas.js"
+ATLAS_JS = _ATLAS_JS_PATH.read_text(encoding="utf-8") if _ATLAS_JS_PATH.exists() else ""
 
 
 class IndexViewStatusTest(SimpleTestCase):
@@ -219,8 +224,8 @@ class LayoutBSecurityTest(SimpleTestCase):
                              msg=f"Suspicious pattern '{pattern}' found in page source")
 
     def test_esc_function_defined(self):
-        """esc() XSS-escaping helper must be defined in JavaScript."""
-        self.assertIn("function esc(", self.content)
+        """esc() XSS-escaping helper must be defined in atlas.js (extracted in US-11)."""
+        self.assertIn("function esc(", ATLAS_JS)
 
     def test_no_inline_user_data_in_html(self):
         """Initial HTML must not embed raw user data — data loaded via fetch."""
@@ -253,12 +258,12 @@ class LayoutBAccessibilityTest(SimpleTestCase):
         self.assertIn("aria-expanded", self.content)
 
     def test_escape_key_handler_defined(self):
-        """Keyboard Escape handler must be defined in JS for modal/panel close."""
-        self.assertIn('"Escape"', self.content)
+        """Keyboard Escape handler must be defined in atlas.js (extracted in US-11)."""
+        self.assertIn('"Escape"', ATLAS_JS)
 
     def test_port_card_keyboard_handler_defined(self):
-        """Port cards must respond to Enter/Space keys (onkeydown in template)."""
-        self.assertIn("onkeydown", self.content)
+        """Port card keyboard handler must exist in atlas.js (extracted in US-11)."""
+        self.assertIn("onkeydown", ATLAS_JS)
 
 
 # ---------------------------------------------------------------------------
@@ -289,16 +294,16 @@ class DirectionToggleTest(SimpleTestCase):
         self.assertIn('id="dir-in"', self.content)
 
     def test_set_direction_function_defined(self):
-        """Fungsi setDirection() harus terdefinisi di JS."""
-        self.assertIn("function setDirection(", self.content)
+        """Fungsi setDirection() harus terdefinisi di atlas.js (extracted in US-11)."""
+        self.assertIn("function setDirection(", ATLAS_JS)
 
     def test_active_direction_state_variable(self):
-        """State variable activeDirection harus ada di JS."""
-        self.assertIn("activeDirection", self.content)
+        """State variable activeDirection harus ada di atlas.js (extracted in US-11)."""
+        self.assertIn("activeDirection", ATLAS_JS)
 
     def test_direction_filter_passed_to_api(self):
-        """drawRoutes harus kirim direction ke API saat activeDirection bukan 'all'."""
-        self.assertIn('params.set("direction", activeDirection)', self.content)
+        """drawRoutes harus kirim direction ke API — check atlas.js (extracted in US-11)."""
+        self.assertIn('params.set("direction", activeDirection)', ATLAS_JS)
 
     def test_direction_buttons_have_aria_pressed(self):
         """Tombol toggle harus punya aria-pressed untuk aksesibilitas."""
@@ -501,8 +506,8 @@ class SourceUrlVoyageModalTest(SimpleTestCase):
         self.assertIn('id="modal-bgb-link"', self.content)
 
     def test_voyage_modal_has_bgb_source_link(self):
-        """JS di modal harus mengandung logic untuk render link BGB dari source_url."""
-        self.assertIn("source_url", self.content)
+        """atlas.js harus mengandung logic untuk render link BGB dari source_url."""
+        self.assertIn("source_url", ATLAS_JS)
 
     def test_bgb_link_has_target_blank(self):
         """Link BGB harus membuka di tab baru (target=_blank)."""
@@ -521,8 +526,8 @@ class SourceUrlVoyageModalTest(SimpleTestCase):
         self.assertIn("ti-external-link", self.content)
 
     def test_bgb_link_null_fallback(self):
-        """Saat source_url null, tidak ada link yang rusak — bgbLink.style.display none."""
-        self.assertIn("bgbLink", self.content)
+        """Saat source_url null, bgbLink.style.display none — check atlas.js."""
+        self.assertIn("bgbLink", ATLAS_JS)
 
 
 # ---------------------------------------------------------------------------
