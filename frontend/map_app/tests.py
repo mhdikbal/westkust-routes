@@ -667,3 +667,37 @@ class TimelineSliderTest(SimpleTestCase):
         self.assertNotEqual(idx, -1, "setupYearFilter tidak ditemukan di atlas.js")
         func_body = ATLAS_JS[idx: idx + 1000]
         self.assertIn("loadGrafikData", func_body)
+
+
+# ─── Sea Lane Routing ─────────────────────────────────────────────────────────
+
+class SeaLaneRoutingTest(SimpleTestCase):
+    """Verifikasi SEA_WAYPOINTS ada di atlas.js dan mencakup rute utama."""
+
+    def test_sea_waypoints_constant_exists(self):
+        """SEA_WAYPOINTS harus ada di atlas.js menggantikan SEA_BENDS."""
+        self.assertIn("SEA_WAYPOINTS", ATLAS_JS)
+
+    def test_sea_bends_replaced_by_waypoints(self):
+        """SEA_BENDS tidak boleh lagi digunakan sebagai mekanisme routing utama."""
+        self.assertNotIn("SEA_BENDS", ATLAS_JS)
+
+    def test_western_ports_to_batavia_have_waypoints(self):
+        """Semua pelabuhan westkust utama harus punya waypoint ke Batavia."""
+        for port in ["Padang", "Barus", "Air Bangis", "Pulau Cingkuak", "Air Haji"]:
+            self.assertIn(f'"{port}→Batavia"', ATLAS_JS,
+                          f'Waypoint untuk {port}→Batavia tidak ditemukan di SEA_WAYPOINTS')
+
+    def test_batavia_to_western_ports_have_waypoints(self):
+        """Rute inbound Batavia → westkust harus punya waypoint balik."""
+        for port in ["Padang", "Barus", "Air Bangis", "Pulau Cingkuak", "Air Haji"]:
+            self.assertIn(f'"Batavia→{port}"', ATLAS_JS,
+                          f'Waypoint untuk Batavia→{port} tidak ditemukan di SEA_WAYPOINTS')
+
+    def test_drawroutes_uses_sea_waypoints_lookup(self):
+        """drawRoutes harus pakai SEA_WAYPOINTS, bukan SEA_BENDS langsung."""
+        idx = ATLAS_JS.find("async function drawRoutes")
+        self.assertNotEqual(idx, -1, "drawRoutes tidak ditemukan di atlas.js")
+        func_body = ATLAS_JS[idx: idx + 2200]
+        self.assertIn("SEA_WAYPOINTS", func_body)
+        self.assertIn("routeKey", func_body)

@@ -17,10 +17,26 @@ const FORT_COORDS = {
   "Batavia":        [-6.1165019, 106.8165121],
 };
 
-const SEA_BENDS = {
-  "Barus": 0.45, "Air Bangis": 0.35, "Padang": 0.3,
-  "Pulau Cingkuak": 0.3, "Air Haji": 0.3,
-  "Jambi": -0.15, "Palembang": -0.15, "Lampung": 0.1
+// Waypoints along actual sea lanes — prevents routes from cutting through Sumatra.
+// Format: [lat, lng]. Western ports → Batavia route: Indian Ocean → Sunda Strait.
+// Eastern ports → Batavia route: south through Java Sea.
+const SEA_WAYPOINTS = {
+  "Barus→Batavia":          [[-1.0, 96.5], [-5.2, 100.8], [-5.9, 105.4]],
+  "Air Bangis→Batavia":     [[-2.0, 97.8], [-5.2, 101.0], [-5.9, 105.4]],
+  "Padang→Batavia":         [[-3.2, 99.0], [-5.4, 101.5], [-5.9, 105.4]],
+  "Pulau Cingkuak→Batavia": [[-3.2, 99.2], [-5.4, 101.5], [-5.9, 105.4]],
+  "Air Haji→Batavia":       [[-3.5, 99.5], [-5.5, 101.8], [-5.9, 105.4]],
+  "Jambi→Batavia":          [[-3.0, 104.5], [-5.5, 106.2]],
+  "Palembang→Batavia":      [[-4.0, 105.0], [-5.5, 106.2]],
+  "Lampung→Batavia":        [[-5.9, 105.5]],
+  "Batavia→Barus":          [[-5.9, 105.4], [-5.2, 100.8], [-1.0, 96.5]],
+  "Batavia→Air Bangis":     [[-5.9, 105.4], [-5.2, 101.0], [-2.0, 97.8]],
+  "Batavia→Padang":         [[-5.9, 105.4], [-5.4, 101.5], [-3.2, 99.0]],
+  "Batavia→Pulau Cingkuak": [[-5.9, 105.4], [-5.4, 101.5], [-3.2, 99.2]],
+  "Batavia→Air Haji":       [[-5.9, 105.4], [-5.5, 101.8], [-3.5, 99.5]],
+  "Batavia→Jambi":          [[-5.5, 106.2], [-3.0, 104.5]],
+  "Batavia→Palembang":      [[-5.5, 106.2], [-4.0, 105.0]],
+  "Batavia→Lampung":        [[-5.9, 105.5]],
 };
 
 // Icon class per port type for welcome grid
@@ -188,8 +204,9 @@ async function drawRoutes(yFrom, yTo) {
     const dir = r.direction || "transit";
     const color   = dir === "outbound" ? "#2C5364" : dir === "inbound" ? "#D48166" : "#8B9E97";
     const delay   = dir === "outbound" ? 2800 : dir === "inbound" ? 2200 : 3500;
-    const bend = SEA_BENDS[r.origin_name] || 0.25;
-    const pts = getBezierCurve(s, e, bend);
+    const routeKey = `${r.origin_name}→${r.destination_name}`;
+    const vias = SEA_WAYPOINTS[routeKey];
+    const pts = vias ? [s, ...vias, e] : getBezierCurve(s, e, 0.25);
     const weight = Math.min(2 + (r.count || 1) / 20, 7);
 
     const ant = L.polyline.antPath(pts, {
