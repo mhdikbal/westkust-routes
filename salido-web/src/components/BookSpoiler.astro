@@ -1,0 +1,257 @@
+---
+const bab = [
+  {
+    num: 1,
+    title: 'Prolog',
+    spoiler: true,
+    excerpt: 'Sudah sejak lama, emas sebagai logam mulia, diburu manusia. Memburunya bagai mereguk air garam, belum akan puas sampai bertemu induknya.',
+    body: 'Dari legenda Ofir dan Swarnadbumi, dari puisi Camões dan surat Sultan Aceh kepada Raja Inggris, hingga blueprint lubang tambang yang digambar tangan seorang insinyur Belanda di kaki Gunung Arum.',
+    href: '/sejarah',
+  },
+  {
+    num: 2,
+    title: 'Bentangan Alam & Kerentanan',
+    spoiler: false,
+    excerpt: null,
+    body: null,
+    href: null,
+  },
+  {
+    num: 3,
+    title: 'Salido sebagai Nagari Tradisional',
+    spoiler: false,
+    excerpt: null,
+    body: null,
+    href: null,
+  },
+  {
+    num: 4,
+    title: 'VOC Menambang Emas',
+    spoiler: false,
+    excerpt: null,
+    body: null,
+    href: null,
+  },
+  {
+    num: 5,
+    title: 'Struktur Sosial yang Berlapis',
+    spoiler: false,
+    excerpt: null,
+    body: null,
+    href: null,
+  },
+  {
+    num: 6,
+    title: 'Eksplorasi dan Eksploitasi Kembali, 1881–1937',
+    spoiler: false,
+    excerpt: null,
+    body: null,
+    href: null,
+  },
+  {
+    num: 7,
+    title: 'Tambang dalam Memori',
+    spoiler: false,
+    excerpt: null,
+    body: null,
+    href: null,
+  },
+  {
+    num: 8,
+    title: 'Napak Tilas',
+    spoiler: false,
+    excerpt: null,
+    body: null,
+    href: null,
+  },
+  {
+    num: 9,
+    title: 'Epilog',
+    spoiler: false,
+    excerpt: null,
+    body: null,
+    href: null,
+  },
+];
+---
+
+<section class="journal">
+
+  <header class="journal-header">
+    <p class="journal-kicker">Sillida — Gunung Arum, Enclave Kolonial yang Gagal</p>
+    <h2 class="journal-title">Isi Buku</h2>
+  </header>
+
+  <ol class="journal-list">
+    {bab.map(b => (
+      <li class={`journal-entry reveal${b.spoiler ? ' journal-entry--open' : ''}`}>
+        <div class="entry-num">{String(b.num).padStart(2, '0')}</div>
+        <div class="entry-body">
+          {b.href
+            ? <a href={b.href} class="entry-title-link">
+                <h3 class="entry-title">{b.title}</h3>
+              </a>
+            : <h3 class={`entry-title${!b.spoiler ? ' entry-title--muted' : ''}`}>{b.title}</h3>
+          }
+          {b.spoiler && b.excerpt && (
+            <blockquote class="entry-excerpt">
+              <p>{b.excerpt}</p>
+            </blockquote>
+          )}
+          {b.spoiler && b.body && (
+            <p class="entry-body-text">{b.body}</p>
+          )}
+          {b.spoiler && b.href && (
+            <a href={b.href} class="entry-read">Baca selengkapnya</a>
+          )}
+          {!b.spoiler && (
+            <p class="entry-forthcoming">Belum terbit</p>
+          )}
+        </div>
+      </li>
+    ))}
+  </ol>
+
+</section>
+
+<style>
+.journal {
+  padding: 7rem 2.5rem;
+  background: var(--color-bg);
+  border-top: 1px solid rgba(0,0,0,0.07);
+}
+
+/* Header */
+.journal-header {
+  max-width: 900px;
+  margin: 0 auto 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 2px solid var(--color-text);
+}
+.journal-kicker {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin-bottom: 0.75rem;
+}
+.journal-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+/* List */
+.journal-list {
+  list-style: none;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.journal-entry {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: 0 2.5rem;
+  padding: 3rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  align-items: start;
+}
+
+/* Number */
+.entry-num {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 400;
+  color: rgba(0,0,0,0.08);
+  line-height: 1;
+  padding-top: 0.1em;
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+.journal-entry--open .entry-num {
+  color: var(--color-accent);
+  opacity: 0.5;
+}
+
+/* Title */
+.entry-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 3.5vw, 3rem);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 0;
+  color: var(--color-text);
+}
+.entry-title--muted {
+  color: rgba(0,0,0,0.25);
+  text-decoration: line-through;
+  text-decoration-color: rgba(0,0,0,0.15);
+}
+.entry-title-link {
+  text-decoration: none;
+  display: inline-block;
+}
+.entry-title-link .entry-title {
+  transition: color 250ms;
+}
+.entry-title-link:hover .entry-title {
+  color: var(--color-accent);
+}
+
+/* Spoiler content */
+.entry-excerpt {
+  border-left: 2px solid var(--color-accent);
+  padding-left: 1.25rem;
+  margin: 1.5rem 0 1rem;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+.entry-excerpt p { margin: 0; }
+
+.entry-body-text {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-muted);
+  line-height: 1.8;
+  max-width: 56ch;
+  margin-bottom: 1.25rem;
+}
+.entry-read {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+  padding-bottom: 1px;
+  transition: color 250ms, border-color 250ms;
+}
+.entry-read:hover { color: var(--color-text); border-color: var(--color-text); }
+
+/* Forthcoming */
+.entry-forthcoming {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: rgba(0,0,0,0.20);
+  margin-top: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 640px) {
+  .journal { padding: 5rem 1.25rem; }
+  .journal-entry {
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0 1.25rem;
+    padding: 2rem 0;
+  }
+  .entry-num {
+    font-size: 2rem;
+  }
+  .entry-title {
+    font-size: clamp(1.4rem, 5vw, 1.9rem);
+  }
+}
+</style>

@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Open+Sans:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+:root {
+  --color-bg:        #F5F0E8;
+  --color-text:      #1A1714;
+  --color-accent:    #7A5C10;
+  --color-muted:     #5E5550;
+  --color-surface:   #EDE6D8;
+  --color-overlay:   rgba(26, 23, 20, 0.58);
+
+  --font-body:    'Crimson Pro', Georgia, serif;
+  --font-heading: 'Crimson Pro', Georgia, serif;
+  --font-ui:      'Open Sans', system-ui, sans-serif;
+
+  --max-prose: 66ch;
+  --max-wide:  1200px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.80;
+  -webkit-font-smoothing: antialiased;
+  font-optical-sizing: auto;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 200ms ease;
+}
+a:hover { opacity: 0.7; }
+
+blockquote {
+  font-style: italic;
+  color: var(--color-muted);
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+}
+
+/* Scroll-reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

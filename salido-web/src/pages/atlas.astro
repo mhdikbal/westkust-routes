@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import '../styles/global.css';
+---
+<Base title="Atlas VOC" description="Peta interaktif jalur perdagangan VOC di Sumatra Barat, 1700–1790.">
+  <Nav />
+  <main class="atlas-page">
+    <header class="atlas-header">
+      <div class="atlas-brand">
+        <img src="/img/icon.png" alt="Logo Salido" class="atlas-logo" />
+        <div>
+          <h1>Atlas Jalur Perdagangan VOC</h1>
+          <p>4.700+ pelayaran VOC di Sumatra Barat, 1700–1790</p>
+        </div>
+      </div>
+    </header>
+    <div class="atlas-frame-wrap">
+      <iframe
+        src="/westkust/"
+        title="Atlas VOC — Westkust Routes"
+        class="atlas-frame"
+        loading="lazy"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </main>
+</Base>
+
+<style>
+.atlas-page { padding-top: 80px; min-height: 100svh; display: flex; flex-direction: column; }
+.atlas-header {
+  padding: 2.5rem 2.5rem 1.5rem;
+  max-width: var(--max-wide);
+  margin: 0 auto;
+  width: 100%;
+}
+.atlas-brand {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.atlas-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+  /* preserve transparency */
+  background: transparent;
+}
+.atlas-header h1 { font-size: clamp(1.3rem, 2.5vw, 1.8rem); margin-bottom: 0.25rem; font-weight: 400; }
+.atlas-header p { color: var(--color-muted); font-family: var(--font-ui); font-size: 0.85rem; }
+.atlas-frame-wrap { flex: 1; padding: 0 2.5rem 2.5rem; }
+.atlas-frame {
+  width: 100%;
+  height: calc(100svh - 200px);
+  min-height: 500px;
+  border: none;
+  border-radius: 2px;
+}
+</style>

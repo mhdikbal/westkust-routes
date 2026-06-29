@@ -1,0 +1,196 @@
+---
+// SolomonHook — narasi editorial, bukan presentasi
+---
+<section class="solomon">
+
+  <div class="solomon-prose reveal">
+    <p class="solomon-lead">
+      Dalam sebuah catatan pelaut Portugis dari abad ke-16, Sumatra disebut sebagai
+      asal emas yang dikirimkan Nabi Sulaiman. Kitab Raja-Raja menyebutnya Ofir.
+      Camões dalam <em>Os Lusíadas</em> menamakannya <em>Aurea</em> — Tanah Emas.
+    </p>
+    <blockquote class="solomon-quote">
+      "...banyak persediaan emas yang sangat halus dari Monancabo, dan dari sini
+      diyakini sebagai emas yang dikirimkan Sulaiman untuk kapal-kapalnya."
+      <cite>— Relação da Viagem e Naufrágio da Nao S. Paulo, abad ke-16</cite>
+    </blockquote>
+    <p class="solomon-body">
+      Salido adalah salah satu titik di pantai barat Sumatra yang disebut menyimpan
+      emas itu. Ketika VOC akhirnya tiba di sana pada 1681 — membawa insinyur,
+      denah lubang tambang, dan ratusan budak — yang mereka temukan bukan harta
+      legenda. Yang mereka temukan adalah gunung terjal, gempa, buaya,
+      dan masyarakat adat yang tidak bisa dikuasai dengan mudah.
+    </p>
+  </div>
+
+  <figure class="engraving-figure reveal">
+    <img
+      src="/img/RP-P-1896-A-19368-994.jpg"
+      alt="Nette Afbeelding der Sillidaatsche Goud Myn Tambang op Sumatra — ukiran Rijksmuseum yang menggambarkan tambang emas Salido beserta para pekerja, schacht, dan pemukiman budak, oleh Elias Hesse, 1687"
+      class="engraving-img"
+      loading="lazy"
+    />
+    <figcaption>
+      <em>Nette Afbeelding der Sillidaatsche Goud Myn Tambang op Sumatra</em>
+      — gambaran tambang emas Salido. Di kiri bawah tampak para pekerja dan budak,
+      di tengah struktur shaft yang membelah lereng gunung, di kanan atas bangunan
+      administrasi VOC. Di legenda: <em>N. Slaven wooning</em> — pemukiman budak.
+      <span class="fig-source">Rijksmuseum Amsterdam · RP-P-1896-A-19368-994 · Elias Hesse, 1687</span>
+    </figcaption>
+  </figure>
+
+  <div class="blueprint-section reveal">
+    <figure class="blueprint-figure">
+      <img
+        src="/img/NL-HaNA_4.VEL_813A.jpg"
+        alt="Denah teknis lubang tambang Salido — schacht A, B, C dan galeri bawah tanah, gambar tangan insinyur VOC, 1681"
+        class="blueprint-img"
+        loading="lazy"
+      />
+      <figcaption>
+        Denah lubang tambang (schacht A, B, C) dibuat tangan oleh insinyur VOC.
+        Groote Schacht mencapai kedalaman 295 voet — sekitar 88 meter.
+        <span class="fig-source">Nationaal Archief Den Haag · NL-HaNA 4.VEL_813A · ± 1681</span>
+      </figcaption>
+    </figure>
+    <div class="blueprint-prose">
+      <p>
+        Denah ini adalah bukti fisik ambisi yang tidak terpenuhi.
+        Schacht pertama, kedua, ketiga: setiap lubang digali lebih dalam,
+        dan setiap lubang memperdalam kerugian. Produksi emas tidak pernah
+        menutup biaya operasional. Tambang akhirnya ditutup.
+      </p>
+      <p>
+        Beberapa dekade kemudian, Hindia Belanda mencoba lagi.
+        Hasilnya tidak berbeda.
+      </p>
+      <a href="/sejarah" class="prose-link">Baca kisah lengkapnya</a>
+    </div>
+  </div>
+
+</section>
+
+<style>
+.solomon {
+  background: var(--color-text);
+  padding: 7rem 2.5rem;
+}
+
+/* Prose block */
+.solomon-prose {
+  max-width: 640px;
+  margin: 0 auto 5rem;
+}
+.solomon-lead {
+  font-family: var(--font-body);
+  font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+  color: rgba(255,255,255,0.70);
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+.solomon-quote {
+  border-left: 2px solid var(--color-accent);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  font-size: clamp(1rem, 1.3vw, 1.1rem);
+  color: rgba(255,255,255,0.85);
+  line-height: 1.7;
+}
+.solomon-quote cite {
+  display: block;
+  font-style: normal;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.35);
+  margin-top: 0.75rem;
+}
+.solomon-body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+}
+
+/* Engraving */
+.engraving-figure {
+  max-width: var(--max-wide);
+  margin: 0 auto 5rem;
+}
+.engraving-img {
+  width: 100%;
+  display: block;
+  filter: sepia(10%) contrast(1.05);
+}
+.engraving-figure figcaption {
+  margin-top: 1rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.40);
+  max-width: 680px;
+  line-height: 1.65;
+}
+
+/* Blueprint */
+.blueprint-section {
+  max-width: var(--max-wide);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  padding-top: 4rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.blueprint-img {
+  width: 100%;
+  filter: sepia(20%) contrast(1.1) brightness(0.9);
+}
+.blueprint-figure figcaption {
+  margin-top: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.30);
+  line-height: 1.6;
+}
+.blueprint-prose p {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+/* Shared */
+.fig-source {
+  display: block;
+  font-style: normal;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.20);
+  margin-top: 0.4rem;
+}
+.prose-link {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.50);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 1px;
+  transition: color 250ms, border-color 250ms;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+.prose-link:hover {
+  color: white;
+  border-color: rgba(255,255,255,0.4);
+}
+
+@media (max-width: 900px) {
+  .blueprint-section { grid-template-columns: 1fr; gap: 2.5rem; }
+  .solomon { padding: 5rem 1.5rem; }
+}
+</style>
