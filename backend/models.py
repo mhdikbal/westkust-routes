@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text, Index
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import INT4RANGE, JSONB
+from sqlalchemy.dialects.postgresql import INT4RANGE, JSONB, ARRAY
 from geoalchemy2 import Geometry
 from database import Base
 
@@ -107,3 +107,18 @@ class CargoItem(Base):
 
     def __repr__(self):
         return f"<CargoItem(produk='{self.produk}', qty='{self.qty_asli}', unit='{self.unit}')>"
+
+
+class CommodityGlossary(Base):
+    __tablename__ = "commodity_glossary"
+
+    id            = Column(Integer, primary_key=True, autoincrement=True)
+    term          = Column(String(200), nullable=False, unique=True, index=True)
+    term_display  = Column(String(200), nullable=True)
+    variants      = Column(ARRAY(Text), nullable=True)
+    definition_nl = Column(Text, nullable=True)
+    definition_id = Column(Text, nullable=True)
+    category      = Column(String(100), nullable=True)
+
+    def __repr__(self):
+        return f"<CommodityGlossary(term='{self.term}')>"

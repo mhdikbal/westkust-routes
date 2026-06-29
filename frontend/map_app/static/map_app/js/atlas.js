@@ -64,8 +64,37 @@ let currentData = { outbound: [], inbound: [], info: "" };
 let pageIndex = 0;
 let yearFrom = 1700, yearTo = 1790;
 let activeDirection = "all";
+let glossaryCache = {};   // term (lowercase) → {definition_id, definition_nl, category}
 let yearDebounce = null;
 let searchDebounce = null;
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Commodity Glossary — lookup dan tooltip
+   ───────────────────────────────────────────────────────────────────────────── */
+async function fetchGlossaryForTerms(terms) {
+  const uncached = terms.filter(t => !(t in glossaryCache));
+  if (!uncached.length) return;
+  try {
+    const res = await fetch(`${API}/glossary/lookup?terms=${encodeURIComponent(uncached.join(","))}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    Object.assign(glossaryCache, data);
+    // Tandai yang tidak ada di glossary agar tidak re-fetch
+    uncached.forEach(t => { if (!(t in glossaryCache)) glossaryCache[t] = null; });
+  } catch (_) { /* silent — tooltip opsional */ }
+}
+
+function applyGlossaryTooltips(container) {
+  container.querySelectorAll("[data-term]").forEach(el => {
+    const term = el.dataset.term;
+    const entry = glossaryCache[term];
+    if (!entry) return;
+    const tip = entry.definition_id || entry.definition_nl || "";
+    if (!tip) return;
+    el.setAttribute("data-gtip", tip);
+    el.classList.add("has-gtip");
+  });
+}
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Security helpers
@@ -524,24 +553,37 @@ async function openVoyageModal(voyageId) {
   const durText  = voyage.duration_days ? `${voyage.duration_days} hari` : "—";
   const valText  = voyage.total_gulden  ? `ƒ ${fmt(voyage.total_gulden)}`  : "—";
   const destText = esc(voyage.destination || voyage.destination_name_raw || "Batavia");
-  const prodText = esc(voyage.main_product || "—");
+  const prodText = voyage.main_product
+    ? `<span class="cargo-name" data-term="${esc((voyage.main_product).trim().toLowerCase())}">${esc(voyage.main_product)}</span>`
+    : "—";
 
+  // Kumpulkan semua terms untuk glossary lookup
+  const allTerms = [];
   let cargoHtml = "";
   if (cargo && cargo.length > 0) {
     cargoHtml = cargo.map(c => {
       const val = c.gulden_india ? `ƒ ${fmt(c.gulden_india)}` : (c.gulden_nl ? `ƒ ${fmt(c.gulden_nl)}` : "");
+      const termKey = (c.produk || "").trim().toLowerCase();
+      if (termKey) allTerms.push(termKey);
       return `<div class="cargo-item">
-        <span class="cargo-name">${esc(c.produk)}</span>
+        <span class="cargo-name" data-term="${esc(termKey)}">${esc(c.produk)}</span>
         ${val ? `<span class="cargo-val">${val}</span>` : ""}
       </div>`;
     }).join("");
   } else if (voyage.all_products) {
-    cargoHtml = voyage.all_products.split("|").map(p =>
-      `<div class="cargo-item"><span class="cargo-name">${esc(p.trim())}</span></div>`
-    ).join("");
+    cargoHtml = voyage.all_products.split("|").map(p => {
+      const clean = p.trim();
+      const termKey = clean.toLowerCase();
+      if (termKey) allTerms.push(termKey);
+      return `<div class="cargo-item"><span class="cargo-name" data-term="${esc(termKey)}">${esc(clean)}</span></div>`;
+    }).join("");
   } else {
     cargoHtml = `<div class="empty-state" style="padding:1rem 0;"><i class="ti ti-package"></i>Data kargo detail tidak tersedia.</div>`;
   }
+
+  // Main product juga perlu tooltip
+  const mainTermKey = (voyage.main_product || "").trim().toLowerCase();
+  if (mainTermKey) allTerms.push(mainTermKey);
 
   body.innerHTML = `
     <div class="modal-data-grid">
@@ -574,6 +616,11 @@ async function openVoyageModal(voyageId) {
     bgbLink.style.display = "";
   } else {
     bgbLink.style.display = "none";
+  }
+
+  // Glossary tooltips — fetch definisi dan terapkan ke elemen [data-term]
+  if (allTerms.length) {
+    fetchGlossaryForTerms(allTerms).then(() => applyGlossaryTooltips(body));
   }
 }
 
