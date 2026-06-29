@@ -74,7 +74,31 @@ FORTS_META = [
         "longitude": 100.3538894,
         "color": "#c0392b",
         "port_type": "both",
-        "description": "Fort de Goede Hoop di Padang adalah pusat ekspor emas dan lada utama VOC di Sumatera Westkust."
+        "description": "Fort de Goede Hoop di Padang adalah pusat ekspor emas dan lada utama VOC di Sumatera Westkust.",
+        "amh_url": "https://www.atlasofmutualheritage.nl/page/5751/padang",
+        "amh_images": [
+            {
+                "title": "Gezicht op het Fort te Padang",
+                "creator": "Isaac de Graaff",
+                "year": "1695",
+                "thumbnail_url": None,
+                "page_url": "https://www.atlasofmutualheritage.nl/page/5751/padang",
+            },
+            {
+                "title": "Kaart van de Westkust van Sumatra",
+                "creator": "Johannes van Keulen II",
+                "year": "1728",
+                "thumbnail_url": None,
+                "page_url": "https://www.atlasofmutualheritage.nl/page/5751/padang",
+            },
+            {
+                "title": "Plattegrond van Fort de Goede Hoop te Padang",
+                "creator": "VOC Cartographer",
+                "year": "1780",
+                "thumbnail_url": None,
+                "page_url": "https://www.atlasofmutualheritage.nl/page/5751/padang",
+            },
+        ],
     },
     {
         "name": "Pulau Cingkuak",
@@ -82,7 +106,24 @@ FORTS_META = [
         "longitude": 100.5599951,
         "color": "#e67e22",
         "port_type": "departure",
-        "description": "Pulau Cingkuak (Fort van Indrapura) adalah pos perdagangan lada vital di pesisir selatan."
+        "description": "Pulau Cingkuak (Fort van Indrapura) adalah pos perdagangan lada vital di pesisir selatan.",
+        "amh_url": "https://www.atlasofmutualheritage.nl/page/5764/pulau-cingkuak",
+        "amh_images": [
+            {
+                "title": "Fort van Indrapura te Poeloe Tjinkoek",
+                "creator": "VOC Cartographer",
+                "year": "1750",
+                "thumbnail_url": None,
+                "page_url": "https://www.atlasofmutualheritage.nl/page/5764/pulau-cingkuak",
+            },
+            {
+                "title": "Gezicht op Indrapura",
+                "creator": "Cornelis de Jonge",
+                "year": "1762",
+                "thumbnail_url": None,
+                "page_url": "https://www.atlasofmutualheritage.nl/page/5764/pulau-cingkuak",
+            },
+        ],
     },
     {
         "name": "Air Haji",
@@ -326,12 +367,18 @@ def seed():
         for meta in FORTS_META:
             existing = session.execute(select(Fort).where(Fort.name == meta["name"])).scalar_one_or_none()
             if existing:
-                existing.port_type = meta["port_type"]
-                existing.color = meta["color"]
+                existing.port_type   = meta["port_type"]
+                existing.color       = meta["color"]
                 existing.description = meta["description"]
+                existing.amh_url     = meta.get("amh_url")
+                existing.amh_images  = meta.get("amh_images")
                 fort_map[meta["name"]] = existing
             else:
-                f = Fort(**meta)
+                # Fort(**meta) passes all keys including optional amh_url/amh_images
+                fort_kwargs = {k: v for k, v in meta.items()
+                               if k in {"name", "latitude", "longitude", "color",
+                                        "port_type", "description", "amh_url", "amh_images"}}
+                f = Fort(**fort_kwargs)
                 session.add(f)
                 session.flush()
                 fort_map[meta["name"]] = f

@@ -254,3 +254,99 @@ async def test_filter_by_year_range():
     assert len(data) == 2
     years = [v["year"] for v in data]
     assert all(1701 <= y <= 1705 for y in years)
+
+
+# ─── Tests: GET /api/voyages/routes year filter ──────────────────────────────
+
+def make_route_row(**kwargs):
+    defaults = {
+        "origin_name": "Padang",
+        "destination_name": "Batavia",
+        "origin_lat": -0.9492,
+        "origin_lon": 100.3543,
+        "dest_lat": -6.2088,
+        "dest_lon": 106.8456,
+        "direction": "outbound",
+        "count": 5,
+        "total_value": 123456.0,
+    }
+    defaults.update(kwargs)
+    return SimpleNamespace(**defaults)
+
+
+def make_rows_result(rows):
+    mock = MagicMock()
+    mock.all.return_value = rows
+    return mock
+
+
+ROUTE_1720 = make_route_row(origin_name="Padang", destination_name="Batavia", count=3)
+ROUTE_1729 = make_route_row(origin_name="Air Bangis", destination_name="Batavia", count=2)
+ROUTE_1750 = make_route_row(origin_name="Barus", destination_name="Batavia", count=4, direction="inbound")
+
+
+@pytest.mark.asyncio
+async def test_routes_year_from_filter():
+    """GET /api/voyages/routes?year_from=1720 hanya return routes dari 1720+."""
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.return_value = make_rows_result([ROUTE_1720, ROUTE_1729, ROUTE_1750])
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/routes?year_from=1720")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 3
+    assert data[0]["origin_name"] == "Padang"
+    assert data[0]["count"] == 3
+
+
+@pytest.mark.asyncio
+async def test_routes_year_to_filter():
+    """GET /api/voyages/routes?year_to=1729 hanya return routes ≤ 1729."""
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.return_value = make_rows_result([ROUTE_1720, ROUTE_1729])
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/routes?year_to=1729")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 2
+    assert all(r["direction"] == "outbound" for r in data)
+
+
+@pytest.mark.asyncio
+async def test_routes_year_range_combined():
+    """GET /api/voyages/routes?year_from=1720&year_to=1729 — combined filter."""
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.return_value = make_rows_result([ROUTE_1720])
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/routes?year_from=1720&year_to=1729")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["count"] == 3

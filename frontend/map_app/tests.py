@@ -86,10 +86,10 @@ class LayoutBNavbarTest(SimpleTestCase):
         """Stats badge (#nav-stats-badge) must be present for voyage count display."""
         self.assertIn('id="nav-stats-badge"', self.content)
 
-    def test_year_defaults_are_1700_and_1789(self):
-        """Default year range must be 1700–1789 as defined in the VOC historical period."""
+    def test_year_defaults_are_1700_and_1790(self):
+        """Default year range: 1700 (start) dan 1790 (batas dekade terakhir, step=10)."""
         self.assertIn('value="1700"', self.content)
-        self.assertIn('value="1789"', self.content)
+        self.assertIn('value="1790"', self.content)
 
 
 class LayoutBWelcomePanelTest(SimpleTestCase):
@@ -598,3 +598,72 @@ class AmhGalleryTemplateTest(SimpleTestCase):
         response = self.client.get("/ports/padang/")
         content = response.content.decode("utf-8")
         self.assertIn(_AMH_IMAGE_ITEM["page_url"], content)
+
+
+# ─── US-19: CSV Export Button ────────────────────────────────────────────────
+
+class CsvExportButtonTest(SimpleTestCase):
+    """Verifikasi tombol Unduh CSV dan fungsi downloadCSV di atlas.js (US-19)."""
+
+    def setUp(self):
+        self.client = Client()
+        self.content = self.client.get("/").content.decode("utf-8")
+
+    def test_csv_export_button_exists(self):
+        """#btn-export-csv harus ada di navbar sebagai tombol download."""
+        self.assertIn('id="btn-export-csv"', self.content)
+
+    def test_atlas_js_has_download_csv_function(self):
+        """atlas.js harus mengandung fungsi downloadCSV untuk trigger browser download."""
+        self.assertIn("function downloadCSV(", ATLAS_JS)
+
+    def test_csv_export_button_uses_download_csv(self):
+        """Tombol Unduh CSV harus memanggil downloadCSV() via onclick."""
+        idx = self.content.find('id="btn-export-csv"')
+        self.assertNotEqual(idx, -1, "#btn-export-csv tidak ditemukan di HTML")
+        block = self.content[max(0, idx - 20): idx + 200]
+        self.assertIn("downloadCSV", block)
+
+    def test_atlas_js_download_uses_api_export_endpoint(self):
+        """downloadCSV di atlas.js harus menggunakan /voyages/export sebagai URL endpoint."""
+        self.assertIn("voyages/export", ATLAS_JS)
+
+
+# ─── US-17: Commodity Timeline Slider ────────────────────────────────────────
+
+class TimelineSliderTest(SimpleTestCase):
+    """Verifikasi decade range slider (US-17) ada di index.html dan atlas.js."""
+
+    def setUp(self):
+        self.client = Client()
+        self.content = self.client.get("/").content.decode("utf-8")
+
+    def test_year_from_input_is_range_slider(self):
+        """#year-from harus type='range' dengan step='10' — bukan type='number'."""
+        self.assertIn('id="year-from"', self.content)
+        self.assertIn('type="range"', self.content)
+        # Pastikan step=10 ada dalam proximity year-from
+        idx = self.content.find('id="year-from"')
+        block = self.content[max(0, idx - 50): idx + 200]
+        self.assertIn('step="10"', block)
+
+    def test_year_to_input_is_range_slider(self):
+        """#year-to harus type='range' dengan step='10' — bukan type='number'."""
+        self.assertIn('id="year-to"', self.content)
+        idx = self.content.find('id="year-to"')
+        block = self.content[max(0, idx - 50): idx + 200]
+        self.assertIn('step="10"', block)
+
+    def test_slider_value_display_elements_exist(self):
+        """#year-from-display dan #year-to-display harus ada sebagai label nilai slider."""
+        self.assertIn('id="year-from-display"', self.content)
+        self.assertIn('id="year-to-display"', self.content)
+
+    def test_atlas_js_updates_grafik_on_year_change(self):
+        """setupYearFilter di atlas.js harus memanggil loadGrafikData() agar KPI update realtime."""
+        self.assertIn("loadGrafikData()", ATLAS_JS)
+        # Verifikasi loadGrafikData dipanggil dalam konteks setupYearFilter
+        idx = ATLAS_JS.find("function setupYearFilter")
+        self.assertNotEqual(idx, -1, "setupYearFilter tidak ditemukan di atlas.js")
+        func_body = ATLAS_JS[idx: idx + 1000]
+        self.assertIn("loadGrafikData", func_body)

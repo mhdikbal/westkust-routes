@@ -46,7 +46,7 @@ let activeMarker = null, allFortsData = [];
 let activeTab = "outbound";
 let currentData = { outbound: [], inbound: [], info: "" };
 let pageIndex = 0;
-let yearFrom = 1700, yearTo = 1789;
+let yearFrom = 1700, yearTo = 1790;
 let activeDirection = "all";
 let yearDebounce = null;
 let searchDebounce = null;
@@ -582,24 +582,50 @@ async function loadGlobalStats() {
 /* ─────────────────────────────────────────────────────────────────────────────
    Year range filter with debounce
    ───────────────────────────────────────────────────────────────────────────── */
+function downloadCSV() {
+    const params = new URLSearchParams();
+    params.set("year_from", yearFrom);
+    params.set("year_to",   yearTo);
+    if (activeDirection && activeDirection !== "all") {
+        params.set("direction", activeDirection);
+    }
+    const url = `${API}/voyages/export?${params.toString()}`;
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "voyages_westkust.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
 function setupYearFilter() {
-  const fromEl = document.getElementById("year-from");
-  const toEl   = document.getElementById("year-to");
+  const fromEl    = document.getElementById("year-from");
+  const toEl      = document.getElementById("year-to");
+  const fromDisp  = document.getElementById("year-from-display");
+  const toDisp    = document.getElementById("year-to-display");
+
+  function updateDisplays() {
+    if (fromDisp) fromDisp.textContent = fromEl.value;
+    if (toDisp)   toDisp.textContent   = toEl.value;
+  }
 
   function onYearChange() {
+    updateDisplays();
     clearTimeout(yearDebounce);
     yearDebounce = setTimeout(async () => {
       const yf = parseInt(fromEl.value, 10) || 1700;
-      const yt = parseInt(toEl.value, 10)   || 1789;
+      const yt = parseInt(toEl.value, 10)   || 1790;
       if (yf > yt) return;
       yearFrom = yf;
       yearTo   = yt;
       await drawRoutes(yearFrom, yearTo);
+      loadGrafikData();
     }, 500);
   }
 
   fromEl.addEventListener("input", onYearChange);
   toEl.addEventListener("input", onYearChange);
+  updateDisplays();
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

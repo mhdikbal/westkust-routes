@@ -1,5 +1,8 @@
+import csv
+import io
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc, func
 from pydantic import BaseModel, ConfigDict
@@ -320,6 +323,51 @@ async def get_voyage_routes(
         )
         for r in routes
     ]
+
+
+CSV_COLUMNS = [
+    "voyage_ref", "ship_name", "captain", "year",
+    "departure_date", "arrival_date", "origin_name_raw",
+    "destination_name_raw", "direction", "main_product",
+    "all_products", "total_gulden", "cargo_count",
+    "duration_days", "source_url",
+]
+
+
+@router.get("/export")
+async def export_voyages_csv(
+    year_from: Optional[int] = None,
+    year_to: Optional[int] = None,
+    direction: Optional[str] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """Export voyages sebagai file CSV untuk analisis riset."""
+    query = select(Voyage).order_by(Voyage.year, Voyage.id)
+
+    if year_from:
+        query = query.where(Voyage.year >= year_from)
+    if year_to:
+        query = query.where(Voyage.year <= year_to)
+    if direction and direction.lower() != "all":
+        query = query.where(Voyage.direction == direction.lower())
+
+    query = query.limit(5000)
+
+    result = await db.execute(query)
+    voyages = result.scalars().all()
+
+    output = io.StringIO()
+    writer = csv.writer(output, quoting=csv.QUOTE_MINIMAL)
+    writer.writerow(CSV_COLUMNS)
+    for v in voyages:
+        writer.writerow([getattr(v, col, None) for col in CSV_COLUMNS])
+
+    filename = "voyages_westkust.csv"
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
+    )
 
 
 @router.get("/{voyage_id}", response_model=VoyageSchema)
