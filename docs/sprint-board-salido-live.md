@@ -95,9 +95,9 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 |---|----|-------|-----|----|--------|
 | 1 | ALEMBIC-1 | ✅ DONE 3 Jul — down_revision → '002_amh_images', DB stamp 003 (head), upgrade no-op, 151 pass. Commit westkust | DBA ✓QA | 1 | **Done** |
 | 2 | HIST-1b | ✅ DONE 3 Jul — /sejarah/historiografi live (9 lapis + spine + interlude + pustaka + <main>), entri Kajian Khusus di hub; build 18 halaman | Dev/Konten ✓QA | 3 | **Done** |
-| 3 | PERF-2 | Lighthouse Perf 74→≥90 halaman artikel (LCP 3.9s): preload hero+font, srcset, cek render-blocking | Dev | 2 | To Do |
-| 4 | A11Y-2 | Kontras ArchiveNote (.tahun/.archive-sumber 4.16→≥4.5), landmark <main> di layout, lengkapi security headers di respons 429 | Dev | 1 | To Do |
-| 5 | SEC-1 | compose: hapus publish port 8001 (bypass nginx + dev server); untrack backend/.env & frontend/.env scaffold (+ .gitignore) | DevSecOps | 1 | To Do |
+| 3 | PERF-2 | ✅ DONE 3 Jul — Perf 74→**99** (FCP 0.8s, LCP 1.8s, SI 0.8s): font non-blocking + preconnect, preload hero, srcset 960w. salido edebe58 | Dev ✓QA | 2 | **Done** |
+| 4 | A11Y-2 | ✅ DONE 3 Jul — A11y 93→**100** (muted-dark, <main>); 429 kini bawa Referrer/Permissions/CSP (bukti burst). salido edebe58 + westkust 5255dc9 | Dev ✓QA | 1 | **Done** |
+| 5 | SEC-1 | ✅ DONE 3 Jul — 8001 tak lagi published (curl refused), .env scaffold dihapus dari git; 8084 tetap 200. westkust 5255dc9 | DevSecOps ✓QA | 1 | **Done** |
 | 6 | HIST-1c | Aset domain publik historiografi (potret Camões Wikimedia, kliping Soerabajasch Handelsblad Delpher) + kredit + QA halaman | Dev/Konten | 2 | To Do |
 | 7 | DEPLOY | Production: PO eksekusi runbook (Cloudflare CNAME www + toggle HTTP/3) + deploy nginx-prod.conf & build salido-web; QA verifikasi T3 | PO + DevSecOps | 2 | ⛔ Menunggu izin/aksi PO |
 
