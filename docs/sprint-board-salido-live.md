@@ -98,7 +98,7 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 | 3 | PERF-2 | ✅ DONE 3 Jul — Perf 74→**99** (FCP 0.8s, LCP 1.8s, SI 0.8s): font non-blocking + preconnect, preload hero, srcset 960w. salido edebe58 | Dev ✓QA | 2 | **Done** |
 | 4 | A11Y-2 | ✅ DONE 3 Jul — A11y 93→**100** (muted-dark, <main>); 429 kini bawa Referrer/Permissions/CSP (bukti burst). salido edebe58 + westkust 5255dc9 | Dev ✓QA | 1 | **Done** |
 | 5 | SEC-1 | ✅ DONE 3 Jul — 8001 tak lagi published (curl refused), .env scaffold dihapus dari git; 8084 tetap 200. westkust 5255dc9 | DevSecOps ✓QA | 1 | **Done** |
-| 6 | HIST-1c | Aset domain publik historiografi (potret Camões Wikimedia, kliping Soerabajasch Handelsblad Delpher) + kredit + QA halaman | Dev/Konten | 2 | To Do |
+| 6 | HIST-1c | ✅ DONE 3 Jul — potret Camões (Fernão Gomes c.1577, Wikimedia) + halaman muka Soerabaijasch Handelsblad 22/4/1937 (Delpher ddd:011110426, kutipan 'Goud.' verbatim OCR); token --color-gold-ink; Lighthouse historiografi Perf 99/A11y 100. salido 9f33b57 | Dev/Konten ✓QA | 2 | **Done** |
 | 7 | DEPLOY | Production: PO eksekusi runbook (Cloudflare CNAME www + toggle HTTP/3) + deploy nginx-prod.conf & build salido-web; QA verifikasi T3 | PO + DevSecOps | 2 | ⛔ Menunggu izin/aksi PO |
 
 **Backlog (parkir — ditarik lewat keputusan PO)**
