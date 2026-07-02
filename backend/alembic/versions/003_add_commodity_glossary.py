@@ -9,7 +9,9 @@ import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import ARRAY, TEXT
 
 revision = '003'
-down_revision = '002'
+# Menunjuk revision-id aktual file 002 ("002_amh_images"), bukan prefiks nama
+# file — chain sempat putus (KeyError '002') dan memblokir semua migration.
+down_revision = '002_amh_images'
 branch_labels = None
 depends_on = None
 
