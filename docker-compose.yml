@@ -74,8 +74,10 @@ services:
       API_BASE_URL: ${API_BASE_URL:-http://backend:8000}
     depends_on:
       - backend
-    ports:
-      - "8001:8001"
+    # SEC-1: port 8001 TIDAK di-publish ke host — akses hanya via nginx :8084
+    # (publish langsung mem-bypass CSP/rate-limit dan mengekspos dev server).
+    expose:
+      - "8001"
     command: >
       sh -c "python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8001"
 
