@@ -93,8 +93,8 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 
 | # | ID | Kartu | Tim | SP | Status |
 |---|----|-------|-----|----|--------|
-| 1 | ALEMBIC-1 | 🔴 Sambung chain migration: 003_add_commodity_glossary down_revision='002' → '002_amh_images'; verifikasi alembic current/upgrade head jalan; suite hijau | DBA | 1 | **In Progress** |
-| 2 | HIST-1b | Halaman /sejarah/historiografi: KartuBibliografi + SpineSumber + 9 lapis dari src/data/historiografi.ts (skema §3); masuk hub /sejarah | Dev/Konten | 3 | To Do |
+| 1 | ALEMBIC-1 | ✅ DONE 3 Jul — down_revision → '002_amh_images', DB stamp 003 (head), upgrade no-op, 151 pass. Commit westkust | DBA ✓QA | 1 | **Done** |
+| 2 | HIST-1b | Halaman /sejarah/historiografi: KartuBibliografi + SpineSumber + 9 lapis dari src/data/historiografi.ts (skema §3); masuk hub /sejarah | Dev/Konten | 3 | **In Progress** |
 | 3 | PERF-2 | Lighthouse Perf 74→≥90 halaman artikel (LCP 3.9s): preload hero+font, srcset, cek render-blocking | Dev | 2 | To Do |
 | 4 | A11Y-2 | Kontras ArchiveNote (.tahun/.archive-sumber 4.16→≥4.5), landmark <main> di layout, lengkapi security headers di respons 429 | Dev | 1 | To Do |
 | 5 | SEC-1 | compose: hapus publish port 8001 (bypass nginx + dev server); untrack backend/.env & frontend/.env scaffold (+ .gitignore) | DevSecOps | 1 | To Do |
