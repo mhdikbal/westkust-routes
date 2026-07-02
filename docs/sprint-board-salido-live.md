@@ -90,6 +90,16 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 | JRN-6 | Artikel perdana #2 (bab Gunung Arum) — *stretch* | Dev/Konten | 3 | boleh jatuh ke sprint berikut |
 | QA-2 | Gerbang QA Jurnal: Lighthouse T2, kontras, reduced-motion, deploy + smoke production | QA | 2 | T1–T2 tercentang dengan bukti |
 
+**Usulan dari tinjauan desain 2 Jul (`~/salido-web/docs/desain-skema-web.md`) — menunggu keputusan PO**
+| ID | Kartu | Prioritas |
+|----|-------|-----------|
+| HOME-1 | Beranda: seksi jurnal terbaru + teaser atlas + teaser buku + petunjuk scroll | 1 — usul masuk sprint |
+| IMG-1 | Diet gambar public/ (9.2MB/7.6MB/6MB → WebP ≤300KB; master ke research/) | 2 — usul masuk sprint |
+| FTR-1 | Footer global (kolofon, kontak, kredit arsip, ©) | 3 — usul masuk sprint |
+| NAV-1 | IA: /tambang → /sejarah/tambang, prolog → /sejarah/prolog, hub sejarah | backlog |
+| TYPE-1 | Konsolidasi: display Crimson 600 semua judul, token --color-accent-bright, scrim seragam, satu Hero.astro | backlog |
+| ATLAS-1 | Mode imersif /atlas (hapus double navbar) + 301 /westkust/ → /atlas | backlog |
+
 **Backlog (parkir — jangan ditarik tanpa menukar kartu keluar)**
 RSS, halaman seri, related articles, `<AtlasLink>`, bilingual R6 + hreflang, Pagefind, dark mode, newsletter, scrollytelling, deploy westkust Docker ke VPS, sitasi akademik.
 
