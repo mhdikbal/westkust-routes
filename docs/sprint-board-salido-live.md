@@ -71,7 +71,8 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 | FIX-1 | (Bonus) 8 test US-06 pre-existing fail — env SYNC_DATABASE_URL absen di compose (fallback ter-scrub US-07); ditambahkan → 151 pass 0 fail | DevSecOps ✓QA |
 | JRN-1 | Collection `jurnal` + schema Zod + MDX + draft filter + `_contoh.mdx`. Bukti: build gagal jelas saat frontmatter invalid; draft absen dari dist/ | Dev ✓QA |
 | JRN-2 | Layout artikel longform: hero full-bleed, drop cap, PullQuote/FullBleedImage/ArchiveNote, footnotes GFM, blok Sumber, prev/next | Dev ✓QA |
-| JRN-3 | Indeks /jurnal/ (featured+grid+empty state+BookSpoiler→seksi Buku) + tag pages. Artikel demo draft: laporan-hoffman-1681 (seri Gunung Arum). **Belum di-commit — menunggu review PO di http://localhost:4321/jurnal/** | Dev ✓QA |
+| JRN-3 | Indeks /jurnal/ (featured+grid+empty state+BookSpoiler→seksi Buku) + tag pages. Artikel demo draft: laporan-hoffman-1681 (seri Gunung Arum). Direview PO 2 Jul ("sudah bagus") → commit 4320bf2 | Dev ✓QA ✓PO |
+| JRN-4 | SEO: @astrojs/sitemap + robots.txt, OG lengkap (og:type/site_name/twitter, og:image absolut), JSON-LD Article. Commit salido-web (JRN-4). DBA cache di-commit westkust 3e04cbb | Dev ✓QA |
 
 ### Sprint (To Do)
 
@@ -85,7 +86,6 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 **Lane JURNAL — minggu 1–2 (3–15 Jul)**
 | ID | Kartu | Tim | SP | Acceptance (ringkas) |
 |----|-------|-----|----|----------------------|
-| JRN-4 | US-J4: OG/JSON-LD/sitemap/canonical apex | Dev | 2 | validator OG & Rich Results bersih |
 | JRN-5 | US-J5: artikel perdana #1 (tambang 1681) + optimasi gambar WebP ≤ 300KB | Dev/Konten | 5 | terbit non-draft, kredit arsip lengkap |
 | JRN-6 | Artikel perdana #2 (bab Gunung Arum) — *stretch* | Dev/Konten | 3 | boleh jatuh ke sprint berikut |
 | QA-2 | Gerbang QA Jurnal: Lighthouse T2, kontras, reduced-motion, deploy + smoke production | QA | 2 | T1–T2 tercentang dengan bukti |
