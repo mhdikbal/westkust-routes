@@ -64,26 +64,27 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 | HK-2 | Rapikan `research/` 141MB + hapus junk Zone.Identifier | DevSecOps |
 | DOC-1 | ADR-001 (www/HTTP3/Redis) disepakati | — |
 | DOC-2 | PRD + Spec Sprint Jurnal | — |
+| INF-1 | Commit hygiene (2 Jul): ADR+board 6f7811a, branding atlas 9570cb1 (icon 930KB→3.4KB, rebuild+79 test pass, nginx restart karena stale upstream IP), salido-web 9ee929b | DevSecOps ✓QA |
+| DBA-1 | test_cache.py 19 test — RED terbukti (ModuleNotFoundError: cache) sebelum implement | DBA ✓QA |
+| DBA-2 | voc_redis (128mb/allkeys-lru) + cache.py + cache-aside di voyages/, forts/, forts/routes/all, glossary, glossary/lookup. Bukti: /api/forts MISS 76ms→HIT 3ms; suite 151 pass. **Belum di-commit — menunggu review PO** | DBA ✓QA |
+| DBA-3 | Flush voc:* di akhir seed_data.py (invalidate_prefix_sync) + 2 test | DBA ✓QA |
+| FIX-1 | (Bonus) 8 test US-06 pre-existing fail — env SYNC_DATABASE_URL absen di compose (fallback ter-scrub US-07); ditambahkan → 151 pass 0 fail | DevSecOps ✓QA |
+| JRN-1 | Collection `jurnal` + schema Zod + MDX + draft filter + `_contoh.mdx`. Bukti: build gagal jelas saat frontmatter invalid; draft absen dari dist/ | Dev ✓QA |
+| JRN-2 | Layout artikel longform: hero full-bleed, drop cap, PullQuote/FullBleedImage/ArchiveNote, footnotes GFM, blok Sumber, prev/next | Dev ✓QA |
+| JRN-3 | Indeks /jurnal/ (featured+grid+empty state+BookSpoiler→seksi Buku) + tag pages. Artikel demo draft: laporan-hoffman-1681 (seri Gunung Arum). **Belum di-commit — menunggu review PO di http://localhost:4321/jurnal/** | Dev ✓QA |
 
 ### Sprint (To Do)
 
 **Lane INFRA — minggu 1 (3–9 Jul)**
 | ID | Kartu | Tim | SP | Acceptance (ringkas) |
 |----|-------|-----|----|----------------------|
-| INF-1 | Commit hygiene: ADR-001, WIP branding atlas (kompres icon dulu), `tambang.astro` di salido-web | DevSecOps | 2 | 3 commit bersih, checklist secret lolos |
 | INF-2 | www→apex: DNS `www` (proxied) + server block 301 di `nginx-prod.conf`, deploy, `nginx -t`, reload | DevSecOps | 2 | `curl -sI https://www.salido.my.id/x` → 301 `https://salido.my.id/x` |
 | INF-3 | HTTP/3: toggle Cloudflare + verifikasi h3 + update komentar QUIC `nginx/nginx.conf` | DevSecOps | 1 | devtools protocol = h3; komentar tidak lagi menyarankan QUIC origin |
-| DBA-1 | **RED:** `backend/tests/test_cache.py` — hit/miss, TTL, invalidasi prefix, Redis-down fallback (harus FAIL dulu) | DBA + QA | 2 | pytest FAIL karena `cache.py` belum ada |
-| DBA-2 | **GREEN:** service `voc_redis` di compose + `backend/cache.py` + terapkan di routers `voyages/forts/glossary` (kecuali /export) | DBA | 5 | semua test DBA-1 pass; `REDIS_URL` via env |
-| DBA-3 | Invalidasi: flush `voc:*` di akhir `seed_data.py` + test | DBA | 1 | seed ulang → cache kosong → hit baru |
 | QA-1 | Verifikasi infra: full suite + T4 latency + logs + deploy checklist CLAUDE.md | QA | 2 | T3–T6 tercentang dengan bukti |
 
 **Lane JURNAL — minggu 1–2 (3–15 Jul)**
 | ID | Kartu | Tim | SP | Acceptance (ringkas) |
 |----|-------|-----|----|----------------------|
-| JRN-1 | US-J1: collection `jurnal` + schema Zod + MDX + draft filter | Dev | 2 | build gagal jelas saat frontmatter invalid; `_contoh.mdx` draft |
-| JRN-2 | US-J3: layout artikel longform + `PullQuote`/`FullBleedImage`/`ArchiveNote` + footnotes + Sumber + prev/next | Dev | 5 | DoD spec §US-J3; cek 375px |
-| JRN-3 | US-J2: indeks /jurnal/ (featured+grid+tag pages+empty state, BookSpoiler → seksi Buku) | Dev | 3 | DoD spec §US-J2 |
 | JRN-4 | US-J4: OG/JSON-LD/sitemap/canonical apex | Dev | 2 | validator OG & Rich Results bersih |
 | JRN-5 | US-J5: artikel perdana #1 (tambang 1681) + optimasi gambar WebP ≤ 300KB | Dev/Konten | 5 | terbit non-draft, kredit arsip lengkap |
 | JRN-6 | Artikel perdana #2 (bab Gunung Arum) — *stretch* | Dev/Konten | 3 | boleh jatuh ke sprint berikut |

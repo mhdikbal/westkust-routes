@@ -490,6 +490,11 @@ def seed():
         else:
             print(f"  ✔ Inbound voyages already present ({existing_inbound}). Skipping.")
 
+    # Data berubah → cache API basi. Flush prefix voc:* (DBA-3, ADR-001).
+    from cache import invalidate_prefix_sync
+    flushed = invalidate_prefix_sync()
+    print(f"  ✔ Cache invalidated: {flushed} key voc:* dihapus")
+
     print(f"\n  ══════════════════════════════════════════")
     print(f"  ✔ Seed complete.")
     print(f"  ══════════════════════════════════════════\n")

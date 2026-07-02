@@ -1,8 +1,9 @@
 from typing import Optional
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy import select, or_, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from cache import make_key, cache_get, cache_set
 from database import get_db
 from models import CommodityGlossary
 
@@ -11,20 +12,31 @@ router = APIRouter()
 
 @router.get("")
 async def list_glossary(
+    response: Response,
     category: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
 ):
-    """Semua entri glossary, opsional filter per kategori."""
+    """Semua entri glossary, opsional filter per kategori. Cache-aside Redis."""
+    cache_key = make_key("glossary", {"category": category})
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
     q = select(CommodityGlossary).order_by(CommodityGlossary.term)
     if category:
         q = q.where(CommodityGlossary.category == category)
     result = await db.execute(q)
     items = result.scalars().all()
-    return [_serialize(item) for item in items]
+    payload = [_serialize(item) for item in items]
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
 
 
 @router.get("/lookup")
 async def lookup_terms(
+    response: Response,
     terms: str,
     db: AsyncSession = Depends(get_db),
 ):
@@ -36,6 +48,12 @@ async def lookup_terms(
     raw = [t.strip().lower() for t in terms.split(",") if t.strip()]
     if not raw:
         return {}
+
+    cache_key = make_key("glossary-lookup", {"terms": ",".join(sorted(raw))})
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
 
     # Match by exact term OR dalam array variants
     q = select(CommodityGlossary).where(
@@ -63,7 +81,10 @@ async def lookup_terms(
             lookup[v.lower()] = data
 
     # Return hanya terms yang di-query
-    return {t: lookup[t] for t in raw if t in lookup}
+    payload = {t: lookup[t] for t in raw if t in lookup}
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
 
 
 def _serialize(item: CommodityGlossary) -> dict:

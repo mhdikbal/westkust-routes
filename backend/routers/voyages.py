@@ -1,12 +1,13 @@
 import csv
 import io
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc, func
 from pydantic import BaseModel, ConfigDict
 
+from cache import make_key, cache_get, cache_set
 from database import get_db
 from models import Voyage, Fort, CargoItem
 
@@ -135,6 +136,7 @@ class SankeyResponse(BaseModel):
 
 @router.get("/", response_model=List[VoyageSchema])
 async def list_voyages(
+    response: Response,
     origin_id: Optional[int] = None,
     destination_id: Optional[int] = None,
     direction: Optional[str] = None,  # "outbound" or "inbound"
@@ -146,7 +148,17 @@ async def list_voyages(
     limit: int = Query(default=200, le=5000),
     db: AsyncSession = Depends(get_db),
 ):
-    """List all voyages with optional filters."""
+    """List all voyages with optional filters. Cache-aside Redis (ADR-001)."""
+    cache_key = make_key("voyages", {
+        "origin_id": origin_id, "destination_id": destination_id,
+        "direction": direction, "year_from": year_from, "year_to": year_to,
+        "product": product, "search": search, "skip": skip, "limit": limit,
+    })
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
     query = select(Voyage)
     
     if origin_id is not None:
@@ -167,7 +179,12 @@ async def list_voyages(
 
     query = query.order_by(Voyage.year.desc()).offset(skip).limit(limit)
     result = await db.execute(query)
-    return result.scalars().all()
+    voyages = result.scalars().all()
+
+    payload = [VoyageSchema.model_validate(v).model_dump() for v in voyages]
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
 
 
 @router.get("/stats", response_model=VoyageStatsResponse)

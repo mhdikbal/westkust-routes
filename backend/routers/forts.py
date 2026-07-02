@@ -1,9 +1,10 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from pydantic import BaseModel, ConfigDict
 
+from cache import make_key, cache_get, cache_set
 from database import get_db
 from models import Fort, Voyage
 
@@ -86,8 +87,14 @@ class FortEnrichmentResponse(BaseModel):
 # ---------- Endpoints ----------
 
 @router.get("/", response_model=List[FortSummary])
-async def list_forts(db: AsyncSession = Depends(get_db)):
-    """Get all forts with voyage statistics."""
+async def list_forts(response: Response, db: AsyncSession = Depends(get_db)):
+    """Get all forts with voyage statistics. Cache-aside Redis (ADR-001)."""
+    cache_key = make_key("forts", None)
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
     result = await db.execute(select(Fort))
     forts = result.scalars().all()
 
@@ -121,7 +128,11 @@ async def list_forts(db: AsyncSession = Depends(get_db)):
             total_value_out=float(out_total or 0),
             total_value_in=float(in_total or 0),
         ))
-    return summaries
+
+    payload = [sm.model_dump() for sm in summaries]
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
 
 
 @router.get("/compare", response_model=dict)
@@ -223,8 +234,14 @@ async def compare_ports(
 
 
 @router.get("/routes/all", tags=["Map"])
-async def list_all_routes(db: AsyncSession = Depends(get_db)):
-    """A summary of all voyage routes for map visualization."""
+async def list_all_routes(response: Response, db: AsyncSession = Depends(get_db)):
+    """A summary of all voyage routes for map visualization. Cache-aside Redis."""
+    cache_key = make_key("forts-routes", None)
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
     query = (
         select(
             Voyage.origin_name_raw.label("origin_name"),
@@ -239,7 +256,7 @@ async def list_all_routes(db: AsyncSession = Depends(get_db)):
     result = await db.execute(query)
     routes = result.all()
 
-    return [
+    payload = [
         {
             "origin_name": r.origin_name,
             "destination_name": r.destination_name,
@@ -248,6 +265,9 @@ async def list_all_routes(db: AsyncSession = Depends(get_db)):
         }
         for r in routes
     ]
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
 
 
 @router.get("/{fort_id}/enrichment", response_model=FortEnrichmentResponse, tags=["Enrichment"])

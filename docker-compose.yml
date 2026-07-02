@@ -16,6 +16,21 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: voc_redis
+    restart: always
+    # Cache-aside ADR-001: cap 128MB (VPS 2GB), LRU. Internal network saja —
+    # tidak ada ports ke host.
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
   backend:
     build:
       context: ./backend
@@ -25,13 +40,19 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-vocuser}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-vocdb}
       DATABASE_SYNC_URL: postgresql://${POSTGRES_USER:-vocuser}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-vocdb}
+      # Alias nama yang dipakai test integrasi US-06 + alembic (fallback
+      # hardcoded-nya di-scrub saat US-07, jadi env ini wajib ada)
+      SYNC_DATABASE_URL: postgresql://${POSTGRES_USER:-vocuser}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-vocdb}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8084}
+      REDIS_URL: redis://redis:6379/0
       PYTHONUNBUFFERED: "1"
     volumes:
       - ./data:/app/data
       - ./scrawling:/app/scrawling
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     # Port 8000 tidak di-expose ke host — nginx dan frontend menjangkau backend
     # via Docker internal network (container name 'backend:8000').
