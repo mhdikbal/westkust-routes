@@ -121,7 +121,7 @@ function fmt(n) {
    ───────────────────────────────────────────────────────────────────────────── */
 function createFortSVG(color, isActive) {
   const glow = isActive ? `filter:drop-shadow(0 0 8px ${color});` : "";
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="46" height="56" viewBox="0 0 46 56" style="${glow}" aria-hidden="true">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 46 56" style="${glow}" aria-hidden="true">
     <path d="M23 54 L10 42 Q2 32 2 18 A18 18 0 1 1 44 18 Q44 32 36 42 Z" fill="white" stroke="${color}" stroke-width="2.5"/>
     <rect x="16" y="12" width="14" height="12" rx="1" fill="${color}"/>
     <path d="M14 24 L32 24 M18 12 L18 10 M28 12 L28 10" stroke="${color}" stroke-width="2" stroke-linecap="round"/>
@@ -131,7 +131,7 @@ function createFortSVG(color, isActive) {
 
 function createAnchorSVG(color, isActive) {
   const glow = isActive ? `filter:drop-shadow(0 0 8px ${color});` : "";
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="48" viewBox="0 0 40 48" style="${glow}" aria-hidden="true">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 40 48" style="${glow}" aria-hidden="true">
     <circle cx="20" cy="20" r="18" fill="white" stroke="${color}" stroke-width="2"/>
     <path d="M20 10 L20 32 M13 15 L27 15 M12 28 Q20 38 28 28" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
     <circle cx="12" cy="28" r="2" fill="${color}"/>
@@ -144,8 +144,8 @@ function fortIcon(f, active) {
   return L.divIcon({
     html: isArrival ? createAnchorSVG(f.color, active) : createFortSVG(f.color, active),
     className: "fort-marker-icon",
-    iconSize: isArrival ? [40, 48] : [46, 56],
-    iconAnchor: isArrival ? [20, 46] : [23, 54],
+    iconSize: isArrival ? [26, 26] : [28, 36],
+    iconAnchor: isArrival ? [13, 24] : [14, 34],
   });
 }
 
@@ -229,20 +229,25 @@ async function drawRoutes(yFrom, yTo) {
   routesData.forEach(r => {
     const s = FORT_COORDS[r.origin_name], e = FORT_COORDS[r.destination_name];
     if (!s || !e) return;
-    // Color by direction field (US-05): blue=outbound, orange=inbound, muted=transit
+    // Color by direction field (US-05) — palet Atlas of Mutual Heritage:
+    // navy=outbound, teal=inbound, abu=transit
     const dir = r.direction || "transit";
-    const color   = dir === "outbound" ? "#2C5364" : dir === "inbound" ? "#D48166" : "#8B9E97";
+    const color   = dir === "outbound" ? "#31384C" : dir === "inbound" ? "#027B8C" : "#8B9E97";
     const delay   = dir === "outbound" ? 2800 : dir === "inbound" ? 2200 : 3500;
     const routeKey = `${r.origin_name}→${r.destination_name}`;
     const vias = SEA_WAYPOINTS[routeKey];
+    // Rute dengan waypoint jalur laut nyata = presisi (garis penuh).
+    // Tanpa waypoint = fallback lengkung → tandai "perkiraan" (dashed, jujur soal presisi).
+    const approx = !vias;
     const pts = vias ? [s, ...vias, e] : getBezierCurve(s, e, 0.25);
-    const weight = Math.min(2 + (r.count || 1) / 20, 7);
+    const weight = Math.min(1 + (r.count || 1) / 80, 2.5);
 
     const ant = L.polyline.antPath(pts, {
       delay: delay,
       color: color,
       weight: weight,
-      opacity: 0.65,
+      opacity: approx ? 0.38 : 0.55,
+      dashArray: approx ? [4, 16] : [10, 20],
       pulseColor: "#FFFFFF",
     }).addTo(map);
 
@@ -253,6 +258,7 @@ async function drawRoutes(yFrom, yTo) {
       <div style="font-size:.75rem;">
         <span style="font-weight:700;">${r.count}</span> Pelayaran
         <br>Volume: <span style="color:#B85D19;">ƒ ${fmt(r.total_value)}</span>
+        ${approx ? '<br><span style="color:#8B9E97;font-style:italic;">rute perkiraan</span>' : ''}
       </div>`, { sticky: true });
 
     routeLines.push(ant);
@@ -833,7 +839,7 @@ async function loadGrafikData() {
       data: {
         labels: prods.map(p => esc(p.name || "—")),
         datasets: [{ data: prods.map(p => p.count),
-          backgroundColor: "#B85D19bb", borderRadius: 4, borderSkipped: false }]
+          backgroundColor: "#D8B13Bcc", borderRadius: 4, borderSkipped: false }]
       },
       options: {
         indexAxis: "y", responsive: true,
@@ -851,7 +857,7 @@ async function loadGrafikData() {
       data: {
         labels: ports.map(p => esc(p.name)),
         datasets: [{ data: ports.map(p => Math.round(p.value)),
-          backgroundColor: "#2C5364bb", borderRadius: 4, borderSkipped: false }]
+          backgroundColor: "#31384Cbb", borderRadius: 4, borderSkipped: false }]
       },
       options: {
         indexAxis: "y", responsive: true,

@@ -75,17 +75,8 @@
       display: flex; align-items: center; gap: .75rem;
       text-decoration: none; flex-shrink: 0;
     }
-    .nav-brand .voc-seal {
-      width: 38px; height: 38px; min-width: 38px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Playfair Display', serif;
-      font-weight: 800; font-size: .9rem;
-      color: #fff;
-      letter-spacing: .05em;
-      box-shadow: 0 3px 10px rgba(184,93,25,.3);
-    }
+    /* .nav-brand .voc-seal — replaced by .voc-seal-img (icon.png) */
+    .voc-seal-img { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
     .nav-brand-text { display: flex; flex-direction: column; line-height: 1.1; }
     .nav-brand-title {
       font-family: 'Playfair Display', serif;
@@ -676,7 +667,7 @@
 <!-- ── Navbar ─────────────────────────────────────────────────────────────── -->
 <nav id="navbar" role="banner">
   <a href="#" class="nav-brand" onclick="resetView(); return false;" aria-label="Kembali ke tampilan awal — VOC Trade Atlas">
-    <div class="voc-seal" aria-hidden="true">VOC</div>
+    <img src="/static/map_app/img/icon.png" alt="Salido" class="voc-seal-img" aria-hidden="true" />
     <div class="nav-brand-text">
       <span class="nav-brand-title">Jalur Perdagangan VOC</span>
       <span class="nav-brand-sub">Sumatera Westkust · 1700–1789</span>
@@ -918,6 +909,6 @@
         integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
         crossorigin="anonymous"></script>
 
-<script src="{% static 'map_app/js/atlas.js' %}"></script>
+<script src="{% static 'map_app/js/atlas.js' %}?v=2"></script>
 </body>
 </html>
