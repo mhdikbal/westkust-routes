@@ -22,6 +22,17 @@ HTTP/3 hanya di Cloudflare edge (QUIC origin TIDAK diaktifkan).
 
 ---
 
+## Langkah 0 — Deploy situs salido-web (konten Wave 2–3)
+
+Dari WSL — build + rsync `dist/` + reload nginx (otomatis via skrip):
+
+```bash
+cd ~/salido-web && ./deploy.sh
+```
+
+Verifikasi cepat: `curl -s -o /dev/null -w "%{http_code}\n" https://salido.my.id/jurnal/` → 200,
+lalu cek https://salido.my.id/sejarah/historiografi di browser.
+
 ## Langkah 1 — Cloudflare DNS: CNAME www
 
 1. Login Cloudflare → pilih zone `salido.my.id` → **DNS → Records**.
