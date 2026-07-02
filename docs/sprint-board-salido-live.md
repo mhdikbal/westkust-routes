@@ -66,39 +66,40 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 | DOC-2 | PRD + Spec Sprint Jurnal | — |
 | INF-1 | Commit hygiene (2 Jul): ADR+board 6f7811a, branding atlas 9570cb1 (icon 930KB→3.4KB, rebuild+79 test pass, nginx restart karena stale upstream IP), salido-web 9ee929b | DevSecOps ✓QA |
 | DBA-1 | test_cache.py 19 test — RED terbukti (ModuleNotFoundError: cache) sebelum implement | DBA ✓QA |
-| DBA-2 | voc_redis (128mb/allkeys-lru) + cache.py + cache-aside di voyages/, forts/, forts/routes/all, glossary, glossary/lookup. Bukti: /api/forts MISS 76ms→HIT 3ms; suite 151 pass. **Belum di-commit — menunggu review PO** | DBA ✓QA |
+| DBA-2 | voc_redis (128mb/allkeys-lru) + cache.py + cache-aside di voyages/, forts/, forts/routes/all, glossary, glossary/lookup. Bukti: /api/forts MISS 76ms→HIT 3ms; suite 151 pass. Commit 3e04cbb | DBA ✓QA |
 | DBA-3 | Flush voc:* di akhir seed_data.py (invalidate_prefix_sync) + 2 test | DBA ✓QA |
 | FIX-1 | (Bonus) 8 test US-06 pre-existing fail — env SYNC_DATABASE_URL absen di compose (fallback ter-scrub US-07); ditambahkan → 151 pass 0 fail | DevSecOps ✓QA |
 | JRN-1 | Collection `jurnal` + schema Zod + MDX + draft filter + `_contoh.mdx`. Bukti: build gagal jelas saat frontmatter invalid; draft absen dari dist/ | Dev ✓QA |
 | JRN-2 | Layout artikel longform: hero full-bleed, drop cap, PullQuote/FullBleedImage/ArchiveNote, footnotes GFM, blok Sumber, prev/next | Dev ✓QA |
 | JRN-3 | Indeks /jurnal/ (featured+grid+empty state+BookSpoiler→seksi Buku) + tag pages. Artikel demo draft: laporan-hoffman-1681 (seri Gunung Arum). Direview PO 2 Jul ("sudah bagus") → commit 4320bf2 | Dev ✓QA ✓PO |
 | JRN-4 | SEO: @astrojs/sitemap + robots.txt, OG lengkap (og:type/site_name/twitter, og:image absolut), JSON-LD Article. Commit salido-web (JRN-4). DBA cache di-commit westkust 3e04cbb | Dev ✓QA |
+| JRN-5 | Artikel #1 "Tembakan di Tambang" TERBIT (draft:false, cover 297KB) — 144a6c9 | Dev/Konten ✓QA |
+| IMG-1 | public/img 30.6MB→3.3MB, semua ≤300KB, master ke research/img/master — 43e799e | Dev ✓QA |
+| TYPE-1 | Token --font-display + --color-accent-bright + scrim hangat; Hero.astro tunggal utk ID+EN — 6d653b5 | Dev ✓QA |
+| FTR-1 | Footer global (Base.astro, noFooter utk atlas) — 2cb7c2e | Dev ✓QA |
+| HOME-1 | Beranda etalase: seksi Jurnal + Atlas full-bleed + Buku + scroll-hint — 316bb33 | Dev ✓QA |
+| NAV-1 | Hub /sejarah (prolog+tambang+8 bab nonaktif); /tambang → 301 meta-refresh — 42e1818 | Dev ✓QA |
+| ATLAS-1 | Atlas imersif: 1 navbar + chip ← salido.my.id, 100svh — 7b2ab61 | Dev ✓QA |
+| INF-2-prep | nginx-prod.conf: block www→apex 301 (80+443); nginx -t wajib di server (runbook) — 088ab56 | DevSecOps ✓QA |
+| JRN-6 | Draft artikel #2 "Tanah yang Tidak Mudah Diambil" (Bab 2 naskah, 685 kata, draft:true) — 9d9b9a6 | Dev/Konten ✓QA |
+| NGX-1 | Fix 502 stale-IP: resolver 127.0.0.11 + proxy_pass variable; TERBUKTI rebuild backend → 200 tanpa restart nginx — e5140cb | DevSecOps ✓QA |
+| INF-3-prep | Komentar QUIC kini merujuk ADR-001 (h3 edge-only) — 8953080 | DevSecOps ✓QA |
+| RUNBOOK | docs/runbook-production-www-h3.md — langkah manual Cloudflare+deploy utk PO — 828ebba | DevSecOps ✓QA |
+| DBA-AUDIT | Redis sehat (hit 79%, 1.35MB/128MB); index voyages sudah lengkap; ANALYZE 0.62→0.14ms; TEMUAN KRITIS: chain Alembic putus — b58aed9 | DBA ✓QA |
+| BLUE | Audit defensif: rate-limit/CORS/headers/secret-scan PASS; 2 temuan SEDANG (port 8001, .env scaffold ter-track) — docs/audit-blueteam-2026-07.md | Blue ✓QA |
+| QA-2 | Lighthouse (chrome-headless-shell) artikel production: A11y 93 ✅, Perf 74 ❌(<90), CLS 0, TBT 0 — 2 temuan a11y lanjutan | QA |
 
 ### Sprint (To Do)
 
-**Lane INFRA — minggu 1 (3–9 Jul)**
-| ID | Kartu | Tim | SP | Acceptance (ringkas) |
-|----|-------|-----|----|----------------------|
-| INF-2 | www→apex: DNS `www` (proxied) + server block 301 di `nginx-prod.conf`, deploy, `nginx -t`, reload | DevSecOps | 2 | `curl -sI https://www.salido.my.id/x` → 301 `https://salido.my.id/x` |
-| INF-3 | HTTP/3: toggle Cloudflare + verifikasi h3 + update komentar QUIC `nginx/nginx.conf` | DevSecOps | 1 | devtools protocol = h3; komentar tidak lagi menyarankan QUIC origin |
-| QA-1 | Verifikasi infra: full suite + T4 latency + logs + deploy checklist CLAUDE.md | QA | 2 | T3–T6 tercentang dengan bukti |
-
-**Lane JURNAL — minggu 1–2 (3–15 Jul)**
-| ID | Kartu | Tim | SP | Acceptance (ringkas) |
-|----|-------|-----|----|----------------------|
-| JRN-5 | US-J5: artikel perdana #1 (tambang 1681) + optimasi gambar WebP ≤ 300KB | Dev/Konten | 5 | terbit non-draft, kredit arsip lengkap |
-| JRN-6 | Artikel perdana #2 (bab Gunung Arum) — *stretch* | Dev/Konten | 3 | boleh jatuh ke sprint berikut |
-| QA-2 | Gerbang QA Jurnal: Lighthouse T2, kontras, reduced-motion, deploy + smoke production | QA | 2 | T1–T2 tercentang dengan bukti |
-
-**Usulan dari tinjauan desain 2 Jul (`~/salido-web/docs/desain-skema-web.md`) — menunggu keputusan PO**
-| ID | Kartu | Prioritas |
-|----|-------|-----------|
-| HOME-1 | Beranda: seksi jurnal terbaru + teaser atlas + teaser buku + petunjuk scroll | 1 — usul masuk sprint |
-| IMG-1 | Diet gambar public/ (9.2MB/7.6MB/6MB → WebP ≤300KB; master ke research/) | 2 — usul masuk sprint |
-| FTR-1 | Footer global (kolofon, kontak, kredit arsip, ©) | 3 — usul masuk sprint |
-| NAV-1 | IA: /tambang → /sejarah/tambang, prolog → /sejarah/prolog, hub sejarah | backlog |
-| TYPE-1 | Konsolidasi: display Crimson 600 semua judul, token --color-accent-bright, scrim seragam, satu Hero.astro | backlog |
-| ATLAS-1 | Mode imersif /atlas (hapus double navbar) + 301 /westkust/ → /atlas | backlog |
+**Kartu lanjutan hasil Wave 2 (3 Jul) — prioritas urut**
+| ID | Kartu | Tim | Asal temuan |
+|----|-------|-----|-------------|
+| ALEMBIC-1 | 🔴 Perbaiki chain migration putus: 003_add_commodity_glossary down_revision='002' ≠ revision '002_amh_images' — alembic upgrade gagal KeyError; blocker semua migration berikutnya | DBA | Audit DBA |
+| PERF-2 | Lighthouse Perf 74→≥90 di halaman artikel (LCP 3.9s: hero eager 297KB + font; pertimbangkan srcset/preload font/hero lebih kecil) | Dev | QA-2 |
+| A11Y-2 | Kontras .archive-note .tahun/.archive-sumber 4.16<4.5; tambah landmark <main>; lengkapi header di respons 429 | Dev | QA-2 + Blue |
+| SEC-1 | Hapus publish port 8001 dari compose (bypass nginx + Django dev server); untrack backend/.env & frontend/.env scaffold | DevSecOps | Blue |
+| HIST-1b/c | Halaman /sejarah/historiografi (data HIST-1a ✅ src/data/historiografi.ts) + aset domain publik | Dev/Konten | Skema historiografis |
+| DEPLOY | Production: runbook www+HTTP/3 (manual PO) + deploy salido-web build baru | PO + DevSecOps | Menunggu izin PO |
 
 **Backlog (parkir — jangan ditarik tanpa menukar kartu keluar)**
 RSS, halaman seri, related articles, `<AtlasLink>`, bilingual R6 + hreflang, Pagefind, dark mode, newsletter, scrollytelling, deploy westkust Docker ke VPS, sitasi akademik.
