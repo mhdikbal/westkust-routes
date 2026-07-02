@@ -89,22 +89,25 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 | BLUE | Audit defensif: rate-limit/CORS/headers/secret-scan PASS; 2 temuan SEDANG (port 8001, .env scaffold ter-track) — docs/audit-blueteam-2026-07.md | Blue ✓QA |
 | QA-2 | Lighthouse (chrome-headless-shell) artikel production: A11y 93 ✅, Perf 74 ❌(<90), CLS 0, TBT 0 — 2 temuan a11y lanjutan | QA |
 
-### Sprint (To Do)
+### Sprint (To Do) — Wave 3, urutan disetujui PO 3 Jul
 
-**Kartu lanjutan hasil Wave 2 (3 Jul) — prioritas urut**
-| ID | Kartu | Tim | Asal temuan |
-|----|-------|-----|-------------|
-| ALEMBIC-1 | 🔴 Perbaiki chain migration putus: 003_add_commodity_glossary down_revision='002' ≠ revision '002_amh_images' — alembic upgrade gagal KeyError; blocker semua migration berikutnya | DBA | Audit DBA |
-| PERF-2 | Lighthouse Perf 74→≥90 di halaman artikel (LCP 3.9s: hero eager 297KB + font; pertimbangkan srcset/preload font/hero lebih kecil) | Dev | QA-2 |
-| A11Y-2 | Kontras .archive-note .tahun/.archive-sumber 4.16<4.5; tambah landmark <main>; lengkapi header di respons 429 | Dev | QA-2 + Blue |
-| SEC-1 | Hapus publish port 8001 dari compose (bypass nginx + Django dev server); untrack backend/.env & frontend/.env scaffold | DevSecOps | Blue |
-| HIST-1b/c | Halaman /sejarah/historiografi (data HIST-1a ✅ src/data/historiografi.ts) + aset domain publik | Dev/Konten | Skema historiografis |
-| DEPLOY | Production: runbook www+HTTP/3 (manual PO) + deploy salido-web build baru | PO + DevSecOps | Menunggu izin PO |
+| # | ID | Kartu | Tim | SP | Status |
+|---|----|-------|-----|----|--------|
+| 1 | ALEMBIC-1 | 🔴 Sambung chain migration: 003_add_commodity_glossary down_revision='002' → '002_amh_images'; verifikasi alembic current/upgrade head jalan; suite hijau | DBA | 1 | **In Progress** |
+| 2 | HIST-1b | Halaman /sejarah/historiografi: KartuBibliografi + SpineSumber + 9 lapis dari src/data/historiografi.ts (skema §3); masuk hub /sejarah | Dev/Konten | 3 | To Do |
+| 3 | PERF-2 | Lighthouse Perf 74→≥90 halaman artikel (LCP 3.9s): preload hero+font, srcset, cek render-blocking | Dev | 2 | To Do |
+| 4 | A11Y-2 | Kontras ArchiveNote (.tahun/.archive-sumber 4.16→≥4.5), landmark <main> di layout, lengkapi security headers di respons 429 | Dev | 1 | To Do |
+| 5 | SEC-1 | compose: hapus publish port 8001 (bypass nginx + dev server); untrack backend/.env & frontend/.env scaffold (+ .gitignore) | DevSecOps | 1 | To Do |
+| 6 | HIST-1c | Aset domain publik historiografi (potret Camões Wikimedia, kliping Soerabajasch Handelsblad Delpher) + kredit + QA halaman | Dev/Konten | 2 | To Do |
+| 7 | DEPLOY | Production: PO eksekusi runbook (Cloudflare CNAME www + toggle HTTP/3) + deploy nginx-prod.conf & build salido-web; QA verifikasi T3 | PO + DevSecOps | 2 | ⛔ Menunggu izin/aksi PO |
 
-**Backlog (parkir — jangan ditarik tanpa menukar kartu keluar)**
-RSS, halaman seri, related articles, `<AtlasLink>`, bilingual R6 + hreflang, Pagefind, dark mode, newsletter, scrollytelling, deploy westkust Docker ke VPS, sitasi akademik.
+**Backlog (parkir — ditarik lewat keputusan PO)**
+- Konten & fitur jurnal: RSS, halaman seri, related articles, `<AtlasLink>` embed peta di artikel, bilingual R6 + hreflang, Pagefind (>20 artikel), newsletter (≥10 artikel), sitasi akademik ("Salin sitasi")
+- Desain: dark mode (tokens sudah CSS vars), scrollytelling peta artikel
+- Teknis (temuan audit): drop 3 index redundan voyages (ix_voyages_year, ix_voyages_id, ix_voyages_direction — laporan DBA), hilangkan CSP 'unsafe-inline' (TODO US-11), hardcode #D8B13B sisa di tambang/atlas (catatan TYPE-1), publish artikel #2 setelah edit PO
+- Infra: deploy westkust Docker ke VPS (atlas production menyatu /westkust → 301 /atlas per ATLAS-1)
 
-**Total sprint: 37 SP** (INFRA 15 · JURNAL 22, termasuk stretch 3). Kapasitas solo ±2 SP/hari kerja efektif → realistis dengan stretch sebagai penyangga.
+**Wave 1–2 selesai: 30 kartu Done (≈49 SP). Wave 3: 12 SP** — muat dalam sisa sprint (s.d. 16 Jul) dengan longgar; DEPLOY di luar SP (aksi manual PO + verifikasi).
 
 ---
 
