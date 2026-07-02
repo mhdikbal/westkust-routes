@@ -35,6 +35,14 @@ lalu cek https://salido.my.id/sejarah/historiografi di browser.
 
 ## Langkah 1 — Cloudflare DNS: CNAME www
 
+> ⚠️ **ATURAN EMAS sebelum menyentuh DNS** (pelajaran insiden 3 Jul 2026 —
+> record apex ikut terhapus saat mengganti www, situs down beberapa menit):
+> 1. **Screenshot/catat semua record dulu** (terutama IP di record A apex).
+> 2. Saat menghapus, pastikan kolom **Name = `www`** — JANGAN sentuh baris
+>    bernama `salido.my.id` / `@` (itu jangkar domain).
+> 3. Isi record yang terlanjur terhapus bisa dilihat di **Manage Account →
+>    Audit Log** (entri "DNS record delete").
+
 1. Login Cloudflare → pilih zone `salido.my.id` → **DNS → Records**.
 2. Tambah record:
    - **Type:** `CNAME`
