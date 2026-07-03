@@ -101,11 +101,12 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 | 5 | SEC-1 | ✅ DONE 3 Jul — 8001 tak lagi published (curl refused), .env scaffold dihapus dari git; 8084 tetap 200. westkust 5255dc9 | DevSecOps ✓QA | 1 | **Done** |
 | 6 | HIST-1c | ✅ DONE 3 Jul — potret Camões (Fernão Gomes c.1577, Wikimedia) + halaman muka Soerabaijasch Handelsblad 22/4/1937 (Delpher ddd:011110426, kutipan 'Goud.' verbatim OCR); token --color-gold-ink; Lighthouse historiografi Perf 99/A11y 100. salido 9f33b57 | Dev/Konten ✓QA | 2 | **Done** |
 | 7 | DEPLOY | ✅ DONE 3 Jul — situs live di production (18 halaman, deploy.sh). Insiden DNS: record apex ikut terhapus saat ganti www (A→CNAME); dipulihkan 103.171.184.94 dari audit log Cloudflare. IP `.94:443`/`.187:443` bukan origin salido (NAT ioscloud tidak forward :443 langsung); www 502 tak teratasi via origin — diselesaikan via Cloudflare Redirect Rule (hostname=www.salido.my.id → 301 apex, dynamic, preserve query). Verifikasi akhir: www→301 (path+query utuh), alt-svc h3, smoke 7/7 200 | PO + DevSecOps ✓QA | 2 | **Done** |
+| 8 | NAV-2 | ✅ DONE 3 Jul — 🔴 bug produksi dilaporkan PO ("kacau" di /sejarah/tambang/): navbar overflow mobile ≤640px, site-wide (Nav.astro semua halaman), "Tentang" terpotong. Fix: hamburger 44×44px + panel dropdown, aria-expanded, close via klik-link/Escape/tombol; follow-up z-index skip-link tambang.astro 300→50. Diverifikasi CDP screenshot production sebelum/sesudah. salido 1d19d5d + e9bda3c, deploy 2× | Dev ✓QA ✓PO | — | **Done** |
 
 **Backlog (parkir — ditarik lewat keputusan PO)**
 - Konten & fitur jurnal: RSS, halaman seri, related articles, `<AtlasLink>` embed peta di artikel, bilingual R6 + hreflang, Pagefind (>20 artikel), newsletter (≥10 artikel), sitasi akademik ("Salin sitasi")
 - Desain: dark mode (tokens sudah CSS vars), scrollytelling peta artikel
-- Teknis (temuan audit): drop 3 index redundan voyages (ix_voyages_year, ix_voyages_id, ix_voyages_direction — laporan DBA), hilangkan CSP 'unsafe-inline' (TODO US-11), hardcode #D8B13B sisa di tambang/atlas (catatan TYPE-1), publish artikel #2 setelah edit PO
+- Teknis (temuan audit): drop 3 index redundan voyages (ix_voyages_year, ix_voyages_id, ix_voyages_direction — laporan DBA), hilangkan CSP 'unsafe-inline' (TODO US-11), publish artikel #2 setelah edit PO
 - Infra: deploy westkust Docker ke VPS (atlas production menyatu /westkust → 301 /atlas per ATLAS-1)
 
 **Wave 1–2 selesai: 30 kartu Done (≈49 SP). Wave 3: 12 SP** — muat dalam sisa sprint (s.d. 16 Jul) dengan longgar; DEPLOY di luar SP (aksi manual PO + verifikasi).
