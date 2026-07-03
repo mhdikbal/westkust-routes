@@ -144,8 +144,8 @@ async def list_voyages(
     year_to: Optional[int] = None,
     product: Optional[str] = None,
     search: Optional[str] = None,
-    skip: int = 0,
-    limit: int = Query(default=200, le=5000),
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=200, ge=1, le=5000),
     db: AsyncSession = Depends(get_db),
 ):
     """List all voyages with optional filters. Cache-aside Redis (ADR-001)."""

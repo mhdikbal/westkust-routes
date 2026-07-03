@@ -350,3 +350,24 @@ async def test_routes_year_range_combined():
     data = response.json()
     assert len(data) == 1
     assert data[0]["count"] == 3
+
+
+# ─── SEC: limit/skip negatif harus 422, bukan 500 (Red Team 3 Jul 2026) ─────
+
+@pytest.mark.asyncio
+async def test_negative_limit_returns_422_not_500():
+    """GET /api/voyages/?limit=-1 harus ditolak Pydantic (422), bukan meledak
+    di asyncpg (InvalidRowCountInLimitClauseError -> 500)."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/?limit=-1")
+
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_negative_skip_returns_422_not_500():
+    """GET /api/voyages/?skip=-1 harus ditolak Pydantic (422), bukan 500."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/?skip=-1")
+
+    assert response.status_code == 422

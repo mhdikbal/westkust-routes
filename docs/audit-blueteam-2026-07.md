@@ -35,6 +35,35 @@ Dua temuan **Sedang**: (1) port frontend `8001` ter-publish ke `0.0.0.0` sehingg
 
 ---
 
+## Update 3 Juli — Verifikasi Perbaikan + Red Team
+
+**Verifikasi perbaikan (semua dikerjakan setelah audit awal, dikonfirmasi ulang hari ini):**
+
+| Temuan | Status | Bukti verifikasi ulang |
+|---|---|---|
+| #1 Port 8001 published | ✅ **Resolved** (SEC-1) | `docker compose config` → frontend kini `expose: 8001` saja; `curl -m3 http://localhost:8001/` → connection refused; via nginx :8084 tetap 200 |
+| #2 `.env` scaffold ter-track | ✅ **Resolved** (SEC-1) | `backend/.env`, `frontend/.env` dihapus dari git; `git ls-files \| grep .env` → kosong |
+| #3 Header 429 tidak lengkap | ✅ **Resolved** (A11Y-2) | Burst 30× → 429 kini membawa Referrer-Policy, Permissions-Policy, dan CSP `default-src 'none'` selain XFO/XCTO/Retry-After |
+| #4–#6, #12 | Belum dikerjakan | Tetap di backlog (CSP unsafe-inline, server_tokens, /docs exposure, pip-audit terjadwal) |
+
+**Red Team — pengujian ofensif aktif (aset sendiri, terotorisasi), 3 Juli 2026:**
+
+Metode: SQLi (quote injection, UNION, stacked query) di parameter `search`/`year_from`/`product`; XSS reflected di `search`; path traversal encoded/literal; SSRF via parameter bertipe string; CORS bypass (origin jahat, `null` origin, preflight); rate-limit bypass via spoof `X-Forwarded-For`; fuzzing tipe parameter (`voyage_id` non-integer/negatif, `limit`/`skip` negatif/ekstrem); Host header injection.
+
+| # | Severity | Temuan | Bukti | Status |
+|---|----------|--------|-------|--------|
+| R1 | **Rendah** | `GET /api/voyages/?limit=-1` (dan `skip=-1`) memicu `asyncpg.exceptions.InvalidRowCountInLimitClauseError` → **500 Internal Server Error**. Endpoint `list_voyages` hanya memvalidasi `le=5000` tanpa batas bawah, tidak konsisten dengan endpoint `/routes` (`ge=1, le=200`, baris 276) di file yang sama. **Tidak ada stack trace bocor ke client** — hanya di log server. | `curl "/api/voyages/?limit=-1"` → 500 body `"Internal Server Error"`; log backend → traceback asyncpg | ✅ **Fixed** hari ini: `Query(default=200, ge=1, le=5000)` + `skip: Query(default=0, ge=0)` → kini 422. TDD: 2 test baru (`test_negative_limit_returns_422_not_500`, `test_negative_skip_returns_422_not_500`) RED→GREEN, suite 153 pass |
+| R2 | **Info** | SQLi (quote/UNION/stacked) di `search`, `year_from`, `product`, `glossary/lookup?terms` — **semua tertahan**. SQLAlchemy ORM + Pydantic type coercion memperlakukan payload sebagai literal string atau menolak dengan 422; tabel `voyages` utuh (4738 baris) pasca-percobaan. | Lihat command log sesi 3 Jul | — |
+| R3 | **Info** | XSS reflected di `search` — payload `<script>` dikembalikan sebagai bagian filter query (tidak match data, hasil `[]`), tidak pernah di-render sebagai HTML (API JSON murni, tanpa template rendering dari input). | idem | — |
+| R4 | **Info** | Path traversal (literal & percent-encoded) ke `/etc/passwd` via root maupun `/api/` — seluruhnya 400/404. | idem | — |
+| R5 | **Info** | CORS bypass techniques (origin jahat, `Origin: null`, preflight OPTIONS) — semua ditolak konsisten dengan audit awal (#9). | idem | — |
+| R6 | **Info** | Rate-limit **tidak bisa** dilewati dengan spoof `X-Forwarded-For` berbeda tiap request — nginx `limit_req_zone` memakai `$binary_remote_addr` (IP koneksi asli), bukan header yang dikontrol klien. | 25 req spoof XFF berbeda → 25×429 (limiter tetap mengikuti IP asli, bucket masih penuh dari burst sebelumnya) | — |
+| R7 | **Info** | Host header injection (`Host: evil.example.com`) tidak berdampak — API tidak membangun URL absolut dari `Host` (tidak ada redirect/link yang memakainya). | `curl -H "Host: evil.example.com"` → 200, data normal | — |
+
+**Kesimpulan Red Team:** permukaan serang aplikasi kecil by design (read-only API + static site, tanpa auth/form), dan pertahanan berlapis (ORM parameterized query, Pydantic validation, nginx rate-limit by real IP, CORS allowlist ketat) menahan seluruh kelas serangan umum yang dicoba. Satu bug input-validation (R1) ditemukan dan diperbaiki dalam sesi yang sama.
+
+---
+
 ## Batasan Audit
 
 - Tidak menguji server production/remote (di luar aturan tugas — tanpa SSH, tanpa Cloudflare).
