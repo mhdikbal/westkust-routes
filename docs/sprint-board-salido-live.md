@@ -87,6 +87,7 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 | RUNBOOK | docs/runbook-production-www-h3.md — langkah manual Cloudflare+deploy utk PO — 828ebba | DevSecOps ✓QA |
 | DBA-AUDIT | Redis sehat (hit 79%, 1.35MB/128MB); index voyages sudah lengkap; ANALYZE 0.62→0.14ms; TEMUAN KRITIS: chain Alembic putus — b58aed9 | DBA ✓QA |
 | BLUE | Audit defensif: rate-limit/CORS/headers/secret-scan PASS; 2 temuan SEDANG (port 8001, .env scaffold ter-track) — docs/audit-blueteam-2026-07.md | Blue ✓QA |
+| SEC-2 | Red Team 3 Jul (10 vektor: SQLi/XSS/traversal/CORS/rate-limit-bypass/host-injection) — 9 bertahan, 1 bug nyata: limit/skip negatif → 500. Fixed (Query ge=1/ge=0 → 422), TDD 2 test RED→GREEN, suite 153 pass. Blue Team audit diperbarui — SEC-1/A11Y-2 dikonfirmasi resolved. fa0b0d2 | Red+Blue+DBA ✓QA |
 | QA-2 | Lighthouse (chrome-headless-shell) artikel production: A11y 93 ✅, Perf 74 ❌(<90), CLS 0, TBT 0 — 2 temuan a11y lanjutan | QA |
 
 ### Sprint (To Do) — Wave 3, urutan disetujui PO 3 Jul
