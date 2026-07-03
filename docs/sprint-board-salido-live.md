@@ -10,10 +10,10 @@
 
 > **"Pembaca bisa membaca artikel jurnal perdana di salido.my.id yang tayang lewat jalur delivery yang kanonik (tanpa www), cepat (HTTP/3 + Redis), dan lolos gerbang QA."**
 
-Sprint dianggap sukses bila ketiga kalimat ini benar pada 16 Juli:
-1. `https://salido.my.id/jurnal/<slug>/` menampilkan ≥ 1 artikel nyata (bukan dummy).
-2. `www.salido.my.id` → 301 ke apex; browser bicara HTTP/3 ke edge.
-3. `GET /api/voyages` kedua kalinya dilayani dari Redis; seluruh suite test hijau.
+**✅ TERCAPAI 3 Juli 2026 — 13 hari lebih cepat dari target 16 Juli:**
+1. ✅ `https://salido.my.id/jurnal/laporan-hoffman-1681/` live — artikel "Tembakan di Tambang".
+2. ✅ `www.salido.my.id` → 301 ke apex (Cloudflare Redirect Rule); `alt-svc: h3` aktif di edge.
+3. ✅ Redis cache-aside live (`X-Cache: MISS→HIT`); 151 pytest + 79 Django pass.
 
 ## Target Terukur Sprint
 
@@ -99,7 +99,7 @@ Aturan: WIP limit **2 kartu** In Progress; kartu infra & kartu konten boleh para
 | 4 | A11Y-2 | ✅ DONE 3 Jul — A11y 93→**100** (muted-dark, <main>); 429 kini bawa Referrer/Permissions/CSP (bukti burst). salido edebe58 + westkust 5255dc9 | Dev ✓QA | 1 | **Done** |
 | 5 | SEC-1 | ✅ DONE 3 Jul — 8001 tak lagi published (curl refused), .env scaffold dihapus dari git; 8084 tetap 200. westkust 5255dc9 | DevSecOps ✓QA | 1 | **Done** |
 | 6 | HIST-1c | ✅ DONE 3 Jul — potret Camões (Fernão Gomes c.1577, Wikimedia) + halaman muka Soerabaijasch Handelsblad 22/4/1937 (Delpher ddd:011110426, kutipan 'Goud.' verbatim OCR); token --color-gold-ink; Lighthouse historiografi Perf 99/A11y 100. salido 9f33b57 | Dev/Konten ✓QA | 2 | **Done** |
-| 7 | DEPLOY | Production: PO eksekusi runbook (Cloudflare CNAME www + toggle HTTP/3) + deploy nginx-prod.conf & build salido-web; QA verifikasi T3 | PO + DevSecOps | 2 | ⛔ Menunggu izin/aksi PO |
+| 7 | DEPLOY | ✅ DONE 3 Jul — situs live di production (18 halaman, deploy.sh). Insiden DNS: record apex ikut terhapus saat ganti www (A→CNAME); dipulihkan 103.171.184.94 dari audit log Cloudflare. IP `.94:443`/`.187:443` bukan origin salido (NAT ioscloud tidak forward :443 langsung); www 502 tak teratasi via origin — diselesaikan via Cloudflare Redirect Rule (hostname=www.salido.my.id → 301 apex, dynamic, preserve query). Verifikasi akhir: www→301 (path+query utuh), alt-svc h3, smoke 7/7 200 | PO + DevSecOps ✓QA | 2 | **Done** |
 
 **Backlog (parkir — ditarik lewat keputusan PO)**
 - Konten & fitur jurnal: RSS, halaman seri, related articles, `<AtlasLink>` embed peta di artikel, bilingual R6 + hreflang, Pagefind (>20 artikel), newsletter (≥10 artikel), sitasi akademik ("Salin sitasi")
