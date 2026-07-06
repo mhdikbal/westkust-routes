@@ -109,6 +109,47 @@ class CargoItem(Base):
         return f"<CargoItem(produk='{self.produk}', qty='{self.qty_asli}', unit='{self.unit}')>"
 
 
+class ApiKey(Base):
+    """API key per-notebook untuk endpoint ingesti staging (bukan untuk publik)."""
+    __tablename__ = "api_keys"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key_hash = Column(String(64), unique=True, nullable=False, index=True)  # sha256 hex digest
+    label = Column(String(100), nullable=False)  # mis. "daghregister_colab", "globalise_colab"
+    active = Column(String(10), nullable=False, server_default="true")  # "true"/"false" (String utk konsistensi migrasi sederhana)
+    created_at = Column(String(30), nullable=False)
+
+    def __repr__(self):
+        return f"<ApiKey(label='{self.label}', active={self.active})>"
+
+
+class StagingExtraction(Base):
+    """Hasil ekstraksi mentah dari notebook Colab (Daghregister, GLOBALISE, dll),
+    menunggu review manual sebelum di-promote ke Voyage/CargoItem resmi."""
+    __tablename__ = "staging_extractions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    source = Column(String(50), nullable=False, index=True)
+    external_ref = Column(String(200), nullable=False)
+    batch_id = Column(String(36), nullable=True, index=True)
+
+    text_indonesia = Column(Text, nullable=False)
+    text_asli = Column(Text, nullable=True)
+    metadata_json = Column(JSONB, nullable=True)
+
+    confidence_flag = Column(String(20), nullable=False, server_default="unverified")
+    reviewed_by = Column(String(100), nullable=True)
+    reviewed_at = Column(String(30), nullable=True)
+    created_at = Column(String(30), nullable=False)
+
+    __table_args__ = (
+        Index("ix_staging_source_ref", "source", "external_ref", unique=True),
+    )
+
+    def __repr__(self):
+        return f"<StagingExtraction(source='{self.source}', ref='{self.external_ref}', flag='{self.confidence_flag}')>"
+
+
 class CommodityGlossary(Base):
     __tablename__ = "commodity_glossary"
 

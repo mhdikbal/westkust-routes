@@ -51,3 +51,7 @@ Thumbs.db
 
 # Node (if ever)
 node_modules/
+
+# Materi riset thesis (PDF besar, draft, notebook Colab) — bukan bagian app,
+# jangan masuk git (bisa ratusan MB)
+docs/thesis/
