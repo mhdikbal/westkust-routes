@@ -86,9 +86,10 @@ class LayoutBNavbarTest(SimpleTestCase):
         """Stats badge (#nav-stats-badge) must be present for voyage count display."""
         self.assertIn('id="nav-stats-badge"', self.content)
 
-    def test_year_defaults_are_1700_and_1790(self):
-        """Default year range: 1700 (start) dan 1790 (batas dekade terakhir, step=10)."""
-        self.assertIn('value="1700"', self.content)
+    def test_year_defaults_are_1660_and_1790(self):
+        """Default year range: 1660 (diperlebar 2026-07-07 agar mencakup data Dagh-register
+        1663-1669, sebelumnya 1700) sampai 1790 (batas dekade terakhir, step=10)."""
+        self.assertIn('value="1660"', self.content)
         self.assertIn('value="1790"', self.content)
 
 
@@ -311,6 +312,77 @@ class DirectionToggleTest(SimpleTestCase):
 
 
 # ---------------------------------------------------------------------------
+# P0.3b — Source/Provenance Toggle (docs/prd-cleaning-daghregister-1660-1669.md)
+# ---------------------------------------------------------------------------
+
+class SourceToggleTest(SimpleTestCase):
+    """P0.3b — filter provenance data pelayaran di navbar.
+    Diubah dari 3 tombol pill jadi <select> dropdown (2026-07-07) supaya gampang
+    diperluas kalau sumber baru muncul (mis. GLOBALISE OBP) tanpa navbar penuh tombol."""
+
+    def setUp(self):
+        self.client = Client()
+        self.content = self.client.get("/").content.decode("utf-8")
+
+    def test_source_select_present(self):
+        """Dropdown filter sumber (#source-select) harus ada di navbar."""
+        self.assertIn('id="source-select"', self.content)
+
+    def test_source_select_has_all_option(self):
+        """Opsi 'Semua Sumber' harus ada dan default selected."""
+        self.assertIn('value="all" selected', self.content)
+
+    def test_source_select_has_bgb_option(self):
+        """Opsi filter BGB Huygens harus ada."""
+        self.assertIn('value="bgb_huygens"', self.content)
+
+    def test_source_select_has_daghregister_option(self):
+        """Opsi filter Dagh-register harus ada."""
+        self.assertIn('value="daghregister_batavia"', self.content)
+
+    def test_set_source_function_defined(self):
+        """Fungsi setSource() harus terdefinisi di atlas.js."""
+        self.assertIn("function setSource(", ATLAS_JS)
+
+    def test_active_source_state_variable(self):
+        """State variable activeSource harus ada di atlas.js."""
+        self.assertIn("activeSource", ATLAS_JS)
+
+    def test_source_filter_passed_to_api(self):
+        """drawRoutes harus kirim source ke API kalau bukan 'all'."""
+        self.assertIn('params.set("source", activeSource)', ATLAS_JS)
+
+    def test_source_select_wired_to_onchange(self):
+        """Dropdown harus panggil setSource(this.value) saat berubah."""
+        self.assertIn("onchange=\"setSource(this.value)\"", self.content)
+
+    def test_modal_shows_source_label(self):
+        """Modal voyage harus menampilkan baris 'Sumber Data' (P0.3b)."""
+        self.assertIn("MODAL_SOURCE_LABELS", ATLAS_JS)
+
+    def test_fort_coords_populated_dynamically_from_api(self):
+        """Regresi bug 2026-07-07: FORT_COORDS hardcode cuma 9 pelabuhan awal — fort
+        baru (Tiku dll, node regional) garis+markernya diam-diam tidak tergambar.
+        loadForts() harus mengisi FORT_COORDS dari API utk fort yg belum ada."""
+        self.assertIn("if (!FORT_COORDS[f.name]", ATLAS_JS)
+
+    def test_modal_shows_full_dates_when_present(self):
+        """Penanggalan (rev.10): modal harus menampilkan departure/arrival date penuh,
+        bukan cuma tahun — data kargo ikut tanggal voyage."""
+        self.assertIn("function voyageDateText(", ATLAS_JS)
+        self.assertIn("Berangkat", ATLAS_JS)
+        self.assertIn("Tiba", ATLAS_JS)
+        # Daftar sidebar & dropdown pencarian juga harus pakai helper (bukan v.year mentah)
+        self.assertGreaterEqual(ATLAS_JS.count("voyageDateText("), 4)
+
+    def test_regional_node_has_sea_waypoints(self):
+        """Node regional 'Pantai Barat Sumatra' (voyage Dagh-register terverifikasi
+        tanpa pelabuhan spesifik) harus punya jalur laut, bukan bezier lintas darat."""
+        self.assertIn("Pantai Barat Sumatra→Batavia", ATLAS_JS)
+        self.assertIn("Batavia→Pantai Barat Sumatra", ATLAS_JS)
+
+
+# ---------------------------------------------------------------------------
 # US-02 & US-03 — Port Detail Page
 # ---------------------------------------------------------------------------
 
@@ -335,6 +407,8 @@ MOCK_FORT_PADANG_ENRICHED = {
     "total_value_in": 0.0,
     "year_min": None,
     "year_max": None,
+    "tally_ship_count": 6,
+    "tally_person_count": 39,
 }
 
 MOCK_FORT_AIRBANGIS_NO_AMH = {
@@ -488,6 +562,34 @@ class PortDetailPageTest(SimpleTestCase):
         content = response.content.decode("utf-8")
         self.assertIn("Data AMH belum tersedia", content)
         self.assertNotIn("atlasofmutualheritage.nl", content)
+
+    # ------------------------------------------------------------------
+    # P1.2 — Stat kedatangan Dagh-register (docs/prd-port-tally-aggregate.md)
+    # ------------------------------------------------------------------
+
+    @patch("map_app.views.httpx.get")
+    def test_port_detail_shows_tally_stats_when_present(self, mock_get):
+        """Fort dgn tally_ship_count > 0 harus tampilkan angka kedatangan Dagh-register."""
+        mock_get.side_effect = [
+            _make_httpx_response([MOCK_FORT_PADANG_ENRICHED]),
+            _make_httpx_response(MOCK_FORT_PADANG_ENRICHED),
+        ]
+        response = self.client.get("/ports/padang/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Kedatangan Tercatat", content)
+        # rev.11: frasa "belum diverifikasi" DIHAPUS — verifikasi sudah dilakukan tim
+        self.assertNotIn("belum diverifikasi", content)
+
+    @patch("map_app.views.httpx.get")
+    def test_port_detail_hides_tally_section_when_absent(self, mock_get):
+        """Fort tanpa data tally sama sekali tidak boleh tampilkan section-nya."""
+        mock_get.side_effect = [
+            _make_httpx_response([MOCK_FORT_AIRBANGIS_NO_AMH]),
+            _make_httpx_response(MOCK_FORT_AIRBANGIS_NO_AMH),
+        ]
+        response = self.client.get("/ports/air-bangis/")
+        content = response.content.decode("utf-8")
+        self.assertNotIn("Kedatangan Tercatat", content)
 
 
 # ---------------------------------------------------------------------------

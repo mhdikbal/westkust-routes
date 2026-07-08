@@ -69,11 +69,12 @@ async def lookup_terms(
     lookup: dict[str, dict] = {}
     for item in items:
         data = {
-            "term":          item.term,
-            "term_display":  item.term_display or item.term,
-            "definition_id": item.definition_id,
-            "definition_nl": item.definition_nl,
-            "category":      item.category,
+            "term":            item.term,
+            "term_display":    item.term_display or item.term,
+            "definition_id":   item.definition_id,
+            "definition_nl":   item.definition_nl,
+            "category":        item.category,
+            "source_citation": item.source_citation,
         }
         # Daftarkan untuk term utama dan semua variannya
         lookup[item.term] = data
@@ -89,10 +90,11 @@ async def lookup_terms(
 
 def _serialize(item: CommodityGlossary) -> dict:
     return {
-        "term":          item.term,
-        "term_display":  item.term_display or item.term,
-        "variants":      item.variants or [],
-        "definition_nl": item.definition_nl,
-        "definition_id": item.definition_id,
-        "category":      item.category,
+        "term":            item.term,
+        "term_display":    item.term_display or item.term,
+        "variants":        item.variants or [],
+        "definition_nl":   item.definition_nl,
+        "definition_id":   item.definition_id,
+        "category":        item.category,
+        "source_citation": item.source_citation,
     }

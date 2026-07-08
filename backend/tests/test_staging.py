@@ -115,6 +115,37 @@ async def test_post_extractions_inserts_new_items():
 
 
 @pytest.mark.asyncio
+async def test_post_extractions_created_at_fits_column_length():
+    """created_at harus <=30 char -- StagingExtraction.created_at adalah
+    String(30). isoformat() dgn microseconds (32 char) overflow di Postgres
+    real (StringDataRightTruncationError) meski lolos test lain yg mock DB."""
+    session = AsyncMock()
+    session.execute.side_effect = [
+        make_scalars_result([MOCK_API_KEY]),
+        make_scalars_result([]),
+    ]
+    override_db(session)
+
+    payload = {
+        "source": "daghregister_batavia",
+        "batch_id": "batch-uuid-len",
+        "items": [{"external_ref": "volume:1664|page:99", "text_indonesia": "teks"}],
+    }
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post(
+            "/api/staging/extractions", json=payload, headers={"X-API-Key": VALID_KEY}
+        )
+
+    assert response.status_code == 201
+    inserted_obj = session.add.call_args_list[0].args[0]
+    assert len(inserted_obj.created_at) <= 30, (
+        f"created_at panjangnya {len(inserted_obj.created_at)} char, "
+        f"melebihi kolom String(30): {inserted_obj.created_at!r}"
+    )
+
+
+@pytest.mark.asyncio
 async def test_post_extractions_retry_skips_existing_duplicates():
     """Re-sending the same batch (retry after disconnect) must not duplicate rows."""
     session = AsyncMock()

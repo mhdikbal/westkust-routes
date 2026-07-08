@@ -98,7 +98,8 @@ async def create_extractions(
     )
     existing_refs = set(result.scalars().all())
 
-    now = datetime.now(timezone.utc).isoformat()
+    # .replace(microsecond=0): isoformat() penuh (32 char) overflow di kolom String(30)
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     new_items = [item for item in batch.items if item.external_ref not in existing_refs]
     for item in new_items:
         db.add(StagingExtraction(
@@ -156,6 +157,6 @@ async def update_confidence(
     extraction.confidence_flag = patch.confidence_flag
     if patch.reviewed_by:
         extraction.reviewed_by = patch.reviewed_by
-        extraction.reviewed_at = datetime.now(timezone.utc).isoformat()
+        extraction.reviewed_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     await db.commit()
     return extraction

@@ -72,13 +72,14 @@ MOCK_FORT_NO_AMH = make_fort_enriched(
 )
 
 
-def _mock_db_found(fort):
+def _mock_db_found(fort, tally_counts=(0, 0)):
     """Return a mock DB session for the enrichment endpoint.
 
-    The endpoint makes 3 execute() calls:
+    The endpoint makes 4 execute() calls:
       1. select(Fort) → scalar_one_or_none() returns fort
       2. select(count, sum) outbound → one() returns (count, total)
       3. select(count, sum) inbound  → one() returns (count, total)
+      4. select(sum ship_count, sum person_count) port_arrival_tallies (P1.2) → one() returns (ships, people)
     """
     async def mock_get_db():
         session = AsyncMock()
@@ -89,7 +90,10 @@ def _mock_db_found(fort):
         stats_result = MagicMock()
         stats_result.one.return_value = (0, 0.0)
 
-        session.execute.side_effect = [fort_result, stats_result, stats_result]
+        tally_result = MagicMock()
+        tally_result.one.return_value = tally_counts
+
+        session.execute.side_effect = [fort_result, stats_result, stats_result, tally_result]
         yield session
     return mock_get_db
 
@@ -205,6 +209,42 @@ async def test_enrichment_amh_url_null_not_omitted():
     # Field harus ada meskipun nilainya null
     assert "amh_url" in data
     assert data["amh_url"] is None
+
+
+# ─── Tests: P1.2 — tally stats (docs/prd-port-tally-aggregate.md) ───────────
+
+@pytest.mark.asyncio
+async def test_enrichment_returns_tally_ship_count():
+    """Response harus punya tally_ship_count dari port_arrival_tallies (P1.2)."""
+    from database import get_db
+    app.dependency_overrides[get_db] = _mock_db_found(MOCK_FORT_PADANG, tally_counts=(6, 39))
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/1/enrichment")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["tally_ship_count"] == 6
+    assert data["tally_person_count"] == 39
+
+
+@pytest.mark.asyncio
+async def test_enrichment_tally_count_zero_when_no_tally_data():
+    """Fort tanpa data tally sama sekali harus tampil 0, bukan null/hilang (COALESCE)."""
+    from database import get_db
+    app.dependency_overrides[get_db] = _mock_db_found(MOCK_FORT_NO_AMH, tally_counts=(None, None))
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/2/enrichment")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["tally_ship_count"] == 0
+    assert data["tally_person_count"] == 0
 
 
 @pytest.mark.asyncio

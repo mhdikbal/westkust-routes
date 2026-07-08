@@ -102,8 +102,8 @@ FORTS_META = [
     },
     {
         "name": "Pulau Cingkuak",
-        "latitude": -1.3528370,
-        "longitude": 100.5599951,
+        "latitude": -1.3531125710383205,
+        "longitude": 100.55921198502948,
         "color": "#e67e22",
         "port_type": "departure",
         "description": "Pulau Cingkuak (Fort van Indrapura) adalah pos perdagangan lada vital di pesisir selatan.",
@@ -133,31 +133,55 @@ FORTS_META = [
         "port_type": "departure",
         "description": "Pos perdagangan VOC di wilayah selatan yang mengumpulkan lada dan hasil hutan."
     },
+    {
+        "name": "Tiku",
+        "latitude": -0.40257599785703735,
+        "longitude": 99.91467276260393,
+        "color": "#f39c12",
+        "port_type": "departure",
+        "description": "Tiku (Tico/Ticco) adalah salah satu pelabuhan lada tertua di pantai barat Sumatra, disebut dalam Dagh-register Batavia sejak abad ke-17."
+    },
+    {
+        "name": "Pariaman",
+        "latitude": -0.6661663190442159,
+        "longitude": 100.15006330858158,
+        "color": "#1abc9c",
+        "port_type": "departure",
+        "description": "Pariaman (Priaman) adalah pos pengumpulan lada dan kemenyan yang berulang kali disebut dalam Dagh-register Batavia."
+    },
+    {
+        "name": "Salido",
+        "latitude": -1.3371097960700769,
+        "longitude": 100.57240227882507,
+        "color": "#9b59b6",
+        "port_type": "departure",
+        "description": "Salido (Sillida) adalah lokasi tambang emas VOC yang dikelola lewat sewa kepada penambang lokal/Cina, dengan penghulu setempat mempertahankan klaim hak ulayat."
+    },
+    {
+        "name": "Bayang",
+        "latitude": -1.302468150977219,
+        "longitude": 100.50573673465257,
+        "color": "#34495e",
+        "port_type": "departure",
+        "description": "Bayang adalah pos pengumpulan lada di pesisir selatan, disebut dalam Dagh-register Batavia."
+    },
+    {
+        "name": "Painan",
+        "latitude": -1.3499330477593903,
+        "longitude": 100.56415483786208,
+        "color": "#e84393",
+        "port_type": "departure",
+        "description": "Painan adalah pusat administratif pesisir selatan, dekat dengan lokasi tambang Salido dan Pulau Cingkuak."
+    },
+    {
+        "name": "Inderapura",
+        "latitude": -2.20,
+        "longitude": 100.87,
+        "color": "#8e6c3a",
+        "port_type": "both",
+        "description": "Kerajaan/pelabuhan lada di selatan Air Haji. Dagh-register 1661: 'Indrapoura levert alleen meer peper uyt als Sillida, Priaman en Ticco te zamen'. Pos residen VOC (Pieter Ketting, 1661)."
+    },
     # ── Arrival ports ────────────────────────────────────────────────────
-    {
-        "name": "Jambi",
-        "latitude": -1.0984482,
-        "longitude": 104.1757178,
-        "color": "#d35400",
-        "port_type": "arrival",
-        "description": "Kesultanan Jambi merupakan penghasil lada hitam dan benzoin."
-    },
-    {
-        "name": "Palembang",
-        "latitude": -3.0029119,
-        "longitude": 104.7801890,
-        "color": "#8e44ad",
-        "port_type": "arrival",
-        "description": "Pusat perdagangan timah dan lada di Sumatera Selatan."
-    },
-    {
-        "name": "Lampung",
-        "latitude": -5.3578004,
-        "longitude": 105.2803866,
-        "color": "#7f8c8d",
-        "port_type": "arrival",
-        "description": "Wilayah penghasil lada terbaik yang strategis dekat Selat Sunda."
-    },
     {
         "name": "Batavia",
         "latitude": -6.1165019,
@@ -170,8 +194,15 @@ FORTS_META = [
 
 # ── Name cleaning & direction classification ─────────────────────────────────
 
+# Pelabuhan pantai timur — dihapus dari skope atlas (rev.11, 2026-07-08).
+# Dicek TERHADAP RAW NAME (sebelum clean_name()), krn mapping ejaan varian
+# (Djambi/Jamby/Lampongs/Lampong) sengaja dihapus dari NAME_MAPPING bersamaan --
+# kalau exclusion ini dicek pasca clean_name(), varian yg tak lagi dinormalisasi
+# akan lolos filter dan masuk sbg voyage ber-origin/destination tak ter-resolve.
+EAST_PORTS_EXCLUDED_RAW = {"Jambi", "Djambi", "Jamby", "Palembang", "Lampung", "Lampongs", "Lampong"}
+
 # Ports that define "Sumatera Westkust" — the focus area
-SUMATRA_WESTKUST_PORTS = {"Padang", "Barus", "Air Bangis", "Pulau Cingkuak", "Air Haji"}
+SUMATRA_WESTKUST_PORTS = {"Padang", "Barus", "Air Bangis", "Pulau Cingkuak", "Air Haji", "Tiku", "Pariaman", "Salido", "Bayang", "Painan"}
 # All known ports for matching
 ALL_KNOWN_PORTS = {f["name"] for f in FORTS_META}
 
@@ -181,17 +212,13 @@ NAME_MAPPING = {
     "Airbangis":       "Air Bangis",
     "Aijer Bangis":    "Air Bangis",
     "Air-Bangis":      "Air Bangis",
-    "Djambi":          "Jambi",
-    "Jamby":           "Jambi",
-    "Lampongs":        "Lampung",
-    "Lampong":         "Lampung",
     "Sunda Kelapa":    "Batavia",
     "Jakarta":         "Batavia",
     "Poeloe Tjinkoek": "Pulau Cingkuak",
     "Poelau Cingkuak": "Pulau Cingkuak",
     "P. Cingkuak":     "Pulau Cingkuak",
-    "Indrapoera":      "Pulau Cingkuak",
-    "Indrapura":       "Pulau Cingkuak",
+    "Indrapoera":      "Inderapura",
+    "Indrapura":       "Inderapura",
     "Ajer Hadji":      "Air Haji",
     "Aijer Hadji":     "Air Haji",
     "Ayer Haji":       "Air Haji",
@@ -199,6 +226,25 @@ NAME_MAPPING = {
     "Airhadji":        "Air Haji",
     "Pulau Tjinkuk":   "Pulau Cingkuak",
     "Poeloe Tjinkuk":  "Pulau Cingkuak",
+    # Dagh-register / GLOBALISE spelling variants (docs/prd-cleaning-daghregister-1660-1669.md P1.1)
+    "Tico":            "Tiku",
+    "Ticco":           "Tiku",
+    "Priaman":         "Pariaman",
+    "Sillida":         "Salido",
+    "Salida":          "Salido",
+    "Sillidase":       "Salido",
+    # Perluasan P1.1 (2026-07-07) -- hasil scan penuh daghregister_corpus.csv (511 baris)
+    # + globalise_corpus.csv (535 baris), dibandingkan thd varian yang sudah ada di atas.
+    "Silida":          "Salido",
+    "Periaman":        "Pariaman",
+    "Piriaman":        "Pariaman",
+    "Chinco":          "Pulau Cingkuak",
+    "Chinko":          "Pulau Cingkuak",
+    "Indrapoura":      "Inderapura",
+    "Indiapoura":      "Pulau Cingkuak",
+    "Aijerhadja":      "Air Haji",
+    "Aijerhadji":      "Air Haji",
+    "Ayerhadja":       "Air Haji",
 }
 
 
@@ -214,14 +260,18 @@ def clean_name(raw_name: str) -> str:
     """
     if not raw_name:
         return ""
-    
-    # Split by comma and take first meaningful part
-    parts = [p.strip() for p in raw_name.split(",")]
-    name = parts[0] if parts[0] and parts[0] != "-" else (parts[1] if len(parts) > 1 else "")
-    name = name.strip()
-    
+
+    name = _split_raw_name(raw_name)
     # Apply spelling mapping
     return NAME_MAPPING.get(name, name)
+
+
+def _split_raw_name(raw_name: str) -> str:
+    """Bagian split-comma+strip dari clean_name(), TANPA substitusi NAME_MAPPING --
+    dipakai utk cek EAST_PORTS_EXCLUDED_RAW sebelum ejaan varian dinormalisasi."""
+    parts = [p.strip() for p in raw_name.split(",")]
+    name = parts[0] if parts[0] and parts[0] != "-" else (parts[1] if len(parts) > 1 else "")
+    return name.strip()
 
 
 def classify_direction(origin_clean: str, dest_clean: str) -> str:
@@ -279,6 +329,12 @@ def _insert_records(session, records, fort_map, label="", existing_refs=None):
             continue
         raw_asal = rec.get("Asal", "").strip()
         raw_tujuan = rec.get("Tujuan", "").strip()
+
+        # Cek exclusion pantai timur thd nama SEBELUM NAME_MAPPING -- varian ejaan
+        # (Djambi/Lampongs dst) tidak lagi dinormalisasi, jadi harus dicek di sini.
+        if _split_raw_name(raw_asal) in EAST_PORTS_EXCLUDED_RAW or _split_raw_name(raw_tujuan) in EAST_PORTS_EXCLUDED_RAW:
+            skipped += 1
+            continue
 
         origin_name = clean_name(raw_asal)
         dest_name = clean_name(raw_tujuan)
@@ -372,6 +428,8 @@ def seed():
                 existing.description = meta["description"]
                 existing.amh_url     = meta.get("amh_url")
                 existing.amh_images  = meta.get("amh_images")
+                existing.latitude    = meta["latitude"]
+                existing.longitude   = meta["longitude"]
                 fort_map[meta["name"]] = existing
             else:
                 # Fort(**meta) passes all keys including optional amh_url/amh_images

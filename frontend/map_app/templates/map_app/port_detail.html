@@ -228,6 +228,14 @@
     .stats-grid {
       display: grid; grid-template-columns: repeat(3, 1fr);
     }
+    .stats-grid-2col {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+    }
+    .stats-card-caveat {
+      padding: .7rem 1.5rem; font-size: .72rem; font-style: italic;
+      color: var(--text-muted); border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: .4rem;
+    }
     .stat-box {
       padding: 1.1rem 1rem; text-align: center;
       border-right: 1px solid var(--border);
@@ -499,6 +507,36 @@
       </div>
     </div>
   </section>
+
+  <!-- ── Port arrival tallies (P1.2, docs/prd-port-tally-aggregate.md) ────────── -->
+  {% if fort.tally_ship_count %}
+  <section class="stats-card" aria-label="Statistik kedatangan Dagh-register">
+    <div class="stats-card-header">
+      <i class="ti ti-anchor" aria-hidden="true"></i>
+      Kedatangan Tercatat (Dagh-register)
+    </div>
+    <div class="stats-grid-2col" role="group" aria-label="Angka kedatangan kapal dari rekap bulanan Dagh-register">
+      <div class="stat-box">
+        <div class="stat-val">{{ fort.tally_ship_count }}</div>
+        <div class="stat-lab">
+          <i class="ti ti-ship" aria-hidden="true"></i>
+          Kapal Tercatat
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">{{ fort.tally_person_count }}</div>
+        <div class="stat-lab">
+          <i class="ti ti-users" aria-hidden="true"></i>
+          Awak/Penumpang
+        </div>
+      </div>
+    </div>
+    <div class="stats-card-caveat">
+      <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+      Berdasarkan rekap bulanan Dagh-register Batavia — terpisah dari data BGB Huygens di atas.
+    </div>
+  </section>
+  {% endif %}
 
   <!-- ── AMH section (US-03) ─────────────────────────────────────────────────── -->
   <section class="amh-card" aria-label="Referensi Atlas of Mutual Heritage">

@@ -9,11 +9,8 @@ const FORT_COORDS = {
   "Barus":          [2.0144566, 98.3993198],
   "Air Bangis":     [0.1974875, 99.3755554],
   "Padang":         [-0.9655545, 100.3538894],
-  "Pulau Cingkuak": [-1.3528370, 100.5599951],
+  "Pulau Cingkuak": [-1.3531125710383205, 100.55921198502948],
   "Air Haji":       [-1.9339388, 100.8669821],
-  "Jambi":          [-1.0984482, 104.1757178],
-  "Palembang":      [-3.0029119, 104.7801890],
-  "Lampung":        [-5.3578004, 105.2803866],
   "Batavia":        [-6.1165019, 106.8165121],
 };
 
@@ -26,17 +23,36 @@ const SEA_WAYPOINTS = {
   "Padang→Batavia":         [[-3.2, 99.0], [-5.4, 101.5], [-5.9, 105.4]],
   "Pulau Cingkuak→Batavia": [[-3.2, 99.2], [-5.4, 101.5], [-5.9, 105.4]],
   "Air Haji→Batavia":       [[-3.5, 99.5], [-5.5, 101.8], [-5.9, 105.4]],
-  "Jambi→Batavia":          [[-3.0, 104.5], [-5.5, 106.2]],
-  "Palembang→Batavia":      [[-4.0, 105.0], [-5.5, 106.2]],
-  "Lampung→Batavia":        [[-5.9, 105.5]],
   "Batavia→Barus":          [[-5.9, 105.4], [-5.2, 100.8], [-1.0, 96.5]],
   "Batavia→Air Bangis":     [[-5.9, 105.4], [-5.2, 101.0], [-2.0, 97.8]],
   "Batavia→Padang":         [[-5.9, 105.4], [-5.4, 101.5], [-3.2, 99.0]],
   "Batavia→Pulau Cingkuak": [[-5.9, 105.4], [-5.4, 101.5], [-3.2, 99.2]],
   "Batavia→Air Haji":       [[-5.9, 105.4], [-5.5, 101.8], [-3.5, 99.5]],
-  "Batavia→Jambi":          [[-5.5, 106.2], [-3.0, 104.5]],
-  "Batavia→Palembang":      [[-5.5, 106.2], [-4.0, 105.0]],
-  "Batavia→Lampung":        [[-5.9, 105.5]],
+  // Pelabuhan pantai-barat yg ditambah belakangan + node regional Dagh-register —
+  // jalur laut sama dgn koridor Padang/Cingkuak (Samudra Hindia → Selat Sunda).
+  "Tiku→Batavia":                 [[-3.0, 98.8], [-5.4, 101.5], [-5.9, 105.4]],
+  "Batavia→Tiku":                 [[-5.9, 105.4], [-5.4, 101.5], [-3.0, 98.8]],
+  "Pariaman→Batavia":             [[-3.1, 98.9], [-5.4, 101.5], [-5.9, 105.4]],
+  "Batavia→Pariaman":             [[-5.9, 105.4], [-5.4, 101.5], [-3.1, 98.9]],
+  "Salido→Batavia":               [[-3.2, 99.2], [-5.4, 101.5], [-5.9, 105.4]],
+  "Batavia→Salido":               [[-5.9, 105.4], [-5.4, 101.5], [-3.2, 99.2]],
+  "Bayang→Batavia":               [[-3.2, 99.2], [-5.4, 101.5], [-5.9, 105.4]],
+  "Batavia→Bayang":               [[-5.9, 105.4], [-5.4, 101.5], [-3.2, 99.2]],
+  "Painan→Batavia":               [[-3.2, 99.2], [-5.4, 101.5], [-5.9, 105.4]],
+  "Batavia→Painan":               [[-5.9, 105.4], [-5.4, 101.5], [-3.2, 99.2]],
+  "Pantai Barat Sumatra→Batavia": [[-3.2, 99.0], [-5.4, 101.5], [-5.9, 105.4]],
+  "Batavia→Pantai Barat Sumatra": [[-5.9, 105.4], [-5.4, 101.5], [-3.2, 99.0]],
+  // Pelayaran PESISIR antar-pelabuhan pantai barat (lapisan surat Dagh-register) —
+  // titik tunggal sedikit lepas pantai supaya garis pendek tidak memotong daratan.
+  "Padang→Salido":                   [[-1.18, 100.32]],
+  "Salido→Padang":                   [[-1.18, 100.32]],
+  "Salido→Tiku":                     [[-1.20, 100.15], [-0.62, 99.78]],
+  "Padang→Tiku":                     [[-0.68, 99.95]],
+  "Tiku→Pulau Cingkuak":             [[-0.70, 99.88], [-1.25, 100.30]],
+  "Padang→Pariaman":                 [[-0.83, 100.12]],
+  "Pantai Barat Sumatra→Tiku":       [[-0.72, 99.72]],
+  "Pantai Barat Sumatra→Padang":     [[-1.05, 100.05]],
+  "Pantai Barat Sumatra→Inderapura": [[-1.75, 100.45]],
 };
 
 // Icon class per port type for welcome grid
@@ -62,8 +78,21 @@ let activeMarker = null, allFortsData = [];
 let activeTab = "outbound";
 let currentData = { outbound: [], inbound: [], info: "" };
 let pageIndex = 0;
-let yearFrom = 1700, yearTo = 1790;
+let yearFrom = 1660, yearTo = 1790;
 let activeDirection = "all";
+let activeSource = "all";  // P0.3b — filter provenance (bgb_huygens | daghregister_batavia | globalise_obp)
+const SOURCE_LABELS = {
+  // "bgb_huygens" sengaja TIDAK diberi label -- itu default/baseline, hanya sumber
+  // non-default yang perlu ditandai eksplisit (transparansi tingkat kepastian data).
+  daghregister_batavia: { text: "Sumber: Dagh-register Batavia", color: "#8B5E3C" },
+  globalise_obp: { text: "Sumber: GLOBALISE OBP (belum diverifikasi penuh)", color: "#8B5E3C" },
+};
+const MODAL_SOURCE_LABELS = {
+  // Modal voyage SELALU tampilkan baris sumber (beda dgn tooltip rute yg cuma tandai non-default)
+  bgb_huygens: "BGB Huygens (data terstruktur, terverifikasi)",
+  daghregister_batavia: "Dagh-register Batavia",
+  globalise_obp: "GLOBALISE OBP (belum diverifikasi penuh)",
+};
 let glossaryCache = {};   // term (lowercase) → {definition_id, definition_nl, category}
 let yearDebounce = null;
 let searchDebounce = null;
@@ -107,6 +136,22 @@ function esc(s) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+function voyageDateText(v, short) {
+  // Penanggalan berjenjang: ISO dep/arr -> label tanggal sumber (source_url) -> tahun.
+  // Voyage Dagh-register tanpa tahun pasti tetap menampilkan label hari-bulan sumber + jilid.
+  if (v.departure_date && v.arrival_date) return `${v.departure_date} → ${v.arrival_date}`;
+  if (v.arrival_date)   return short ? v.arrival_date   : `Tiba ${v.arrival_date}`;
+  if (v.departure_date) return short ? v.departure_date : `Berangkat ${v.departure_date}`;
+  const m = /[?&#]tanggal=([^&]+)/.exec(v.source_url || "");
+  if (m) {
+    const label = m[1].trim();
+    if (v.year) return `${label} ${v.year}`;
+    const j = /Batavia-([0-9-]+)/.exec(v.source_url || "");
+    return j ? `${label} · jilid ${j[1]}` : label;
+  }
+  return v.year || "?";
 }
 
 function fmt(n) {
@@ -198,6 +243,7 @@ async function drawRoutes(yFrom, yTo) {
   if (yFrom) params.set("year_from", yFrom);
   if (yTo)   params.set("year_to",   yTo);
   if (activeDirection !== "all") params.set("direction", activeDirection);
+  if (activeSource !== "all") params.set("source", activeSource);
   params.set("limit", "50");
   const qs = params.toString();
   if (qs) url += "?" + qs;
@@ -251,6 +297,9 @@ async function drawRoutes(yFrom, yTo) {
       pulseColor: "#FFFFFF",
     }).addTo(map);
 
+    // P0.3b — label sumber di tooltip (BUKAN warna baru, hindari bentrok dgn kanal arah/presisi yg sudah ada)
+    const sourceLabel = SOURCE_LABELS[r.source] || null;
+
     ant.bindTooltip(`
       <div style="font-family:'Playfair Display',serif;font-weight:700;border-bottom:1px solid #eee;padding-bottom:3px;margin-bottom:3px;">
         ${esc(r.origin_name)} &rarr; ${esc(r.destination_name)}
@@ -259,6 +308,7 @@ async function drawRoutes(yFrom, yTo) {
         <span style="font-weight:700;">${r.count}</span> Pelayaran
         <br>Volume: <span style="color:#B85D19;">ƒ ${fmt(r.total_value)}</span>
         ${approx ? '<br><span style="color:#8B9E97;font-style:italic;">rute perkiraan</span>' : ''}
+        ${sourceLabel ? `<br><span style="color:${sourceLabel.color};font-style:italic;">${sourceLabel.text}</span>` : ''}
       </div>`, { sticky: true });
 
     routeLines.push(ant);
@@ -285,6 +335,18 @@ function setDirection(dir) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   Source/provenance toggle (P0.3b)
+   ───────────────────────────────────────────────────────────────────────────── */
+function setSource(src) {
+  activeSource = src;
+
+  const select = document.getElementById("source-select");
+  if (select && select.value !== src) select.value = src;
+
+  drawRoutes(yearFrom, yearTo);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    Load forts + routes, populate welcome grid
    ───────────────────────────────────────────────────────────────────────────── */
 async function loadFortsAndRoutes() {
@@ -298,6 +360,15 @@ async function loadFortsAndRoutes() {
   }
 
   allFortsData = forts;
+
+  // FORT_COORDS hardcode hanya mencakup 9 pelabuhan awal — fort yg ditambah belakangan
+  // (Tiku, Pariaman, Salido, Bayang, Painan, node regional Pantai Barat Sumatra) diisi
+  // dinamis dari API di sini, kalau tidak marker & garis rutenya diam-diam tidak tergambar.
+  forts.forEach(f => {
+    if (!FORT_COORDS[f.name] && f.latitude != null && f.longitude != null) {
+      FORT_COORDS[f.name] = [f.latitude, f.longitude];
+    }
+  });
 
   // Welcome port grid
   const grid = document.getElementById("port-grid");
@@ -484,10 +555,10 @@ function renderPage(data, startIndex) {
     item.className = "voyage-item";
     item.setAttribute("tabindex", "0");
     item.setAttribute("role", "button");
-    item.setAttribute("aria-label", `Kapal ${esc(v.ship_name)}, ${v.year || "?"}`);
+    item.setAttribute("aria-label", `Kapal ${esc(v.ship_name)}, ${voyageDateText(v, true)}`);
     item.dataset.voyageId = v.id;
 
-    const yearTag = `<span class="tag tag-year"><i class="ti ti-calendar-event" aria-hidden="true"></i> ${v.year || "?"}</span>`;
+    const yearTag = `<span class="tag tag-year"><i class="ti ti-calendar-event" aria-hidden="true"></i> ${esc(voyageDateText(v, true))}</span>`;
     const valTag  = v.total_gulden ? `<span class="tag tag-val"><i class="ti ti-coin" aria-hidden="true"></i> ƒ ${fmt(v.total_gulden)}</span>` : "";
 
     item.innerHTML = `
@@ -553,7 +624,9 @@ async function openVoyageModal(voyageId) {
   // Header
   document.getElementById("modal-ship-name").textContent = voyage.ship_name || "Unknown Ship";
   const capt = voyage.captain ? ` &bull; Capt. ${esc(voyage.captain)}` : "";
-  document.getElementById("modal-ship-meta").innerHTML = `${voyage.year || "?"}${capt}`;
+  // Tanggal penuh (penanggalan kargo ikut voyage): tampilkan berangkat/tiba bila ada, fallback tahun
+  const dateText = voyageDateText(voyage, false);
+  document.getElementById("modal-ship-meta").innerHTML = `${esc(dateText)}${capt}`;
 
   // Build body HTML
   const durText  = voyage.duration_days ? `${voyage.duration_days} hari` : "—";
@@ -608,6 +681,10 @@ async function openVoyageModal(voyageId) {
       <div class="modal-data-item">
         <div class="lbl"><i class="ti ti-package" aria-hidden="true"></i> Komoditi Utama</div>
         <div class="val">${prodText}</div>
+      </div>
+      <div class="modal-data-item">
+        <div class="lbl"><i class="ti ti-database" aria-hidden="true"></i> Sumber Data</div>
+        <div class="val">${esc(MODAL_SOURCE_LABELS[voyage.source] || MODAL_SOURCE_LABELS.bgb_huygens)}</div>
       </div>
     </div>
     <div class="cargo-list">
@@ -683,7 +760,7 @@ function setupYearFilter() {
     updateDisplays();
     clearTimeout(yearDebounce);
     yearDebounce = setTimeout(async () => {
-      const yf = parseInt(fromEl.value, 10) || 1700;
+      const yf = parseInt(fromEl.value, 10) || 1660;
       const yt = parseInt(toEl.value, 10)   || 1790;
       if (yf > yt) return;
       yearFrom = yf;
@@ -745,7 +822,7 @@ async function fetchShipSearch(q) {
               onkeydown="if(event.key==='Enter'){openVoyageModal(${v.id})}">
            <div class="search-result-ship">${esc(v.ship_name)}</div>
            <div class="search-result-meta">
-             ${v.year || "?"} &bull; ${esc(v.origin_name_raw || "")} &rarr; ${esc(v.destination_name_raw || "")}
+             ${esc(voyageDateText(v, true))} &bull; ${esc(v.origin_name_raw || "")} &rarr; ${esc(v.destination_name_raw || "")}
            </div>
          </div>`
       ).join("");

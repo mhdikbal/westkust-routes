@@ -55,3 +55,7 @@ node_modules/
 # Materi riset thesis (PDF besar, draft, notebook Colab) — bukan bagian app,
 # jangan masuk git (bisa ratusan MB)
 docs/thesis/
+
+# Claude Code — state lokal per-mesin, bukan konfigurasi proyek yg dibagikan
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

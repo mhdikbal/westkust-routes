@@ -1,10 +1,10 @@
 import csv
 import io
-from typing import List, Optional
+from typing import List, Literal, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc, func
+from sqlalchemy import select, desc, func, or_
 from pydantic import BaseModel, ConfigDict
 
 from cache import make_key, cache_get, cache_set
@@ -12,6 +12,21 @@ from database import get_db
 from models import Voyage, Fort, CargoItem
 
 router = APIRouter()
+
+SourceParam = Literal["bgb_huygens", "daghregister_batavia", "globalise_obp"]
+
+
+def _year_gte(value: int):
+    """Voyage.year >= value, TAPI year IS NULL tetap ikut (bukan disenyapkan).
+    Perbandingan SQL biasa (col >= x) mengembalikan NULL, bukan false, kalau
+    col IS NULL -- itu bikin baris dgn tahun tak diketahui hilang diam-diam dari
+    SEMUA filter tahun. Ditemukan 2026-07-07 saat 8/12 voyage Dagh-register yg
+    baru dipromosikan (tahun ambigu, jilid rentang 2 tahun) jadi tak pernah tampil."""
+    return or_(Voyage.year.is_(None), Voyage.year >= value)
+
+
+def _year_lte(value: int):
+    return or_(Voyage.year.is_(None), Voyage.year <= value)
 
 
 # ---------- Schemas ----------
@@ -37,6 +52,7 @@ class VoyageSchema(BaseModel):
     duration_days: Optional[int] = None
     direction: Optional[str] = None
     source_url: Optional[str] = None
+    source: str = "bgb_huygens"
 
 
 class RouteAggregation(BaseModel):
@@ -50,6 +66,7 @@ class RouteAggregation(BaseModel):
     direction: Optional[str] = None
     count: int
     total_value: float
+    source: str = "bgb_huygens"
 
 
 class VoyageStatsResponse(BaseModel):
@@ -140,6 +157,7 @@ async def list_voyages(
     origin_id: Optional[int] = None,
     destination_id: Optional[int] = None,
     direction: Optional[str] = None,  # "outbound" or "inbound"
+    source: Optional[SourceParam] = None,
     year_from: Optional[int] = None,
     year_to: Optional[int] = None,
     product: Optional[str] = None,
@@ -151,7 +169,7 @@ async def list_voyages(
     """List all voyages with optional filters. Cache-aside Redis (ADR-001)."""
     cache_key = make_key("voyages", {
         "origin_id": origin_id, "destination_id": destination_id,
-        "direction": direction, "year_from": year_from, "year_to": year_to,
+        "direction": direction, "source": source, "year_from": year_from, "year_to": year_to,
         "product": product, "search": search, "skip": skip, "limit": limit,
     })
     cached = await cache_get(cache_key)
@@ -160,18 +178,20 @@ async def list_voyages(
         return cached
 
     query = select(Voyage)
-    
+
     if origin_id is not None:
         query = query.where(Voyage.origin_id == origin_id)
     if destination_id is not None:
         query = query.where(Voyage.destination_id == destination_id)
     if direction:
         query = query.where(Voyage.direction == direction.lower())
-        
+    if source:
+        query = query.where(Voyage.source == source.lower())
+
     if year_from:
-        query = query.where(Voyage.year >= year_from)
+        query = query.where(_year_gte(year_from))
     if year_to:
-        query = query.where(Voyage.year <= year_to)
+        query = query.where(_year_lte(year_to))
     if product:
         query = query.where(Voyage.all_products.ilike(f"%{product}%"))
     if search:
@@ -197,9 +217,9 @@ async def get_voyage_stats(
     """Get aggregated voyage statistics."""
     base_filter = []
     if year_from:
-        base_filter.append(Voyage.year >= year_from)
+        base_filter.append(_year_gte(year_from))
     if year_to:
-        base_filter.append(Voyage.year <= year_to)
+        base_filter.append(_year_lte(year_to))
     if direction:
         base_filter.append(Voyage.direction == direction.lower())
 
@@ -273,6 +293,7 @@ async def get_voyage_routes(
     year_from: Optional[int] = None,
     year_to: Optional[int] = None,
     direction: Optional[str] = None,
+    source: Optional[SourceParam] = None,  # P0.3b — filter/agregasi per provenance
     limit: int = Query(default=50, ge=1, le=200),
     db: AsyncSession = Depends(get_db),
 ):
@@ -293,6 +314,7 @@ async def get_voyage_routes(
             DestFort.c.latitude.label("dest_lat"),
             DestFort.c.longitude.label("dest_lon"),
             Voyage.direction,
+            Voyage.source,
             func.count(Voyage.id).label("count"),
             func.coalesce(func.sum(Voyage.total_gulden), 0).label("total_value"),
         )
@@ -301,11 +323,13 @@ async def get_voyage_routes(
     )
 
     if year_from:
-        query = query.where(Voyage.year >= year_from)
+        query = query.where(_year_gte(year_from))
     if year_to:
-        query = query.where(Voyage.year <= year_to)
+        query = query.where(_year_lte(year_to))
     if direction:
         query = query.where(Voyage.direction == direction.lower())
+    if source:
+        query = query.where(Voyage.source == source.lower())
 
     # Only include routes where at least one end is a known port
     query = query.where(
@@ -320,6 +344,7 @@ async def get_voyage_routes(
         DestFort.c.latitude,
         DestFort.c.longitude,
         Voyage.direction,
+        Voyage.source,
     ).order_by(desc("count"))
 
     result = await db.execute(query)
@@ -337,6 +362,7 @@ async def get_voyage_routes(
             direction=r.direction,
             count=r.count,
             total_value=float(r.total_value),
+            source=getattr(r, "source", None) or "bgb_huygens",
         )
         for r in routes
     ]
@@ -347,7 +373,7 @@ CSV_COLUMNS = [
     "departure_date", "arrival_date", "origin_name_raw",
     "destination_name_raw", "direction", "main_product",
     "all_products", "total_gulden", "cargo_count",
-    "duration_days", "source_url",
+    "duration_days", "source_url", "source",
 ]
 
 
@@ -362,9 +388,9 @@ async def export_voyages_csv(
     query = select(Voyage).order_by(Voyage.year, Voyage.id)
 
     if year_from:
-        query = query.where(Voyage.year >= year_from)
+        query = query.where(_year_gte(year_from))
     if year_to:
-        query = query.where(Voyage.year <= year_to)
+        query = query.where(_year_lte(year_to))
     if direction and direction.lower() != "all":
         query = query.where(Voyage.direction == direction.lower())
 
@@ -423,9 +449,9 @@ async def get_network_graph(
     # Build base filters
     filters = []
     if year_from:
-        filters.append(Voyage.year >= year_from)
+        filters.append(_year_gte(year_from))
     if year_to:
-        filters.append(Voyage.year <= year_to)
+        filters.append(_year_lte(year_to))
 
     # Nodes: all forts with voyage counts
     forts_result = await db.execute(select(Fort))
@@ -531,9 +557,9 @@ async def get_heatmap(
     # Union of origin and destination to capture both directions
     filters = []
     if year_from:
-        filters.append(Voyage.year >= year_from)
+        filters.append(_year_gte(year_from))
     if year_to:
-        filters.append(Voyage.year <= year_to)
+        filters.append(_year_lte(year_to))
 
     # Query for origin port activity
     origin_q = (
@@ -624,9 +650,9 @@ async def get_sankey_data(
         Voyage.destination_name_raw.isnot(None)
     ]
     if year_from:
-        filters.append(Voyage.year >= year_from)
+        filters.append(_year_gte(year_from))
     if year_to:
-        filters.append(Voyage.year <= year_to)
+        filters.append(_year_lte(year_to))
         
     query = (
         select(

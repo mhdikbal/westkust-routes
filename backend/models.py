@@ -74,6 +74,9 @@ class Voyage(Base):
     duration_days = Column(Integer, nullable=True)
     direction = Column(String(20), nullable=True, index=True)  # "outbound" or "inbound"
     source_url = Column(Text, nullable=True)
+    # Provenance (P0.3b, docs/prd-cleaning-daghregister-1660-1669.md): "bgb_huygens" (default,
+    # data terstruktur existing) | "daghregister_batavia" | "globalise_obp" (hasil promosi staging)
+    source = Column(String(50), nullable=False, server_default="bgb_huygens", index=True)
 
     # Relationship to cargo items
     cargo_items = relationship("CargoItem", back_populates="voyage", cascade="all, delete-orphan")
@@ -150,6 +153,34 @@ class StagingExtraction(Base):
         return f"<StagingExtraction(source='{self.source}', ref='{self.external_ref}', flag='{self.confidence_flag}')>"
 
 
+class PortArrivalTally(Base):
+    """Rekap kedatangan bulanan multi-kapal-tak-bernama dari daghregister_corpus.csv
+    (record_type=port_tally_aggregate). Satu baris staging_extractions di-expand jadi
+    banyak baris di sini -- satu per kelompok-pelabuhan-asal.
+    Lihat docs/prd-port-tally-aggregate.md."""
+    __tablename__ = "port_arrival_tallies"
+
+    id = Column(Integer, primary_key=True, index=True)
+    staging_extraction_id = Column(Integer, ForeignKey("staging_extractions.id"), nullable=False, index=True)
+    volume = Column(String(100), nullable=False)
+    tanggal_perkiraan = Column(String(50), nullable=True)
+
+    origin_port_raw = Column(String(100), nullable=False)
+    origin_fort_id = Column(Integer, ForeignKey("forts.id"), nullable=True, index=True)
+
+    ship_count = Column(Integer, nullable=True)
+    person_count = Column(Integer, nullable=True)
+
+    cargo_text = Column(Text, nullable=False)
+    cargo_items_json = Column(JSONB, nullable=True)
+
+    confidence_flag = Column(String(20), nullable=False, server_default="unverified")
+    created_at = Column(String(30), nullable=False)
+
+    def __repr__(self):
+        return f"<PortArrivalTally(origin='{self.origin_port_raw}', ships={self.ship_count})>"
+
+
 class CommodityGlossary(Base):
     __tablename__ = "commodity_glossary"
 
@@ -160,6 +191,7 @@ class CommodityGlossary(Base):
     definition_nl = Column(Text, nullable=True)
     definition_id = Column(Text, nullable=True)
     category      = Column(String(100), nullable=True)
+    source_citation = Column(Text, nullable=True)  # rujukan definisi, mis. "VOC-Glossarium (IHNG, 2000)"; NULL = asal tak tercatat
 
     def __repr__(self):
         return f"<CommodityGlossary(term='{self.term}')>"

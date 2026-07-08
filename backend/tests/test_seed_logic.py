@@ -40,9 +40,9 @@ class TestCleanName:
         assert clean_name("Airbangis") == "Air Bangis"
         assert clean_name("Aijer Bangis") == "Air Bangis"
 
-    def test_djambi_to_jambi(self):
-        """Dutch spelling 'Djambi' should map to 'Jambi'."""
-        assert clean_name("Djambi") == "Jambi"
+    def test_djambi_passthrough_after_east_removal(self):
+        """rev.11: mapping pelabuhan timur DIHAPUS — 'Djambi' tidak lagi dipetakan."""
+        assert clean_name("Djambi") == "Djambi"
 
     def test_dash_prefix(self):
         """'-,Bengalen' should return 'Bengalen' (second part)."""
@@ -61,10 +61,10 @@ class TestCleanName:
         """'Palembang,Palembang' should return 'Palembang'."""
         assert clean_name("Palembang,Palembang") == "Palembang"
 
-    def test_lampung_variants(self):
-        """Lampung spelling variants."""
-        assert clean_name("Lampongs") == "Lampung"
-        assert clean_name("Lampong") == "Lampung"
+    def test_lampung_variants_passthrough_after_east_removal(self):
+        """rev.11: mapping pelabuhan timur DIHAPUS — varian Lampung tidak dipetakan."""
+        assert clean_name("Lampongs") == "Lampongs"
+        assert clean_name("Lampong") == "Lampong"
 
     def test_unknown_name_passthrough(self):
         """Unknown names should pass through unchanged."""

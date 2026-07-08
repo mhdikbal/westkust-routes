@@ -153,6 +153,28 @@
     .btn-dir:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     .btn-dir i { font-size: .9rem; }
 
+    /* Source/provenance dropdown (P0.3b, dijadikan <select> 2026-07-07 supaya
+       gampang diperluas kalau sumber baru muncul -- mis. GLOBALISE OBP -- tanpa
+       navbar penuh tombol pill). */
+    .source-select-wrap {
+      display: flex; align-items: center; gap: .35rem;
+      background: rgba(26,36,33,0.05); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0 .5rem 0 .6rem;
+      height: 32px; flex-shrink: 0;
+    }
+    .source-select-wrap i { font-size: .9rem; color: var(--text-muted); }
+    #source-select {
+      appearance: none; -webkit-appearance: none;
+      background: transparent; border: none;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .7rem; font-weight: 600; color: var(--text-primary);
+      cursor: pointer; padding: 0 1.1rem 0 .1rem; height: 28px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236b6f62' stroke-width='2'%3E%3Cpath d='M5 7l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 0 center; background-size: 1rem;
+    }
+    #source-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    #source-select option { color: var(--text-primary); background: #fff; font-weight: 500; }
+
     /* Right — ship search */
     .nav-right { display: flex; align-items: center; gap: .75rem; flex-shrink: 0; position: relative; }
     .ship-search-wrap {
@@ -670,7 +692,7 @@
     <img src="/static/map_app/img/icon.png" alt="Salido" class="voc-seal-img" aria-hidden="true" />
     <div class="nav-brand-text">
       <span class="nav-brand-title">Jalur Perdagangan VOC</span>
-      <span class="nav-brand-sub">Sumatera Westkust · 1700–1789</span>
+      <span class="nav-brand-sub">Sumatera Westkust · 1660–1789</span>
     </div>
   </a>
 
@@ -679,16 +701,16 @@
       <i class="ti ti-adjustments-horizontal nav-filter-icon" aria-hidden="true"></i>
       <div class="decade-slider-wrap">
         <div class="decade-label-row">
-          <span id="year-from-display">1700</span>
+          <span id="year-from-display">1660</span>
           <span class="decade-label-sep" aria-hidden="true">–</span>
           <span id="year-to-display">1790</span>
         </div>
         <div class="decade-track">
           <input type="range" id="year-from" class="decade-slider"
-                 value="1700" min="1700" max="1800" step="10"
+                 value="1660" min="1660" max="1800" step="10"
                  aria-label="Tahun mulai filter">
           <input type="range" id="year-to" class="decade-slider"
-                 value="1790" min="1700" max="1800" step="10"
+                 value="1790" min="1660" max="1800" step="10"
                  aria-label="Tahun akhir filter">
         </div>
       </div>
@@ -713,6 +735,14 @@
               title="Hanya rute masuk ke Westkust">
         <i class="ti ti-arrow-down-left" aria-hidden="true"></i> Masuk
       </button>
+    </div>
+    <div class="source-select-wrap" title="Filter sumber data pelayaran">
+      <i class="ti ti-database" aria-hidden="true"></i>
+      <select id="source-select" aria-label="Filter sumber data pelayaran" onchange="setSource(this.value)">
+        <option value="all" selected>Semua Sumber</option>
+        <option value="bgb_huygens">BGB Huygens</option>
+        <option value="daghregister_batavia">Dagh-register</option>
+      </select>
     </div>
   </div>
 

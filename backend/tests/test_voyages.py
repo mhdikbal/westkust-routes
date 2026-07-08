@@ -39,6 +39,7 @@ def make_voyage(**kwargs):
         "duration_days": 44,
         "direction": "outbound",
         "source_url": "https://resources.huygens.knaw.nl/bgb/voyage/13447",
+        "source": "bgb_huygens",
     }
     defaults.update(kwargs)
     return SimpleNamespace(**defaults)
@@ -231,6 +232,59 @@ async def test_filter_inbound_voyages():
     assert data[0]["ship_name"] == "Batavia Retour"
 
 
+# ─── Tests: P0.3b provenance — GET /api/voyages/?source= ────────────────────
+
+VOYAGE_DAGHREGISTER_1 = make_voyage(
+    id=5, ship_name="Bunschoten", direction="inbound", year=1668,
+    source="daghregister_batavia", source_url=None,
+)
+
+
+@pytest.mark.asyncio
+async def test_list_voyages_has_source_field():
+    """Setiap voyage harus menyertakan field source (provenance data — P0.3b)."""
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.return_value = make_scalar_result([VOYAGE_OUTBOUND_1])
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    voyage = response.json()[0]
+    assert "source" in voyage
+    assert voyage["source"] == "bgb_huygens"
+
+
+@pytest.mark.asyncio
+async def test_filter_by_source():
+    """GET /api/voyages/?source=daghregister_batavia hanya return voyage sumber itu."""
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.return_value = make_scalar_result([VOYAGE_DAGHREGISTER_1])
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/?source=daghregister_batavia")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["source"] == "daghregister_batavia"
+    assert data[0]["ship_name"] == "Bunschoten"
+
+
 # ─── Tests: Year range filtering ─────────────────────────────────────────────
 
 @pytest.mark.asyncio
@@ -269,6 +323,7 @@ def make_route_row(**kwargs):
         "direction": "outbound",
         "count": 5,
         "total_value": 123456.0,
+        "source": "bgb_huygens",
     }
     defaults.update(kwargs)
     return SimpleNamespace(**defaults)
@@ -350,6 +405,57 @@ async def test_routes_year_range_combined():
     data = response.json()
     assert len(data) == 1
     assert data[0]["count"] == 3
+
+
+# ─── Tests: P0.3b provenance — GET /api/voyages/routes?source= ─────────────
+
+ROUTE_DAGHREGISTER = make_route_row(
+    origin_name="Padang", destination_name="Batavia", count=2,
+    direction="inbound", source="daghregister_batavia",
+)
+
+
+@pytest.mark.asyncio
+async def test_routes_has_source_field():
+    """Setiap route aggregate harus menyertakan field source (P0.3b)."""
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.return_value = make_rows_result([ROUTE_1720])
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/routes")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert response.json()[0]["source"] == "bgb_huygens"
+
+
+@pytest.mark.asyncio
+async def test_routes_filter_by_source():
+    """GET /api/voyages/routes?source=daghregister_batavia hanya return rute sumber itu,
+    TIDAK tercampur agregat dgn rute BGB pada pasangan pelabuhan yang sama (P0.3b)."""
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.return_value = make_rows_result([ROUTE_DAGHREGISTER])
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/routes?source=daghregister_batavia")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["source"] == "daghregister_batavia"
 
 
 # ─── SEC: limit/skip negatif harus 422, bukan 500 (Red Team 3 Jul 2026) ─────

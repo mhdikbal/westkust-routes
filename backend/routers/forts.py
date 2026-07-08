@@ -6,7 +6,8 @@ from pydantic import BaseModel, ConfigDict
 
 from cache import make_key, cache_get, cache_set
 from database import get_db
-from models import Fort, Voyage
+from models import Fort, Voyage, PortArrivalTally
+from routers.voyages import _year_gte, _year_lte
 
 router = APIRouter()
 
@@ -82,6 +83,10 @@ class FortEnrichmentResponse(BaseModel):
     inbound_count: int = 0
     total_value_out: float = 0.0
     total_value_in: float = 0.0
+    # P1.2 (docs/prd-port-tally-aggregate.md) -- dari port_arrival_tallies, data
+    # Dagh-register confidence_flag=unverified, TIDAK dijamin sudah direview manual.
+    tally_ship_count: int = 0
+    tally_person_count: int = 0
 
 
 # ---------- Endpoints ----------
@@ -154,9 +159,9 @@ async def compare_ports(
 
     year_filters = []
     if year_from:
-        year_filters.append(Voyage.year >= year_from)
+        year_filters.append(_year_gte(year_from))
     if year_to:
-        year_filters.append(Voyage.year <= year_to)
+        year_filters.append(_year_lte(year_to))
 
     ports = []
     for fid in fort_ids:
@@ -291,6 +296,16 @@ async def get_fort_enrichment(fort_id: int, db: AsyncSession = Depends(get_db)):
     )
     in_count, in_total = in_res.one()
 
+    tally_res = await db.execute(
+        select(
+            func.coalesce(func.sum(PortArrivalTally.ship_count), 0),
+            func.coalesce(func.sum(PortArrivalTally.person_count), 0),
+        )
+        .where(PortArrivalTally.origin_fort_id == fort_id)
+        .where(PortArrivalTally.confidence_flag != "rejected")
+    )
+    tally_ship_count, tally_person_count = tally_res.one()
+
     periode_str: Optional[str] = None
     if fort.periode_aktif is not None:
         pa = fort.periode_aktif
@@ -319,6 +334,8 @@ async def get_fort_enrichment(fort_id: int, db: AsyncSession = Depends(get_db)):
         inbound_count=in_count,
         total_value_out=float(out_total or 0),
         total_value_in=float(in_total or 0),
+        tally_ship_count=int(tally_ship_count or 0),
+        tally_person_count=int(tally_person_count or 0),
     )
 
 
@@ -403,9 +420,9 @@ async def list_fort_voyages(
 
     query = select(Voyage).where((Voyage.origin_id == fort_id) | (Voyage.destination_id == fort_id))
     if year_from:
-        query = query.where(Voyage.year >= year_from)
+        query = query.where(_year_gte(year_from))
     if year_to:
-        query = query.where(Voyage.year <= year_to)
+        query = query.where(_year_lte(year_to))
     if product:
         query = query.where(Voyage.all_products.ilike(f"%{product}%"))
 

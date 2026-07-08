@@ -106,8 +106,10 @@ def test_existing_voyages_data_intact(sync_engine):
     """Data voyage existing tidak boleh berubah setelah migration."""
     with sync_engine.connect() as conn:
         count = conn.execute(text("SELECT COUNT(*) FROM voyages")).scalar()
-    assert count >= 4738, (
-        f"Jumlah voyage berkurang setelah migration: {count} (expected >= 4738)"
+    # rev.11 (2026-07-08): pelabuhan pantai timur (Jambi/Palembang/Lampung) dihapus dari
+    # skope atlas Westkust — 545 voyage timur ikut terhapus; baseline baru 4193 BGB + Dagh-register.
+    assert count >= 4300, (
+        f"Jumlah voyage berkurang di luar penghapusan pelabuhan timur rev.11: {count} (expected >= 4300)"
     )
 
 
