@@ -2,8 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y gcc && rm -rf /var/lib/apt/lists/*
-
+# deps (django, requests, whitenoise, gunicorn, httpx) semua pure-Python/wheel
+# → gcc tak perlu, dihapus.
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
