@@ -72,3 +72,6 @@ data/**/*.raw
 
 # Sumber gambar 404 (3MB) — pakai jpg teroptimasi di static
 Designer404.png
+
+# Artefak Windows lighthouse nyasar (batas WSL/Windows)
+C:*

@@ -1,8 +1,56 @@
 # PRD / Planning — Network Graph "Siapa Terhubung dengan Siapa, di Bidang Apa"
 
-**Status:** Draft planning (MLOps) — 2026-07-09
+**Status:** Draft planning (MLOps) — **REVISI 2026-07-09b** (probe data + frame polity-afiliasi user)
 **Tim (role framing):** Scrum Master, MLOps, DBA — Muhammad Ikbal
-**Konteks:** lanjutan Sankey Tema-Korpus (`docs/prd-sankey-tema-korpus.md`, SNK-1..5 selesai + halaman `/riset/tema`). Sumber data sama: `research_theme_rows` (1.005 baris terklasifikasi 7 tema + pelabuhan + teks) + data voyage.
+**Konteks:** lanjutan Sankey Tema-Korpus (`docs/prd-sankey-tema-korpus.md`, SNK-1..5 SELESAI & LIVE di `salido.my.id/atlas/riset/tema`). Sumber data sama: `research_theme_rows` (1.005 baris terklasifikasi 7 tema + pelabuhan + teks).
+
+---
+
+## 0★. REVISI 2026-07-09b — Temuan Probe + Model Final (MENGGANTIKAN §3–§4 di bawah)
+
+Frame user diperjelas: **node = polity pesisir (masing-masing punya jabatan politik/afiliasi) + aktor eksternal; edge = relasi bertipe (diplomasi / dagang / perang) ke VOC dll; split 1660–1699 vs 1700–1799.** Diprobe ke DB nyata (bukan asumsi):
+
+### Bukti A — sinyal kelompok aktor per periode (keyword ILIKE, batas atas + noise)
+| Periode | Baris | China | VOC | Kerajaan-lokal | Syahbandar | Inggris/Aceh |
+|---|--:|--:|--:|--:|--:|--:|
+| 1660–1699 | 561 | 137 | 333 | 271 | **4** | 120 |
+| 1700–1799 | 407 | 31 | 235 | 111 | **0** | 30 |
+
+### Bukti B — coverage polity (di `pelabuhan_disebut`)
+Padang 654 · Barus 330 · Pulau Cingkuak 309 · Salido 276 · Pariaman 251 · Inderapura 228 · Air Bangis 109 · Air Haji 85 · Tiku 79 · Bayang 47 · **Painan 8 (tipis)** · **Tarusan 0 (TIDAK ADA di korpus, port maupun teks/"Taroesan")**. Backbone edge: **481 baris multi-polity**.
+
+### Keputusan model (dari bukti)
+1. **Node = 10 polity lokal** (Padang…Bayang) **+ eksternal** (VOC, Aceh, China, Inggris/EIC). **Drop Tarusan** (0 sinyal); Painan tandai lemah.
+2. **"Syahbandar" BUKAN node** — kata harfiah cuma 4× (padahal tema `syahbandar` 511 baris) → itu **peran/tema**, dipakai sebagai **label-edge**, bukan aktor.
+3. **Tambah Inggris (EIC) + Aceh** sebagai kelompok (segitiga VOC–Inggris–Aceh = inti konflik pesisir).
+4. **Split periode bermakna:** 1660-99 jauh lebih padat (561 vs 407); semua kelompok menurun ke abad-18 → cerita yang layak divisualkan.
+5. Edge = co-occurrence (polity↔polity dari multi-port; polity↔eksternal dari keyword+port).
+
+### Tipe edge (diplomasi/dagang/perang) — SEBAGIAN BESAR 0 GPU
+Tipe relasi user **sudah tersedia** dari `tema_dominan` yang dulu di-GPU-kan:
+| Tipe relasi user | Turunan dari tema existing? |
+|---|---|
+| perang/konflik | ✅ `sengketa` |
+| dagang | ✅ `pelayaran` |
+| administrasi/kepelabuhanan | ✅ `syahbandar` |
+| **diplomasi / aliansi** | ❌ belum ada label — satu-satunya yang mungkin butuh run baru |
+
+### Verdict GPU/Colab (REVISI, jawaban langsung ke user)
+- **Tier 1 (struktur + tipe edge dari tema): tetap 0 GPU** — warna/tipe edge diturunkan dari `tema_dominan`. Dapat ~80% (termasuk dagang & perang) gratis.
+- **GPU/Colab hanya relevan** bila mau label `diplomasi`/`aliansi` yang belum ada di 7 tema. **Bahkan itu pun 1.000 baris = CPU cukup** (zero-shot mDeBERTa ~beberapa menit; T4 hanya ~5-10× lebih cepat = kenyamanan iterasi, bukan syarat).
+- **GPU tidak menyelesaikan risiko sebenarnya** = akurasi ekstraksi/typing di teks OCR historis ([[feedback_verify_entity_extraction_before_trusting]], gagal 2×). Itu urusan **validasi**, bukan compute.
+- **MLOps: JANGAN nyalakan T4 dulu.** Nyalakan hanya untuk label `diplomasi/aliansi` bila user memang mau bedakan dari `sengketa`.
+
+### Rencana bertahap (REVISI)
+- **Tier 1a — sekarang, 0 GPU ⭐:** endpoint `GET /api/research/network-faksi?year_from=&year_to=` → `{nodes,edges}`; node polity+eksternal (keyword-tagging faksi), edge co-occurrence, **tipe/warna edge dari `tema_dominan`**, split 2 periode. UI `/riset/jaringan` (identitas salido.my.id, force-directed d3/Cytoscape, drill→`/rows`). **Gerbang: spot-check 25 baris** (keyword-tag cocok realita? refine daftar) SEBELUM render dipercaya.
+- **Tier 1b — opsional:** kalau `diplomasi/aliansi` dibutuhkan & tak ada di tema → zero-shot kecil (Colab GPU *boleh*, CPU cukup) + validasi.
+- **Tier 2 — nanti:** aktor bernama individu (Sultan Mahomettha, pejabat VOC, Kapitan Cina) — NER/LLM + validasi manual sample dulu.
+
+**Open question baru:** (a) nama alternatif "Tarusan" bila memang ingin dipertahankan? (b) `diplomasi` cukup diturunkan dari kombinasi tema+konteks, atau wajib label baru (→ Tier 1b)? (c) afiliasi polity (pro-VOC / pro-Aceh / independen) per periode — dihitung dari pola edge, atau butuh anotasi manual?
+
+---
+
+*(§0–§7 di bawah = draft awal, dipertahankan sebagai riwayat; model final ada di §0★ di atas.)*
 
 ---
 
