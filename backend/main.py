@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from database import init_db
-from routers import forts, voyages, glossary, staging
+from routers import forts, voyages, glossary, staging, research
 
 # Baca ALLOWED_ORIGINS dari env var, parse sebagai comma-separated list.
 # Default: hanya Nginx entry point. Tambahkan origin lain via env var di .env.
@@ -38,6 +38,7 @@ app.include_router(forts.router, prefix="/api/forts", tags=["Forts"])
 app.include_router(voyages.router, prefix="/api/voyages", tags=["Voyages"])
 app.include_router(glossary.router, prefix="/api/glossary", tags=["Glossary"])
 app.include_router(staging.router, prefix="/api/staging", tags=["Staging (internal)"])
+app.include_router(research.router, prefix="/api/research", tags=["Research (thesis-only)"])
 
 
 @app.get("/api/health", tags=["Health"])

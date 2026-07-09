@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Sankey Tema-Korpus — Pesisir Barat Sumatra (VOC)</title>
+<style>
+/* ============================ TOKENS ============================ */
+:root{
+  /* warna tema Sankey (DATA — bukan 'tulisan'; tetap diberi warna agar 6 tema terbedakan) */
+  --pig-syahbandar:#2C5364; --pig-pelayaran:#3A7D70; --pig-sengketa:#B0562A;
+  --pig-pdr:#A8842A; --pig-etr:#6E7A3A; --pig-hak:#7E4C68;
+  /* netral — salido.my.id: PUTIH / HITAM / ABU (bukan krem, bukan aksen warna) */
+  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
+  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4;
+  --accent:#000000; --gold-ink:#6F5407;
+  --node:#D6D6D6; --halo:#FFFFFF;
+  --ribbon-op:0.46; --ribbon-op-hot:0.9;
+  --shadow:none;
+  /* type — salido.my.id: EB Garamond + Space Grotesk (di-embed sbg data-URI woff2, bukan Georgia fallback) */
+  --serif:"EB Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"Space Grotesk",ui-monospace,Menlo,Consolas,monospace;
+}
+/* map_app = LIGHT-ONLY (krem) — tak ada dark mode. Exhibit dikunci krem apa pun
+   mode viewer, agar identik salido.my.id. data-theme=dark dari viewer diabaikan. */
+:root[data-theme]{
+  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
+  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4;
+  --accent:#000000; --node:#D6D6D6; --halo:#FFFFFF;
+  --ribbon-op:0.46; --ribbon-op-hot:0.9;
+  --pig-syahbandar:#2C5364; --pig-pelayaran:#3A7D70; --pig-sengketa:#B0562A;
+  --pig-pdr:#A8842A; --pig-etr:#6E7A3A; --pig-hak:#7E4C68;
+}
+
+/* ============================ BASE ============================ */
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:1560px;margin:0 auto;padding:clamp(20px,4vw,52px) clamp(16px,4vw,44px) 80px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted-dark);font-weight:600}
+a{color:inherit}
+
+/* ============================ HEADER ============================ */
+header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:26px}
+.title{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.4vw,2.7rem);
+  line-height:1.06;letter-spacing:-.01em;margin:.5rem 0 .35rem}
+.title em{font-style:italic;color:var(--accent)}
+.lede{max-width:66ch;color:var(--ink);font-size:1.12rem;line-height:1.5;margin:0 0 4px}
+.reading{font-size:.9rem;color:var(--ink);margin-top:10px}
+.reading b{font-weight:600}
+.prov{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:14px;letter-spacing:.01em}
+.prov span{white-space:nowrap}
+.prov .sep{opacity:.4;margin:0 .55em}
+
+/* stat tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:22px}
+.tile{background:var(--panel);padding:13px 15px}
+.tile .k{font-family:var(--mono);font-size:1.55rem;font-weight:600;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1}
+.tile .l{font-size:.73rem;color:var(--muted);margin-top:5px;letter-spacing:.02em}
+.tile .l b{color:var(--ink);font-weight:600}
+
+/* ============================ CONTROLS ============================ */
+.controls{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 22px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:15px 18px;margin-bottom:20px;box-shadow:var(--shadow)}
+.cg{display:flex;flex-direction:column;gap:6px}
+.cg > label{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.range{display:flex;align-items:center;gap:8px}
+select{font-family:var(--mono);font-size:.9rem;background:var(--panel-2);color:var(--ink);
+  border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-variant-numeric:tabular-nums}
+.range span{color:var(--muted);font-family:var(--mono)}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-family:var(--sans);font-size:.78rem;background:var(--panel-2);color:var(--muted);
+  border:1px solid var(--line);border-radius:99px;padding:5px 11px;cursor:pointer;transition:.14s}
+.chip:hover{color:var(--ink);border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.toggles{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto}
+.tog{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.85rem;user-select:none}
+.tog input{appearance:none;width:34px;height:19px;background:var(--line);border-radius:99px;
+  position:relative;cursor:pointer;transition:.16s;flex:none}
+.tog input::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;
+  background:var(--panel-2);transition:.16s}
+.tog input:checked{background:var(--accent)}
+.tog input:checked::after{transform:translateX(15px);background:#fff}
+.tog input:focus-visible,select:focus-visible,.chip:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{font-family:var(--sans);font-size:.8rem;background:none;border:1px solid var(--line);color:var(--muted);
+  border-radius:7px;padding:7px 12px;cursor:pointer;transition:.14s}
+.btn:hover{color:var(--ink);border-color:var(--accent)}
+
+/* ============================ PLATE / SANKEY ============================ */
+.colhead{display:grid;grid-template-columns:1fr 1fr 1fr;margin:0 0 6px;padding:0 4px}
+.colhead div{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:600}
+.colhead div:nth-child(1){text-align:left}
+.colhead div:nth-child(2){text-align:center}
+.colhead div:nth-child(3){text-align:right}
+.colhead b{color:var(--accent)}
+.plate{background:var(--panel);border:1px solid var(--line);
+  border-radius:4px;padding:10px 6px;position:relative;overflow:hidden}
+.plate-scroll{overflow-x:auto;overflow-y:hidden}
+svg#sankey{display:block;width:100%;min-width:680px;height:auto}
+.node rect{transition:opacity .15s}
+.n-label{font-family:var(--sans);font-size:11px;fill:var(--ink);
+  paint-order:stroke;stroke:var(--halo);stroke-width:3px;stroke-linejoin:round}
+.n-label.tema{font-family:var(--serif);font-size:13.5px;font-weight:600}
+.n-val{font-family:var(--mono);font-size:9.5px;fill:var(--muted);paint-order:stroke;stroke:var(--halo);stroke-width:2.6px}
+.link{cursor:pointer;transition:opacity .18s}
+.links.dimmed .link:not(.hot){opacity:.12 !important}
+.hatch-band{pointer-events:none}
+.empty-msg{font-family:var(--sans);font-size:14px;fill:var(--muted)}
+@media (prefers-reduced-motion:no-preference){
+  .link{animation:fadein .5s ease both}
+}
+@keyframes fadein{from{opacity:0}}
+
+/* tooltip */
+.tt{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--ground);
+  font-size:.78rem;padding:7px 10px;border-radius:7px;box-shadow:0 6px 20px rgba(0,0,0,.28);
+  opacity:0;transition:opacity .12s;max-width:260px;line-height:1.4}
+.tt .tt-t{font-weight:600}
+.tt .tt-m{font-family:var(--mono);opacity:.82;font-size:.72rem}
+
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;margin:16px 4px 0;
+  font-size:.82rem;color:var(--muted)}
+.lg{display:flex;align-items:center;gap:7px;cursor:pointer;transition:.14s}
+.lg:hover{color:var(--ink)}
+.lg[aria-pressed="true"]{opacity:.32}
+.sw{width:15px;height:15px;border-radius:4px;flex:none}
+.lg .nm{font-family:var(--serif);font-weight:600;color:var(--ink)}
+.lg .ct{font-family:var(--mono);font-size:.72rem}
+.lg-key{display:flex;align-items:center;gap:7px;margin-left:auto;font-size:.78rem}
+.sw-hatch{width:16px;height:16px;border-radius:4px;border:1px solid var(--line);
+  background-image:repeating-linear-gradient(45deg,var(--muted) 0 2px,transparent 2px 4px)}
+
+/* ============================ DRILL PANEL ============================ */
+.audit{margin-top:30px}
+.audit-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.audit-head h2{font-family:var(--serif);font-size:1.35rem;font-weight:600}
+.audit-head .ctx{font-family:var(--mono);font-size:.8rem;color:var(--accent)}
+.audit-sub{font-size:.86rem;color:var(--muted);margin:0 0 16px;max-width:70ch}
+.rows{display:grid;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--tema,var(--accent));
+  border-radius:10px;padding:14px 16px}
+@media (prefers-reduced-motion:no-preference){.card{animation:cardin .35s ease both}}
+@keyframes cardin{from{opacity:0;transform:translateY(6px)}}
+.card-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-bottom:9px}
+.badge{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.04em;
+  padding:2px 7px;border-radius:5px;text-transform:uppercase}
+.badge.g{background:color-mix(in srgb,var(--pig-syahbandar) 22%,transparent);color:var(--pig-syahbandar)}
+.badge.d{background:color-mix(in srgb,var(--pig-pelayaran) 22%,transparent);color:var(--pig-pelayaran)}
+.cid{font-family:var(--mono);font-size:.76rem;color:var(--muted)}
+.yr{font-family:var(--mono);font-size:.82rem;font-weight:600;font-variant-numeric:tabular-nums}
+.ports{display:flex;gap:5px;flex-wrap:wrap;margin-left:auto}
+.pt{font-size:.72rem;padding:2px 8px;border-radius:99px;background:var(--panel-2);border:1px solid var(--line);color:var(--muted)}
+.pt.on{background:color-mix(in srgb,var(--tema) 20%,transparent);color:var(--ink);border-color:var(--tema);font-weight:600}
+.score{display:flex;align-items:center;gap:9px;margin:2px 0 10px}
+.bar{flex:1;max-width:190px;height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar > i{display:block;height:100%;background:var(--tema,var(--accent));border-radius:99px}
+.score .v{font-family:var(--mono);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.lowchip{display:inline-flex;align-items:center;gap:5px;font-size:.7rem;font-family:var(--mono);
+  color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:1px 8px 1px 6px}
+.lowchip::before{content:"";width:12px;height:12px;border-radius:3px;
+  background-image:repeating-linear-gradient(45deg,var(--muted) 0 2px,transparent 2px 4px)}
+.qt{font-family:var(--serif);font-size:1rem;line-height:1.6;color:var(--ink);margin:0 0 10px;max-width:92ch}
+.meta-line{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:.76rem;color:var(--muted)}
+.ref{font-family:var(--mono)}
+details.asli{margin-top:9px}
+details.asli summary{font-size:.76rem;color:var(--accent);cursor:pointer;list-style:none;font-family:var(--mono)}
+details.asli summary::-webkit-details-marker{display:none}
+details.asli summary::before{content:"▸ ";}
+details.asli[open] summary::before{content:"▾ "}
+details.asli p{font-family:var(--mono);font-size:.78rem;color:var(--muted);line-height:1.5;
+  margin:8px 0 0;padding:9px 11px;background:var(--panel-2);border-radius:7px;border:1px solid var(--line)}
+.empty-panel{border:1px dashed var(--line);border-radius:10px;padding:34px 20px;text-align:center;color:var(--muted)}
+.empty-panel b{color:var(--ink);font-weight:600}
+
+/* ============================ FOOTER ============================ */
+footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:.82rem;color:var(--muted);max-width:80ch}
+footer h3{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px}
+footer p{margin:0 0 10px}
+footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:1px solid var(--line);
+  border-radius:5px;padding:2px 7px;margin:2px 4px 2px 0;color:var(--muted)}
+.theme-btn{position:fixed;top:14px;right:14px;z-index:60;background:var(--panel);border:1px solid var(--line);
+  color:var(--muted);width:38px;height:38px;border-radius:9px;cursor:pointer;font-size:1rem;box-shadow:var(--shadow)}
+.theme-btn:hover{color:var(--ink);border-color:var(--accent)}
+@media (max-width:640px){
+  .toggles{margin-left:0;width:100%}
+  .tiles .tile .k{font-size:1.3rem}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Exhibit · Bab 3 — Cross-check komputasional</div>
+    <h1 class="title">Tema Korpus Arsip VOC di <em>Pesisir Barat Sumatra</em></h1>
+    <p class="lede">Klasifikasi zero-shot atas dua korpus arsip abad ke-17–19, dibaca sebagai aliran:
+      kapan sebuah tema muncul, tentang apa, dan di pelabuhan mana ia terkonsentrasi.</p>
+    <p class="reading">Alur dibaca kiri&nbsp;→&nbsp;kanan &nbsp;·&nbsp;
+      <b>Waktu</b> (dekade) &nbsp;▸&nbsp; <b>Tema</b> (7 kategori) &nbsp;▸&nbsp; <b>Pelabuhan</b> (yang disebut di teks).</p>
+    <div class="prov" id="prov"></div>
+    <div class="tiles" id="tiles"></div>
+  </header>
+
+  <div class="controls">
+    <div class="cg">
+      <label>Rentang dekade</label>
+      <div class="range">
+        <select id="yFrom" aria-label="Dekade dari"></select>
+        <span>→</span>
+        <select id="yTo" aria-label="Dekade sampai"></select>
+      </div>
+    </div>
+    <div class="cg">
+      <label>Preset periode</label>
+      <div class="presets" id="presets">
+        <button class="chip" data-from="1600" data-to="1700">VOC awal 1600–1700</button>
+        <button class="chip" data-from="1660" data-to="1720">Puncak Westkust 1660–1720</button>
+        <button class="chip" data-from="1700" data-to="1790">Abad ke-18</button>
+        <button class="chip" data-reset="1">Seluruhnya</button>
+      </div>
+    </div>
+    <div class="toggles">
+      <label class="tog"><input type="checkbox" id="tgHatch" checked><span>Tandai low-confidence</span></label>
+      <label class="tog"><input type="checkbox" id="tgHide"><span>Sembunyikan low-confidence</span></label>
+    </div>
+  </div>
+
+  <div class="colhead">
+    <div>◀ Waktu · <b>Dekade</b></div>
+    <div><b>Tema</b> · klasifikasi</div>
+    <div><b>Pelabuhan</b> · disebut ▶</div>
+  </div>
+  <div class="plate">
+    <div class="plate-scroll">
+      <svg id="sankey" role="img" aria-label="Diagram Sankey dekade ke tema ke pelabuhan"></svg>
+    </div>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <section class="audit" id="audit">
+    <div class="audit-head">
+      <h2>Audit — baris penyusun</h2>
+      <span class="ctx" id="auditCtx"></span>
+    </div>
+    <p class="audit-sub" id="auditSub">Klik satu alur atau simpul untuk membuka teks asli penyusunnya — transparansi “kenapa baris ini diberi skor segini”.</p>
+    <div id="panel"></div>
+  </section>
+
+  <footer>
+    <h3>Metode &amp; batas</h3>
+    <p>Setiap baris korpus diklasifikasi ke 7 kategori tema (skor 0–1 independen, <span class="mono">multi_label</span>)
+      dengan model zero-shot <span class="mono">mDeBERTa-v3</span>; tema dominan = skor tertinggi per baris.
+      Pelabuhan dideteksi lewat pola ejaan historis; satu baris bisa menyebut beberapa pelabuhan dan
+      menyumbang ke tiap-tiapnya (link di-<em>explode</em>). Baris dengan skor dominan &lt; 0,5 ditandai
+      <b>low-confidence</b> — tidak dibuang, tapi diarsir agar ketidakpastian tidak tersamar.</p>
+    <p>Bucket <span class="mono">“Tak bertahun”</span> menampung baris tanpa tahun (tetap ikut, tidak disenyapkan).
+      Angka pada tautan = jumlah kontribusi baris, bukan jumlah baris unik.</p>
+    <p>
+      <span class="tag">thesis-only · noindex</span>
+      <span class="tag">route: /riset/tema (tidak di navbar publik)</span>
+      <span class="tag">sumber: GLOBALISE · Dagh-register</span>
+      <span class="tag">endpoint: /api/research/sankey-tema</span>
+      <span class="tag">design: salido.my.id (EB Garamond · Space Grotesk)</span>
+    </p>
+  </footer>
+</div>
+
+<div class="tt" id="tt"></div>
+
+<script type="module">
+"use strict";
+const API='/api/research/sankey-tema';
+const DATA = await fetch(API+'/triples').then(r=>r.json());
+const M = DATA.meta;
+
+const TEMA = {
+  syahbandar:{label:"Syahbandar", v:"--pig-syahbandar"},
+  pelayaran:{label:"Pelayaran", v:"--pig-pelayaran"},
+  sengketa:{label:"Sengketa", v:"--pig-sengketa"},
+  pdr_drainase:{label:"PDR · Drainase", v:"--pig-pdr"},
+  etr_retensi:{label:"ETR · Retensi", v:"--pig-etr"},
+  hak_adat:{label:"Hak Adat", v:"--pig-hak"},
+};
+const NO_YEAR = "Tak bertahun";
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const temaColor = t => css(TEMA[t] ? TEMA[t].v : "--accent");
+const temaLabel = t => TEMA[t] ? TEMA[t].label : t;
+const fmt = n => n.toLocaleString('id-ID');
+
+/* ---------- state ---------- */
+const decades = M.decades.slice();
+let state = { from:decades[0], to:decades[decades.length-1], hatch:true, hide:false, hiddenTemas:new Set() };
+
+/* ---------- header fill ---------- */
+document.getElementById('prov').innerHTML =
+  `<span>GLOBALISE n=${M.n_glob}</span><span class="sep">·</span>` +
+  `<span>Dagh-register n=${M.n_dagh}</span><span class="sep">·</span>` +
+  `<span>klasifikasi zero-shot mDeBERTa</span><span class="sep">·</span>` +
+  `<span>N=${fmt(M.total)} baris</span>`;
+const tiles = [
+  {k:fmt(M.total), l:"baris korpus terklasifikasi"},
+  {k:`${decades[0]}–${decades[decades.length-1]}`, l:"rentang dekade"},
+  {k:M.temas.length, l:"kategori tema"},
+  {k:M.n_ports, l:"pelabuhan (+ tak diketahui)"},
+  {k:`${Math.round(100*M.n_lowconf/M.total)}%`, l:`<b>${fmt(M.n_lowconf)}</b> baris low-confidence`},
+];
+document.getElementById('tiles').innerHTML = tiles.map(t=>
+  `<div class="tile"><div class="k">${t.k}</div><div class="l">${t.l}</div></div>`).join('');
+
+/* ---------- controls ---------- */
+const yFrom=document.getElementById('yFrom'), yTo=document.getElementById('yTo');
+decades.forEach(d=>{ yFrom.add(new Option(d,d)); yTo.add(new Option(d,d)); });
+yFrom.value=state.from; yTo.value=state.to;
+yFrom.onchange=()=>{ state.from=+yFrom.value; if(state.from>state.to){state.to=state.from;yTo.value=state.to;} clearPreset(); render(); };
+yTo.onchange=()=>{ state.to=+yTo.value; if(state.to<state.from){state.from=state.to;yFrom.value=state.from;} clearPreset(); render(); };
+const presetsEl=document.getElementById('presets');
+function clearPreset(){ [...presetsEl.children].forEach(c=>c.setAttribute('aria-pressed','false')); }
+presetsEl.onclick=e=>{ const b=e.target.closest('.chip'); if(!b)return;
+  clearPreset(); b.setAttribute('aria-pressed','true');
+  if(b.dataset.reset){ state.from=decades[0]; state.to=decades[decades.length-1]; }
+  else { state.from=Math.max(decades[0],+b.dataset.from); state.to=Math.min(decades[decades.length-1],+b.dataset.to); }
+  yFrom.value=state.from; yTo.value=state.to; render();
+};
+document.getElementById('tgHatch').onchange=e=>{ state.hatch=e.target.checked; render(); };
+document.getElementById('tgHide').onchange=e=>{ state.hide=e.target.checked; render(); };
+
+/* ---------- legend ---------- */
+function buildLegend(totals){
+  const el=document.getElementById('legend');
+  el.innerHTML = M.temas.map(t=>{
+    const c=temaColor(t), on=state.hiddenTemas.has(t);
+    return `<div class="lg" data-t="${t}" role="button" tabindex="0" aria-pressed="${on}">
+      <span class="sw" style="background:${c}"></span>
+      <span class="nm">${temaLabel(t)}</span>
+      <span class="ct" style="color:${c}">${fmt(totals[t]||0)}</span></div>`;
+  }).join('') +
+  `<div class="lg-key"><span class="sw-hatch"></span>arsiran = porsi low-confidence</div>`;
+  el.querySelectorAll('.lg').forEach(n=>{
+    const toggle=()=>{ const t=n.dataset.t;
+      state.hiddenTemas.has(t)?state.hiddenTemas.delete(t):state.hiddenTemas.add(t); render(); };
+    n.onclick=toggle;
+    n.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();} };
+  });
+}
+
+/* ============================ SANKEY BUILD ============================ */
+const SVG_NS="http://www.w3.org/2000/svg";
+const svg=document.getElementById('sankey');
+const tt=document.getElementById('tt');
+const W=1500, NW=13, ML=112, MR=162, TOP=22;
+const GAP={0:15,1:26,2:15};
+const SCALE=0.168;
+
+function activeTriples(){
+  return DATA.triples.filter(([dek,tema])=>{
+    if(state.hiddenTemas.has(tema)) return false;
+    if(dek===null) return true;               // NULL-inclusive (konsisten endpoint)
+    return dek>=state.from && dek<=state.to;
+  }).map(([dek,tema,port,n,nlow])=>{
+    const low = state.hide ? 0 : nlow;
+    const val = state.hide ? (n-nlow) : n;
+    return {dek,tema,port,val,low};
+  }).filter(t=>t.val>0);
+}
+
+function render(){
+  const trips=activeTriples();
+  svg.innerHTML='';
+  // totals per tema utk legend (dari data terfilter penuh tanpa hiddenTemas utk konsistensi angka? pakai terfilter)
+  const temaTotals={}; M.temas.forEach(t=>temaTotals[t]=0);
+  trips.forEach(t=>{ temaTotals[t.tema]=(temaTotals[t.tema]||0)+t.val; });
+  buildLegend(temaTotals);
+
+  if(!trips.length){ drawEmpty(); return; }
+
+  // ----- nodes per kolom -----
+  const decLabel = d => d===null ? NO_YEAR : String(d);
+  const colSum={0:0,1:0,2:0};
+  const agg=(keyfn,col)=>{ const m=new Map();
+    trips.forEach(t=>{ const k=keyfn(t); const o=m.get(k)||{name:k,val:0,low:0}; o.val+=t.val; o.low+=t.low; m.set(k,o); });
+    const arr=[...m.values()]; arr.forEach(o=>colSum[col]+=o.val); return arr; };
+  let c0=agg(t=>decLabel(t.dek),0);
+  let c1=agg(t=>t.tema,1);
+  let c2=agg(t=>t.port,2);
+  // order
+  c0.sort((a,b)=>(a.name===NO_YEAR)-(b.name===NO_YEAR) || (+a.name)-(+b.name));
+  c1.sort((a,b)=>b.val-a.val);
+  c2.sort((a,b)=>(a.name==="Tidak diketahui")-(b.name==="Tidak diketahui") || b.val-a.val);
+
+  const colHeight=arr=>arr.reduce((s,o)=>s+o.val*SCALE,0);
+  const H0=colHeight(c0)+(c0.length-1)*GAP[0];
+  const H1=colHeight(c1)+(c1.length-1)*GAP[1];
+  const H2=colHeight(c2)+(c2.length-1)*GAP[2];
+  const H=Math.max(H0,H1,H2);
+  const svgH=Math.ceil(H+TOP*2);
+  svg.setAttribute('viewBox',`0 0 ${W} ${svgH}`);
+  svg.style.height=svgH+'px';
+
+  const innerW=W-ML-MR;
+  const X={0:ML, 1:ML+innerW/2-NW/2, 2:W-MR-NW};
+  const place=(arr,col)=>{ const hh=colHeight(arr)+(arr.length-1)*GAP[col];
+    let y=TOP+(H-hh)/2; const map=new Map();
+    arr.forEach((o,i)=>{ o.x=X[col]; o.y=y; o.h=Math.max(o.val*SCALE,1.4); o.col=col; o.order=i;
+      o.outOff=0; o.inOff=0; map.set(o.name,o); y+=o.h+GAP[col]; }); return map; };
+  const n0=place(c0,0), n1=place(c1,1), n2=place(c2,2);
+
+  // ----- links -----
+  const mk=(arr,keyStr,make)=>{ const m=new Map();
+    arr.forEach(t=>{ const k=keyStr(t); let o=m.get(k);
+      if(!o){ o=make(t); o.val=0; o.low=0; m.set(k,o); } o.val+=t.val; o.low+=t.low; });
+    return [...m.values()]; };
+  let L1=mk(trips,t=>t.dek+'|'+t.tema, t=>({s:decLabel(t.dek),tt:t.tema,tema:t.tema,kind:1}));
+  let L2=mk(trips,t=>t.tema+'|'+t.port, t=>({s:t.tema,tt:t.port,tema:t.tema,kind:2}));
+  // order to reduce crossings
+  L1.forEach(l=>{ l.sn=n0.get(l.s); l.tn=n1.get(l.tt); });
+  L2.forEach(l=>{ l.sn=n1.get(l.s); l.tn=n2.get(l.tt); });
+  L1.sort((a,b)=> a.sn.order-b.sn.order || a.tn.order-b.tn.order);
+  L2.sort((a,b)=> a.sn.order-b.sn.order || a.tn.order-b.tn.order);
+  // assign offsets: source-side ordered by target order; target-side by source order
+  const bySrcThenTgt=(a,b)=>a.tn.order-b.tn.order;
+  const byTgtThenSrc=(a,b)=>a.sn.order-b.sn.order;
+  // group per source for out offsets
+  function assignOut(links){ const g={}; links.forEach(l=>{(g[l.s+'|'+l.kind]=g[l.s+'|'+l.kind]||[]).push(l);});
+    Object.values(g).forEach(list=>{ list.sort(bySrcThenTgt); list.forEach(l=>{ l.sy=l.sn.y+l.sn.outOff; l.sn.outOff+=l.val*SCALE; }); }); }
+  function assignIn(links){ const g={}; links.forEach(l=>{(g[l.tt+'|'+l.kind]=g[l.tt+'|'+l.kind]||[]).push(l);});
+    Object.values(g).forEach(list=>{ list.sort(byTgtThenSrc); list.forEach(l=>{ l.ty=l.tn.y+l.tn.inOff; l.tn.inOff+=l.val*SCALE; }); }); }
+  // NOTE tema nodes: inOff from L1, outOff from L2 — reset outOff before L2 out-assign
+  assignOut(L1); assignIn(L1);
+  // reset tema outOff (was 0), assign L2
+  c1.forEach(o=>{o.outOff=0;});
+  assignOut(L2); assignIn(L2);
+
+  // ----- defs: hatch patterns per tema -----
+  const defs=el('defs');
+  M.temas.forEach(t=>{
+    const p=el('pattern',{id:'h-'+t,width:5,height:5,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'});
+    p.appendChild(el('rect',{width:5,height:5,fill:temaColor(t),'fill-opacity':0.16}));
+    p.appendChild(el('line',{x1:0,y1:0,x2:0,y2:5,stroke:temaColor(t),'stroke-width':2,'stroke-opacity':0.9}));
+    defs.appendChild(p);
+  });
+  svg.appendChild(defs);
+
+  // ----- draw links -----
+  const gLinks=el('g',{class:'links'}); svg.appendChild(gLinks);
+  const allLinks=[...L1,...L2];
+  allLinks.forEach((l,i)=>{
+    const col=temaColor(l.tema);
+    const t=l.val*SCALE, sx=l.sn.x+NW, tx=l.tn.x, mx=(sx+tx)/2;
+    const th=Math.max(t,1.4);
+    const path=el('path',{class:'link',d:ribbon(sx,l.sy,tx,l.ty,th,mx),
+      fill:col,'fill-opacity':css('--ribbon-op'),style:`animation-delay:${Math.min(i*4,300)}ms`});
+    path._info=l;
+    gLinks.appendChild(path);
+    // hatch band (low-conf portion)
+    if(state.hatch && l.low>0){
+      const lt=Math.max(l.low*SCALE,1);
+      const offTop=th-lt;
+      const hb=el('path',{class:'hatch-band',d:ribbon(sx,l.sy+offTop,tx,l.ty+offTop,lt,mx),
+        fill:`url(#h-${l.tema})`});
+      gLinks.appendChild(hb);
+    }
+    path.addEventListener('mousemove',ev=>showTT(ev,l));
+    path.addEventListener('mouseenter',()=>hot(path));
+    path.addEventListener('mouseleave',hideTT);
+    path.addEventListener('click',()=>{ hideTT(); openDrill(l); });
+  });
+
+  // ----- draw nodes -----
+  const gN=el('g'); svg.appendChild(gN);
+  const drawNodes=(arr,col)=>arr.forEach(o=>{
+    const g=el('g',{class:'node'});
+    const fill = col===1 ? temaColor(o.name) : css('--node');
+    g.appendChild(el('rect',{x:o.x,y:o.y,width:NW,height:o.h,rx:2,fill,'fill-opacity':col===1?0.95:0.8}));
+    if(col===0){
+      g.appendChild(text(o.x-8,o.y+o.h/2,o.name,'n-label',{'text-anchor':'end','dominant-baseline':'central'}));
+    } else if(col===2){
+      g.appendChild(text(o.x+NW+8,o.y+o.h/2,o.name,'n-label',{'text-anchor':'start','dominant-baseline':'central'}));
+      g.appendChild(text(o.x+NW+8,o.y+o.h/2+13,fmt(o.val),'n-val',{'text-anchor':'start','dominant-baseline':'central'}));
+    } else {
+      g.appendChild(text(o.x+NW/2,o.y+o.h/2-3,temaLabel(o.name),'n-label tema',{'text-anchor':'middle','dominant-baseline':'central'}));
+      g.appendChild(text(o.x+NW/2,o.y+o.h/2+12,fmt(o.val),'n-val',{'text-anchor':'middle','dominant-baseline':'central'}));
+    }
+    // node hover highlights its links; click on tema/port opens drill
+    g.style.cursor = col===0 ? 'default':'pointer';
+    g.addEventListener('mouseenter',()=>{ gLinks.classList.add('dimmed');
+      allLinks.forEach((l,idx)=>{ const p=gLinks.querySelectorAll('.link')[idx];
+        if(l.s===o.name||l.tt===o.name) p.classList.add('hot'); }); });
+    g.addEventListener('mouseleave',clearHot);
+    if(col===1) g.addEventListener('click',()=>openDrill({kind:1,tema:o.name,s:null,tt:null,node:'tema'}));
+    if(col===2) g.addEventListener('click',()=>openDrill({kind:2,port:o.name,tt:o.name,node:'port'}));
+    gN.appendChild(g);
+  });
+  drawNodes(c0,0); drawNodes(c2,2); drawNodes(c1,1);
+}
+
+/* ---------- svg helpers ---------- */
+function el(tag,attrs={}){ const n=document.createElementNS(SVG_NS,tag);
+  for(const k in attrs) n.setAttribute(k,attrs[k]); return n; }
+function text(x,y,str,cls,attrs={}){ const t=el('text',{x,y,class:cls,...attrs}); t.textContent=str; return t; }
+function ribbon(sx,sy,tx,ty,th,mx){
+  return `M${sx},${sy} C${mx},${sy} ${mx},${ty} ${tx},${ty} L${tx},${ty+th} C${mx},${ty+th} ${mx},${sy+th} ${sx},${sy+th} Z`;
+}
+function drawEmpty(){ svg.setAttribute('viewBox',`0 0 ${W} 200`); svg.style.height='200px';
+  svg.appendChild(text(W/2,100,'Tidak ada baris pada rentang/filter ini.','empty-msg',{'text-anchor':'middle'})); }
+
+/* ---------- interaction ---------- */
+const gLinksSel=()=>svg.querySelector('.links');
+function hot(path){ const g=gLinksSel(); g.classList.add('dimmed'); path.classList.add('hot');
+  path.setAttribute('fill-opacity',css('--ribbon-op-hot')); }
+function clearHot(){ const g=gLinksSel(); if(!g)return; g.classList.remove('dimmed');
+  g.querySelectorAll('.link').forEach(p=>{p.classList.remove('hot');p.setAttribute('fill-opacity',css('--ribbon-op'));}); }
+gLinks_leave();
+function gLinks_leave(){ svg.addEventListener('mouseleave',()=>{clearHot();hideTT();}); }
+function showTT(ev,l){
+  const arrow = l.kind===1 ? `${l.s} → ${temaLabel(l.tema)}` : `${temaLabel(l.tema)} → ${l.tt}`;
+  const lowtxt = l.low>0 ? ` · <span class="tt-m">${fmt(l.low)} low-conf</span>` : '';
+  tt.innerHTML=`<div class="tt-t">${arrow}</div><div class="tt-m">${fmt(l.val)} kontribusi${lowtxt}</div>`;
+  tt.style.opacity='1';
+  const pad=14; let x=ev.clientX+pad, y=ev.clientY+pad;
+  if(x+tt.offsetWidth>innerWidth) x=ev.clientX-tt.offsetWidth-pad;
+  if(y+tt.offsetHeight>innerHeight) y=ev.clientY-tt.offsetHeight-pad;
+  tt.style.left=x+'px'; tt.style.top=y+'px';
+}
+function hideTT(){ tt.style.opacity='0'; }
+
+/* ============================ DRILL PANEL ============================ */
+const panel=document.getElementById('panel');
+const auditCtx=document.getElementById('auditCtx');
+const auditSub=document.getElementById('auditSub');
+function portTokens(raw){ return (raw||'').split(';').map(s=>s.trim()).filter(Boolean); }
+
+async function openDrill(l){
+  // rakit filter dari elemen yang diklik + rentang tahun aktif; ambil teks penuh dari /rows
+  let tema=null, pelabuhan=null, yf=state.from, yt=state.to, ctxParts=[], color=css('--accent');
+  if(l.node==='port'){
+    pelabuhan=l.port; ctxParts=[`Pelabuhan ${l.port}`];
+  } else {
+    tema=l.tema; color=temaColor(tema);
+    if(l.kind===2 && l.tt){ pelabuhan=l.tt; ctxParts=[temaLabel(tema),'→',l.tt]; }
+    else if(l.kind===1 && l.s){                       // dekade -> tema: batasi ke dekade itu
+      if(l.s!==NO_YEAR){ yf=+l.s; yt=+l.s+9; }
+      ctxParts=[l.s,'→',temaLabel(tema)];
+    } else ctxParts=[temaLabel(tema)];
+  }
+  auditCtx.textContent=ctxParts.join(' ');
+  document.documentElement.style.setProperty('--drill-c',color);
+  auditSub.textContent='Memuat baris…';
+  panel.innerHTML='';
+
+  const qs=new URLSearchParams({limit:'500'});
+  if(tema) qs.set('tema',tema);
+  if(pelabuhan) qs.set('pelabuhan',pelabuhan);
+  if(yf!=null) qs.set('year_from',yf);
+  if(yt!=null) qs.set('year_to',yt);
+
+  let rows=[];
+  try{ rows=await fetch(API+'/rows?'+qs).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }); }
+  catch(e){ panel.innerHTML=`<div class="empty-panel">Gagal memuat baris (<b>${esc(String(e))}</b>).</div>`; return; }
+
+  auditSub.innerHTML = tema
+    ? `Baris ber-tema dominan <b>${temaLabel(tema)}</b>${pelabuhan?` yang menyebut <b>${esc(pelabuhan)}</b>`:''}. Teks lengkap langsung dari <span class="mono">/api/research/sankey-tema/rows</span>.`
+    : `Semua tema yang menyebut <b>${esc(pelabuhan)}</b>.`;
+
+  if(!rows.length){ panel.innerHTML=`<div class="empty-panel">Tidak ada baris untuk seleksi ini.</div>`; return; }
+  auditCtx.textContent=ctxParts.join(' ')+`  ·  ${rows.length} baris`;
+  panel.innerHTML=`<div class="rows">`+rows.map(r=>card(r,pelabuhan)).join('')+`</div>`;
+  document.getElementById('audit').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'nearest'});
+}
+
+function card(r, selPort){
+  const asal = r.corpus_asal==='globalise' ? 'g' : 'd';
+  const asalName = asal==='g' ? 'GLOBALISE' : 'Dagh-register';
+  const c = temaColor(r.tema_dominan);
+  const ports = portTokens(r.pelabuhan_disebut).map(p=>`<span class="pt ${p===selPort?'on':''}">${esc(p)}</span>`).join('');
+  const yr = r.tahun!=null ? r.tahun : 'tak bertahun';
+  const skor = r.skor_dominan!=null ? r.skor_dominan : 0;
+  const pct = Math.round(skor*100);
+  const low = r.low_confidence ? `<span class="lowchip">low-conf</span>` : '';
+  const ref = r.inventaris_ref || r.source || '—';
+  const asli = r.text_asli ? `<details class="asli"><summary>teks asli (Belanda / OCR arsip)</summary><p>${esc(r.text_asli)}</p></details>` : '';
+  return `<article class="card" style="--tema:${c}">
+    <div class="card-top">
+      <span class="badge ${asal}">${asalName}</span>
+      <span class="cid">#${r.corpus_id}</span>
+      <span class="yr">${yr}</span>
+      <span class="ports">${ports}</span>
+    </div>
+    <div class="score">
+      <span class="mono" style="color:${c};font-weight:600">${temaLabel(r.tema_dominan)}</span>
+      <span class="bar"><i style="width:${pct}%"></i></span>
+      <span class="v">skor ${skor.toFixed(2)}</span>${low}
+    </div>
+    <p class="qt">“${esc(r.text||'')}”</p>
+    <div class="meta-line"><span class="ref">${esc(ref)}</span></div>
+    ${asli}
+  </article>`;
+}
+function esc(s){ return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+/* ---------- go ---------- */
+render();
+</script>
+</body>
+</html>

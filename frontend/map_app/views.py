@@ -11,6 +11,14 @@ def index(request):
     return render(request, "map_app/index.html")
 
 
+def riset_tema(request):
+    """SNK-5 — Sankey tema-korpus (thesis-only, /riset/tema).
+    Halaman statis: diagram & drill-down ditarik client-side dari /api/research
+    (nginx proxy). noindex + tidak di navbar publik (SEC-SNK-2). Identitas visual
+    salido.my.id (EB Garamond + Space Grotesk)."""
+    return render(request, "map_app/riset_tema.html")
+
+
 def port_detail(request, slug):
     """Detail page for a single VOC port/fort."""
     # Convert slug to title-cased name (e.g. "pulau-cingkuak" → "Pulau Cingkuak")

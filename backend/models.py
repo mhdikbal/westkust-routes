@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text, Index
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text, Index, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import INT4RANGE, JSONB, ARRAY
 from geoalchemy2 import Geometry
@@ -179,6 +179,53 @@ class PortArrivalTally(Base):
 
     def __repr__(self):
         return f"<PortArrivalTally(origin='{self.origin_port_raw}', ships={self.ship_count})>"
+
+
+class ResearchThemeRow(Base):
+    """Satu baris hasil klasifikasi zero-shot tema-korpus (GLOBALISE + Dagh-register),
+    sumber Sankey tema-korpus (namespace `research`, thesis-only — BUKAN peta publik).
+    Muat dari data/research/korpus_tema_slim.csv via seed_research_tema.py.
+    Lihat docs/prd-sankey-tema-korpus.md + docs/sprint-sankey-tema-korpus.md (SNK-1).
+
+    Teks yang diklasifikasi model = kolom `text` (Indonesia). `text_asli` daghregister
+    berisi cuplikan Belanda; utk GLOBALISE berisi POINTER inventaris (OCR penuh tak
+    disimpan — lihat DATA-SNK-1). Idempotent by `corpus_id`."""
+    __tablename__ = "research_theme_rows"
+
+    id = Column(Integer, primary_key=True, index=True)
+    corpus_id = Column(Integer, unique=True, nullable=False, index=True)  # natural key dari pipeline
+    corpus_asal = Column(String(20), nullable=False, index=True)          # "globalise" | "daghregister"
+    source = Column(String(50), nullable=True)                            # "globalise_obp" | "daghregister_batavia"
+    volume = Column(String(200), nullable=True)
+    inventaris_ref = Column(String(100), nullable=True)                   # "NL-HaNA_1.04.02_<n>" (globalise)
+
+    tanggal_perkiraan = Column(Text, nullable=True)                      # free-form; globalise bisa rentetan tanggal panjang (>300 char)
+    tahun = Column(Integer, nullable=True, index=True)                    # NULL = tak bertahun
+    dekade = Column(Integer, nullable=True, index=True)                   # NULL -> bucket "Tak bertahun" di endpoint
+
+    pelabuhan_disebut = Column(String(300), nullable=False)               # raw multi-port "; "-joined; explode di endpoint
+    tema_dominan = Column(String(30), nullable=False, index=True)
+    skor_dominan = Column(Float, nullable=True)
+    low_confidence = Column(Boolean, nullable=False, server_default="false", index=True)
+
+    # 7 skor tema independen (multi_label) — untuk audit/drill-down
+    skor_pdr_drainase  = Column(Float, nullable=True)
+    skor_etr_retensi   = Column(Float, nullable=True)
+    skor_hak_adat      = Column(Float, nullable=True)
+    skor_pelayaran     = Column(Float, nullable=True)
+    skor_sengketa      = Column(Float, nullable=True)
+    skor_syahbandar    = Column(Float, nullable=True)
+    skor_tidak_relevan = Column(Float, nullable=True)
+
+    text = Column(Text, nullable=False)        # Indonesia — yang benar-benar diklasifikasi model
+    text_asli = Column(Text, nullable=True)    # cuplikan Belanda (DR) / pointer inventaris (globalise)
+
+    __table_args__ = (
+        Index("ix_research_theme_dekade_tema", "dekade", "tema_dominan"),
+    )
+
+    def __repr__(self):
+        return f"<ResearchThemeRow(corpus_id={self.corpus_id}, tema='{self.tema_dominan}', dekade={self.dekade})>"
 
 
 class CommodityGlossary(Base):

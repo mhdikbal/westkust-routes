@@ -803,3 +803,30 @@ class SeaLaneRoutingTest(SimpleTestCase):
         func_body = ATLAS_JS[idx: idx + 2200]
         self.assertIn("SEA_WAYPOINTS", func_body)
         self.assertIn("routeKey", func_body)
+
+
+# ─── SNK-5: halaman Sankey tema-korpus (/riset/tema, thesis-only) ─────────────
+class RisetTemaViewTest(SimpleTestCase):
+    """Halaman /riset/tema render statis; data ditarik client-side dari /api/research."""
+
+    def test_returns_200(self):
+        resp = self.client.get(reverse("riset_tema"))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_noindex_present(self):
+        """Thesis-only: WAJIB noindex (SEC-SNK-2) — tidak boleh ter-index Google."""
+        html = self.client.get(reverse("riset_tema")).content.decode()
+        self.assertIn("noindex", html)
+        self.assertIn('name="robots"', html)
+
+    def test_uses_research_endpoint_not_hardcoded_data(self):
+        """Diagram ditarik dari endpoint triples; drill dari /rows (bukan data embed)."""
+        html = self.client.get(reverse("riset_tema")).content.decode()
+        self.assertIn("/api/research/sankey-tema", html)
+        self.assertIn("/triples", html)
+
+    def test_uses_salido_fonts(self):
+        """Identitas visual salido.my.id: EB Garamond + Space Grotesk."""
+        html = self.client.get(reverse("riset_tema")).content.decode()
+        self.assertIn("EB Garamond", html)
+        self.assertIn("Space Grotesk", html)

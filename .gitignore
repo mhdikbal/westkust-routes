@@ -59,3 +59,13 @@ docs/thesis/
 # Claude Code — state lokal per-mesin, bukan konfigurasi proyek yg dibagikan
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+
+# SEC-SNK-1: cegah raw text_asli 552MB / artefak besar masuk git
+# Riset korpus tema — raw dump JANGAN pernah commit (ratusan MB, ada text_asli mentah).
+# Slim CSV reproducible (~3.5M) TETAP di-commit; seed research bergantung padanya.
+data/research/raw/
+data/research/*_raw.csv
+data/**/*.raw
+*.raw
+*text_asli*
+!data/research/korpus_tema_slim.csv
