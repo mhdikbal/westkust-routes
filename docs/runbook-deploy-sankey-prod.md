@@ -20,12 +20,9 @@
 
 ---
 
-## 1. [LOKAL/GitHub — saya bisa] Merge & push
-```bash
-# opsi A (review): buka PR feat/sankey-tema-korpus -> main, merge di GitHub
-# opsi B (langsung):
-git checkout main && git merge --no-ff feat/sankey-tema-korpus && git push origin main
-```
+## 1. ✅ [SELESAI] Merge & push
+`main` sudah berisi semua (Sankey + cache Redis + 404 + runbook), commit `c96b00c`,
+pushed ke GitHub. **VPS tinggal `git pull origin main`.**
 
 ## 2. [VPS — butuh SSH, Anda jalankan] Deploy code
 ```bash
@@ -63,10 +60,14 @@ curl -s -o /dev/null -w "%{http_code}\n" https://salido.my.id/atlas/riset/tema/ 
 ```
 Lalu browser: `https://salido.my.id/atlas/riset/tema` → Sankey render, drill-down klik → teks. Cek `docker compose logs backend --tail 30` bersih.
 
-## 6. Redis / caching (opsional — redis SUDAH ada)
-Redis prod aktif tapi **endpoint research belum pakai cache** (data kecil, ~188ms — tak wajib). Bila mau konsisten ADR-001 (read-heavy cache-aside):
-- Tambah dekorator cache di `routers/research.py` (pola sama `voyages.py` yg sudah pakai cache), key by `year_from/year_to`, invalidate saat re-seed.
-- **Saya bisa siapkan** patch ini sebelum deploy bila Anda mau.
+## 6. ✅ [SELESAI] Redis / caching
+Redis prod aktif (`voc_redis`). **Cache-aside sudah ditambahkan** di ketiga endpoint
+research (`/sankey-tema`, `/triples`, `/rows`) — commit `53e99cc`, ikut di `main`.
+- Header `X-Cache: HIT/MISS`; TTL 24 jam; key by param (`year_from/year_to/tema/...`).
+- Degradasi anggun: Redis mati → cache miss → tetap dilayani dari Postgres.
+- Invalidasi otomatis saat `seed_research_tema.py` (prefix `voc:research_`).
+- Terverifikasi lokal: MISS→HIT ketiga endpoint, invalidate saat re-seed (3 key).
+- **Tak ada langkah tambahan di prod** — ikut ter-deploy saat rebuild backend (step 2).
 
 ## 7. Rollback
 ```bash
