@@ -48,6 +48,15 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .eyebrow{font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
   color:var(--muted-dark);font-weight:600}
 a{color:inherit}
+.topnav{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.topnav .home{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
+  font-size:.9rem;font-weight:600;color:var(--ink);text-decoration:none;
+  padding:8px 14px 8px 11px;border:1px solid var(--line);border-radius:999px;transition:.16s}
+.topnav .home:hover{border-color:var(--ink);background:var(--ink);color:var(--bg,#fff)}
+.topnav .home:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.topnav .home svg{width:16px;height:16px}
+.topnav .brand{font-family:var(--serif);font-size:1.1rem;font-weight:600;letter-spacing:.02em;color:var(--muted-dark)}
 
 /* ============================ HEADER ============================ */
 header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:26px}
@@ -206,8 +215,14 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
 <body>
 
 <div class="wrap">
+  <nav class="topnav">
+    <a class="home" href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 19l-7-7 7-7"/><path d="M3 12h18"/></svg>
+      Peta VOC
+    </a>
+    <span class="brand">Salido</span>
+  </nav>
   <header>
-    <div class="eyebrow">Exhibit · Bab 3 — Cross-check komputasional</div>
     <h1 class="title">Tema Korpus Arsip VOC di <em>Pesisir Barat Sumatra</em></h1>
     <p class="lede">Klasifikasi zero-shot atas dua korpus arsip abad ke-17–19, dibaca sebagai aliran:
       kapan sebuah tema muncul, tentang apa, dan di pelabuhan mana ia terkonsentrasi.</p>
