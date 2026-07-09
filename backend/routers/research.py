@@ -6,6 +6,7 @@ Sumber: tabel research_theme_rows (hasil klasifikasi zero-shot GLOBALISE +
 Dagh-register, dimuat via seed_research_tema.py). Lihat docs/prd-sankey-tema-korpus.md.
 """
 from collections import defaultdict
+from itertools import combinations
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, Query, Response
@@ -258,6 +259,109 @@ async def get_sankey_tema_triples(response: Response, db: AsyncSession = Depends
         "contrib": sum(v[0] for v in trip.values()),
     }
     payload = SankeyTriplesResponse(meta=meta, triples=triples).model_dump()
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
+
+
+# ─── Network Graph Fase 1 (MVP): graf co-occurrence pelabuhan ────────────────
+# docs/prd-network-graph-aktor-tema.md §4 Fase 1. 0 GPU/ML: agregasi SQL murni
+# dari kolom pelabuhan_disebut (SUDAH ada) + warna edge dari tema_dominan. Layer
+# aktor eksternal (VOC/Aceh/China/EIC) via keyword-tag = increment TERPISAH di
+# belakang gerbang spot-check 25 baris ([[feedback_verify_entity_extraction_before_trusting]]).
+
+class NetworkNode(BaseModel):
+    id: str
+    label: str           # display name; utk pelabuhan = id (beda saat Fase 2 aktor)
+    weight: int          # jumlah baris yang menyebut pelabuhan ini
+
+
+class NetworkEdge(BaseModel):
+    source: str          # leksikografis < target (edge tak-berarah dinormalisasi)
+    target: str
+    weight: int          # jumlah baris co-occurrence pasangan ini
+    tema: str            # tema_dominan modal antar baris pembentuk edge
+    tema_breakdown: dict  # {tema: n} — komposisi bidang relasi (drill/hover)
+
+
+class NetworkResponse(BaseModel):
+    nodes: List[NetworkNode]
+    edges: List[NetworkEdge]
+    meta: dict
+
+
+@router.get("/network-pelabuhan", response_model=NetworkResponse)
+async def get_network_pelabuhan(
+    response: Response,
+    year_from: Optional[int] = None,
+    year_to: Optional[int] = None,
+    tema: Optional[str] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """Graf pelabuhan-pelabuhan (Fase 1 MVP). Node=pelabuhan (bobot=jumlah baris
+    yang menyebutnya), edge=dua pelabuhan disebut di baris yang sama (bobot=jumlah
+    baris co-occurrence), tema edge=tema_dominan modal antar baris pembentuk.
+    'Tidak diketahui' di-exclude (bukan entitas). Filter tahun NULL-inclusive
+    (konsisten SNK-2). Filter tema=exact-match: hanya baris tema itu membentuk graf
+    (categorical, bukan NULL-inclusive) — dilakukan in-Python agar unit-testable via
+    mock, biaya diabaikan pada ~1k baris. Cache-aside Redis (degradasi anggun)."""
+    cache_key = make_key("research_network_pelabuhan",
+                         {"year_from": year_from, "year_to": year_to, "tema": tema})
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
+    filters = []
+    if year_from is not None:
+        filters.append(_year_gte(year_from))
+    if year_to is not None:
+        filters.append(_year_lte(year_to))
+
+    query = select(
+        ResearchThemeRow.pelabuhan_disebut,
+        ResearchThemeRow.tema_dominan,
+    )
+    if filters:
+        query = query.where(*filters)
+    rows = (await db.execute(query)).all()
+
+    node_weight = defaultdict(int)                       # pelabuhan -> jumlah sebut
+    edge_tema = defaultdict(lambda: defaultdict(int))    # (a,b) -> {tema: n}
+    n_rows = 0                                            # baris yang lolos filter tema
+    n_multiport = 0
+    for row in rows:
+        if tema is not None and row.tema_dominan != tema:
+            continue
+        n_rows += 1
+        # dedupe + buang UNKNOWN sebelum pairing; sort utk normalisasi arah edge
+        ports = sorted({p for p in _split_ports(row.pelabuhan_disebut) if p != UNKNOWN_PORT})
+        for p in ports:
+            node_weight[p] += 1
+        if len(ports) >= 2:
+            n_multiport += 1
+            for a, b in combinations(ports, 2):
+                edge_tema[(a, b)][row.tema_dominan] += 1
+
+    nodes = [NetworkNode(id=p, label=p, weight=w) for p, w in sorted(node_weight.items())]
+
+    edges = []
+    for (a, b) in sorted(edge_tema.keys()):
+        breakdown = dict(edge_tema[(a, b)])
+        # tema modal: bobot tertinggi; tie-break alfabetis (deterministik/cache-friendly)
+        modal = max(sorted(breakdown), key=lambda t: breakdown[t])
+        edges.append(NetworkEdge(
+            source=a, target=b, weight=sum(breakdown.values()),
+            tema=modal, tema_breakdown=breakdown,
+        ))
+
+    meta = {
+        "n_rows": n_rows,
+        "n_nodes": len(nodes),
+        "n_edges": len(edges),
+        "n_multiport": n_multiport,
+    }
+    payload = NetworkResponse(nodes=nodes, edges=edges, meta=meta).model_dump()
     await cache_set(cache_key, payload)
     response.headers["X-Cache"] = "MISS"
     return payload

@@ -830,3 +830,31 @@ class RisetTemaViewTest(SimpleTestCase):
         html = self.client.get(reverse("riset_tema")).content.decode()
         self.assertIn("EB Garamond", html)
         self.assertIn("Space Grotesk", html)
+
+
+# ─── Network Graph Fase 1: halaman jaringan pelabuhan (/riset/jaringan) ────────
+class RisetJaringanViewTest(SimpleTestCase):
+    """Halaman /riset/jaringan render statis; graf ditarik client-side dari
+    /api/research/network-pelabuhan, drill dari /sankey-tema/rows. thesis-only."""
+
+    def test_returns_200(self):
+        resp = self.client.get(reverse("riset_jaringan"))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_noindex_present(self):
+        """Thesis-only: WAJIB noindex (konsisten /riset/tema) — tak boleh ter-index."""
+        html = self.client.get(reverse("riset_jaringan")).content.decode()
+        self.assertIn("noindex", html)
+        self.assertIn('name="robots"', html)
+
+    def test_uses_network_endpoint_not_hardcoded_data(self):
+        """Graf ditarik dari endpoint network-pelabuhan; drill dari /rows (bukan embed)."""
+        html = self.client.get(reverse("riset_jaringan")).content.decode()
+        self.assertIn("/api/research/network-pelabuhan", html)
+        self.assertIn("/sankey-tema/rows", html)
+
+    def test_uses_salido_fonts(self):
+        """Identitas visual salido.my.id: EB Garamond + Space Grotesk."""
+        html = self.client.get(reverse("riset_jaringan")).content.decode()
+        self.assertIn("EB Garamond", html)
+        self.assertIn("Space Grotesk", html)

@@ -19,6 +19,14 @@ def riset_tema(request):
     return render(request, "map_app/riset_tema.html")
 
 
+def riset_jaringan(request):
+    """Network Graph Fase 1 — graf co-occurrence pelabuhan (thesis-only, /riset/jaringan).
+    Halaman statis: graf force-directed & drill-down ditarik client-side dari
+    /api/research/network-pelabuhan + /sankey-tema/rows (nginx proxy). noindex +
+    tidak di navbar publik (konsisten /riset/tema). Identitas visual salido.my.id."""
+    return render(request, "map_app/riset_jaringan.html")
+
+
 def port_detail(request, slug):
     """Detail page for a single VOC port/fort."""
     # Convert slug to title-cased name (e.g. "pulau-cingkuak" → "Pulau Cingkuak")
