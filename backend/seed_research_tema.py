@@ -127,6 +127,15 @@ def main():
     print(f"low_confidence: {low_conf}")
     print("=" * 60)
 
+    # Invalidasi cache endpoint research (ADR-001) — data berubah, cache lama basi.
+    # Prefix "voc:research_" mencakup research_sankey / research_triples / research_rows.
+    try:
+        from cache import invalidate_prefix_sync
+        flushed = invalidate_prefix_sync("voc:research_")
+        print(f"cache research di-invalidate: {flushed} key")
+    except Exception as e:
+        print(f"(cache invalidate dilewati: {e})")
+
 
 if __name__ == "__main__":
     main()

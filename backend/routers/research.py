@@ -8,7 +8,7 @@ Dagh-register, dimuat via seed_research_tema.py). Lihat docs/prd-sankey-tema-kor
 from collections import defaultdict
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Response
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,6 +17,8 @@ from database import get_db
 from models import ResearchThemeRow
 # reuse skema Sankey yang sudah ada (PRD: "format sama dgn SankeyResponse")
 from routers.voyages import SankeyResponse, SankeyNode, SankeyLink
+# cache-aside Redis (ADR-001) — degradasi anggun bila Redis mati (cache_get -> None)
+from cache import make_key, cache_get, cache_set
 
 router = APIRouter()
 
@@ -42,13 +44,20 @@ def _split_ports(raw: Optional[str]):
 
 @router.get("/sankey-tema", response_model=SankeyResponse)
 async def get_sankey_tema(
+    response: Response,
     year_from: Optional[int] = None,
     year_to: Optional[int] = None,
     db: AsyncSession = Depends(get_db),
 ):
     """Sankey 3-tingkat dekade -> tema -> pelabuhan. Link weight = jumlah kontribusi
     baris (baris multi-pelabuhan menyumbang ke tiap pelabuhannya — FIX #2). Aliran
-    konservatif: total dekade->tema == total tema->pelabuhan."""
+    konservatif: total dekade->tema == total tema->pelabuhan. Cache-aside Redis."""
+    cache_key = make_key("research_sankey", {"year_from": year_from, "year_to": year_to})
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
     filters = []
     if year_from is not None:
         filters.append(_year_gte(year_from))
@@ -74,7 +83,10 @@ async def get_sankey_tema(
             triple[(dek, tema, port)] += 1
 
     if not triple:
-        return SankeyResponse(nodes=[], links=[])
+        payload = {"nodes": [], "links": []}
+        await cache_set(cache_key, payload)
+        response.headers["X-Cache"] = "MISS"
+        return payload
 
     # dua tingkat link, diturunkan dari triple yg sama -> konservasi terjaga
     d2t = defaultdict(int)  # (dekade, tema)
@@ -105,7 +117,10 @@ async def get_sankey_tema(
         links.append(SankeyLink(source=node_index[tema], target=node_index[port], value=c))
 
     nodes = [SankeyNode(name=n) for n in ordered]
-    return SankeyResponse(nodes=nodes, links=links)
+    payload = SankeyResponse(nodes=nodes, links=links).model_dump()
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
 
 
 # ─── SNK-3: drill-down audit ke baris teks asli ──────────────────────────────
@@ -141,6 +156,7 @@ class ResearchRowOut(BaseModel):
 
 @router.get("/sankey-tema/rows", response_model=List[ResearchRowOut])
 async def get_sankey_tema_rows(
+    response: Response,
     tema: Optional[str] = None,
     pelabuhan: Optional[str] = None,
     year_from: Optional[int] = None,
@@ -151,7 +167,16 @@ async def get_sankey_tema_rows(
 ):
     """Baris penyusun satu alur Sankey (klik link -> daftar teks asli). Filter
     pelabuhan mencocokkan KEANGGOTAAN token pada baris multi-port (FIX #2), bukan
-    substring. Filter tahun NULL-inclusive (konsisten SNK-2)."""
+    substring. Filter tahun NULL-inclusive (konsisten SNK-2). Cache-aside Redis."""
+    cache_key = make_key("research_rows", {
+        "tema": tema, "pelabuhan": pelabuhan, "year_from": year_from,
+        "year_to": year_to, "skip": skip, "limit": limit,
+    })
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
     filters = []
     if tema is not None:
         filters.append(ResearchThemeRow.tema_dominan == tema)
@@ -172,7 +197,11 @@ async def get_sankey_tema_rows(
         rows = [r for r in rows if pelabuhan in _split_ports(r.pelabuhan_disebut)]
 
     # paginasi setelah filter port agar hitungan konsisten
-    return rows[skip: skip + limit]
+    page = rows[skip: skip + limit]
+    payload = [ResearchRowOut.model_validate(r).model_dump() for r in page]
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
 
 
 # ─── SNK-5: triples ringkas utk render Sankey + filter tahun client-side ──────
@@ -186,7 +215,13 @@ class SankeyTriplesResponse(BaseModel):
 
 
 @router.get("/sankey-tema/triples", response_model=SankeyTriplesResponse)
-async def get_sankey_tema_triples(db: AsyncSession = Depends(get_db)):
+async def get_sankey_tema_triples(response: Response, db: AsyncSession = Depends(get_db)):
+    cache_key = make_key("research_triples", None)
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
     rows = (await db.execute(select(
         ResearchThemeRow.dekade,
         ResearchThemeRow.tema_dominan,
@@ -222,4 +257,7 @@ async def get_sankey_tema_triples(db: AsyncSession = Depends(get_db)):
         "n_ports": len(ports),
         "contrib": sum(v[0] for v in trip.values()),
     }
-    return SankeyTriplesResponse(meta=meta, triples=triples)
+    payload = SankeyTriplesResponse(meta=meta, triples=triples).model_dump()
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
