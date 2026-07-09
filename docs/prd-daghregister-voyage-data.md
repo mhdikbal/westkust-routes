@@ -267,3 +267,19 @@ Sebelum commit+push+deploy, seluruh diff sesi ini (16 file tracked + file baru) 
 **Tidak diblokir commit** (cleanup/dupe, dicatat utk nanti): `NAME_MAPPING` tersalin sebagian & divergen di `promote_port_tallies.py`; boilerplate INSERT+idempotency identik di 6 script `docs/thesis/dr/promote_*.py`; helper timestamp `.replace(microsecond=0)` tertulis 3x; script promosi tidak memanggil `cache.invalidate_prefix_sync()` sendiri (masih manual via `redis-cli FLUSHALL` tiap kali).
 
 **Regresi penuh pasca-fix**: backend 175 pass, Django 93 pass, curl smoke (homepage/voyages/glossary/port_detail/forts-compare/fort-voyages) semua 200, `console errors: none` (Playwright), data intact (4.329 voyage, 12 fort tidak berubah — restart bukan reseed krn tabel tidak kosong).
+
+---
+
+## 9. Deploy Production (2026-07-08)
+
+Push ke `main` (`73f2b5f`) → deploy ke `salido.my.id` (VPS, lihat memory `project_server_salido`). **Insiden singkat**: rebuild container backend sempat 500 (kode baru butuh kolom yg belum ada) — root cause sama persis dgn kejadian lokal migration 005 (`seed_data.py`'s `create_all()` mendahului alembic). Fix: `alembic upgrade 004` (isolasi), `alembic stamp 005` (tabel sudah match via create_all), `alembic upgrade head` (jalankan 006). Downtime ~5 menit.
+
+**Replikasi data** (bukan cuma kode+skema — `staging_extractions` production kosong sebelum ini, artinya SELURUH data Dagh-register sesi ini cuma ada di dev lokal): dibangun bundle JSON **name-keyed** (fort dirujuk via nama, bukan ID — ID production berbeda dari lokal krn histori insert/delete berbeda) berisi forts, glossary, staging_extractions, tallies, voyage Dagh-register+cargo, dan BGB gap-fill (Ouwerkerk). Diimpor via script idempotent (cek existing sebelum insert per tabel).
+
+**2 gap ditemukan saat verifikasi paritas baris-demi-baris** (bukan cuma cek total count — keduanya lolos krn idempotency-check terlalu longgar, cuma bandingkan produk+qty tanpa spesifikasi/catatan pembeda):
+- cargo_items voyage "Wapen van der Goes" (entri 61): 2 baris "mineral" beda `catatan` (generik vs "dari Pulau Cingkuak") — baris kedua ke-skip krn dianggap duplikat baris pertama.
+- cargo_items Ouwerkerk (BGB gap-fill 7324): 2 baris "lakenrassen, 1, pees" beda `spesifikasi`/nilai — sama, baris kedua ke-skip.
+
+Keduanya di-insert manual setelah ditemukan. **Verifikasi paritas akhir (lokal vs production, sama persis)**: voyages 4.329 (bgb 4.203 + dagh 126), forts 12, cargo_items 53.028, tallies 98, staging 119, glossary 207 (6 ber-citation). Live: `salido.my.id/atlas` dropdown Dagh-register → 13 rute termasuk jaringan pesisir penuh (Padang↔Tiku↔Salido↔Pariaman↔Inderapura), glosarium tooltip aktif.
+
+**Pelajaran**: idempotency-check utk baris yg bisa legitimately duplikat di kolom utama (produk sama, qty sama) HARUS ikutkan kolom pembeda (catatan/spesifikasi/nilai) di klausa WHERE — bukan cuma kolom "identitas" yg kelihatan unik. Verifikasi migrasi data sebaiknya selalu row-count PER TABEL/PER-SUMBER, bukan cuma total gabungan (total yg cocok bisa menyembunyikan 2 kesalahan yg saling meniadakan secara kebetulan — untungnya di sini tidak terjadi, tapi count granular tetap yg mengungkap gap-nya).
