@@ -69,3 +69,6 @@ data/**/*.raw
 *.raw
 *text_asli*
 !data/research/korpus_tema_slim.csv
+
+# Sumber gambar 404 (3MB) — pakai jpg teroptimasi di static
+Designer404.png

@@ -1,0 +1,75 @@
+{% load static %}<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>404 — Tersesat dari peta · Salido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+:root{--cream:#F6F1E7;--gold:#E3C15C;--ui:"Space Grotesk",system-ui,sans-serif;--serif:"EB Garamond",Georgia,serif}
+*{box-sizing:border-box}html,body{margin:0}
+.hero{position:relative;min-height:100dvh;width:100%;overflow:hidden;display:flex;align-items:center}
+.hero .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:72% center}
+.scrim{position:absolute;inset:0;background:
+  linear-gradient(97deg,rgba(24,16,9,.86) 0%,rgba(24,16,9,.6) 30%,rgba(24,16,9,.15) 54%,rgba(24,16,9,0) 70%),
+  linear-gradient(0deg,rgba(24,16,9,.55) 0%,rgba(24,16,9,0) 34%)}
+.content{position:relative;z-index:2;max-width:660px;padding:clamp(30px,6vw,88px);color:var(--cream)}
+.eyebrow{font-family:var(--ui);font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;font-weight:600;
+  color:var(--gold);margin-bottom:20px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,6vw,4.2rem);line-height:1.02;letter-spacing:-.01em;
+  margin:0 0 20px;text-wrap:balance;text-shadow:0 2px 24px rgba(0,0,0,.4)}
+h1 em{font-style:italic}
+.lead{font-family:var(--serif);font-size:clamp(1.1rem,2.2vw,1.35rem);line-height:1.55;max-width:46ch;margin:0 0 34px;
+  color:#EFE8DA;text-shadow:0 1px 12px rgba(0,0,0,.45)}
+.actions{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center}
+.cta{display:inline-flex;align-items:center;gap:11px;font-family:var(--ui);font-weight:600;font-size:.98rem;
+  background:var(--cream);color:#1B120A;text-decoration:none;padding:15px 26px;border-radius:6px;
+  border:1px solid var(--cream);transition:.18s}
+.cta:hover{background:var(--gold);border-color:var(--gold)}
+.cta:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.cta svg{width:17px;height:17px}
+.secondary{display:flex;gap:18px;flex-wrap:wrap}
+.secondary a{font-family:var(--ui);font-size:.9rem;color:var(--cream);text-decoration:none;opacity:.88;
+  border-bottom:1px solid transparent;padding-bottom:2px;transition:.15s}
+.secondary a:hover{opacity:1;border-color:var(--gold);color:var(--gold)}
+.hint{font-family:var(--ui);font-size:.78rem;color:#D8CDB8;opacity:.8;margin-top:26px}
+.hint code{background:rgba(255,255,255,.14);border-radius:4px;padding:1px 7px}
+@media(max-width:720px){
+  .hero{align-items:flex-end}
+  .hero .bg{object-position:66% center}
+  .scrim{background:linear-gradient(0deg,rgba(24,16,9,.9) 0%,rgba(24,16,9,.5) 34%,rgba(24,16,9,.1) 60%)}
+  .content{padding-bottom:44px}
+}
+</style>
+</head>
+<body>
+<section class="hero">
+  <img class="bg" src="{% static 'map_app/img/designer404.jpg' %}" alt="Ilustrasi seorang penjelajah tersesat di pantai dengan reruntuhan batu bertuliskan 404, bangkai kapal, dan peta harta karun">
+  <div class="scrim"></div>
+  <div class="content">
+    <div class="eyebrow">Galat 404 · Di luar peta</div>
+    <h1>Anda tersesat dari <em>garis pantai</em>.</h1>
+    <p class="lead">Halaman yang Anda cari tak tercatat dalam arsip kami — seperti dermaga
+      yang lenyap ditelan pasang. Mari kembali ke jalur yang terpetakan.</p>
+    <div class="actions">
+      <a class="cta" href="{% url 'index' %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 19l-7-7 7-7"/><path d="M3 12h18"/></svg>
+        Kembali ke Peta
+      </a>
+      <nav class="secondary" aria-label="Halaman lain">
+        <a href="https://salido.my.id/">Beranda Salido</a><a href="https://salido.my.id/jurnal">Jurnal</a><a href="https://salido.my.id/arsip">Arsip</a>
+      </nav>
+    </div>
+    <p class="hint">Yakin alamatnya benar? Periksa lagi tautan <code id="path">yang Anda tuju</code>.</p>
+  </div>
+</section>
+<script>
+try{var p=location.pathname;if(location.protocol.indexOf('http')===0&&p&&p!=='/'&&!p.endsWith('.html'))document.getElementById('path').textContent=p;}catch(e){}
+</script>
+
+</body>
+</html>
