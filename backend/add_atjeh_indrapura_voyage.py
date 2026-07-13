@@ -27,14 +27,16 @@ DATABASE_SYNC_URL = os.getenv("DATABASE_SYNC_URL") or os.getenv("SYNC_DATABASE_U
 if not DATABASE_SYNC_URL:
     raise RuntimeError("DATABASE_SYNC_URL env var is required but not set")
 
-INDERAPURA_FORT_ID = 16
 BATAVIA_FORT_ID = 9
+# GOTCHA 2026-07-13: id fort Inderapura TERNYATA beda antar environment (16 di
+# dev, 15 di production -- dibuat manual di masing2 tanpa script, drift diam2).
+# Resolve via nama saat runtime, bukan hardcode, spy tak patah lagi di env baru.
 
 
-def build_voyage_record():
+def build_voyage_record(inderapura_fort_id):
     return {
         "voyage_ref": None,
-        "origin_id": INDERAPURA_FORT_ID,
+        "origin_id": inderapura_fort_id,
         "destination_id": BATAVIA_FORT_ID,
         "origin_name_raw": "Indrapoura",
         "destination_name_raw": "Batavia",
@@ -57,12 +59,16 @@ def build_voyage_record():
 
 
 def main():
-    rec = build_voyage_record()
-
     engine = create_engine(DATABASE_SYNC_URL, future=True)
-    from models import Voyage
+    from models import Fort, Voyage
 
     with Session(engine) as session:
+        inderapura_fort_id = session.execute(
+            select(Fort.id).where(Fort.name == "Inderapura")
+        ).scalar_one()
+
+        rec = build_voyage_record(inderapura_fort_id)
+
         existing = session.execute(
             select(Voyage.id).where(
                 Voyage.source == rec["source"],

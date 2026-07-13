@@ -37,14 +37,16 @@ if not DATABASE_SYNC_URL:
 
 ACEH_FORT_ID = 17
 BATAVIA_FORT_ID = 9
-INDRAPURA_FORT_ID = 16
+# GOTCHA 2026-07-13: id fort Inderapura BEDA antar environment (16 di dev, 15
+# di production -- dibuat manual di masing2 tanpa script, drift diam2). Resolve
+# via nama saat runtime di main(), bukan hardcode di sini.
 
 
-def build_voyage_records():
+def build_voyage_records(indrapura_fort_id):
     return [
         {
             "voyage_ref": None,
-            "origin_id": INDRAPURA_FORT_ID, "destination_id": BATAVIA_FORT_ID,
+            "origin_id": indrapura_fort_id, "destination_id": BATAVIA_FORT_ID,
             "origin_name_raw": "Indrapoura", "destination_name_raw": "Batavia",
             "ship_name": "jacht Sardam",
             "captain": None,
@@ -83,13 +85,16 @@ def build_voyage_records():
 
 
 def main():
-    records = build_voyage_records()
-
     engine = create_engine(DATABASE_SYNC_URL, future=True)
-    from models import Voyage
+    from models import Fort, Voyage
 
     added, skipped = 0, 0
     with Session(engine) as session:
+        indrapura_fort_id = session.execute(
+            select(Fort.id).where(Fort.name == "Inderapura")
+        ).scalar_one()
+        records = build_voyage_records(indrapura_fort_id)
+
         for rec in records:
             existing = session.execute(
                 select(Voyage.id).where(and_(
