@@ -296,6 +296,33 @@
       font-style: italic; text-align: center;
     }
 
+    /* ── Map legend (bottom-right) — satu-satunya penjelas warna garis
+       setelah semua tooltip hover dihapus 2026-07-13 ─────────────────── */
+    #map-legend {
+      position: fixed;
+      bottom: 1.5rem; right: 1.25rem;
+      z-index: 500;
+      background: var(--bg-overlay);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      padding: .7rem .85rem;
+      font-size: .68rem;
+      color: var(--text-secondary);
+    }
+    .legend-title {
+      font-weight: 700; color: var(--text-primary); margin-bottom: .4rem;
+      font-size: .7rem;
+    }
+    .legend-item { display: flex; align-items: center; gap: .45rem; margin-top: .3rem; }
+    .legend-swatch { width: 18px; height: 0; border-top-width: 3px; border-top-style: solid; flex-shrink: 0; }
+    .legend-swatch.out     { border-color: #31384C; }
+    .legend-swatch.in      { border-color: #027B8C; }
+    .legend-swatch.transit { border-color: #8B9E97; }
+    .legend-swatch.power   { border-color: #6B4C8A; border-top-style: dashed; }
+
     /* ── Slide-over Fort Panel (right) ──────────────────────────────────── */
     #fort-panel {
       position: fixed;
@@ -681,6 +708,10 @@
       #welcome-panel { width: calc(100vw - 2.5rem); }
       .port-grid { grid-template-columns: repeat(3, 1fr); }
       #ship-search { width: 140px; }
+      /* #welcome-panel jadi full-width di mobile & akan tumpang tindih dgn
+         legenda bottom-right -- sembunyikan legenda spt .nav-center, bukan
+         perang layout sempit. */
+      #map-legend { display: none; }
     }
   </style>
 </head>
@@ -769,6 +800,15 @@
 
 <!-- ── Full-screen map ──────────────────────────────────────────────────────── -->
 <div id="map" aria-label="Peta jalur perdagangan VOC" role="img"></div>
+
+<!-- ── Legenda peta ───────────────────────────────────────────────────────── -->
+<aside id="map-legend" aria-label="Legenda peta">
+  <div class="legend-title">Legenda</div>
+  <div class="legend-item"><span class="legend-swatch out" aria-hidden="true"></span>Keluar (outbound)</div>
+  <div class="legend-item"><span class="legend-swatch in" aria-hidden="true"></span>Masuk (inbound)</div>
+  <div class="legend-item"><span class="legend-swatch transit" aria-hidden="true"></span>Transit</div>
+  <div class="legend-item"><span class="legend-swatch power" aria-hidden="true"></span>Jalur kekuasaan Atjeh (bukan pelayaran)</div>
+</aside>
 
 <!-- ── Welcome Floating Panel ─────────────────────────────────────────────── -->
 <aside id="welcome-panel" aria-label="Daftar pelabuhan">

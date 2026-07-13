@@ -206,6 +206,19 @@ class LayoutBMapTest(SimpleTestCase):
         """leaflet-ant-path must be loaded for animated route lines."""
         self.assertIn("ant-path", self.content.lower())
 
+    def test_map_legend_present(self):
+        """User 2026-07-13: setelah semua tooltip hover dihapus, tak ada cara lagi
+        utk tahu arti warna garis (keluar/masuk/transit/jalur kekuasaan) tanpa
+        hover -- legenda statis di peta wajib ada sbg gantinya. Termasuk entri
+        jalur kekuasaan Atjeh yg sempat tak masuk legenda lama (yg sebenarnya
+        belum pernah dibuat sama sekali)."""
+        self.assertIn('id="map-legend"', self.content)
+        self.assertIn("Keluar", self.content)
+        self.assertIn("Masuk", self.content)
+        self.assertIn("Transit", self.content)
+        self.assertIn("Jalur kekuasaan", self.content)
+        self.assertIn("Atjeh", self.content)
+
 
 class LayoutBSecurityTest(SimpleTestCase):
     """Security checks for Layout B template."""
