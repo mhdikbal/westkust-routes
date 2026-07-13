@@ -381,16 +381,16 @@ function setSource(src) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Fakta politik/administratif Atjeh (atjeh_trade_records, direction=in_atjeh,
-   baris "BUKAN transaksi dagang") -- ditautkan ke marker pelabuhan via
-   PORT_TEXT_ALIASES, tampil di tooltip hover (bukan garis rute baru).
+   Fakta politik/administratif Atjeh (atjeh_trade_records, direction=politik --
+   kategori terpisah dari in_atjeh sejak 2026-07-13, lihat feedback_sisir_semua_
+   titik_pemakaian) -- ditautkan ke marker pelabuhan via PORT_TEXT_ALIASES,
+   tampil di tooltip hover (bukan garis rute baru).
    ───────────────────────────────────────────────────────────────────────────── */
 async function loadPoliticalNotes() {
   try {
-    const res = await fetch(`${API}/research/atjeh-trade?direction=in_atjeh`);
+    const res = await fetch(`${API}/research/atjeh-trade?direction=politik`);
     const data = await res.json();
-    const items = data.items || [];
-    return items.filter(it => (it.notes || "").includes("BUKAN transaksi"));
+    return data.items || [];
   } catch (e) {
     console.warn("loadPoliticalNotes error:", e);
     return [];

@@ -15,7 +15,7 @@
   --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4;
   --accent:#000000; --gold-ink:#6F5407;
   --warn-bg:#FBF3E4; --warn-line:#D8B978; --warn-ink:#6F5407;
-  --dir-naar:#2C5364; --dir-van:#3A7D70; --dir-in:#B0562A;
+  --dir-naar:#2C5364; --dir-van:#3A7D70; --dir-in:#B0562A; --dir-politik:#6B4C8A;
   --serif:"EB Garamond",Georgia,"Times New Roman",serif;
   --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --mono:"Space Grotesk",ui-monospace,Menlo,Consolas,monospace;
@@ -80,6 +80,7 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22p
 .dir-naar_atjeh{background:var(--dir-naar)}
 .dir-van_atjeh{background:var(--dir-van)}
 .dir-in_atjeh{background:var(--dir-in)}
+.dir-politik{background:var(--dir-politik)}
 
 table{width:100%;border-collapse:collapse;font-size:.86rem;background:var(--panel);
   border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -137,10 +138,10 @@ footer p{margin:0 0 10px;line-height:1.55}
     <p class="lede">58 baris hasil pembacaan manual atas lima volume Dagh-register gehouden int
       casteel Batavia — <b>1643-1644</b>, <b>1631-1634</b>, <b>1637</b>, <b>1636</b>, dan
       <b>1624-1629</b> — kapal, komoditas, harga, dan kebijakan dagang yang tercatat masuk
-      (<b>naar Atjeh</b>), keluar (<b>van Atjeh</b>), atau terjadi di dalam comptoir/wilayah
-      kekuasaan Atjeh sendiri (<b>in Atjeh</b>). Sebagian baris "in_atjeh" adalah fakta
-      politik/administratif (klaim yurisdiksi, penegakan tol, suksesi raja), bukan transaksi
-      dagang — ditandai eksplisit di kolom notes.</p>
+      (<b>naar Atjeh</b>), keluar (<b>van Atjeh</b>), terjadi di dalam comptoir/wilayah
+      kekuasaan Atjeh sendiri (<b>in Atjeh</b>), atau fakta <b>politik/administratif</b>
+      (klaim yurisdiksi, penegakan tol, suksesi raja, status ratu) — kategori terpisah,
+      bukan transaksi dagang.</p>
     <div class="prov" id="prov">memuat…</div>
     <div class="tiles" id="tiles"></div>
   </header>
@@ -190,6 +191,7 @@ footer p{margin:0 0 10px;line-height:1.55}
       <option value="naar_atjeh">Masuk Atjeh (naar_atjeh)</option>
       <option value="van_atjeh">Keluar Atjeh (van_atjeh)</option>
       <option value="in_atjeh">Di dalam Atjeh (in_atjeh)</option>
+      <option value="politik">Politik/Administratif (politik)</option>
     </select>
     <label for="docFilter">Volume</label>
     <select id="docFilter">
@@ -236,7 +238,7 @@ footer p{margin:0 0 10px;line-height:1.55}
 const API = '/api/research/atjeh-trade';
 const esc = s => String(s ?? '').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const fmt = n => Number(n).toLocaleString('id-ID');
-const DIR_LABEL = {naar_atjeh:'masuk', van_atjeh:'keluar', in_atjeh:'di dalam'};
+const DIR_LABEL = {naar_atjeh:'masuk', van_atjeh:'keluar', in_atjeh:'di dalam', politik:'politik'};
 
 let ALL = [];
 
@@ -249,6 +251,7 @@ function renderTiles(meta){
     tile(fmt(meta.by_direction.naar_atjeh||0), 'masuk Atjeh'),
     tile(fmt(meta.by_direction.van_atjeh||0), 'keluar Atjeh'),
     tile(fmt(meta.by_direction.in_atjeh||0), 'di dalam Atjeh'),
+    tile(fmt(meta.by_direction.politik||0), 'politik/administratif'),
     tile(fmt(meta.by_document['1643-1644']||0), 'vol. 1643-1644'),
     tile(fmt(meta.by_document['1631-1634']||0), 'vol. 1631-1634'),
     tile(fmt(meta.by_document['1637']||0), 'vol. 1637'),

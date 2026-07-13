@@ -232,9 +232,9 @@ class AtjehTradeRecord(Base):
     """Baris hasil ekstraksi laporan dagang dari/ke/di Atjeh, sumber primer
     lima volume "Dagh-register gehouden int casteel Batavia" (docs/): 1643-1644,
     1631-1634, 1637, 1636, dan 1624-1629. Muat dari data/research/atjeh_trade.csv via
-    seed_atjeh_trade.py. Sebagian baris (direction='in_atjeh' tanpa commodity_raw)
-    adalah fakta politik/administratif (klaim yurisdiksi, penegakan tol, suksesi
-    raja), BUKAN transaksi dagang -- lihat notes per baris.
+    seed_atjeh_trade.py. Baris direction='politik' adalah fakta politik/administratif
+    (klaim yurisdiksi, penegakan tol, suksesi raja, status ratu), BUKAN transaksi
+    dagang -- dipisah dari 'in_atjeh' (transaksi yg terjadi di Atjeh) 2026-07-13.
 
     commodity_raw/unit_raw/actor_raw SENGAJA memakai ejaan asli VOC-Belanda
     dari sumber (mis. "peper", "thin", "salpeter"), BUKAN terjemahan Indonesia --
@@ -252,7 +252,7 @@ class AtjehTradeRecord(Base):
     book_page = Column(String(20), nullable=True)                # halaman cetak asli, jika diketahui
     entry_date_raw = Column(String(50), nullable=True)           # mis. "9 Mei 1644"; NULL = tak bertanggal jelas
 
-    direction = Column(String(20), nullable=False, index=True)   # "naar_atjeh" | "van_atjeh" | "in_atjeh"
+    direction = Column(String(20), nullable=False, index=True)   # "naar_atjeh" | "van_atjeh" | "in_atjeh" | "politik"
     commodity_raw = Column(String(100), nullable=True, index=True)  # NULL = kargo kosong ("ledigh")
     quantity_raw = Column(String(50), nullable=True)
     unit_raw = Column(String(50), nullable=True)

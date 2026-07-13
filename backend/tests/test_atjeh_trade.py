@@ -141,6 +141,19 @@ class TestCsvIntegrity:
             assert r["price_value"] is None, \
                 f"baris p{r['source_page']} ditandai bukan-transaksi tapi punya price_value"
 
+    def test_political_facts_use_politik_direction(self, rows):
+        """direction='politik' (kategori ke-4, ditambah 2026-07-13 atas permintaan
+        user) HARUS dipakai utk semua baris fakta politik/administratif -- 'in_atjeh'
+        jangan lagi jadi bucket ganda dagang+politik. Setiap baris 'BUKAN transaksi'
+        harus direction='politik', dan sebaliknya."""
+        for r in rows:
+            is_political_note = "BUKAN transaksi" in (r["notes"] or "")
+            is_politik_direction = r["direction"] == "politik"
+            assert is_political_note == is_politik_direction, (
+                f"baris p{r['source_page']}: notes bukan-transaksi={is_political_note} "
+                f"tapi direction={r['direction']!r} tidak konsisten"
+            )
+
     def test_every_row_has_source_document(self, rows):
         for r in rows:
             assert r["source_document"], f"baris p{r['source_page']} tanpa source_document"

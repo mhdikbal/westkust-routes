@@ -48,7 +48,11 @@ CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
 ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629"}
 
-ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh"}
+ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh", "politik"}
+# "politik": fakta politik/administratif Atjeh (klaim yurisdiksi, penegakan tol,
+# suksesi raja, status ratu, dst) -- BUKAN transaksi dagang. Dipisah dari
+# "in_atjeh" 2026-07-13 supaya "in_atjeh" murni transaksi yg terjadi di Atjeh
+# lagi, bukan bucket ganda dagang+politik. Lihat feedback_sisir_semua_titik_pemakaian.
 
 
 def _clean(v):

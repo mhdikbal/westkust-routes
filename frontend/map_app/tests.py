@@ -402,6 +402,13 @@ class SourceToggleTest(SimpleTestCase):
         self.assertIn("PORT_TEXT_ALIASES", ATLAS_JS)
         self.assertIn("BUKAN transaksi", ATLAS_JS)
 
+    def test_fort_tooltip_uses_politik_direction_category(self):
+        """direction='politik' (kategori ke-4, ditambah 2026-07-13 atas permintaan
+        user) HARUS dipakai langsung sbg filter query -- bukan lagi fetch semua
+        in_atjeh lalu filter substring notes di client (cara lama, sebelum
+        kategori politik dipisah dari in_atjeh)."""
+        self.assertIn("direction=politik", ATLAS_JS)
+
     def test_fort_marker_uses_political_tooltip_helper(self):
         """Marker pelabuhan harus benar-benar pakai fortTooltipHtml(), bukan cuma
         f.name polos spt sebelumnya -- regresi kalau ada yg refactor balik diam-diam."""
@@ -996,3 +1003,10 @@ class RisetAtjehViewTest(SimpleTestCase):
         """Dropdown filter volume harus punya opsi 1624-1629 (regresi 2026-07-13)."""
         html = self.client.get(reverse("riset_atjeh")).content.decode()
         self.assertIn('value="1624-1629"', html)
+
+    def test_politik_direction_option_in_filter(self):
+        """Dropdown filter arah harus punya opsi 'politik' (kategori ke-4, dipisah
+        dari 'in_atjeh' 2026-07-13 atas permintaan user -- fakta politik/administratif
+        Atjeh bukan lagi bercampur dgn transaksi dagang di dalam Atjeh)."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn('value="politik"', html)
