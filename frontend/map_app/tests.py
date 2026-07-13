@@ -860,12 +860,13 @@ class RisetJaringanViewTest(SimpleTestCase):
         self.assertIn("Space Grotesk", html)
 
 
-# ─── Dagang Atjeh 1643-1644: halaman ekstraksi laporan dagang (/riset/atjeh-dagang) ──
+# ─── Dagang Atjeh 1643-1644 + 1631-1634: laporan dagang (/riset/atjeh-dagang) ──
 class RisetAtjehViewTest(SimpleTestCase):
     """Halaman /riset/atjeh-dagang render statis; tabel ditarik client-side dari
-    /api/research/atjeh-trade. thesis-only, bukti tipis (Indrapura/Tiku) HARUS
-    tampil jujur -- bukan digambar seolah rute pasti (lihat konteks percakapan:
-    Barus/Pariaman nihil bukti, Indrapura/Tiku sirkumstansial saja)."""
+    /api/research/atjeh-trade. thesis-only, bukti HARUS tampil jujur per pelabuhan
+    -- lihat konteks percakapan: Barus tetap nihil bukti di 2 volume; Tiku/Pariaman/
+    Indrapura sekarang punya bukti kuat (titah pembatasan dagang 1633, volume
+    1631-1634) -- caveat lama yg bilang 'Pariaman nihil' sudah usang & diperbaiki."""
 
     def test_returns_200(self):
         resp = self.client.get(reverse("riset_atjeh"))
@@ -896,9 +897,24 @@ class RisetAtjehViewTest(SimpleTestCase):
             "belum diverifikasi" in html.lower() or "unverified" in html.lower()
         )
 
-    def test_surfaces_barus_pariaman_absence(self):
-        """Kejujuran evidentiary: halaman harus menyebut Barus & Pariaman TIDAK
-        punya bukti langsung di volume ini -- bukan cuma diam soal itu."""
+    def test_surfaces_barus_still_absent(self):
+        """Kejujuran evidentiary: Barus TETAP tak punya bukti eksplisit di 2 volume
+        yg sudah disisir -- halaman harus bilang ini, bukan diam."""
         html = self.client.get(reverse("riset_atjeh")).content.decode()
         self.assertIn("Barus", html)
+
+    def test_surfaces_1633_licensing_edict(self):
+        """Temuan utama volume 1631-1634: titah Raja Atjeh membatasi dagang VOC/
+        Inggris HANYA di Tiku, Pariaman, Indrapura (1633) -- harus tampil eksplisit,
+        bukan cuma ada di data JSON."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn("Tiku", html)
         self.assertIn("Pariaman", html)
+        self.assertIn("Indrapura", html)
+        self.assertIn("1633", html)
+
+    def test_two_volumes_mentioned(self):
+        """Dua volume PDF sumber (1643-1644 dan 1631-1634) harus disebut eksplisit."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn("1643-1644", html)
+        self.assertIn("1631-1634", html)

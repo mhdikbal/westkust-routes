@@ -376,6 +376,7 @@ async def get_network_pelabuhan(
 class AtjehTradeItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
+    source_document: str
     source_page: int
     book_page: Optional[str] = None
     entry_date_raw: Optional[str] = None
@@ -400,29 +401,35 @@ class AtjehTradeResponse(BaseModel):
 async def get_atjeh_trade(
     response: Response,
     direction: Optional[str] = None,
+    source_document: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
 ):
-    """Daftar baris atjeh_trade_records, urut halaman sumber. Filter direction
-    opsional ('naar_atjeh'|'van_atjeh'|'in_atjeh'). Cache-aside Redis."""
-    cache_key = make_key("research_atjeh_trade", {"direction": direction})
+    """Daftar baris atjeh_trade_records, urut volume+halaman sumber. Filter
+    direction opsional ('naar_atjeh'|'van_atjeh'|'in_atjeh') dan source_document
+    opsional ('1643-1644'|'1631-1634'). Cache-aside Redis."""
+    cache_key = make_key("research_atjeh_trade", {"direction": direction, "source_document": source_document})
     cached = await cache_get(cache_key)
     if cached is not None:
         response.headers["X-Cache"] = "HIT"
         return cached
 
     query = select(AtjehTradeRecord).order_by(
-        AtjehTradeRecord.source_page, AtjehTradeRecord.id
+        AtjehTradeRecord.source_document, AtjehTradeRecord.source_page, AtjehTradeRecord.id
     )
     if direction:
         query = query.where(AtjehTradeRecord.direction == direction.lower())
+    if source_document:
+        query = query.where(AtjehTradeRecord.source_document == source_document)
     rows = (await db.execute(query)).scalars().all()
 
     items = [AtjehTradeItem.model_validate(r) for r in rows]
     by_direction = defaultdict(int)
+    by_document = defaultdict(int)
     for r in rows:
         by_direction[r.direction] += 1
+        by_document[r.source_document] += 1
 
-    meta = {"n_items": len(items), "by_direction": dict(by_direction)}
+    meta = {"n_items": len(items), "by_direction": dict(by_direction), "by_document": dict(by_document)}
     payload = AtjehTradeResponse(items=items, meta=meta).model_dump()
     await cache_set(cache_key, payload)
     response.headers["X-Cache"] = "MISS"

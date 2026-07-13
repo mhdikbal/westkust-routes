@@ -1,17 +1,20 @@
 """
 seed_atjeh_trade.py
 
-Muat data/research/atjeh_trade_1643_1644.csv (ekstraksi manual laporan dagang
-dari/ke/di Atjeh, sumber: docs/"Dagh-register gehouden int casteel Batavia ...
-1643-1644".pdf) ke tabel atjeh_trade_records. Idempotent -- truncate & reload
-tiap run (dataset kecil, hand-curated, tak ada natural key stabil lintas revisi).
+Muat data/research/atjeh_trade.csv (ekstraksi manual laporan dagang dari/ke/di
+Atjeh, sumber: dua volume docs/"Dagh-register gehouden int casteel Batavia"
+-- 1643-1644 dan 1631-1634) ke tabel atjeh_trade_records. Idempotent --
+truncate & reload tiap run (dataset kecil, hand-curated, tak ada natural key
+stabil lintas revisi).
 
 commodity_raw/unit_raw/actor_raw SENGAJA memakai ejaan asli VOC-Belanda dari
 sumber -- BUKAN terjemahan Indonesia (mis. "salpeter", bukan "sendawa"). Lihat
 CommodityGlossary utk padanan/definisi bila perlu.
 
 confidence_flag='unverified' pada semua baris: hasil pembacaan teks OCR PDF,
-belum dicocokkan ulang thd scan halaman asli.
+belum dicocokkan ulang thd scan halaman asli. source_document membedakan
+volume PDF asal ("1643-1644" | "1631-1634") -- source_page saja ambigu
+lintas volume.
 
 Jalankan: docker compose exec backend python seed_atjeh_trade.py
 """
@@ -29,10 +32,12 @@ if not DATABASE_SYNC_URL:
 
 _BASE = Path(__file__).parent.parent
 CSV_CANDIDATES = [
-    Path("/app/data/research/atjeh_trade_1643_1644.csv"),
-    _BASE / "data" / "research" / "atjeh_trade_1643_1644.csv",
+    Path("/app/data/research/atjeh_trade.csv"),
+    _BASE / "data" / "research" / "atjeh_trade.csv",
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
+
+ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634"}
 
 ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh"}
 
@@ -53,6 +58,10 @@ def _float(v):
 
 
 def parse_row(row):
+    source_document = _clean(row.get("source_document"))
+    if source_document not in ALLOWED_SOURCE_DOCUMENTS:
+        raise ValueError(f"source_document '{source_document}' tidak valid, harus salah satu dari {ALLOWED_SOURCE_DOCUMENTS}")
+
     source_page = _clean(row.get("source_page"))
     if not source_page:
         raise ValueError("source_page wajib ada (halaman PDF sumber)")
@@ -66,6 +75,7 @@ def parse_row(row):
         raise ValueError("text_asli wajib ada -- jejak verifikasi ke sumber OCR")
 
     return {
+        "source_document": source_document,
         "source_page": int(source_page),
         "book_page": _clean(row.get("book_page")),
         "entry_date_raw": _clean(row.get("entry_date_raw")),
@@ -84,7 +94,7 @@ def parse_row(row):
 
 def main():
     if CSV_FILE is None:
-        raise RuntimeError(f"atjeh_trade_1643_1644.csv tidak ditemukan di: {CSV_CANDIDATES}")
+        raise RuntimeError(f"atjeh_trade.csv tidak ditemukan di: {CSV_CANDIDATES}")
     print(f"Sumber : {CSV_FILE}")
 
     records = []
@@ -109,10 +119,14 @@ def main():
         by_direction = session.execute(text(
             "SELECT direction, COUNT(*) FROM atjeh_trade_records GROUP BY direction ORDER BY direction"
         )).all()
+        by_document = session.execute(text(
+            "SELECT source_document, COUNT(*) FROM atjeh_trade_records GROUP BY source_document ORDER BY source_document"
+        )).all()
 
     print("=" * 60)
     print(f"atjeh_trade_records: {after} baris")
     print(f"per arah: {dict(by_direction)}")
+    print(f"per volume: {dict(by_document)}")
     print("=" * 60)
 
 

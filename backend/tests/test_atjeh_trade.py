@@ -21,6 +21,7 @@ from seed_atjeh_trade import parse_row, ALLOWED_DIRECTIONS, CSV_FILE
 class TestParseRow:
     def test_minimal_row_with_price(self):
         row = {
+            "source_document": "1643-1644",
             "source_page": "137", "book_page": "", "entry_date_raw": "9 Mei 1644",
             "direction": "in_atjeh", "commodity_raw": "peper", "quantity_raw": "22",
             "unit_raw": "bahar", "price_value": "7", "price_unit_raw": "taijl/bhaer",
@@ -30,6 +31,7 @@ class TestParseRow:
         }
         rec = parse_row(row)
         assert rec["source_page"] == 137
+        assert rec["source_document"] == "1643-1644"
         assert rec["direction"] == "in_atjeh"
         assert rec["commodity_raw"] == "peper"
         assert rec["price_value"] == 7.0
@@ -37,6 +39,7 @@ class TestParseRow:
     def test_empty_cargo_row(self):
         """'ledigh' (empty) ships: commodity_raw/unit_raw/price stay NULL, not '0'."""
         row = {
+            "source_document": "1643-1644",
             "source_page": "33", "book_page": "16", "entry_date_raw": "22 Januari 1644",
             "direction": "van_atjeh", "commodity_raw": "", "quantity_raw": "",
             "unit_raw": "", "price_value": "", "price_unit_raw": "",
@@ -50,6 +53,7 @@ class TestParseRow:
 
     def test_invalid_direction_rejected(self):
         row = {
+            "source_document": "1643-1644",
             "source_page": "1", "book_page": "", "entry_date_raw": "",
             "direction": "sideways", "commodity_raw": "peper", "quantity_raw": "1",
             "unit_raw": "bahar", "price_value": "", "price_unit_raw": "",
@@ -60,7 +64,22 @@ class TestParseRow:
 
     def test_missing_source_page_rejected(self):
         row = {
+            "source_document": "1643-1644",
             "source_page": "", "book_page": "", "entry_date_raw": "",
+            "direction": "naar_atjeh", "commodity_raw": "peper", "quantity_raw": "1",
+            "unit_raw": "bahar", "price_value": "", "price_unit_raw": "",
+            "actor_raw": "", "text_asli": "x", "notes": "",
+        }
+        with pytest.raises(ValueError):
+            parse_row(row)
+
+    def test_missing_source_document_rejected(self):
+        """Dua volume PDF sekarang jadi sumber -- source_document wajib ada
+        supaya source_page tak ambigu antar volume (mis. p164 beda isi di
+        1643-1644 vs 1631-1634)."""
+        row = {
+            "source_document": "",
+            "source_page": "1", "book_page": "", "entry_date_raw": "",
             "direction": "naar_atjeh", "commodity_raw": "peper", "quantity_raw": "1",
             "unit_raw": "bahar", "price_value": "", "price_unit_raw": "",
             "actor_raw": "", "text_asli": "x", "notes": "",
@@ -101,6 +120,16 @@ class TestCsvIntegrity:
         directions = {r["direction"] for r in rows}
         assert "van_atjeh" in directions
         assert "naar_atjeh" in directions
+
+    def test_both_volumes_represented(self, rows):
+        """Dua volume Dagh-register sudah disisir (1643-1644 dan 1631-1634)."""
+        docs = {r["source_document"] for r in rows}
+        assert "1643-1644" in docs
+        assert "1631-1634" in docs
+
+    def test_every_row_has_source_document(self, rows):
+        for r in rows:
+            assert r["source_document"], f"baris p{r['source_page']} tanpa source_document"
 
     def test_no_translated_commodity_terms(self, rows):
         """Jangan pakai istilah Indonesia hasil terjemahan (mis. 'sendawa') --

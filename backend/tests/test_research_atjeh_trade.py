@@ -19,7 +19,7 @@ from database import get_db
 
 def make_row(**overrides):
     base = dict(
-        id=1, source_page=137, book_page="120", entry_date_raw="9 Mei 1644",
+        id=1, source_document="1643-1644", source_page=137, book_page="120", entry_date_raw="9 Mei 1644",
         direction="in_atjeh", commodity_raw="peper", quantity_raw="22", unit_raw="bhaer",
         price_value=7.0, price_unit_raw="theijl/bhaer",
         actor_raw="ondercoopman Jan Lucassen Levendich",
@@ -106,5 +106,34 @@ async def test_direction_query_param_accepted():
         assert r.status_code == 200
         data = r.json()
         assert all(item["direction"] == "naar_atjeh" for item in data["items"])
+    finally:
+        app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_source_document_query_param_accepted():
+    """source_document=1631-1634 harus diterima -- dua volume PDF sekarang sumbernya."""
+    app.dependency_overrides[get_db] = db_returning([
+        make_row(id=4, source_document="1631-1634"),
+    ])
+    try:
+        r = await _get("/api/research/atjeh-trade?source_document=1631-1634")
+        assert r.status_code == 200
+        data = r.json()
+        assert all(item["source_document"] == "1631-1634" for item in data["items"])
+    finally:
+        app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_meta_includes_by_document():
+    app.dependency_overrides[get_db] = db_returning([
+        make_row(id=1, source_document="1643-1644"),
+        make_row(id=2, source_document="1631-1634"),
+    ])
+    try:
+        r = await _get("/api/research/atjeh-trade")
+        data = r.json()
+        assert data["meta"]["by_document"] == {"1643-1644": 1, "1631-1634": 1}
     finally:
         app.dependency_overrides.clear()

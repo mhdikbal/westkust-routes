@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<title>Dagang Atjeh 1643-1644 — Pesisir Barat Sumatra (VOC)</title>
+<title>Dagang Atjeh 1631-1644 — Pesisir Barat Sumatra (VOC)</title>
 <style>
 :root{
   --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
@@ -132,11 +132,12 @@ footer p{margin:0 0 10px;line-height:1.55}
   </nav>
 
   <header>
-    <p class="eyebrow">Ekstraksi Sumber Primer · Dagh-register Batavia 1643-1644</p>
+    <p class="eyebrow">Ekstraksi Sumber Primer · Dagh-register Batavia 1643-1644 &amp; 1631-1634</p>
     <h1 class="title">Laporan Dagang <em>dari &amp; ke Atjeh</em></h1>
-    <p class="lede">25 baris hasil pembacaan manual atas Dagh-register gehouden int casteel Batavia
-      (1643-1644) — kapal, komoditas, dan harga yang tercatat masuk (<b>naar Atjeh</b>), keluar
-      (<b>van Atjeh</b>), atau terjadi di dalam comptoir Atjeh sendiri (<b>in Atjeh</b>).</p>
+    <p class="lede">45 baris hasil pembacaan manual atas dua volume Dagh-register gehouden int
+      casteel Batavia — <b>1643-1644</b> dan <b>1631-1634</b> — kapal, komoditas, harga, dan
+      kebijakan dagang yang tercatat masuk (<b>naar Atjeh</b>), keluar (<b>van Atjeh</b>), atau
+      terjadi di dalam comptoir/wilayah kekuasaan Atjeh sendiri (<b>in Atjeh</b>).</p>
     <div class="prov" id="prov">memuat…</div>
     <div class="tiles" id="tiles"></div>
   </header>
@@ -145,12 +146,14 @@ footer p{margin:0 0 10px;line-height:1.55}
     <h2>Batas bukti — baca sebelum menafsirkan</h2>
     <p><b>Semua baris berstatus "belum diverifikasi"</b> (confidence_flag=unverified): hasil pembacaan
       teks OCR PDF (kata sering menempel tanpa spasi), belum dicocokkan ulang terhadap scan halaman asli.</p>
-    <p>Cakupan pelabuhan Sumbar yang ditanyakan — Barus, Tiku, Pariaman, Indrapura —
-      <b>timpang</b>: <span class="port-tag">Indrapura</span> punya bukti diplomatik terkuat
-      (kapal duta besar Atjeh, hlm. 33), <span class="port-tag">Tiku</span> hanya bukti tidak
-      langsung (piutang macet ke comptoir Atjeh, hlm. 137), sedangkan
-      <span class="port-tag none">Barus</span> dan <span class="port-tag none">Pariaman</span>
-      <b>tidak punya satu pun kaitan eksplisit ke Atjeh</b> di volume 1643-1644 ini.</p>
+    <p><b>Temuan utama (volume 1631-1634, Februari-Maret 1633):</b> Raja Atjeh secara eksplisit
+      melarang VOC/Inggris berdagang lada di pesisir barat Sumatra KECUALI di tiga pelabuhan
+      berizin — <span class="port-tag">Tiku</span>, <span class="port-tag">Pariaman</span>, dan
+      <span class="port-tag">Indrapura</span> — supaya tol bisa dipungut terpusat, ditegakkan lewat
+      komisaris resmi, maklumat (placcaten), dan pasukan Atjeh. Perak juga tercatat di bawah
+      kedaulatan Atjeh, konsisten di kedua volume (selisih 11 tahun).</p>
+    <p>Cakupan pelabuhan Sumbar yang ditanyakan tetap timpang: <span class="port-tag none">Barus</span>
+      <b>tidak punya satu pun kaitan eksplisit ke Atjeh</b> di kedua volume yang sudah disisir.</p>
     <p>Baris bertanda "agregat" mencampur nilai kargo lintas-kapal atau lintas-komoditas — jangan
       dijumlahkan sebagai volume dagang Atjeh tunggal. Istilah komoditas memakai ejaan asli
       VOC-Belanda sumber, bukan terjemahan Indonesia.</p>
@@ -164,13 +167,19 @@ footer p{margin:0 0 10px;line-height:1.55}
       <option value="van_atjeh">Keluar Atjeh (van_atjeh)</option>
       <option value="in_atjeh">Di dalam Atjeh (in_atjeh)</option>
     </select>
+    <label for="docFilter">Volume</label>
+    <select id="docFilter">
+      <option value="">Semua</option>
+      <option value="1643-1644">1643-1644</option>
+      <option value="1631-1634">1631-1634</option>
+    </select>
     <span class="count" id="rowCount"></span>
   </div>
 
   <table>
     <thead>
       <tr>
-        <th>Hlm.</th><th>Tanggal</th><th>Arah</th><th>Komoditas</th>
+        <th>Volume</th><th>Hlm.</th><th>Tanggal</th><th>Arah</th><th>Komoditas</th>
         <th>Kuantitas</th><th>Harga</th><th>Aktor</th>
       </tr>
     </thead>
@@ -180,10 +189,11 @@ footer p{margin:0 0 10px;line-height:1.55}
   <footer>
     <h3>Metode &amp; batas</h3>
     <p>Sumber: docs/"Dagh-register gehouden int casteel Batavia vant passerende daer ter plaetse
-      als over geheel Nederlandts-India-1643-1644" (352 hlm., di-OCR pypdf). Jurnal harian Batavia
-      di volume ini hanya sampai ±Mei 1644; sisanya "sommier verbael" per pos VOC lain (Malacca,
-      Koromandel, dst.) — 2 baris (hlm. 141, 305) berasal dari verbael tsb yang menyinggung Atjeh.
-      Regex seluruh varian ejaan Atjeh dijalankan ke semua 352 halaman.</p>
+      als over geheel Nederlandts-India-1643-1644" (352 hlm.) dan docs/"Dagh-register gehouden int
+      casteel Batavia vant passerende daer ter plaetse als over geheel Nederlandts-India 1631-1634"
+      (493 hlm.), keduanya di-OCR pypdf. Jurnal harian Batavia di volume 1643-1644 hanya sampai
+      ±Mei 1644; sisanya "sommier verbael" per pos VOC lain (Malacca, Koromandel, dst.). Regex
+      seluruh varian ejaan Atjeh dijalankan ke semua halaman kedua volume.</p>
     <p><span class="tag">thesis-only · noindex</span>
       <span class="tag">route: /riset/atjeh-dagang (tidak di navbar publik)</span>
       <span class="tag">endpoint: /api/research/atjeh-trade</span>
@@ -209,6 +219,8 @@ function renderTiles(meta){
     tile(fmt(meta.by_direction.naar_atjeh||0), 'masuk Atjeh'),
     tile(fmt(meta.by_direction.van_atjeh||0), 'keluar Atjeh'),
     tile(fmt(meta.by_direction.in_atjeh||0), 'di dalam Atjeh'),
+    tile(fmt(meta.by_document['1643-1644']||0), 'vol. 1643-1644'),
+    tile(fmt(meta.by_document['1631-1634']||0), 'vol. 1631-1634'),
   ].join('');
 }
 
@@ -218,6 +230,7 @@ function rowHtml(r){
   const commodity = r.commodity_raw ? esc(r.commodity_raw) : '<span class="empty-note">(kosong/ledigh)</span>';
   return `
     <tr class="rowmain" data-id="${r.id}">
+      <td data-label="Volume" class="mono">${esc(r.source_document)}</td>
       <td data-label="Hlm.">${r.source_page}${r.book_page ? ` <span class="mono" style="color:var(--muted)">(${esc(r.book_page)})</span>` : ''}</td>
       <td data-label="Tanggal">${esc(r.entry_date_raw || '—')}</td>
       <td data-label="Arah"><span class="dir-badge dir-${r.direction}">${DIR_LABEL[r.direction]||r.direction}</span></td>
@@ -227,7 +240,7 @@ function rowHtml(r){
       <td data-label="Aktor">${esc(r.actor_raw || '—')}</td>
     </tr>
     <tr class="rowdetail" id="detail-${r.id}">
-      <td colspan="7">
+      <td colspan="8">
         <div class="quote">&ldquo;${esc(r.text_asli)}&rdquo;</div>
         ${r.notes ? `<div class="notes">${esc(r.notes)}</div>` : ''}
         <div class="notes unconf">confidence_flag: ${esc(r.confidence_flag)}</div>
@@ -245,10 +258,14 @@ function render(rows){
   });
 }
 
-document.getElementById('dirFilter').addEventListener('change', e=>{
-  const v = e.target.value;
-  render(v ? ALL.filter(r=>r.direction===v) : ALL);
-});
+function applyFilters(){
+  const dir = document.getElementById('dirFilter').value;
+  const doc = document.getElementById('docFilter').value;
+  render(ALL.filter(r => (!dir || r.direction===dir) && (!doc || r.source_document===doc)));
+}
+
+document.getElementById('dirFilter').addEventListener('change', applyFilters);
+document.getElementById('docFilter').addEventListener('change', applyFilters);
 
 fetch(API).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }).then(data=>{
   ALL = data.items;
@@ -258,7 +275,7 @@ fetch(API).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }).th
   render(ALL);
 }).catch(err=>{
   document.getElementById('tbody').innerHTML =
-    `<tr><td colspan="7" class="empty-note">Gagal memuat data (${esc(err.message)}).</td></tr>`;
+    `<tr><td colspan="8" class="empty-note">Gagal memuat data (${esc(err.message)}).</td></tr>`;
 });
 </script>
 </body>
