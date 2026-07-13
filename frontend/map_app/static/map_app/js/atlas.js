@@ -53,6 +53,15 @@ const SEA_WAYPOINTS = {
   "Pantai Barat Sumatra→Tiku":       [[-0.72, 99.72]],
   "Pantai Barat Sumatra→Padang":     [[-1.05, 100.05]],
   "Pantai Barat Sumatra→Inderapura": [[-1.75, 100.45]],
+  // Aceh -- lanjutan koridor Barus ke utara (Samudra Hindia, bukan Selat Malaka).
+  // Tanpa waypoint eksplisit, rute jatuh ke fallback bezier yg arah lengkungnya
+  // tergantung tanda vektor origin->destination -- bikin Aceh->Batavia & Batavia->Aceh
+  // melengkung ke sisi BERLAWANAN (satu lewat pantai barat spt seharusnya, satu lewat
+  // utara/Selat Malaka spt kapal yg salah jalan). Lihat feedback_sisir_semua_titik_pemakaian.
+  "Aceh→Batavia":  [[3.5, 95.0], [-1.0, 96.5], [-5.2, 100.8], [-5.9, 105.4]],
+  "Batavia→Aceh":  [[-5.9, 105.4], [-5.2, 100.8], [-1.0, 96.5], [3.5, 95.0]],
+  "Aceh→Tiku":     [[3.5, 95.0], [-1.0, 96.5], [-0.72, 99.72]],
+  "Tiku→Aceh":     [[-0.72, 99.72], [-1.0, 96.5], [3.5, 95.0]],
 };
 
 // Icon class per port type for welcome grid

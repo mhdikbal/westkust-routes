@@ -367,6 +367,17 @@ class SourceToggleTest(SimpleTestCase):
         loadForts() harus mengisi FORT_COORDS dari API utk fort yg belum ada."""
         self.assertIn("if (!FORT_COORDS[f.name]", ATLAS_JS)
 
+    def test_aceh_routes_have_explicit_sea_waypoints(self):
+        """Bug 2026-07-13: rute Aceh (Aceh<->Batavia, Aceh->Tiku) tak punya entri di
+        SEA_WAYPOINTS, jadi jatuh ke fallback getBezierCurve() -- lengkung bezier generik
+        yg arah bengkoknya tergantung tanda vektor origin->destination, BUKAN geografi
+        nyata. Efeknya salah satu arah pasangan (mis. Batavia->Aceh) melengkung ke sisi
+        yg salah (memotong lewat utara/Selat Malaka) alih-alih menyusuri pantai barat
+        Sumatra spt rute pelabuhan westkust lain. Harus ada waypoint eksplisit spy
+        konsisten & presisi (garis penuh, bukan dashed 'perkiraan')."""
+        for key in ("Aceh→Batavia", "Batavia→Aceh", "Aceh→Tiku"):
+            self.assertIn(f'"{key}"', ATLAS_JS, f"SEA_WAYPOINTS harus punya entri {key}")
+
     def test_modal_shows_full_dates_when_present(self):
         """Penanggalan (rev.10): modal harus menampilkan departure/arrival date penuh,
         bukan cuma tahun — data kargo ikut tanggal voyage."""
