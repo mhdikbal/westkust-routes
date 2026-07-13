@@ -858,3 +858,47 @@ class RisetJaringanViewTest(SimpleTestCase):
         html = self.client.get(reverse("riset_jaringan")).content.decode()
         self.assertIn("EB Garamond", html)
         self.assertIn("Space Grotesk", html)
+
+
+# ─── Dagang Atjeh 1643-1644: halaman ekstraksi laporan dagang (/riset/atjeh-dagang) ──
+class RisetAtjehViewTest(SimpleTestCase):
+    """Halaman /riset/atjeh-dagang render statis; tabel ditarik client-side dari
+    /api/research/atjeh-trade. thesis-only, bukti tipis (Indrapura/Tiku) HARUS
+    tampil jujur -- bukan digambar seolah rute pasti (lihat konteks percakapan:
+    Barus/Pariaman nihil bukti, Indrapura/Tiku sirkumstansial saja)."""
+
+    def test_returns_200(self):
+        resp = self.client.get(reverse("riset_atjeh"))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_noindex_present(self):
+        """Thesis-only: WAJIB noindex (konsisten /riset/tema & /riset/jaringan)."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn("noindex", html)
+        self.assertIn('name="robots"', html)
+
+    def test_uses_atjeh_trade_endpoint_not_hardcoded_data(self):
+        """Tabel ditarik dari endpoint atjeh-trade (bukan data embed statis)."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn("/api/research/atjeh-trade", html)
+
+    def test_uses_salido_fonts(self):
+        """Identitas visual salido.my.id: EB Garamond + Space Grotesk."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn("EB Garamond", html)
+        self.assertIn("Space Grotesk", html)
+
+    def test_surfaces_unverified_caveat(self):
+        """Data blm dicocokkan ke scan asli -- caveat 'unverified'/'belum diverifikasi'
+        wajib terlihat di halaman, bukan cuma di field JSON tersembunyi."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertTrue(
+            "belum diverifikasi" in html.lower() or "unverified" in html.lower()
+        )
+
+    def test_surfaces_barus_pariaman_absence(self):
+        """Kejujuran evidentiary: halaman harus menyebut Barus & Pariaman TIDAK
+        punya bukti langsung di volume ini -- bukan cuma diam soal itu."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn("Barus", html)
+        self.assertIn("Pariaman", html)

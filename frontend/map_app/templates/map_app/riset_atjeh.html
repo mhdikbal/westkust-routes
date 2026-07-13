@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Dagang Atjeh 1643-1644 — Pesisir Barat Sumatra (VOC)</title>
+<style>
+:root{
+  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
+  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4;
+  --accent:#000000; --gold-ink:#6F5407;
+  --warn-bg:#FBF3E4; --warn-line:#D8B978; --warn-ink:#6F5407;
+  --dir-naar:#2C5364; --dir-van:#3A7D70; --dir-in:#B0562A;
+  --serif:"EB Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"Space Grotesk",ui-monospace,Menlo,Consolas,monospace;
+}
+:root[data-theme]{
+  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
+  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4; --accent:#000000;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(20px,4vw,52px) clamp(16px,4vw,44px) 80px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+a{color:inherit}
+.topnav{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.topnav .nav-l{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.topnav .home,.topnav .sib{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
+  font-size:.9rem;font-weight:600;color:var(--ink);text-decoration:none;
+  padding:8px 14px 8px 11px;border:1px solid var(--line);border-radius:999px;transition:.16s}
+.topnav .home:hover,.topnav .sib:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+.topnav .home:focus-visible,.topnav .sib:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.topnav .home svg{width:16px;height:16px}
+.topnav .brand{font-family:var(--serif);font-size:1.1rem;font-weight:600;letter-spacing:.02em;color:var(--muted-dark)}
+
+header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+.eyebrow{font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted-dark);font-weight:600}
+.title{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.4vw,2.7rem);
+  line-height:1.06;letter-spacing:-.01em;margin:.5rem 0 .35rem}
+.title em{font-style:italic;color:var(--accent)}
+.lede{max-width:70ch;color:var(--ink);font-size:1.08rem;line-height:1.55;margin:0 0 4px}
+.prov{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:14px;letter-spacing:.01em}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:22px}
+.tile{background:var(--panel);padding:13px 15px}
+.tile .k{font-family:var(--mono);font-size:1.55rem;font-weight:600;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1}
+.tile .l{font-size:.73rem;color:var(--muted);margin-top:5px;letter-spacing:.02em}
+
+.caveat{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;
+  padding:18px 20px;margin:0 0 24px}
+.caveat h2{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--warn-ink);margin-bottom:8px}
+.caveat p{margin:0 0 8px;font-size:.92rem;color:#4a3c0e;line-height:1.55}
+.caveat p:last-child{margin-bottom:0}
+.caveat b{color:var(--warn-ink)}
+.caveat .port-tag{display:inline-block;font-family:var(--mono);font-size:.78rem;
+  background:#fff;border:1px solid var(--warn-line);border-radius:6px;padding:1px 7px;margin:0 3px}
+.caveat .port-tag.none{text-decoration:line-through;opacity:.7}
+
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:13px 16px;margin-bottom:18px}
+.controls label{font-size:.78rem;color:var(--muted-dark);font-weight:600;margin-right:6px}
+.controls select{font-family:var(--sans);font-size:.88rem;padding:6px 10px;border:1px solid var(--line);
+  border-radius:8px;background:var(--panel)}
+.controls .count{font-family:var(--mono);font-size:.82rem;color:var(--muted);margin-left:auto}
+
+.dir-badge{display:inline-block;font-family:var(--mono);font-size:.68rem;font-weight:600;
+  padding:2px 8px;border-radius:999px;color:#fff;white-space:nowrap}
+.dir-naar_atjeh{background:var(--dir-naar)}
+.dir-van_atjeh{background:var(--dir-van)}
+.dir-in_atjeh{background:var(--dir-in)}
+
+table{width:100%;border-collapse:collapse;font-size:.86rem;background:var(--panel);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+thead th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted-dark);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--line);
+  background:var(--panel-2)}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.rowmain{cursor:pointer}
+tbody tr.rowmain:hover{background:var(--panel-2)}
+td.commodity{font-weight:600}
+td.qty{font-family:var(--mono);white-space:nowrap}
+.rowdetail{display:none;background:var(--panel-2)}
+.rowdetail.open{display:table-row}
+.rowdetail .quote{font-family:var(--serif);font-style:italic;font-size:.94rem;padding:12px 16px;
+  border-left:3px solid var(--line);margin:4px 0}
+.rowdetail .notes{font-size:.84rem;color:var(--muted-dark);padding:0 16px 10px}
+.unconf{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase}
+.empty-note{color:var(--muted);font-style:italic}
+
+footer{margin-top:30px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:.86rem;color:var(--muted-dark)}
+footer h3{font-family:var(--serif);font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--ink)}
+footer p{margin:0 0 10px;line-height:1.55}
+.tag{display:inline-block;font-family:var(--mono);font-size:.72rem;background:var(--panel-2);
+  border:1px solid var(--line);border-radius:5px;padding:2px 7px;margin:2px 4px 2px 0;color:var(--muted)}
+@media (max-width:720px){
+  table, thead, tbody, th, td, tr{display:block}
+  thead{display:none}
+  tbody tr.rowmain{border-bottom:1px solid var(--line);padding:10px 12px}
+  tbody td{border-bottom:none;padding:3px 0}
+  td::before{content:attr(data-label);display:block;font-size:.66rem;text-transform:uppercase;
+    color:var(--muted);letter-spacing:.05em}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="topnav">
+    <div class="nav-l">
+      <a class="home" href="../../">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 19l-7-7 7-7"/><path d="M3 12h18"/></svg>
+        Peta VOC
+      </a>
+      <a class="sib" href="../tema/">Sankey tema</a>
+      <a class="sib" href="../jaringan/">Jaringan pelabuhan</a>
+    </div>
+    <span class="brand">Salido</span>
+  </nav>
+
+  <header>
+    <p class="eyebrow">Ekstraksi Sumber Primer · Dagh-register Batavia 1643-1644</p>
+    <h1 class="title">Laporan Dagang <em>dari &amp; ke Atjeh</em></h1>
+    <p class="lede">25 baris hasil pembacaan manual atas Dagh-register gehouden int casteel Batavia
+      (1643-1644) — kapal, komoditas, dan harga yang tercatat masuk (<b>naar Atjeh</b>), keluar
+      (<b>van Atjeh</b>), atau terjadi di dalam comptoir Atjeh sendiri (<b>in Atjeh</b>).</p>
+    <div class="prov" id="prov">memuat…</div>
+    <div class="tiles" id="tiles"></div>
+  </header>
+
+  <div class="caveat">
+    <h2>Batas bukti — baca sebelum menafsirkan</h2>
+    <p><b>Semua baris berstatus "belum diverifikasi"</b> (confidence_flag=unverified): hasil pembacaan
+      teks OCR PDF (kata sering menempel tanpa spasi), belum dicocokkan ulang terhadap scan halaman asli.</p>
+    <p>Cakupan pelabuhan Sumbar yang ditanyakan — Barus, Tiku, Pariaman, Indrapura —
+      <b>timpang</b>: <span class="port-tag">Indrapura</span> punya bukti diplomatik terkuat
+      (kapal duta besar Atjeh, hlm. 33), <span class="port-tag">Tiku</span> hanya bukti tidak
+      langsung (piutang macet ke comptoir Atjeh, hlm. 137), sedangkan
+      <span class="port-tag none">Barus</span> dan <span class="port-tag none">Pariaman</span>
+      <b>tidak punya satu pun kaitan eksplisit ke Atjeh</b> di volume 1643-1644 ini.</p>
+    <p>Baris bertanda "agregat" mencampur nilai kargo lintas-kapal atau lintas-komoditas — jangan
+      dijumlahkan sebagai volume dagang Atjeh tunggal. Istilah komoditas memakai ejaan asli
+      VOC-Belanda sumber, bukan terjemahan Indonesia.</p>
+  </div>
+
+  <div class="controls">
+    <label for="dirFilter">Arah</label>
+    <select id="dirFilter">
+      <option value="">Semua</option>
+      <option value="naar_atjeh">Masuk Atjeh (naar_atjeh)</option>
+      <option value="van_atjeh">Keluar Atjeh (van_atjeh)</option>
+      <option value="in_atjeh">Di dalam Atjeh (in_atjeh)</option>
+    </select>
+    <span class="count" id="rowCount"></span>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Hlm.</th><th>Tanggal</th><th>Arah</th><th>Komoditas</th>
+        <th>Kuantitas</th><th>Harga</th><th>Aktor</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <footer>
+    <h3>Metode &amp; batas</h3>
+    <p>Sumber: docs/"Dagh-register gehouden int casteel Batavia vant passerende daer ter plaetse
+      als over geheel Nederlandts-India-1643-1644" (352 hlm., di-OCR pypdf). Jurnal harian Batavia
+      di volume ini hanya sampai ±Mei 1644; sisanya "sommier verbael" per pos VOC lain (Malacca,
+      Koromandel, dst.) — 2 baris (hlm. 141, 305) berasal dari verbael tsb yang menyinggung Atjeh.
+      Regex seluruh varian ejaan Atjeh dijalankan ke semua 352 halaman.</p>
+    <p><span class="tag">thesis-only · noindex</span>
+      <span class="tag">route: /riset/atjeh-dagang (tidak di navbar publik)</span>
+      <span class="tag">endpoint: /api/research/atjeh-trade</span>
+      <span class="tag">design: salido.my.id (EB Garamond · Space Grotesk)</span></p>
+  </footer>
+</div>
+
+<script type="module">
+"use strict";
+const API = '/api/research/atjeh-trade';
+const esc = s => String(s ?? '').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const fmt = n => Number(n).toLocaleString('id-ID');
+const DIR_LABEL = {naar_atjeh:'masuk', van_atjeh:'keluar', in_atjeh:'di dalam'};
+
+let ALL = [];
+
+function tile(k,l){ return `<div class="tile"><div class="k mono">${k}</div><div class="l">${l}</div></div>`; }
+
+function renderTiles(meta){
+  const t = document.getElementById('tiles');
+  t.innerHTML = [
+    tile(fmt(meta.n_items), 'baris total'),
+    tile(fmt(meta.by_direction.naar_atjeh||0), 'masuk Atjeh'),
+    tile(fmt(meta.by_direction.van_atjeh||0), 'keluar Atjeh'),
+    tile(fmt(meta.by_direction.in_atjeh||0), 'di dalam Atjeh'),
+  ].join('');
+}
+
+function rowHtml(r){
+  const qty = [r.quantity_raw, r.unit_raw].filter(Boolean).join(' ') || '—';
+  const price = r.price_value ? `${fmt(r.price_value)} ${esc(r.price_unit_raw||'')}` : '—';
+  const commodity = r.commodity_raw ? esc(r.commodity_raw) : '<span class="empty-note">(kosong/ledigh)</span>';
+  return `
+    <tr class="rowmain" data-id="${r.id}">
+      <td data-label="Hlm.">${r.source_page}${r.book_page ? ` <span class="mono" style="color:var(--muted)">(${esc(r.book_page)})</span>` : ''}</td>
+      <td data-label="Tanggal">${esc(r.entry_date_raw || '—')}</td>
+      <td data-label="Arah"><span class="dir-badge dir-${r.direction}">${DIR_LABEL[r.direction]||r.direction}</span></td>
+      <td data-label="Komoditas" class="commodity">${commodity}</td>
+      <td data-label="Kuantitas" class="qty">${esc(qty)}</td>
+      <td data-label="Harga" class="qty">${esc(price)}</td>
+      <td data-label="Aktor">${esc(r.actor_raw || '—')}</td>
+    </tr>
+    <tr class="rowdetail" id="detail-${r.id}">
+      <td colspan="7">
+        <div class="quote">&ldquo;${esc(r.text_asli)}&rdquo;</div>
+        ${r.notes ? `<div class="notes">${esc(r.notes)}</div>` : ''}
+        <div class="notes unconf">confidence_flag: ${esc(r.confidence_flag)}</div>
+      </td>
+    </tr>`;
+}
+
+function render(rows){
+  document.getElementById('tbody').innerHTML = rows.map(rowHtml).join('');
+  document.getElementById('rowCount').textContent = `${rows.length} baris ditampilkan`;
+  document.querySelectorAll('tr.rowmain').forEach(tr=>{
+    tr.addEventListener('click', ()=>{
+      document.getElementById(`detail-${tr.dataset.id}`).classList.toggle('open');
+    });
+  });
+}
+
+document.getElementById('dirFilter').addEventListener('change', e=>{
+  const v = e.target.value;
+  render(v ? ALL.filter(r=>r.direction===v) : ALL);
+});
+
+fetch(API).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }).then(data=>{
+  ALL = data.items;
+  renderTiles(data.meta);
+  document.getElementById('prov').textContent =
+    `${data.meta.n_items} baris · sumber: atjeh_trade_records · dimuat ${new Date().toLocaleDateString('id-ID')}`;
+  render(ALL);
+}).catch(err=>{
+  document.getElementById('tbody').innerHTML =
+    `<tr><td colspan="7" class="empty-note">Gagal memuat data (${esc(err.message)}).</td></tr>`;
+});
+</script>
+</body>
+</html>

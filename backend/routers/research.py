@@ -15,7 +15,7 @@ from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
-from models import ResearchThemeRow
+from models import ResearchThemeRow, AtjehTradeRecord
 # reuse skema Sankey yang sudah ada (PRD: "format sama dgn SankeyResponse")
 from routers.voyages import SankeyResponse, SankeyNode, SankeyLink
 # cache-aside Redis (ADR-001) — degradasi anggun bila Redis mati (cache_get -> None)
@@ -362,6 +362,68 @@ async def get_network_pelabuhan(
         "n_multiport": n_multiport,
     }
     payload = NetworkResponse(nodes=nodes, edges=edges, meta=meta).model_dump()
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
+
+
+# ─── Dagang Atjeh 1643-1644 ──────────────────────────────────────────────────
+# Sumber: tabel atjeh_trade_records (hasil ekstraksi manual Dagh-register Batavia
+# 1643-1644, dimuat via seed_atjeh_trade.py). commodity_raw/unit_raw/actor_raw
+# SENGAJA ejaan asli VOC-Belanda, bukan terjemahan -- lihat CommodityGlossary
+# utk padanan. Semua baris confidence_flag='unverified' (blm dicocokkan scan asli).
+
+class AtjehTradeItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    source_page: int
+    book_page: Optional[str] = None
+    entry_date_raw: Optional[str] = None
+    direction: str
+    commodity_raw: Optional[str] = None
+    quantity_raw: Optional[str] = None
+    unit_raw: Optional[str] = None
+    price_value: Optional[float] = None
+    price_unit_raw: Optional[str] = None
+    actor_raw: Optional[str] = None
+    text_asli: str
+    confidence_flag: str
+    notes: Optional[str] = None
+
+
+class AtjehTradeResponse(BaseModel):
+    items: List[AtjehTradeItem]
+    meta: dict
+
+
+@router.get("/atjeh-trade", response_model=AtjehTradeResponse)
+async def get_atjeh_trade(
+    response: Response,
+    direction: Optional[str] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """Daftar baris atjeh_trade_records, urut halaman sumber. Filter direction
+    opsional ('naar_atjeh'|'van_atjeh'|'in_atjeh'). Cache-aside Redis."""
+    cache_key = make_key("research_atjeh_trade", {"direction": direction})
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
+    query = select(AtjehTradeRecord).order_by(
+        AtjehTradeRecord.source_page, AtjehTradeRecord.id
+    )
+    if direction:
+        query = query.where(AtjehTradeRecord.direction == direction.lower())
+    rows = (await db.execute(query)).scalars().all()
+
+    items = [AtjehTradeItem.model_validate(r) for r in rows]
+    by_direction = defaultdict(int)
+    for r in rows:
+        by_direction[r.direction] += 1
+
+    meta = {"n_items": len(items), "by_direction": dict(by_direction)}
+    payload = AtjehTradeResponse(items=items, meta=meta).model_dump()
     await cache_set(cache_key, payload)
     response.headers["X-Cache"] = "MISS"
     return payload

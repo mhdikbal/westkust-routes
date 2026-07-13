@@ -27,6 +27,14 @@ def riset_jaringan(request):
     return render(request, "map_app/riset_jaringan.html")
 
 
+def riset_atjeh(request):
+    """Dagang Atjeh 1643-1644 — laporan dagang dari/ke Atjeh (thesis-only, /riset/atjeh-dagang).
+    Halaman statis: tabel ditarik client-side dari /api/research/atjeh-trade (nginx
+    proxy). noindex + tidak di navbar publik (konsisten /riset/tema, /riset/jaringan).
+    Identitas visual salido.my.id (EB Garamond + Space Grotesk)."""
+    return render(request, "map_app/riset_atjeh.html")
+
+
 def port_detail(request, slug):
     """Detail page for a single VOC port/fort."""
     # Convert slug to title-cased name (e.g. "pulau-cingkuak" → "Pulau Cingkuak")
