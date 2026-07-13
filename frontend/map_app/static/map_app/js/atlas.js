@@ -62,6 +62,12 @@ const SEA_WAYPOINTS = {
   "Batavia→Aceh":  [[-5.9, 105.4], [-5.2, 100.8], [-1.0, 96.5], [3.5, 95.0]],
   "Aceh→Tiku":     [[3.5, 95.0], [-1.0, 96.5], [-0.72, 99.72]],
   "Tiku→Aceh":     [[-0.72, 99.72], [-1.0, 96.5], [3.5, 95.0]],
+  // Pariaman & Inderapura -- dipakai jalur kekuasaan (drawPowerRoutes), bukan rute
+  // pelayaran (tak ada voyage tercatat utk pasangan ini, cuma bukti politik/
+  // administratif: panglima berkedudukan, pejabat pungut-tol, dst). Koridor sama
+  // spt Aceh->Tiku, titik akhir digeser ke posisi masing2 pelabuhan.
+  "Aceh→Pariaman": [[3.5, 95.0], [-1.0, 96.5], [-0.85, 99.9]],
+  "Aceh→Inderapura": [[3.5, 95.0], [-1.0, 96.5], [-1.5, 100.5]],
   // Inderapura -- sama koridor Air Haji (garis lintang berdekatan), jatuh ke fallback
   // bezier tanpa ini (pola bug yg sama, lihat komentar Aceh di atas).
   "Inderapura→Batavia": [[-3.7, 99.6], [-5.6, 101.9], [-5.9, 105.4]],
@@ -98,7 +104,7 @@ const PAGE_SIZE = 20;
 /* ─────────────────────────────────────────────────────────────────────────────
    State
    ───────────────────────────────────────────────────────────────────────────── */
-let map, routeLines = [];
+let map, routeLines = [], powerLines = [];
 let activeMarker = null, allFortsData = [];
 let activeTab = "outbound";
 let currentData = { outbound: [], inbound: [], info: "" };
@@ -349,6 +355,66 @@ async function drawRoutes(yFrom, yTo) {
   });
 }
 
+const POWER_ROUTE_COLOR = "#6B4C8A"; // sama dgn warna badge "politik" di riset_atjeh.html
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Jalur kekuasaan Aceh (drawPowerRoutes) -- BUKAN rute pelayaran kapal. User
+   minta hubungan Aceh<->pantai-barat (Pariaman, Inderapura, dst) tetap kelihatan
+   di peta sbg garis, walau tak ada voyage tercatat utk pasangan itu -- cuma
+   bukti politik/administratif (atjeh_trade_records direction=politik: pejabat
+   pungut-tol, panglima berkedudukan, dst). Digambar statis (bukan antPath
+   animasi) + warna/gaya beda dari garis pelayaran, supaya pembaca peta tak
+   salah kira ini rute kapal terverifikasi.
+   ───────────────────────────────────────────────────────────────────────────── */
+function drawPowerRoutes(politicalRows, forts) {
+  powerLines.forEach(l => map.removeLayer(l));
+  powerLines = [];
+
+  const acehCoords = FORT_COORDS["Aceh"];
+  if (!acehCoords || !politicalRows.length) return;
+
+  forts.forEach(f => {
+    // Aceh sendiri bukan target garis; Batavia dilewati krn semua baris politik
+    // dilaporkan/dicatat DI Batavia (VOC HQ) -- cocok trivial, bukan hubungan
+    // kekuasaan Aceh->Batavia yg berarti.
+    if (f.name === "Aceh" || f.name === "Batavia") return;
+    const matches = politicalNotesForFort(f.name, politicalRows);
+    if (matches.length === 0) return;
+
+    const coords = FORT_COORDS[f.name];
+    if (!coords) return;
+
+    const routeKey = `Aceh→${f.name}`;
+    const vias = SEA_WAYPOINTS[routeKey];
+    const pts = vias ? [acehCoords, ...vias, coords] : getBezierCurve(acehCoords, coords, 0.25);
+
+    const line = L.polyline(pts, {
+      color: POWER_ROUTE_COLOR,
+      weight: 1.5,
+      opacity: 0.55,
+      dashArray: [2, 8],
+    }).addTo(map);
+
+    const items = matches.slice(0, 3).map(m => {
+      const note = (m.notes || "").replace(/^BUKAN transaksi \w+\s*--\s*/i, "");
+      const short = note.length > 130 ? note.slice(0, 130) + "…" : note;
+      return `<div style="margin-top:3px;"><b>${esc(m.entry_date_raw || m.source_document)}</b> — ${esc(short)}</div>`;
+    }).join("");
+    const more = matches.length > 3 ? `<div style="margin-top:2px;font-style:italic;">+${matches.length - 3} catatan lainnya</div>` : "";
+
+    line.bindTooltip(`
+      <div style="font-family:'Playfair Display',serif;font-weight:700;border-bottom:1px solid #eee;padding-bottom:3px;margin-bottom:3px;">
+        Aceh &harr; ${esc(f.name)} — jalur kekuasaan
+      </div>
+      <div style="font-size:.72rem;max-width:260px;">
+        <span style="color:${POWER_ROUTE_COLOR};font-style:italic;">Bukti politik/administratif -- BUKAN rute pelayaran kapal</span>
+        ${items}${more}
+      </div>`, { sticky: true, maxWidth: 280 });
+
+    powerLines.push(line);
+  });
+}
+
 /* ─────────────────────────────────────────────────────────────────────────────
    Direction toggle (US-05)
    ───────────────────────────────────────────────────────────────────────────── */
@@ -483,6 +549,11 @@ async function loadFortsAndRoutes() {
     marker._fortData = f;
     f._marker = marker;
   });
+
+  // Jalur kekuasaan Aceh (bukan rute pelayaran) -- statis, tak terikat filter tahun
+  // (data politik/administratif terlalu sedikit & tak berstruktur cukup utk difilter
+  // per-dekade spt voyage; ditampilkan penuh sepanjang waktu).
+  drawPowerRoutes(politicalRows, forts);
 
   // Draw routes for default year range
   await drawRoutes(yearFrom, yearTo);

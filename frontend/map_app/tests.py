@@ -414,6 +414,32 @@ class SourceToggleTest(SimpleTestCase):
         f.name polos spt sebelumnya -- regresi kalau ada yg refactor balik diam-diam."""
         self.assertIn("marker.bindTooltip(fortTooltipHtml(f, politicalRows)", ATLAS_JS)
 
+    def test_power_routes_drawn_for_political_evidence_without_voyage(self):
+        """User: tooltip saja tak cukup, hubungan Aceh<->Pariaman/Inderapura (cuma
+        bukti politik, tak ada voyage tercatat) harus tetap kelihatan sbg GARIS di
+        peta -- bukan cuma teks hover pelabuhan. Garis ini "jalur kekuasaan", HARUS
+        beda gaya dari garis pelayaran asli (bukan antPath animasi, warna beda,
+        tooltip eksplisit bilang bukan rute kapal) supaya tak menyesatkan pembaca."""
+        self.assertIn("function drawPowerRoutes(", ATLAS_JS)
+        self.assertIn("drawPowerRoutes(politicalRows, forts)", ATLAS_JS)
+        self.assertIn("POWER_ROUTE_COLOR", ATLAS_JS)
+        self.assertIn("BUKAN rute pelayaran kapal", ATLAS_JS)
+        self.assertIn("jalur kekuasaan", ATLAS_JS)
+
+    def test_power_routes_skip_batavia_false_positive(self):
+        """Batavia (VOC HQ, tempat semua laporan politik dicatat) trivial cocok di
+        hampir semua baris politik lewat PORT_TEXT_ALIASES fallback -- HARUS
+        dilewati eksplisit, bukan digambar sbg 'jalur kekuasaan Aceh->Batavia'
+        yg tak berarti. Ketahuan via verifikasi Playwright 2026-07-13."""
+        self.assertIn('f.name === "Aceh" || f.name === "Batavia"', ATLAS_JS)
+
+    def test_power_routes_have_waypoints_for_pariaman_and_inderapura(self):
+        """Aceh->Pariaman & Aceh->Inderapura butuh waypoint eksplisit spt Aceh->Tiku
+        sebelumnya -- tanpa ini jatuh ke fallback bezier yg bisa salah arah (pola
+        bug berulang, lihat feedback_sisir_semua_titik_pemakaian)."""
+        for key in ("Aceh→Pariaman", "Aceh→Inderapura"):
+            self.assertIn(f'"{key}"', ATLAS_JS, f"SEA_WAYPOINTS harus punya entri {key}")
+
     def test_political_note_prefix_strip_covers_both_phrasings(self):
         """CSV atjeh_trade.csv pakai dua frasa awalan berbeda ('BUKAN transaksi
         dagang' & 'BUKAN transaksi tunggal') -- regex strip di tooltip harus generik
