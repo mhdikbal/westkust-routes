@@ -378,6 +378,41 @@ class SourceToggleTest(SimpleTestCase):
         for key in ("Aceh→Batavia", "Batavia→Aceh", "Aceh→Tiku"):
             self.assertIn(f'"{key}"', ATLAS_JS, f"SEA_WAYPOINTS harus punya entri {key}")
 
+    def test_inderapura_routes_have_explicit_sea_waypoints(self):
+        """Pola bug sama dgn Aceh (test di atas) -- Inderapura<->Batavia & Padang<->
+        Inderapura tak punya waypoint eksplisit, jatuh ke fallback bezier. Ketahuan
+        2026-07-13 saat cek rute jacht Sardam (voyage 1636)."""
+        for key in ("Inderapura→Batavia", "Batavia→Inderapura", "Padang→Inderapura", "Inderapura→Padang"):
+            self.assertIn(f'"{key}"', ATLAS_JS, f"SEA_WAYPOINTS harus punya entri {key}")
+
+    def test_route_tooltip_shows_ship_names(self):
+        """P-ship-tooltip (2026-07-13): tooltip garis rute harus tampilkan rincian
+        nama kapal individual, bukan cuma angka agregat 'N Pelayaran' -- diminta user
+        utk riset tesis (mis. rute Aceh<->Batavia yg cuma beberapa pelayaran)."""
+        self.assertIn("r.ship_names", ATLAS_JS)
+        self.assertIn("Kapal:", ATLAS_JS)
+
+    def test_fort_tooltip_surfaces_political_notes(self):
+        """User minta temuan politik/administratif Atjeh (klaim yurisdiksi, pejabat
+        pungut-tol di Indrapura, dst -- SEBELUMNYA cuma ada di /riset/atjeh-dagang)
+        ikut muncul di tooltip marker pelabuhan terkait, bukan garis rute baru."""
+        self.assertIn("function loadPoliticalNotes(", ATLAS_JS)
+        self.assertIn("function politicalNotesForFort(", ATLAS_JS)
+        self.assertIn("function fortTooltipHtml(", ATLAS_JS)
+        self.assertIn("PORT_TEXT_ALIASES", ATLAS_JS)
+        self.assertIn("BUKAN transaksi", ATLAS_JS)
+
+    def test_fort_marker_uses_political_tooltip_helper(self):
+        """Marker pelabuhan harus benar-benar pakai fortTooltipHtml(), bukan cuma
+        f.name polos spt sebelumnya -- regresi kalau ada yg refactor balik diam-diam."""
+        self.assertIn("marker.bindTooltip(fortTooltipHtml(f, politicalRows)", ATLAS_JS)
+
+    def test_political_note_prefix_strip_covers_both_phrasings(self):
+        """CSV atjeh_trade.csv pakai dua frasa awalan berbeda ('BUKAN transaksi
+        dagang' & 'BUKAN transaksi tunggal') -- regex strip di tooltip harus generik
+        \\w+ supaya cocok keduanya, bukan hardcode satu kata. Regresi 2026-07-13."""
+        self.assertIn(r"BUKAN transaksi \w+", ATLAS_JS)
+
     def test_modal_shows_full_dates_when_present(self):
         """Penanggalan (rev.10): modal harus menampilkan departure/arrival date penuh,
         bukan cuma tahun — data kargo ikut tanggal voyage."""

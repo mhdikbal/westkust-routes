@@ -55,6 +55,9 @@ class VoyageSchema(BaseModel):
     source: str = "bgb_huygens"
 
 
+ROUTE_SHIP_NAMES_CAP = 12  # cegah payload membengkak utk rute ramai (mis. Padang-Batavia 220x)
+
+
 class RouteAggregation(BaseModel):
     """Aggregated route data for map visualization."""
     origin_name: Optional[str] = None
@@ -67,6 +70,7 @@ class RouteAggregation(BaseModel):
     count: int
     total_value: float
     source: str = "bgb_huygens"
+    ship_names: List[str] = []
 
 
 class VoyageStatsResponse(BaseModel):
@@ -317,6 +321,7 @@ async def get_voyage_routes(
             Voyage.source,
             func.count(Voyage.id).label("count"),
             func.coalesce(func.sum(Voyage.total_gulden), 0).label("total_value"),
+            func.array_agg(Voyage.ship_name.distinct()).filter(Voyage.ship_name.isnot(None)).label("ship_names"),
         )
         .outerjoin(OriginFort, Voyage.origin_id == OriginFort.c.id)
         .outerjoin(DestFort, Voyage.destination_id == DestFort.c.id)
@@ -363,6 +368,7 @@ async def get_voyage_routes(
             count=r.count,
             total_value=float(r.total_value),
             source=getattr(r, "source", None) or "bgb_huygens",
+            ship_names=list(getattr(r, "ship_names", None) or [])[:ROUTE_SHIP_NAMES_CAP],
         )
         for r in routes
     ]

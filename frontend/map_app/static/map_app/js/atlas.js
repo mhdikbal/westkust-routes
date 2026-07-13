@@ -62,6 +62,22 @@ const SEA_WAYPOINTS = {
   "Batavia→Aceh":  [[-5.9, 105.4], [-5.2, 100.8], [-1.0, 96.5], [3.5, 95.0]],
   "Aceh→Tiku":     [[3.5, 95.0], [-1.0, 96.5], [-0.72, 99.72]],
   "Tiku→Aceh":     [[-0.72, 99.72], [-1.0, 96.5], [3.5, 95.0]],
+  // Inderapura -- sama koridor Air Haji (garis lintang berdekatan), jatuh ke fallback
+  // bezier tanpa ini (pola bug yg sama, lihat komentar Aceh di atas).
+  "Inderapura→Batavia": [[-3.7, 99.6], [-5.6, 101.9], [-5.9, 105.4]],
+  "Batavia→Inderapura": [[-5.9, 105.4], [-5.6, 101.9], [-3.7, 99.6]],
+  "Padang→Inderapura":  [[-1.5, 100.5]],
+  "Inderapura→Padang":  [[-1.5, 100.5]],
+};
+
+// Ejaan alternatif nama pelabuhan yg dipakai sumber Dagh-register (VOC-Belanda) --
+// dipakai utk mencocokkan atjeh_trade_records (teks bebas) ke fort tertentu di tooltip.
+const PORT_TEXT_ALIASES = {
+  "Aceh":       ["atjeh", "atchijn", "atchin", "atchien", "aetchijn", "aetchin", "aceh"],
+  "Inderapura": ["indrapura", "indrapoura", "inderapura"],
+  "Tiku":       ["tiku", "ticouw", "tiecko"],
+  "Pariaman":   ["pariaman", "priaman"],
+  "Barus":      ["barus", "baros"],
 };
 
 // Icon class per port type for welcome grid
@@ -309,6 +325,14 @@ async function drawRoutes(yFrom, yTo) {
     // P0.3b — label sumber di tooltip (BUKAN warna baru, hindari bentrok dgn kanal arah/presisi yg sudah ada)
     const sourceLabel = SOURCE_LABELS[r.source] || null;
 
+    // Rincian nama kapal per rute (P-ship-tooltip) -- ship_names sudah dibatasi
+    // 12 dari backend; sisanya (kalau ada) cukup dihitung dari count, bukan dikirim semua.
+    const shipNames = r.ship_names || [];
+    const shipRest = r.count - shipNames.length;
+    const shipsHtml = shipNames.length
+      ? `<br><span style="opacity:.85;">Kapal: ${shipNames.map(esc).join(', ')}${shipRest > 0 ? ` <i>+${shipRest} lainnya</i>` : ''}</span>`
+      : '';
+
     ant.bindTooltip(`
       <div style="font-family:'Playfair Display',serif;font-weight:700;border-bottom:1px solid #eee;padding-bottom:3px;margin-bottom:3px;">
         ${esc(r.origin_name)} &rarr; ${esc(r.destination_name)}
@@ -316,9 +340,10 @@ async function drawRoutes(yFrom, yTo) {
       <div style="font-size:.75rem;">
         <span style="font-weight:700;">${r.count}</span> Pelayaran
         <br>Volume: <span style="color:#B85D19;">ƒ ${fmt(r.total_value)}</span>
+        ${shipsHtml}
         ${approx ? '<br><span style="color:#8B9E97;font-style:italic;">rute perkiraan</span>' : ''}
         ${sourceLabel ? `<br><span style="color:${sourceLabel.color};font-style:italic;">${sourceLabel.text}</span>` : ''}
-      </div>`, { sticky: true });
+      </div>`, { sticky: true, maxWidth: 280 });
 
     routeLines.push(ant);
   });
@@ -356,13 +381,61 @@ function setSource(src) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   Fakta politik/administratif Atjeh (atjeh_trade_records, direction=in_atjeh,
+   baris "BUKAN transaksi dagang") -- ditautkan ke marker pelabuhan via
+   PORT_TEXT_ALIASES, tampil di tooltip hover (bukan garis rute baru).
+   ───────────────────────────────────────────────────────────────────────────── */
+async function loadPoliticalNotes() {
+  try {
+    const res = await fetch(`${API}/research/atjeh-trade?direction=in_atjeh`);
+    const data = await res.json();
+    const items = data.items || [];
+    return items.filter(it => (it.notes || "").includes("BUKAN transaksi"));
+  } catch (e) {
+    console.warn("loadPoliticalNotes error:", e);
+    return [];
+  }
+}
+
+function politicalNotesForFort(fortName, politicalRows) {
+  const aliases = PORT_TEXT_ALIASES[fortName] || [fortName.toLowerCase()];
+  return politicalRows.filter(row => {
+    const haystack = `${row.actor_raw || ""} ${row.notes || ""} ${row.text_asli || ""}`.toLowerCase();
+    return aliases.some(alias => haystack.includes(alias));
+  });
+}
+
+function fortTooltipHtml(f, politicalRows) {
+  const matches = politicalNotesForFort(f.name, politicalRows);
+  if (matches.length === 0) return esc(f.name);
+
+  const items = matches.slice(0, 3).map(m => {
+    const note = (m.notes || "").replace(/^BUKAN transaksi \w+\s*--\s*/i, "");
+    const short = note.length > 140 ? note.slice(0, 140) + "…" : note;
+    return `<div style="margin-top:3px;"><b>${esc(m.entry_date_raw || m.source_document)}</b> — ${esc(short)}</div>`;
+  }).join("");
+  const more = matches.length > 3 ? `<div style="margin-top:2px;font-style:italic;">+${matches.length - 3} catatan lainnya</div>` : "";
+
+  return `
+    <div style="font-family:'Playfair Display',serif;font-weight:700;">${esc(f.name)}</div>
+    <div style="font-size:.72rem;max-width:260px;">
+      <span style="opacity:.75;">Catatan politik/administratif Atjeh:</span>
+      ${items}${more}
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    Load forts + routes, populate welcome grid
    ───────────────────────────────────────────────────────────────────────────── */
 async function loadFortsAndRoutes() {
-  let forts;
+  let forts, politicalRows;
   try {
-    const res = await fetch(`${API}/forts/`);
-    forts = await res.json();
+    const [fortsRes, political] = await Promise.all([
+      fetch(`${API}/forts/`).then(r => r.json()),
+      loadPoliticalNotes(),
+    ]);
+    forts = fortsRes;
+    politicalRows = political;
   } catch (e) {
     console.warn("loadForts error:", e);
     return;
@@ -405,7 +478,7 @@ async function loadFortsAndRoutes() {
     const coords = FORT_COORDS[f.name];
     if (!coords) return;
     const marker = L.marker(coords, { icon: fortIcon(f, false) }).addTo(map);
-    marker.bindTooltip(f.name);
+    marker.bindTooltip(fortTooltipHtml(f, politicalRows), { maxWidth: 280 });
     marker.on("click", () => openFort(f, marker));
     marker._fortData = f;
     f._marker = marker;

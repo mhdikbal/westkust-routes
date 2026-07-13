@@ -324,6 +324,7 @@ def make_route_row(**kwargs):
         "count": 5,
         "total_value": 123456.0,
         "source": "bgb_huygens",
+        "ship_names": ["fluijt Remedie"],
     }
     defaults.update(kwargs)
     return SimpleNamespace(**defaults)
@@ -456,6 +457,60 @@ async def test_routes_filter_by_source():
     data = response.json()
     assert len(data) == 1
     assert data[0]["source"] == "daghregister_batavia"
+
+
+# ─── Tests: ship_names di GET /api/voyages/routes (rincian kapal utk tooltip) ─
+
+@pytest.mark.asyncio
+async def test_routes_includes_ship_names():
+    """Tiap rute agregat harus punya daftar nama kapal individual -- dipakai
+    frontend utk rincian per-kapal di tooltip garis rute, bukan cuma angka
+    agregat 'N Pelayaran'."""
+    row = make_route_row(ship_names=["jacht Sardam", "schip de Revengie"])
+
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.return_value = make_rows_result([row])
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/routes")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data[0]["ship_names"] == ["jacht Sardam", "schip de Revengie"]
+
+
+@pytest.mark.asyncio
+async def test_routes_ship_names_capped():
+    """Rute ramai (mis. Padang-Batavia 220 pelayaran) TIDAK boleh kirim
+    seluruh nama kapal ke frontend -- payload membengkak percuma. Dibatasi
+    ke 12 nama, sisanya cukup dihitung via field count yg sudah ada."""
+    many_ships = [f"kapal {i}" for i in range(20)]
+    row = make_route_row(count=20, ship_names=many_ships)
+
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.return_value = make_rows_result([row])
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/routes")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data[0]["ship_names"]) == 12
+    assert data[0]["count"] == 20
 
 
 # ─── SEC: limit/skip negatif harus 422, bukan 500 (Red Team 3 Jul 2026) ─────
