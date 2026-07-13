@@ -74,9 +74,9 @@ class TestParseRow:
             parse_row(row)
 
     def test_missing_source_document_rejected(self):
-        """Dua volume PDF sekarang jadi sumber -- source_document wajib ada
+        """Tiga volume PDF sekarang jadi sumber -- source_document wajib ada
         supaya source_page tak ambigu antar volume (mis. p164 beda isi di
-        1643-1644 vs 1631-1634)."""
+        1643-1644 vs 1631-1634 vs 1637)."""
         row = {
             "source_document": "",
             "source_page": "1", "book_page": "", "entry_date_raw": "",
@@ -121,11 +121,23 @@ class TestCsvIntegrity:
         assert "van_atjeh" in directions
         assert "naar_atjeh" in directions
 
-    def test_both_volumes_represented(self, rows):
-        """Dua volume Dagh-register sudah disisir (1643-1644 dan 1631-1634)."""
+    def test_all_volumes_represented(self, rows):
+        """Tiga volume Dagh-register sudah disisir (1643-1644, 1631-1634, 1637)."""
         docs = {r["source_document"] for r in rows}
         assert "1643-1644" in docs
         assert "1631-1634" in docs
+        assert "1637" in docs
+
+    def test_political_facts_marked_not_trade(self, rows):
+        """Baris fakta politik/administratif (klaim yurisdiksi, penegakan tol,
+        suksesi raja -- bukan transaksi dagang) harus ditandai eksplisit "BUKAN
+        transaksi" di notes, supaya tak salah dijumlah sbg volume dagang.
+        Regresi 2026-07-13 (re-sisir setelah perbaikan regex)."""
+        political = [r for r in rows if "BUKAN transaksi" in (r["notes"] or "")]
+        assert len(political) >= 5
+        for r in political:
+            assert r["price_value"] is None, \
+                f"baris p{r['source_page']} ditandai bukan-transaksi tapi punya price_value"
 
     def test_every_row_has_source_document(self, rows):
         for r in rows:

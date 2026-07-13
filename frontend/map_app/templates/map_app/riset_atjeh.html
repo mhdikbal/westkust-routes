@@ -132,12 +132,14 @@ footer p{margin:0 0 10px;line-height:1.55}
   </nav>
 
   <header>
-    <p class="eyebrow">Ekstraksi Sumber Primer · Dagh-register Batavia 1643-1644 &amp; 1631-1634</p>
+    <p class="eyebrow">Ekstraksi Sumber Primer · Dagh-register Batavia 1643-1644, 1631-1634 &amp; 1637</p>
     <h1 class="title">Laporan Dagang <em>dari &amp; ke Atjeh</em></h1>
-    <p class="lede">45 baris hasil pembacaan manual atas dua volume Dagh-register gehouden int
-      casteel Batavia — <b>1643-1644</b> dan <b>1631-1634</b> — kapal, komoditas, harga, dan
-      kebijakan dagang yang tercatat masuk (<b>naar Atjeh</b>), keluar (<b>van Atjeh</b>), atau
-      terjadi di dalam comptoir/wilayah kekuasaan Atjeh sendiri (<b>in Atjeh</b>).</p>
+    <p class="lede">53 baris hasil pembacaan manual atas tiga volume Dagh-register gehouden int
+      casteel Batavia — <b>1643-1644</b>, <b>1631-1634</b>, dan <b>1637</b> — kapal, komoditas, harga,
+      dan kebijakan dagang yang tercatat masuk (<b>naar Atjeh</b>), keluar (<b>van Atjeh</b>), atau
+      terjadi di dalam comptoir/wilayah kekuasaan Atjeh sendiri (<b>in Atjeh</b>). Sebagian baris
+      "in_atjeh" adalah fakta politik/administratif (klaim yurisdiksi, penegakan tol, suksesi raja),
+      bukan transaksi dagang — ditandai eksplisit di kolom notes.</p>
     <div class="prov" id="prov">memuat…</div>
     <div class="tiles" id="tiles"></div>
   </header>
@@ -151,9 +153,18 @@ footer p{margin:0 0 10px;line-height:1.55}
       berizin — <span class="port-tag">Tiku</span>, <span class="port-tag">Pariaman</span>, dan
       <span class="port-tag">Indrapura</span> — supaya tol bisa dipungut terpusat, ditegakkan lewat
       komisaris resmi, maklumat (placcaten), dan pasukan Atjeh. Perak juga tercatat di bawah
-      kedaulatan Atjeh, konsisten di kedua volume (selisih 11 tahun).</p>
+      kedaulatan Atjeh, konsisten di kedua volume (selisih 11 tahun). Bukti penegakan konkret:
+      12 galei dikirim ke Indrapura khusus memungut tol (1633); begitu pejabat Atjeh meninggalkan
+      Indrapura, dagang pepper kembali ke "pola lama" (1634) — indikasi kehadiran administratif
+      berdampak langsung.</p>
+    <p><b>Temuan volume 1637:</b> panglima/wakil Raja Atjeh dikonfirmasi berkedudukan
+      (<i>resideerende</i>) di <b>Tiku DAN Pariaman</b> sekaligus, bukan cuma Indrapura. Raja Atjeh
+      wafat awal 1637 (~14 hari sebelumnya mencekik putra satu-satunya, pewaris takhta). Volume
+      1643-1644 mengonfirmasi penguasa Atjeh saat itu seorang <b>perempuan</b> ("Hare Maijt"/ratu,
+      konsisten dgn Sultana Safiatuddin) — protokol diplomatik VOC mencatat statusnya jauh di atas
+      Pangeran Palembang.</p>
     <p>Cakupan pelabuhan Sumbar yang ditanyakan tetap timpang: <span class="port-tag none">Barus</span>
-      <b>tidak punya satu pun kaitan eksplisit ke Atjeh</b> di kedua volume yang sudah disisir.</p>
+      <b>tidak punya satu pun kaitan eksplisit ke Atjeh</b> di ketiga volume yang sudah disisir.</p>
     <p>Baris bertanda "agregat" mencampur nilai kargo lintas-kapal atau lintas-komoditas — jangan
       dijumlahkan sebagai volume dagang Atjeh tunggal. Istilah komoditas memakai ejaan asli
       VOC-Belanda sumber, bukan terjemahan Indonesia.</p>
@@ -172,6 +183,7 @@ footer p{margin:0 0 10px;line-height:1.55}
       <option value="">Semua</option>
       <option value="1643-1644">1643-1644</option>
       <option value="1631-1634">1631-1634</option>
+      <option value="1637">1637</option>
     </select>
     <span class="count" id="rowCount"></span>
   </div>
@@ -189,11 +201,13 @@ footer p{margin:0 0 10px;line-height:1.55}
   <footer>
     <h3>Metode &amp; batas</h3>
     <p>Sumber: docs/"Dagh-register gehouden int casteel Batavia vant passerende daer ter plaetse
-      als over geheel Nederlandts-India-1643-1644" (352 hlm.) dan docs/"Dagh-register gehouden int
-      casteel Batavia vant passerende daer ter plaetse als over geheel Nederlandts-India 1631-1634"
-      (493 hlm.), keduanya di-OCR pypdf. Jurnal harian Batavia di volume 1643-1644 hanya sampai
-      ±Mei 1644; sisanya "sommier verbael" per pos VOC lain (Malacca, Koromandel, dst.). Regex
-      seluruh varian ejaan Atjeh dijalankan ke semua halaman kedua volume.</p>
+      als over geheel Nederlandts-India-1643-1644" (352 hlm.), docs/"...1631-1634" (493 hlm.), dan
+      docs/"...1637" (331 hlm.), ketiganya di-OCR pypdf. Jurnal harian Batavia di volume 1643-1644
+      hanya sampai ±Mei 1644; sisanya "sommier verbael" per pos VOC lain (Malacca, Koromandel, dst.).
+      Regex seluruh varian ejaan Atjeh dijalankan ke semua halaman ketiga volume — regex awal
+      (`a[et]tch[ei]n|atjeh|...`) ternyata tak menangkap ejaan dominan "Atchijn"/"Atchin"/"Atchien"
+      (diperbaiki 2026-07-13 jadi `atch\w*|aetch\w*|atjeh\w*|...`); volume 1643-1644 & 1631-1634
+      sudah disisir ulang dgn regex yg benar.</p>
     <p><span class="tag">thesis-only · noindex</span>
       <span class="tag">route: /riset/atjeh-dagang (tidak di navbar publik)</span>
       <span class="tag">endpoint: /api/research/atjeh-trade</span>
@@ -221,6 +235,7 @@ function renderTiles(meta){
     tile(fmt(meta.by_direction.in_atjeh||0), 'di dalam Atjeh'),
     tile(fmt(meta.by_document['1643-1644']||0), 'vol. 1643-1644'),
     tile(fmt(meta.by_document['1631-1634']||0), 'vol. 1631-1634'),
+    tile(fmt(meta.by_document['1637']||0), 'vol. 1637'),
   ].join('');
 }
 

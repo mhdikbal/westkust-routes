@@ -2,8 +2,8 @@
 seed_atjeh_trade.py
 
 Muat data/research/atjeh_trade.csv (ekstraksi manual laporan dagang dari/ke/di
-Atjeh, sumber: dua volume docs/"Dagh-register gehouden int casteel Batavia"
--- 1643-1644 dan 1631-1634) ke tabel atjeh_trade_records. Idempotent --
+Atjeh, sumber: tiga volume docs/"Dagh-register gehouden int casteel Batavia"
+-- 1643-1644, 1631-1634, dan 1637) ke tabel atjeh_trade_records. Idempotent --
 truncate & reload tiap run (dataset kecil, hand-curated, tak ada natural key
 stabil lintas revisi).
 
@@ -13,8 +13,17 @@ CommodityGlossary utk padanan/definisi bila perlu.
 
 confidence_flag='unverified' pada semua baris: hasil pembacaan teks OCR PDF,
 belum dicocokkan ulang thd scan halaman asli. source_document membedakan
-volume PDF asal ("1643-1644" | "1631-1634") -- source_page saja ambigu
-lintas volume.
+volume PDF asal ("1643-1644" | "1631-1634" | "1637") -- source_page saja
+ambigu lintas volume.
+
+GOTCHA regex sisir (2026-07-13): regex lama a[et]tch[ei]n|atjeh|acheh|achem|
+atchem TIDAK match ejaan dominan corpus ini ("Atchijn"/"Atchin"/"Atchien" --
+tanpa huruf ganda) -- verified False utk semua tiga. Baris hasil sisir volume
+1643-1644 & 1631-1634 SEBELUM tanggal ini kemungkinan undercount parah (regex
+lama cuma nemu 11/51 & 2/40 halaman asli). Regex benar (lihat scratchpad
+sesi, bukan file project): atch, aetch, atjeh, acheh, achem sbg awalan kata
+(lalu filter false-positive "Daetcheron"/"Datcherum", nama tempat Coromandel
+yg kebetulan mirip).
 
 Jalankan: docker compose exec backend python seed_atjeh_trade.py
 """
@@ -37,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634"}
+ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637"}
 
 ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh"}
 
