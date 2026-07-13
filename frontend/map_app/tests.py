@@ -86,10 +86,11 @@ class LayoutBNavbarTest(SimpleTestCase):
         """Stats badge (#nav-stats-badge) must be present for voyage count display."""
         self.assertIn('id="nav-stats-badge"', self.content)
 
-    def test_year_defaults_are_1660_and_1790(self):
-        """Default year range: 1660 (diperlebar 2026-07-07 agar mencakup data Dagh-register
-        1663-1669, sebelumnya 1700) sampai 1790 (batas dekade terakhir, step=10)."""
-        self.assertIn('value="1660"', self.content)
+    def test_year_defaults_are_1630_and_1790(self):
+        """Default year range: 1630 (diperlebar 2026-07-13 agar voyage Atjeh 1632-1644
+        tampil tanpa perlu digeser manual, sebelumnya 1660) sampai 1790 (batas dekade
+        terakhir, step=10)."""
+        self.assertIn('value="1630"', self.content)
         self.assertIn('value="1790"', self.content)
 
 
@@ -755,6 +756,19 @@ class TimelineSliderTest(SimpleTestCase):
         idx = self.content.find('id="year-to"')
         block = self.content[max(0, idx - 50): idx + 200]
         self.assertIn('step="10"', block)
+
+    def test_slider_min_covers_aceh_voyages_1630s(self):
+        """min='1630' (diperlebar 2026-07-13) -- sebelumnya min=1660 membuat voyage
+        Atjeh 1632 (schip Buijren) & 1644 (Inderapura) MUSTAHIL dijangkau slider,
+        jadi tak pernah tampil di peta publik walau datanya ada di DB. Default
+        value juga digeser ke 1630 (test_year_defaults_are_1630_and_1790) --
+        sebelumnya batas BAWAH sudah bisa digeser tapi diam-diam tak pernah
+        digeser user sungguhan, jadi voyage tetap tak kelihatan by default."""
+        for field_id in ('id="year-from"', 'id="year-to"'):
+            idx = self.content.find(field_id)
+            self.assertNotEqual(idx, -1, f"{field_id} tidak ditemukan")
+            block = self.content[max(0, idx - 50): idx + 200]
+            self.assertIn('min="1630"', block)
 
     def test_slider_value_display_elements_exist(self):
         """#year-from-display dan #year-to-display harus ada sebagai label nilai slider."""
