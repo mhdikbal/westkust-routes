@@ -385,45 +385,33 @@ class SourceToggleTest(SimpleTestCase):
         for key in ("Inderapura→Batavia", "Batavia→Inderapura", "Padang→Inderapura", "Inderapura→Padang"):
             self.assertIn(f'"{key}"', ATLAS_JS, f"SEA_WAYPOINTS harus punya entri {key}")
 
-    def test_route_tooltip_shows_ship_names(self):
-        """P-ship-tooltip (2026-07-13): tooltip garis rute harus tampilkan rincian
-        nama kapal individual, bukan cuma angka agregat 'N Pelayaran' -- diminta user
-        utk riset tesis (mis. rute Aceh<->Batavia yg cuma beberapa pelayaran)."""
-        self.assertIn("r.ship_names", ATLAS_JS)
-        self.assertIn("Kapal:", ATLAS_JS)
+    def test_no_hover_tooltips_on_map_layers(self):
+        """User 2026-07-13: hapus SEMUA tooltip hover (pelabuhan, catatan politik,
+        rute) -- info politik & rincian kapal cukup ada di /riset/atjeh-dagang,
+        peta sendiri tak perlu tooltip. Regresi kalau ada yg nambah bindTooltip()
+        balik ke marker/garis tanpa sepengetahuan user."""
+        self.assertNotIn("marker.bindTooltip(", ATLAS_JS)
+        self.assertNotIn("ant.bindTooltip(", ATLAS_JS)
+        self.assertNotIn("line.bindTooltip(", ATLAS_JS)
+        self.assertNotIn("function fortTooltipHtml(", ATLAS_JS)
 
-    def test_fort_tooltip_surfaces_political_notes(self):
-        """User minta temuan politik/administratif Atjeh (klaim yurisdiksi, pejabat
-        pungut-tol di Indrapura, dst -- SEBELUMNYA cuma ada di /riset/atjeh-dagang)
-        ikut muncul di tooltip marker pelabuhan terkait, bukan garis rute baru."""
+    def test_political_data_still_loaded_for_power_routes(self):
+        """Tooltip dihapus, tapi loadPoliticalNotes()/politicalNotesForFort() tetap
+        wajib ada -- itu yg menentukan kapal jalur kekuasaan mana yg digambar,
+        bukan cuma buat isi tooltip yg sekarang sudah tak ada."""
         self.assertIn("function loadPoliticalNotes(", ATLAS_JS)
         self.assertIn("function politicalNotesForFort(", ATLAS_JS)
-        self.assertIn("function fortTooltipHtml(", ATLAS_JS)
         self.assertIn("PORT_TEXT_ALIASES", ATLAS_JS)
-        self.assertIn("BUKAN transaksi", ATLAS_JS)
-
-    def test_fort_tooltip_uses_politik_direction_category(self):
-        """direction='politik' (kategori ke-4, ditambah 2026-07-13 atas permintaan
-        user) HARUS dipakai langsung sbg filter query -- bukan lagi fetch semua
-        in_atjeh lalu filter substring notes di client (cara lama, sebelum
-        kategori politik dipisah dari in_atjeh)."""
         self.assertIn("direction=politik", ATLAS_JS)
 
-    def test_fort_marker_uses_political_tooltip_helper(self):
-        """Marker pelabuhan harus benar-benar pakai fortTooltipHtml(), bukan cuma
-        f.name polos spt sebelumnya -- regresi kalau ada yg refactor balik diam-diam."""
-        self.assertIn("marker.bindTooltip(fortTooltipHtml(f, politicalRows)", ATLAS_JS)
-
     def test_power_routes_drawn_for_political_evidence_without_voyage(self):
-        """User: tooltip saja tak cukup, hubungan Aceh<->Pariaman/Inderapura (cuma
-        bukti politik, tak ada voyage tercatat) harus tetap kelihatan sbg GARIS di
-        peta -- bukan cuma teks hover pelabuhan. Garis ini "jalur kekuasaan", HARUS
-        beda gaya dari garis pelayaran asli (bukan antPath animasi, warna beda,
-        tooltip eksplisit bilang bukan rute kapal) supaya tak menyesatkan pembaca."""
+        """User: hubungan Aceh<->Pariaman/Inderapura (cuma bukti politik, tak ada
+        voyage tercatat) harus tetap kelihatan sbg GARIS di peta. Garis ini "jalur
+        kekuasaan", HARUS beda gaya dari garis pelayaran asli (bukan antPath
+        animasi, warna beda) supaya tak menyesatkan pembaca peta."""
         self.assertIn("function drawPowerRoutes(", ATLAS_JS)
         self.assertIn("drawPowerRoutes(politicalRows, forts)", ATLAS_JS)
         self.assertIn("POWER_ROUTE_COLOR", ATLAS_JS)
-        self.assertIn("BUKAN rute pelayaran kapal", ATLAS_JS)
         self.assertIn("jalur kekuasaan", ATLAS_JS)
 
     def test_power_routes_skip_batavia_false_positive(self):
@@ -440,11 +428,25 @@ class SourceToggleTest(SimpleTestCase):
         for key in ("Aceh→Pariaman", "Aceh→Inderapura"):
             self.assertIn(f'"{key}"', ATLAS_JS, f"SEA_WAYPOINTS harus punya entri {key}")
 
-    def test_political_note_prefix_strip_covers_both_phrasings(self):
-        """CSV atjeh_trade.csv pakai dua frasa awalan berbeda ('BUKAN transaksi
-        dagang' & 'BUKAN transaksi tunggal') -- regex strip di tooltip harus generik
-        \\w+ supaya cocok keduanya, bukan hardcode satu kata. Regresi 2026-07-13."""
-        self.assertIn(r"BUKAN transaksi \w+", ATLAS_JS)
+    def test_map_fits_bounds_to_all_forts(self):
+        """Bug besar 2026-07-13: center/zoom awal peta di-hardcode ke [-2.5,103.0]/7,
+        yg TIDAK mencakup Aceh (lat 5.56) sama sekali -- semua kerja marker/garis/
+        tooltip Aceh sesi2 sebelumnya sia-sia krn selalu di luar layar default.
+        map.fitBounds() dari koordinat SEMUA fort (dipanggil setelah forts dimuat)
+        menimpa hardcode awal itu, supaya pelabuhan manapun yg ada datanya otomatis
+        kelihatan tanpa perlu geser manual -- termasuk kalau nanti ada fort baru
+        lebih jauh lagi. Hardcode awal boleh tetap ada sbg state sblm data dimuat."""
+        self.assertIn("map.fitBounds(fortLatLngs", ATLAS_JS)
+
+    def test_waypoint_routes_use_smooth_curve_not_straight_segments(self):
+        """User: rute yg pakai SEA_WAYPOINTS kelihatan "kaku, garis lurus tegas"
+        krn cuma disambung garis lurus antar titik -- beda dgn rute fallback yg
+        bezier halus. smoothPath() (Catmull-Rom spline) HARUS dipakai di kedua
+        drawRoutes() & drawPowerRoutes(), bukan array waypoint mentah langsung,
+        supaya seluruh peta konsisten melengkung."""
+        self.assertIn("function smoothPath(", ATLAS_JS)
+        self.assertIn("smoothPath([s, ...vias, e])", ATLAS_JS)
+        self.assertIn("smoothPath([acehCoords, ...vias, coords])", ATLAS_JS)
 
     def test_modal_shows_full_dates_when_present(self):
         """Penanggalan (rev.10): modal harus menampilkan departure/arrival date penuh,

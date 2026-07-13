@@ -112,12 +112,6 @@ let pageIndex = 0;
 let yearFrom = 1620, yearTo = 1790;
 let activeDirection = "all";
 let activeSource = "all";  // P0.3b — filter provenance (bgb_huygens | daghregister_batavia | globalise_obp)
-const SOURCE_LABELS = {
-  // "bgb_huygens" sengaja TIDAK diberi label -- itu default/baseline, hanya sumber
-  // non-default yang perlu ditandai eksplisit (transparansi tingkat kepastian data).
-  daghregister_batavia: { text: "Sumber: Dagh-register Batavia", color: "#8B5E3C" },
-  globalise_obp: { text: "Sumber: GLOBALISE OBP (belum diverifikasi penuh)", color: "#8B5E3C" },
-};
 const MODAL_SOURCE_LABELS = {
   // Modal voyage SELALU tampilkan baris sumber (beda dgn tooltip rute yg cuma tandai non-default)
   bgb_huygens: "BGB Huygens (data terstruktur, terverifikasi)",
@@ -262,6 +256,38 @@ function getBezierCurve(start, end, bend) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   Catmull-Rom spline -- rute berbasis SEA_WAYPOINTS sebelumnya digambar sbg
+   segmen garis LURUS antar titik (kaku, kelihatan patah-patah di tiap waypoint),
+   beda dgn rute fallback yg pakai bezier halus. Fungsi ini melewatkan kurva
+   mulus MELALUI semua titik asli (bukan bezier yg cuma "ditarik" ke arah titik
+   kontrol) -- dipakai baik utk rute pelayaran maupun jalur kekuasaan supaya
+   seluruh peta konsisten melengkung, bukan cuma sebagian.
+   ───────────────────────────────────────────────────────────────────────────── */
+function smoothPath(points, segmentsPerSpan = 12) {
+  if (points.length < 3) return points;
+  const pts = points;
+  const n = pts.length;
+  const result = [pts[0]];
+  for (let i = 0; i < n - 1; i++) {
+    const p0 = pts[i === 0 ? 0 : i - 1];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2 < n ? i + 2 : n - 1];
+    for (let t = 1; t <= segmentsPerSpan; t++) {
+      const s = t / segmentsPerSpan, s2 = s * s, s3 = s2 * s;
+      const lat = 0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * s
+        + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * s2
+        + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * s3);
+      const lng = 0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * s
+        + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * s2
+        + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * s3);
+      result.push([lat, lng]);
+    }
+  }
+  return result;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    Route drawing (supports year filter via /api/voyages/routes)
    ───────────────────────────────────────────────────────────────────────────── */
 async function drawRoutes(yFrom, yTo) {
@@ -316,7 +342,7 @@ async function drawRoutes(yFrom, yTo) {
     // Rute dengan waypoint jalur laut nyata = presisi (garis penuh).
     // Tanpa waypoint = fallback lengkung → tandai "perkiraan" (dashed, jujur soal presisi).
     const approx = !vias;
-    const pts = vias ? [s, ...vias, e] : getBezierCurve(s, e, 0.25);
+    const pts = vias ? smoothPath([s, ...vias, e]) : getBezierCurve(s, e, 0.25);
     const weight = Math.min(1 + (r.count || 1) / 80, 2.5);
 
     const ant = L.polyline.antPath(pts, {
@@ -327,29 +353,6 @@ async function drawRoutes(yFrom, yTo) {
       dashArray: approx ? [4, 16] : [10, 20],
       pulseColor: "#FFFFFF",
     }).addTo(map);
-
-    // P0.3b — label sumber di tooltip (BUKAN warna baru, hindari bentrok dgn kanal arah/presisi yg sudah ada)
-    const sourceLabel = SOURCE_LABELS[r.source] || null;
-
-    // Rincian nama kapal per rute (P-ship-tooltip) -- ship_names sudah dibatasi
-    // 12 dari backend; sisanya (kalau ada) cukup dihitung dari count, bukan dikirim semua.
-    const shipNames = r.ship_names || [];
-    const shipRest = r.count - shipNames.length;
-    const shipsHtml = shipNames.length
-      ? `<br><span style="opacity:.85;">Kapal: ${shipNames.map(esc).join(', ')}${shipRest > 0 ? ` <i>+${shipRest} lainnya</i>` : ''}</span>`
-      : '';
-
-    ant.bindTooltip(`
-      <div style="font-family:'Playfair Display',serif;font-weight:700;border-bottom:1px solid #eee;padding-bottom:3px;margin-bottom:3px;">
-        ${esc(r.origin_name)} &rarr; ${esc(r.destination_name)}
-      </div>
-      <div style="font-size:.75rem;">
-        <span style="font-weight:700;">${r.count}</span> Pelayaran
-        <br>Volume: <span style="color:#B85D19;">ƒ ${fmt(r.total_value)}</span>
-        ${shipsHtml}
-        ${approx ? '<br><span style="color:#8B9E97;font-style:italic;">rute perkiraan</span>' : ''}
-        ${sourceLabel ? `<br><span style="color:${sourceLabel.color};font-style:italic;">${sourceLabel.text}</span>` : ''}
-      </div>`, { sticky: true, maxWidth: 280 });
 
     routeLines.push(ant);
   });
@@ -386,7 +389,7 @@ function drawPowerRoutes(politicalRows, forts) {
 
     const routeKey = `Aceh→${f.name}`;
     const vias = SEA_WAYPOINTS[routeKey];
-    const pts = vias ? [acehCoords, ...vias, coords] : getBezierCurve(acehCoords, coords, 0.25);
+    const pts = vias ? smoothPath([acehCoords, ...vias, coords]) : getBezierCurve(acehCoords, coords, 0.25);
 
     const line = L.polyline(pts, {
       color: POWER_ROUTE_COLOR,
@@ -394,22 +397,6 @@ function drawPowerRoutes(politicalRows, forts) {
       opacity: 0.55,
       dashArray: [2, 8],
     }).addTo(map);
-
-    const items = matches.slice(0, 3).map(m => {
-      const note = (m.notes || "").replace(/^BUKAN transaksi \w+\s*--\s*/i, "");
-      const short = note.length > 130 ? note.slice(0, 130) + "…" : note;
-      return `<div style="margin-top:3px;"><b>${esc(m.entry_date_raw || m.source_document)}</b> — ${esc(short)}</div>`;
-    }).join("");
-    const more = matches.length > 3 ? `<div style="margin-top:2px;font-style:italic;">+${matches.length - 3} catatan lainnya</div>` : "";
-
-    line.bindTooltip(`
-      <div style="font-family:'Playfair Display',serif;font-weight:700;border-bottom:1px solid #eee;padding-bottom:3px;margin-bottom:3px;">
-        Aceh &harr; ${esc(f.name)} — jalur kekuasaan
-      </div>
-      <div style="font-size:.72rem;max-width:260px;">
-        <span style="color:${POWER_ROUTE_COLOR};font-style:italic;">Bukti politik/administratif -- BUKAN rute pelayaran kapal</span>
-        ${items}${more}
-      </div>`, { sticky: true, maxWidth: 280 });
 
     powerLines.push(line);
   });
@@ -471,25 +458,6 @@ function politicalNotesForFort(fortName, politicalRows) {
   });
 }
 
-function fortTooltipHtml(f, politicalRows) {
-  const matches = politicalNotesForFort(f.name, politicalRows);
-  if (matches.length === 0) return esc(f.name);
-
-  const items = matches.slice(0, 3).map(m => {
-    const note = (m.notes || "").replace(/^BUKAN transaksi \w+\s*--\s*/i, "");
-    const short = note.length > 140 ? note.slice(0, 140) + "…" : note;
-    return `<div style="margin-top:3px;"><b>${esc(m.entry_date_raw || m.source_document)}</b> — ${esc(short)}</div>`;
-  }).join("");
-  const more = matches.length > 3 ? `<div style="margin-top:2px;font-style:italic;">+${matches.length - 3} catatan lainnya</div>` : "";
-
-  return `
-    <div style="font-family:'Playfair Display',serif;font-weight:700;">${esc(f.name)}</div>
-    <div style="font-size:.72rem;max-width:260px;">
-      <span style="opacity:.75;">Catatan politik/administratif Atjeh:</span>
-      ${items}${more}
-    </div>`;
-}
-
 /* ─────────────────────────────────────────────────────────────────────────────
    Load forts + routes, populate welcome grid
    ───────────────────────────────────────────────────────────────────────────── */
@@ -518,6 +486,16 @@ async function loadFortsAndRoutes() {
     }
   });
 
+  // Sesuaikan viewport ke SEMUA pelabuhan yg ada data-nya -- jangan hardcode
+  // center/zoom, krn itu bikin pelabuhan yg lokasinya jauh dari cluster utama
+  // (mis. Aceh, jauh di utara) permanen di luar layar meski markernya SUDAH
+  // digambar dgn benar. Regresi 2026-07-13: user berulang kali lapor "rute Aceh
+  // tak ada" padahal datanya benar -- ternyata cuma di luar viewport default.
+  const fortLatLngs = forts.map(f => FORT_COORDS[f.name]).filter(Boolean);
+  if (fortLatLngs.length) {
+    map.fitBounds(fortLatLngs, { padding: [40, 40] });
+  }
+
   // Welcome port grid
   const grid = document.getElementById("port-grid");
   if (forts.length === 0) {
@@ -544,7 +522,6 @@ async function loadFortsAndRoutes() {
     const coords = FORT_COORDS[f.name];
     if (!coords) return;
     const marker = L.marker(coords, { icon: fortIcon(f, false) }).addTo(map);
-    marker.bindTooltip(fortTooltipHtml(f, politicalRows), { maxWidth: 280 });
     marker.on("click", () => openFort(f, marker));
     marker._fortData = f;
     f._marker = marker;
