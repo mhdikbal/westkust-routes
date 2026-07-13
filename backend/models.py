@@ -228,6 +228,44 @@ class ResearchThemeRow(Base):
         return f"<ResearchThemeRow(corpus_id={self.corpus_id}, tema='{self.tema_dominan}', dekade={self.dekade})>"
 
 
+class AtjehTradeRecord(Base):
+    """Baris hasil ekstraksi laporan dagang dari/ke/di Atjeh, sumber primer
+    "Dagh-register gehouden int casteel Batavia ... 1643-1644" (docs/).
+    Muat dari data/research/atjeh_trade_1643_1644.csv via seed_atjeh_trade.py.
+
+    commodity_raw/unit_raw/actor_raw SENGAJA memakai ejaan asli VOC-Belanda
+    dari sumber (mis. "peper", "thin", "salpeter"), BUKAN terjemahan Indonesia --
+    padanan/definisi ada di CommodityGlossary.term/variants, join manual saat perlu.
+
+    confidence_flag='unverified' untuk semua baris awal: hasil pembacaan teks OCR
+    PDF, belum dicocokkan ulang thd scan halaman asli (lihat memory
+    feedback_verify_entity_extraction_before_trusting)."""
+    __tablename__ = "atjeh_trade_records"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    source_page = Column(Integer, nullable=False, index=True)   # halaman PDF scan (1643-1644 doc)
+    book_page = Column(String(20), nullable=True)                # halaman cetak asli, jika diketahui
+    entry_date_raw = Column(String(50), nullable=True)           # mis. "9 Mei 1644"; NULL = tak bertanggal jelas
+
+    direction = Column(String(20), nullable=False, index=True)   # "naar_atjeh" | "van_atjeh" | "in_atjeh"
+    commodity_raw = Column(String(100), nullable=True, index=True)  # NULL = kargo kosong ("ledigh")
+    quantity_raw = Column(String(50), nullable=True)
+    unit_raw = Column(String(50), nullable=True)
+    price_value = Column(Float, nullable=True)
+    price_unit_raw = Column(String(50), nullable=True)
+
+    actor_raw = Column(String(200), nullable=True)                # kapal/pedagang/bangsa terlibat
+    text_asli = Column(Text, nullable=False)                       # cuplikan OCR mentah utk verifikasi
+
+    confidence_flag = Column(String(20), nullable=False, server_default="unverified")
+    notes = Column(Text, nullable=True)
+    created_at = Column(String(30), nullable=False)
+
+    def __repr__(self):
+        return f"<AtjehTradeRecord(dir='{self.direction}', commodity='{self.commodity_raw}', p{self.source_page})>"
+
+
 class CommodityGlossary(Base):
     __tablename__ = "commodity_glossary"
 
