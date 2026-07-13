@@ -414,6 +414,28 @@ class SourceToggleTest(SimpleTestCase):
         self.assertIn("POWER_ROUTE_COLOR", ATLAS_JS)
         self.assertIn("jalur kekuasaan", ATLAS_JS)
 
+    def test_power_routes_drawn_on_top_and_stay_visible(self):
+        """Bug 2026-07-13: jalur kekuasaan Aceh->Tiku ketutup garis pelayaran
+        Aceh->Tiku yg jalurnya nyaris sama, krn drawPowerRoutes() dipanggil SEBELUM
+        drawRoutes() (Leaflet render layer belakangan di atas) -- diam-diam tak
+        kelihatan walau datanya benar. Fix: drawPowerRoutes() dipanggil SETELAH
+        drawRoutes(), plus bringToFront() dipanggil ULANG tiap drawRoutes() jalan
+        (dipicu geser slider tahun) supaya tak ketutup lagi stlh redraw."""
+        self.assertIn("l.bringToFront()", ATLAS_JS)
+        idx_draw = ATLAS_JS.find("await drawRoutes(yearFrom, yearTo);")
+        idx_power = ATLAS_JS.find("drawPowerRoutes(politicalRows, forts);")
+        self.assertNotEqual(idx_draw, -1, "await drawRoutes(...) di loadFortsAndRoutes tidak ditemukan")
+        self.assertLess(idx_draw, idx_power,
+            "drawPowerRoutes() harus dipanggil SETELAH drawRoutes() di loadFortsAndRoutes")
+
+    def test_power_routes_visually_prominent(self):
+        """Weight/opacity/dash jalur kekuasaan dinaikkan 2026-07-13 -- versi awal
+        (weight 1.5, opacity .55, dash [2,8]) terlalu tipis, hampir tak kelihatan
+        di peta walau sudah di atas & datanya benar. Regresi kalau nilainya
+        diturunkan lagi tanpa sengaja."""
+        self.assertIn("weight: 3.5,", ATLAS_JS)
+        self.assertIn("opacity: 0.9,", ATLAS_JS)
+
     def test_power_routes_skip_batavia_false_positive(self):
         """Batavia (VOC HQ, tempat semua laporan politik dicatat) trivial cocok di
         hampir semua baris politik lewat PORT_TEXT_ALIASES fallback -- HARUS

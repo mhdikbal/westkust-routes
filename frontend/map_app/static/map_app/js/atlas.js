@@ -356,6 +356,12 @@ async function drawRoutes(yFrom, yTo) {
 
     routeLines.push(ant);
   });
+
+  // drawRoutes dipanggil ulang tiap slider tahun berubah, nambah layer BARU yg
+  // otomatis render di atas jalur kekuasaan (Leaflet: layer belakangan di atas).
+  // Tegaskan lagi jalur kekuasaan tetap di atas tiap kali, bukan cuma sekali di
+  // load awal -- tanpa ini garisnya ketutup diam-diam stlh slider digeser.
+  powerLines.forEach(l => l.bringToFront());
 }
 
 const POWER_ROUTE_COLOR = "#6B4C8A"; // sama dgn warna badge "politik" di riset_atjeh.html
@@ -393,9 +399,9 @@ function drawPowerRoutes(politicalRows, forts) {
 
     const line = L.polyline(pts, {
       color: POWER_ROUTE_COLOR,
-      weight: 1.5,
-      opacity: 0.55,
-      dashArray: [2, 8],
+      weight: 3.5,
+      opacity: 0.9,
+      dashArray: [10, 8],
     }).addTo(map);
 
     powerLines.push(line);
@@ -527,13 +533,17 @@ async function loadFortsAndRoutes() {
     f._marker = marker;
   });
 
-  // Jalur kekuasaan Aceh (bukan rute pelayaran) -- statis, tak terikat filter tahun
-  // (data politik/administratif terlalu sedikit & tak berstruktur cukup utk difilter
-  // per-dekade spt voyage; ditampilkan penuh sepanjang waktu).
-  drawPowerRoutes(politicalRows, forts);
-
   // Draw routes for default year range
   await drawRoutes(yearFrom, yearTo);
+
+  // Jalur kekuasaan Aceh (bukan rute pelayaran) -- digambar SETELAH drawRoutes
+  // supaya selalu di ATAS garis pelayaran (Leaflet: layer belakangan render di
+  // atas). Aceh->Tiku power route & Aceh->Tiku trade route pakai jalur nyaris
+  // sama -- kalau power route digambar duluan, ketutup garis pelayaran di
+  // atasnya, jadi diam-diam tak kelihatan. Statis, tak terikat filter tahun
+  // (data politik/administratif terlalu sedikit & tak berstruktur cukup utk
+  // difilter per-dekade spt voyage; ditampilkan penuh sepanjang waktu).
+  drawPowerRoutes(politicalRows, forts);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
