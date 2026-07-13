@@ -122,12 +122,13 @@ class TestCsvIntegrity:
         assert "naar_atjeh" in directions
 
     def test_all_volumes_represented(self, rows):
-        """Empat volume Dagh-register sudah disisir (1643-1644, 1631-1634, 1637, 1636)."""
+        """Lima volume Dagh-register sudah disisir (1643-1644, 1631-1634, 1637, 1636, 1624-1629)."""
         docs = {r["source_document"] for r in rows}
         assert "1643-1644" in docs
         assert "1631-1634" in docs
         assert "1637" in docs
         assert "1636" in docs
+        assert "1624-1629" in docs
 
     def test_political_facts_marked_not_trade(self, rows):
         """Baris fakta politik/administratif (klaim yurisdiksi, penegakan tol,

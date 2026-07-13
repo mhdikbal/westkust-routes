@@ -103,7 +103,7 @@ let activeMarker = null, allFortsData = [];
 let activeTab = "outbound";
 let currentData = { outbound: [], inbound: [], info: "" };
 let pageIndex = 0;
-let yearFrom = 1630, yearTo = 1790;
+let yearFrom = 1620, yearTo = 1790;
 let activeDirection = "all";
 let activeSource = "all";  // P0.3b — filter provenance (bgb_huygens | daghregister_batavia | globalise_obp)
 const SOURCE_LABELS = {
@@ -842,7 +842,7 @@ function setupYearFilter() {
     updateDisplays();
     clearTimeout(yearDebounce);
     yearDebounce = setTimeout(async () => {
-      const yf = parseInt(fromEl.value, 10) || 1630;
+      const yf = parseInt(fromEl.value, 10) || 1620;
       const yt = parseInt(toEl.value, 10)   || 1790;
       if (yf > yt) return;
       yearFrom = yf;

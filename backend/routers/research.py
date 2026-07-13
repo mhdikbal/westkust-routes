@@ -406,7 +406,7 @@ async def get_atjeh_trade(
 ):
     """Daftar baris atjeh_trade_records, urut volume+halaman sumber. Filter
     direction opsional ('naar_atjeh'|'van_atjeh'|'in_atjeh') dan source_document
-    opsional ('1643-1644'|'1631-1634'|'1637'|'1636'). Cache-aside Redis."""
+    opsional ('1643-1644'|'1631-1634'|'1637'|'1636'|'1624-1629'). Cache-aside Redis."""
     cache_key = make_key("research_atjeh_trade", {"direction": direction, "source_document": source_document})
     cached = await cache_get(cache_key)
     if cached is not None:

@@ -86,11 +86,11 @@ class LayoutBNavbarTest(SimpleTestCase):
         """Stats badge (#nav-stats-badge) must be present for voyage count display."""
         self.assertIn('id="nav-stats-badge"', self.content)
 
-    def test_year_defaults_are_1630_and_1790(self):
-        """Default year range: 1630 (diperlebar 2026-07-13 agar voyage Atjeh 1632-1644
-        tampil tanpa perlu digeser manual, sebelumnya 1660) sampai 1790 (batas dekade
-        terakhir, step=10)."""
-        self.assertIn('value="1630"', self.content)
+    def test_year_defaults_are_1620_and_1790(self):
+        """Default year range: 1620 (diperlebar lagi 2026-07-13 utk voyage Wapen van
+        Hoorn 1624, volume Dagh-register 1624-1629 -- sebelumnya 1630 via 1660) sampai
+        1790 (batas dekade terakhir, step=10)."""
+        self.assertIn('value="1620"', self.content)
         self.assertIn('value="1790"', self.content)
 
 
@@ -803,18 +803,18 @@ class TimelineSliderTest(SimpleTestCase):
         block = self.content[max(0, idx - 50): idx + 200]
         self.assertIn('step="10"', block)
 
-    def test_slider_min_covers_aceh_voyages_1630s(self):
-        """min='1630' (diperlebar 2026-07-13) -- sebelumnya min=1660 membuat voyage
-        Atjeh 1632 (schip Buijren) & 1644 (Inderapura) MUSTAHIL dijangkau slider,
-        jadi tak pernah tampil di peta publik walau datanya ada di DB. Default
-        value juga digeser ke 1630 (test_year_defaults_are_1630_and_1790) --
-        sebelumnya batas BAWAH sudah bisa digeser tapi diam-diam tak pernah
-        digeser user sungguhan, jadi voyage tetap tak kelihatan by default."""
+    def test_slider_min_covers_aceh_voyages_1620s(self):
+        """min='1620' (diperlebar lagi 2026-07-13) -- voyage schip Wapen van Hoorn
+        1624 (volume Dagh-register 1624-1629, paling awal disisir sejauh ini) MUSTAHIL
+        dijangkau slider kalau min masih 1630. Default value juga ikut ke 1620 (lihat
+        test_year_defaults_are_1620_and_1790) -- pola sama spt fix min=1630
+        sebelumnya: batas BAWAH & DEFAULT adalah dua hal terpisah, keduanya harus
+        ikut melebar bareng."""
         for field_id in ('id="year-from"', 'id="year-to"'):
             idx = self.content.find(field_id)
             self.assertNotEqual(idx, -1, f"{field_id} tidak ditemukan")
             block = self.content[max(0, idx - 50): idx + 200]
-            self.assertIn('min="1630"', block)
+            self.assertIn('min="1620"', block)
 
     def test_slider_value_display_elements_exist(self):
         """#year-from-display dan #year-to-display harus ada sebagai label nilai slider."""
@@ -973,13 +973,14 @@ class RisetAtjehViewTest(SimpleTestCase):
         self.assertIn("Indrapura", html)
         self.assertIn("1633", html)
 
-    def test_four_volumes_mentioned(self):
-        """Empat volume PDF sumber (1643-1644, 1631-1634, 1637, 1636) harus disebut eksplisit."""
+    def test_five_volumes_mentioned(self):
+        """Lima volume PDF sumber (1643-1644, 1631-1634, 1637, 1636, 1624-1629) harus disebut eksplisit."""
         html = self.client.get(reverse("riset_atjeh")).content.decode()
         self.assertIn("1643-1644", html)
         self.assertIn("1631-1634", html)
         self.assertIn("1637", html)
         self.assertIn("1636", html)
+        self.assertIn("1624-1629", html)
 
     def test_1637_volume_option_in_filter(self):
         """Dropdown filter volume harus punya opsi 1637 (regresi 2026-07-13)."""
@@ -990,3 +991,8 @@ class RisetAtjehViewTest(SimpleTestCase):
         """Dropdown filter volume harus punya opsi 1636 (regresi 2026-07-13)."""
         html = self.client.get(reverse("riset_atjeh")).content.decode()
         self.assertIn('value="1636"', html)
+
+    def test_1624_1629_volume_option_in_filter(self):
+        """Dropdown filter volume harus punya opsi 1624-1629 (regresi 2026-07-13)."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn('value="1624-1629"', html)
