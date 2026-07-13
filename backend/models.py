@@ -230,8 +230,8 @@ class ResearchThemeRow(Base):
 
 class AtjehTradeRecord(Base):
     """Baris hasil ekstraksi laporan dagang dari/ke/di Atjeh, sumber primer
-    tiga volume "Dagh-register gehouden int casteel Batavia" (docs/): 1643-1644,
-    1631-1634, dan 1637. Muat dari data/research/atjeh_trade.csv via
+    empat volume "Dagh-register gehouden int casteel Batavia" (docs/): 1643-1644,
+    1631-1634, 1637, dan 1636. Muat dari data/research/atjeh_trade.csv via
     seed_atjeh_trade.py. Sebagian baris (direction='in_atjeh' tanpa commodity_raw)
     adalah fakta politik/administratif (klaim yurisdiksi, penegakan tol, suksesi
     raja), BUKAN transaksi dagang -- lihat notes per baris.
@@ -247,7 +247,7 @@ class AtjehTradeRecord(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    source_document = Column(String(20), nullable=False, index=True)  # "1643-1644" | "1631-1634" | "1637"
+    source_document = Column(String(20), nullable=False, index=True)  # "1643-1644" | "1631-1634" | "1637" | "1636"
     source_page = Column(Integer, nullable=False, index=True)   # halaman PDF scan (source_document)
     book_page = Column(String(20), nullable=True)                # halaman cetak asli, jika diketahui
     entry_date_raw = Column(String(50), nullable=True)           # mis. "9 Mei 1644"; NULL = tak bertanggal jelas

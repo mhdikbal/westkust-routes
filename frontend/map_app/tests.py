@@ -938,14 +938,20 @@ class RisetAtjehViewTest(SimpleTestCase):
         self.assertIn("Indrapura", html)
         self.assertIn("1633", html)
 
-    def test_three_volumes_mentioned(self):
-        """Tiga volume PDF sumber (1643-1644, 1631-1634, 1637) harus disebut eksplisit."""
+    def test_four_volumes_mentioned(self):
+        """Empat volume PDF sumber (1643-1644, 1631-1634, 1637, 1636) harus disebut eksplisit."""
         html = self.client.get(reverse("riset_atjeh")).content.decode()
         self.assertIn("1643-1644", html)
         self.assertIn("1631-1634", html)
         self.assertIn("1637", html)
+        self.assertIn("1636", html)
 
     def test_1637_volume_option_in_filter(self):
         """Dropdown filter volume harus punya opsi 1637 (regresi 2026-07-13)."""
         html = self.client.get(reverse("riset_atjeh")).content.decode()
         self.assertIn('value="1637"', html)
+
+    def test_1636_volume_option_in_filter(self):
+        """Dropdown filter volume harus punya opsi 1636 (regresi 2026-07-13)."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn('value="1636"', html)
