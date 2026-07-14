@@ -270,6 +270,47 @@ class AtjehTradeRecord(Base):
         return f"<AtjehTradeRecord(dir='{self.direction}', commodity='{self.commodity_raw}', p{self.source_page})>"
 
 
+class LinimasaEvent(Base):
+    """Peristiwa suksesi/politik kekuasaan Atjeh atas pantai barat Sumatra,
+    dari Sultan Iskandar Muda sampai Traktat Painan 1663 -- sumber halaman
+    `/linimasa`. Dimuat dari data/research/linimasa_events.csv via
+    seed_linimasa_events.py.
+
+    BERBEDA dari AtjehTradeRecord: scope tabel ini "peristiwa politik/suksesi"
+    (event_type), bukan "dagang dari/ke/di Atjeh" (direction). Sebagian baris
+    didistilasi dari baris direction='politik' di atjeh_trade_records (sumber
+    docs/ PDF kita), sebagian lagi (source_document='1663') dari corpus
+    TERPISAH docs/thesis/dr/korpus_tema_slim.csv (GLOBALISE/Huygens, sudah
+    diterjemahkan) -- provenance dicatat eksplisit di kolom notes, TIDAK
+    diduplikasi ke atjeh_trade_records.
+
+    text_asli WAJIB (disiplin sama spt AtjehTradeRecord) -- setiap event harus
+    tertelusur ke kutipan sumber, bukan klaim tanpa bukti. confidence_flag
+    default 'unverified' krn OCR/terjemahan mentah, belum dicocokkan scan asli."""
+    __tablename__ = "linimasa_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    source_document = Column(String(20), nullable=False, index=True)  # "1631-1634" | "1637" | "1643-1644" | "1647-1648" | "1663"
+    source_page = Column(Integer, nullable=False, index=True)
+    book_page = Column(String(20), nullable=True)
+    event_date_raw = Column(String(50), nullable=True)   # mis. "10 Des 1632", "27 Maret 1663"; NULL = tak bertanggal jelas
+    year = Column(Integer, nullable=True, index=True)     # utk sort/filter linimasa
+
+    event_type = Column(String(20), nullable=False, index=True)  # "suksesi" | "perjanjian" | "konflik" | "diplomasi" | "administratif"
+    ruler_actor = Column(String(200), nullable=True)      # mis. "Sultan Iskandar Muda", "coninginne van Atchin", "Songypagouers"
+    title = Column(String(300), nullable=False)           # judul ringkas utk marker linimasa
+
+    text_asli = Column(Text, nullable=False)               # kutipan verbatim wajib
+    notes = Column(Text, nullable=True)
+
+    confidence_flag = Column(String(20), nullable=False, server_default="unverified")
+    created_at = Column(String(30), nullable=False)
+
+    def __repr__(self):
+        return f"<LinimasaEvent(type='{self.event_type}', year={self.year}, title='{self.title}')>"
+
+
 class CommodityGlossary(Base):
     __tablename__ = "commodity_glossary"
 

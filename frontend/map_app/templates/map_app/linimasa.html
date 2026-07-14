@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Linimasa Suksesi Atjeh — Pesisir Barat Sumatra (VOC)</title>
+<style>
+:root{
+  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
+  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4;
+  --accent:#000000; --gold-ink:#6F5407;
+  --warn-bg:#FBF3E4; --warn-line:#D8B978; --warn-ink:#6F5407;
+  --evt-suksesi:#B0562A; --evt-perjanjian:#3A7D70; --evt-konflik:#8A2E2E;
+  --evt-diplomasi:#2C5364; --evt-administratif:#6B4C8A;
+  --serif:"EB Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"Space Grotesk",ui-monospace,Menlo,Consolas,monospace;
+}
+:root[data-theme]{
+  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
+  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4; --accent:#000000;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(20px,4vw,52px) clamp(16px,4vw,44px) 80px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+a{color:inherit}
+.topnav{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.topnav .nav-l{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.topnav .home,.topnav .sib{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
+  font-size:.9rem;font-weight:600;color:var(--ink);text-decoration:none;
+  padding:8px 14px 8px 11px;border:1px solid var(--line);border-radius:999px;transition:.16s}
+.topnav .home:hover,.topnav .sib:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+.topnav .home:focus-visible,.topnav .sib:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.topnav .home svg{width:16px;height:16px}
+.topnav .brand{font-family:var(--serif);font-size:1.1rem;font-weight:600;letter-spacing:.02em;color:var(--muted-dark)}
+
+header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+.eyebrow{font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted-dark);font-weight:600}
+.title{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.4vw,2.7rem);
+  line-height:1.06;letter-spacing:-.01em;margin:.5rem 0 .35rem}
+.title em{font-style:italic;color:var(--accent)}
+.lede{max-width:70ch;color:var(--ink);font-size:1.08rem;line-height:1.55;margin:0 0 4px}
+.prov{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:14px;letter-spacing:.01em}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:22px}
+.tile{background:var(--panel);padding:13px 15px}
+.tile .k{font-family:var(--mono);font-size:1.55rem;font-weight:600;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1}
+.tile .l{font-size:.73rem;color:var(--muted);margin-top:5px;letter-spacing:.02em}
+
+.caveat{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;
+  padding:18px 20px;margin:0 0 24px}
+.caveat h2{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--warn-ink);margin-bottom:8px}
+.caveat p{margin:0 0 8px;font-size:.92rem;color:#4a3c0e;line-height:1.55}
+.caveat p:last-child{margin-bottom:0}
+.caveat b{color:var(--warn-ink)}
+
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:13px 16px;margin-bottom:18px}
+.controls label{font-size:.78rem;color:var(--muted-dark);font-weight:600;margin-right:6px}
+.controls select{font-family:var(--sans);font-size:.88rem;padding:6px 10px;border:1px solid var(--line);
+  border-radius:8px;background:var(--panel)}
+.controls .count{font-family:var(--mono);font-size:.82rem;color:var(--muted);margin-left:auto}
+
+.evt-badge{display:inline-block;font-family:var(--mono);font-size:.68rem;font-weight:600;
+  padding:2px 8px;border-radius:999px;color:#fff;white-space:nowrap}
+.evt-suksesi{background:var(--evt-suksesi)}
+.evt-perjanjian{background:var(--evt-perjanjian)}
+.evt-konflik{background:var(--evt-konflik)}
+.evt-diplomasi{background:var(--evt-diplomasi)}
+.evt-administratif{background:var(--evt-administratif)}
+
+/* ---- timeline SVG axis ---- */
+.axis-wrap{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:20px 16px 8px;margin-bottom:18px;overflow-x:auto}
+.axis-wrap svg{display:block;min-width:640px;width:100%;height:150px}
+.axis-line{stroke:var(--line);stroke-width:2}
+.tick-label{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.evt-dot{cursor:pointer;stroke:#fff;stroke-width:2;transition:r .12s}
+.evt-dot:hover,.evt-dot.active{r:9}
+.evt-title-svg{font-family:var(--sans);font-size:10.5px;fill:var(--muted-dark);cursor:pointer}
+
+/* ---- event cards ---- */
+.cards{display:flex;flex-direction:column;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.card{background:var(--panel);padding:14px 18px;cursor:pointer}
+.card:hover,.card.active{background:var(--panel-2)}
+.card-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:4px}
+.card-year{font-family:var(--mono);font-weight:600;font-size:1.1rem;min-width:48px}
+.card-title{font-family:var(--serif);font-weight:600;font-size:1.05rem;flex:1;min-width:220px}
+.card-meta{font-size:.8rem;color:var(--muted-dark);margin:2px 0 0}
+.card-detail{display:none;margin-top:10px}
+.card-detail.open{display:block}
+.card-detail .quote{font-family:var(--serif);font-style:italic;font-size:.94rem;padding:10px 14px;
+  border-left:3px solid var(--line);margin:4px 0;background:var(--panel-2)}
+.card-detail .notes{font-size:.84rem;color:var(--muted-dark);margin:8px 0 0}
+.unconf{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;margin-top:6px;display:block}
+.empty-note{color:var(--muted);font-style:italic}
+
+footer{margin-top:30px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:.86rem;color:var(--muted-dark)}
+footer h3{font-family:var(--serif);font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--ink)}
+footer p{margin:0 0 10px;line-height:1.55}
+.tag{display:inline-block;font-family:var(--mono);font-size:.72rem;background:var(--panel-2);
+  border:1px solid var(--line);border-radius:5px;padding:2px 7px;margin:2px 4px 2px 0;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="topnav">
+    <div class="nav-l">
+      <a class="home" href="../">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 19l-7-7 7-7"/><path d="M3 12h18"/></svg>
+        Peta VOC
+      </a>
+      <a class="sib" href="../riset/tema/">Sankey tema</a>
+      <a class="sib" href="../riset/jaringan/">Jaringan pelabuhan</a>
+      <a class="sib" href="../riset/atjeh-dagang/">Dagang Atjeh</a>
+    </div>
+    <span class="brand">Salido</span>
+  </nav>
+
+  <header>
+    <p class="eyebrow">Linimasa Suksesi &middot; Dagh-register Batavia 1631-1663</p>
+    <h1 class="title">Dari Iskandar Muda ke <em>Traktat Painan</em></h1>
+    <p class="lede">9 peristiwa kunci suksesi &amp; politik kekuasaan Atjeh atas pantai barat
+      Sumatra — dari titah tol Sultan <b>Iskandar Muda</b> (1632), wafatnya &amp; krisis suksesi
+      (1637), penegasan kekuasaan <b>Ratu Atjeh</b> (1644–1648), sampai konfederasi
+      Songypagouers (Padang, Pariaman, Tiku, Salida, Inderapura) memberontak dan menandatangani
+      <b>Traktat Painan 1663</b> dengan VOC — titik resmi berakhirnya kekuasaan Atjeh atas
+      wilayah ini di korpus riset ini.</p>
+    <div class="prov" id="prov">memuat…</div>
+    <div class="tiles" id="tiles"></div>
+  </header>
+
+  <div class="caveat">
+    <h2>Batas bukti &amp; dua sumber berbeda — baca sebelum menafsirkan</h2>
+    <p><b>Semua baris berstatus "belum diverifikasi"</b> (confidence_flag=unverified). Peristiwa
+      1632–1648 didistilasi dari <code>atjeh_trade_records</code> (OCR PDF docs/ kami sendiri,
+      ejaan asli VOC-Belanda dipertahankan). Peristiwa 1663 (Traktat Painan) sumbernya BEDA
+      pipeline: <code>docs/thesis/dr/korpus_tema_slim.csv</code>, corpus GLOBALISE/Huygens yang
+      sudah diterjemahkan ke Indonesia — kutipan baris-baris itu karena itu berbahasa Indonesia
+      (terjemahan), bukan OCR Belanda mentah seperti baris lain. Provenance persis (corpus_id
+      asal) dicatat di catatan tiap baris.</p>
+    <p><b>Sengaja tidak digambar "blok era"</b> (mis. blok "Iskandar Muda 1607–1636") karena
+      tanggal naik takhta (1607) tidak ada di korpus kami — itu pengetahuan sejarah umum
+      eksternal, bukan sesuatu yang tertelusur ke kutipan sumber di sini. Linimasa ini hanya
+      menampilkan peristiwa yang punya kutipan asli.</p>
+    <p>Ini seed awal (9 peristiwa) dari data yang sudah diverifikasi sesi-sesi sebelumnya —
+      ekstraksi lebih dalam corpus 1661–1681 (termasuk detail penuh 49 baris volume 1663)
+      direncanakan sebagai sesi lanjutan terpisah.</p>
+  </div>
+
+  <div class="controls">
+    <label for="typeFilter">Jenis</label>
+    <select id="typeFilter">
+      <option value="">Semua</option>
+      <option value="suksesi">Suksesi</option>
+      <option value="perjanjian">Perjanjian</option>
+      <option value="konflik">Konflik</option>
+      <option value="diplomasi">Diplomasi</option>
+      <option value="administratif">Administratif</option>
+    </select>
+    <span class="count" id="rowCount"></span>
+  </div>
+
+  <div class="axis-wrap">
+    <svg id="axisSvg" viewBox="0 0 1000 150" preserveAspectRatio="xMinYMid meet"></svg>
+  </div>
+
+  <div class="cards" id="cards"></div>
+
+  <footer>
+    <h3>Metode &amp; batas</h3>
+    <p>Sumber: <code>data/research/linimasa_events.csv</code>, dimuat via
+      <code>seed_linimasa_events.py</code> ke tabel <code>linimasa_events</code>. Baris
+      1631-1634/1637/1643-1644/1647-1648 didistilasi dari baris <code>direction='politik'</code>
+      di <code>atjeh_trade_records</code> (lihat <a href="../riset/atjeh-dagang/">Dagang
+      Atjeh</a> untuk konteks dagang lengkap volume yang sama). Baris 1663 dari
+      <code>docs/thesis/dr/korpus_tema_slim.csv</code> corpus_id 608–612 (naskah Traktat Painan,
+      dinegosiasikan koopman VOC Groenewegen Jun–Nov 1662, dicatat daghregister Batavia 27 Maret
+      1663).</p>
+    <p><span class="tag">thesis-only · noindex</span>
+      <span class="tag">route: /linimasa (top-level, tidak di navbar publik)</span>
+      <span class="tag">endpoint: /api/research/linimasa</span>
+      <span class="tag">design: salido.my.id (EB Garamond · Space Grotesk)</span></p>
+  </footer>
+</div>
+
+<script type="module">
+"use strict";
+const API = '/api/research/linimasa';
+const esc = s => String(s ?? '').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const fmt = n => Number(n).toLocaleString('id-ID');
+const TYPE_LABEL = {suksesi:'Suksesi', perjanjian:'Perjanjian', konflik:'Konflik', diplomasi:'Diplomasi', administratif:'Administratif'};
+const TYPE_COLOR = {suksesi:'var(--evt-suksesi)', perjanjian:'var(--evt-perjanjian)', konflik:'var(--evt-konflik)', diplomasi:'var(--evt-diplomasi)', administratif:'var(--evt-administratif)'};
+
+let ALL = [];
+
+function tile(k,l){ return `<div class="tile"><div class="k mono">${k}</div><div class="l">${l}</div></div>`; }
+
+function renderTiles(meta){
+  const t = document.getElementById('tiles');
+  t.innerHTML = [
+    tile(fmt(meta.n_items), 'peristiwa'),
+    tile(fmt(meta.by_event_type.suksesi||0), 'suksesi'),
+    tile(fmt(meta.by_event_type.perjanjian||0), 'perjanjian'),
+    tile(fmt(meta.by_event_type.konflik||0), 'konflik'),
+    tile(fmt(meta.by_event_type.diplomasi||0), 'diplomasi'),
+    tile(fmt(meta.by_event_type.administratif||0), 'administratif'),
+    tile(`${meta.year_min ?? '—'}–${meta.year_max ?? '—'}`, 'rentang tahun'),
+  ].join('');
+}
+
+function renderAxis(rows){
+  const svg = document.getElementById('axisSvg');
+  const years = rows.map(r => r.year).filter(y => y != null);
+  if(!years.length){ svg.innerHTML = ''; return; }
+  const yMin = Math.min(...years) - 2, yMax = Math.max(...years) + 2;
+  const W = 1000, H = 150, PAD = 40, axisY = 90;
+  const x = y => PAD + (y - yMin) / (yMax - yMin) * (W - PAD*2);
+
+  let ticks = '';
+  for(let yr = Math.ceil(yMin/10)*10; yr <= yMax; yr += 10){
+    ticks += `<line x1="${x(yr)}" y1="${axisY-4}" x2="${x(yr)}" y2="${axisY+4}" class="axis-line"/>
+      <text x="${x(yr)}" y="${axisY+20}" class="tick-label" text-anchor="middle">${yr}</text>`;
+  }
+
+  let dots = '';
+  rows.forEach((r, i) => {
+    if(r.year == null) return;
+    const cx = x(r.year);
+    const cy = axisY + (i % 2 === 0 ? -26 : 26);
+    const color = TYPE_COLOR[r.event_type] || '#999';
+    dots += `<line x1="${cx}" y1="${cy>axisY?cy-8:cy+8}" x2="${cx}" y2="${axisY}" class="axis-line"/>
+      <circle cx="${cx}" cy="${cy}" r="6.5" fill="${color}" class="evt-dot" data-id="${r.id}"/>
+      <text x="${cx}" y="${cy>axisY? cy+16 : cy-12}" class="evt-title-svg" text-anchor="middle" data-id="${r.id}">${esc(r.year)}</text>`;
+  });
+
+  svg.innerHTML = `<line x1="${PAD}" y1="${axisY}" x2="${W-PAD}" y2="${axisY}" class="axis-line"/>${ticks}${dots}`;
+
+  svg.querySelectorAll('[data-id]').forEach(el => {
+    el.addEventListener('click', () => selectEvent(el.dataset.id));
+  });
+}
+
+function cardHtml(r){
+  return `
+    <div class="card" data-id="${r.id}">
+      <div class="card-head">
+        <span class="card-year mono">${r.year ?? '—'}</span>
+        <span class="card-title">${esc(r.title)}</span>
+        <span class="evt-badge evt-${r.event_type}">${TYPE_LABEL[r.event_type]||r.event_type}</span>
+      </div>
+      <p class="card-meta">${esc(r.event_date_raw || '—')} &middot; ${esc(r.ruler_actor || '—')} &middot;
+        <span class="mono">vol. ${esc(r.source_document)}, hlm. ${r.source_page}${r.book_page ? ` (${esc(r.book_page)})` : ''}</span></p>
+      <div class="card-detail" id="detail-${r.id}">
+        <div class="quote">&ldquo;${esc(r.text_asli)}&rdquo;</div>
+        ${r.notes ? `<div class="notes">${esc(r.notes)}</div>` : ''}
+        <span class="unconf">confidence_flag: ${esc(r.confidence_flag)}</span>
+      </div>
+    </div>`;
+}
+
+function render(rows){
+  document.getElementById('cards').innerHTML = rows.map(cardHtml).join('');
+  document.getElementById('rowCount').textContent = `${rows.length} peristiwa ditampilkan`;
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => selectEvent(card.dataset.id));
+  });
+  renderAxis(rows);
+}
+
+function selectEvent(id){
+  document.querySelectorAll('.card-detail.open').forEach(d => { if(d.id !== `detail-${id}`) d.classList.remove('open'); });
+  document.querySelectorAll('.card.active').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.evt-dot.active').forEach(c => c.classList.remove('active'));
+
+  const detail = document.getElementById(`detail-${id}`);
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  const dot = document.querySelector(`.evt-dot[data-id="${id}"]`);
+  if(detail) detail.classList.toggle('open');
+  if(card){ card.classList.toggle('active'); card.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  if(dot) dot.classList.add('active');
+}
+
+function applyFilters(){
+  const type = document.getElementById('typeFilter').value;
+  render(ALL.filter(r => !type || r.event_type === type));
+}
+
+document.getElementById('typeFilter').addEventListener('change', applyFilters);
+
+fetch(API).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }).then(data=>{
+  ALL = data.items;
+  renderTiles(data.meta);
+  document.getElementById('prov').textContent =
+    `${data.meta.n_items} peristiwa · sumber: linimasa_events · dimuat ${new Date().toLocaleDateString('id-ID')}`;
+  render(ALL);
+}).catch(err=>{
+  document.getElementById('cards').innerHTML =
+    `<div class="card empty-note">Gagal memuat data (${esc(err.message)}).</div>`;
+});
+</script>
+</body>
+</html>

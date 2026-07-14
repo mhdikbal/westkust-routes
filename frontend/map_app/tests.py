@@ -1073,3 +1073,63 @@ class RisetAtjehViewTest(SimpleTestCase):
         Atjeh bukan lagi bercampur dgn transaksi dagang di dalam Atjeh)."""
         html = self.client.get(reverse("riset_atjeh")).content.decode()
         self.assertIn('value="politik"', html)
+
+
+# ─── Linimasa Suksesi Atjeh (top-level /linimasa) ────────────────────────────
+class LinimasaViewTest(SimpleTestCase):
+    """Halaman /linimasa render statis; linimasa ditarik client-side dari
+    /api/research/linimasa. thesis-only, top-level route (BUKAN di bawah
+    /riset/*) atas permintaan eksplisit user."""
+
+    def test_returns_200(self):
+        resp = self.client.get(reverse("linimasa"))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_url_is_top_level_not_under_riset(self):
+        """User eksplisit minta /linimasa top-level, bukan /riset/linimasa."""
+        resp = self.client.get("/linimasa/")
+        self.assertEqual(resp.status_code, 200)
+
+    def test_noindex_present(self):
+        html = self.client.get(reverse("linimasa")).content.decode()
+        self.assertIn("noindex", html)
+        self.assertIn('name="robots"', html)
+
+    def test_uses_linimasa_endpoint_not_hardcoded_data(self):
+        html = self.client.get(reverse("linimasa")).content.decode()
+        self.assertIn("/api/research/linimasa", html)
+
+    def test_uses_salido_fonts(self):
+        html = self.client.get(reverse("linimasa")).content.decode()
+        self.assertIn("EB Garamond", html)
+        self.assertIn("Space Grotesk", html)
+
+    def test_surfaces_unverified_caveat(self):
+        html = self.client.get(reverse("linimasa")).content.decode()
+        self.assertTrue(
+            "belum diverifikasi" in html.lower() or "unverified" in html.lower()
+        )
+
+    def test_mentions_iskandar_muda_and_painan(self):
+        """Arc utama linimasa (Iskandar Muda -> Traktat Painan) harus tampil
+        eksplisit di halaman, bukan cuma ada di data JSON."""
+        html = self.client.get(reverse("linimasa")).content.decode()
+        self.assertIn("Iskandar Muda", html)
+        self.assertIn("Painan", html)
+
+    def test_flags_dual_pipeline_provenance(self):
+        """Baris 1663 sumbernya beda pipeline (korpus_tema_slim.csv, terjemahan)
+        dari baris lain (OCR docs/ kita) -- caveat wajib eksplisit."""
+        html = self.client.get(reverse("linimasa")).content.decode()
+        self.assertIn("korpus_tema_slim.csv", html)
+
+    def test_event_type_filter_options_present(self):
+        html = self.client.get(reverse("linimasa")).content.decode()
+        self.assertIn('value="suksesi"', html)
+        self.assertIn('value="perjanjian"', html)
+
+    def test_reciprocal_link_from_riset_atjeh(self):
+        """Konvensi proyek: halaman riset baru ditautkan resiprokal dari
+        halaman riset lain, dan sebaliknya."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn("/linimasa/", html)

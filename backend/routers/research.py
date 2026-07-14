@@ -15,7 +15,7 @@ from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
-from models import ResearchThemeRow, AtjehTradeRecord
+from models import ResearchThemeRow, AtjehTradeRecord, LinimasaEvent
 # reuse skema Sankey yang sudah ada (PRD: "format sama dgn SankeyResponse")
 from routers.voyages import SankeyResponse, SankeyNode, SankeyLink
 # cache-aside Redis (ADR-001) — degradasi anggun bila Redis mati (cache_get -> None)
@@ -431,6 +431,86 @@ async def get_atjeh_trade(
 
     meta = {"n_items": len(items), "by_direction": dict(by_direction), "by_document": dict(by_document)}
     payload = AtjehTradeResponse(items=items, meta=meta).model_dump()
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
+
+
+# ─── Linimasa Suksesi Kekuasaan Atjeh (1632-1663) ────────────────────────────
+# Sumber: tabel linimasa_events (peristiwa suksesi/politik, dimuat via
+# seed_linimasa_events.py). Dua provenance campur -- lihat notes tiap baris:
+# baris 1631-1634..1647-1648 didistilasi dari atjeh_trade_records (OCR docs/
+# kita); baris 1663 dari corpus TERPISAH docs/thesis/dr/korpus_tema_slim.csv
+# (GLOBALISE/Huygens, sudah diterjemahkan Indonesia). Halaman /linimasa.
+
+class LinimasaEventItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    source_document: str
+    source_page: int
+    book_page: Optional[str] = None
+    event_date_raw: Optional[str] = None
+    year: Optional[int] = None
+    event_type: str
+    ruler_actor: Optional[str] = None
+    title: str
+    text_asli: str
+    confidence_flag: str
+    notes: Optional[str] = None
+
+
+class LinimasaResponse(BaseModel):
+    items: List[LinimasaEventItem]
+    meta: dict
+
+
+def _linimasa_year_gte(value: int):
+    return or_(LinimasaEvent.year.is_(None), LinimasaEvent.year >= value)
+
+
+def _linimasa_year_lte(value: int):
+    return or_(LinimasaEvent.year.is_(None), LinimasaEvent.year <= value)
+
+
+@router.get("/linimasa", response_model=LinimasaResponse)
+async def get_linimasa(
+    response: Response,
+    event_type: Optional[str] = None,
+    year_from: Optional[int] = None,
+    year_to: Optional[int] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """Daftar baris linimasa_events, urut tahun+halaman sumber. Filter
+    event_type opsional ('suksesi'|'perjanjian'|'konflik'|'diplomasi'|'administratif')
+    dan rentang year_from/year_to opsional. Cache-aside Redis."""
+    cache_key = make_key("research_linimasa", {"event_type": event_type, "year_from": year_from, "year_to": year_to})
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
+    query = select(LinimasaEvent).order_by(LinimasaEvent.year, LinimasaEvent.source_page, LinimasaEvent.id)
+    if event_type:
+        query = query.where(LinimasaEvent.event_type == event_type.lower())
+    if year_from is not None:
+        query = query.where(_linimasa_year_gte(year_from))
+    if year_to is not None:
+        query = query.where(_linimasa_year_lte(year_to))
+    rows = (await db.execute(query)).scalars().all()
+
+    items = [LinimasaEventItem.model_validate(r) for r in rows]
+    by_event_type = defaultdict(int)
+    years = [r.year for r in rows if r.year is not None]
+    for r in rows:
+        by_event_type[r.event_type] += 1
+
+    meta = {
+        "n_items": len(items),
+        "by_event_type": dict(by_event_type),
+        "year_min": min(years) if years else None,
+        "year_max": max(years) if years else None,
+    }
+    payload = LinimasaResponse(items=items, meta=meta).model_dump()
     await cache_set(cache_key, payload)
     response.headers["X-Cache"] = "MISS"
     return payload

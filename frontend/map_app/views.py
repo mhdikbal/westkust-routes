@@ -35,6 +35,16 @@ def riset_atjeh(request):
     return render(request, "map_app/riset_atjeh.html")
 
 
+def linimasa(request):
+    """Linimasa suksesi kekuasaan Atjeh, Iskandar Muda -> Ratu -> Traktat
+    Painan 1663 (thesis-only, top-level /linimasa). Halaman statis: linimasa
+    ditarik client-side dari /api/research/linimasa (nginx proxy). noindex +
+    tidak di navbar publik (konsisten /riset/tema, /riset/jaringan,
+    /riset/atjeh-dagang). Identitas visual salido.my.id (EB Garamond + Space
+    Grotesk)."""
+    return render(request, "map_app/linimasa.html")
+
+
 def port_detail(request, slug):
     """Detail page for a single VOC port/fort."""
     # Convert slug to title-cased name (e.g. "pulau-cingkuak" → "Pulau Cingkuak")
