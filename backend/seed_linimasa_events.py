@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Babak naratif Fase 1 /linimasa (docs/prd-linimasa-kronik-pantai-barat.md) --
@@ -63,6 +63,18 @@ ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pe
 # identitas "Iskander Tsani"/Iskandar Thani) -- baris begitu ditandai eksplisit
 # "catatan editor" di notes, beda dari kutipan traktat periode VOC asli. Mundurkan
 # titik awal linimasa dari 1625 ke 1600 (2 traktat VOC-Atjeh pertama, 1600 & 1607).
+#
+# source_document="CD2" (2026-07-15): docs/CD2.pdf, Corpus Diplomaticum
+# Neerlando-Indicum jilid II -- lanjutan kronologis CD1 (~1655-1673), lensa
+# sisir tol/pajak & hadiah diplomasi. 14 event baru, termasuk RANGKAIAN
+# pelepasan diri pantai barat dari Atjeh (Indrapoura 1663, Sillida 1667,
+# Barus 1668, Priaman 1671, Cinkel/Singkil 1672) -- semua pakai frasa "kuk tak
+# tertahankan" (onverdraeglijck jock). Beberapa baris CD2 MELENGKAPI event yg
+# sudah ada dari source_document lain (mis. 1663 Songypagouers CD2 melengkapi
+# 'Traktat Painan' dari korpus_tema_slim.csv dgn teks traktat primer) --
+# ditandai eksplisit di notes sbg pelengkap, BUKAN duplikat/pengganti. Traktat
+# Barus 1668 (CD2) mundurkan bukti Aceh-Barus dari 1681 -- caveat lama "Barus
+# nihil sampai 1681" di riset_atjeh.html & sini WAJIB update.
 
 
 def _clean(v):

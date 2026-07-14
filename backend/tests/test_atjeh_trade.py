@@ -187,6 +187,23 @@ class TestCsvIntegrity:
             assert r["direction"] == "politik"
             assert "Corpus Diplomaticum" in (r["notes"] or "")
 
+    def test_cd2_treaties_documented(self, rows):
+        """"tim MLOPS dan DBA sisir CD2.pdf" (2026-07-15): Corpus Diplomaticum
+        Neerlando-Indicum jilid II (~1655-1673), lensa tol/pajak & hadiah
+        diplomasi -- 14 traktat baru, direction='politik'."""
+        cd2_rows = [r for r in rows if r["source_document"] == "CD2"]
+        assert len(cd2_rows) >= 14
+        for r in cd2_rows:
+            assert r["direction"] == "politik"
+            assert "Corpus Diplomaticum" in (r["notes"] or "")
+
+    def test_cd2_barus_treaty_predates_1681(self, rows):
+        """Traktat Barus 29 April 1668 (CD2) ditemukan MENDAHULUI traktat Barus
+        1681 (korpus_tema_slim.csv) 13 tahun -- caveat lama 'Barus nihil sampai
+        1681' sudah usang, harus ada bukti Aceh-Barus dari CD2 juga."""
+        barus_cd2 = [r for r in rows if r["source_document"] == "CD2" and "Barus" in (r["actor_raw"] or r["notes"] or "")]
+        assert any("1668" in (r["notes"] or "") for r in barus_cd2)
+
     def test_no_translated_commodity_terms(self, rows):
         """Jangan pakai istilah Indonesia hasil terjemahan (mis. 'sendawa') --
         harus ejaan asli sumber (mis. 'salpeter'). Regresi utk feedback user."""

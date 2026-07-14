@@ -41,12 +41,13 @@ LINIMASA_ERAS = [
     {
         "slug": "perang-damai",
         "label": "Perang & Perdamaian",
-        "range": "1656–1659",
+        "range": "1655–1659",
         "headline": "Ratu memerintahkan penangkapan setiap orang VOC di pantai barat. Tiga tahun kemudian, ia mengirim surat perdamaian dengan upacara penuh.",
         "summary": (
-            "Perang terbuka VOC-Atjeh meninggalkan kerugian terbesar dalam catatan ini — personel Belanda "
-            "ditangkap dan disiksa, sebagian tak pernah kembali. Perdamaian 1659 menutup babak ini, tapi "
-            "luka yang ditinggalkan tidak."
+            "Dimulai dari damai Perak 1655 (ganti rugi 50.000 real, jadwal tol timah paling rinci di "
+            "korpus ini), perang terbuka VOC-Atjeh 1656–57 meninggalkan kerugian terbesar dalam catatan "
+            "ini — personel Belanda ditangkap dan disiksa, sebagian tak pernah kembali. Perdamaian 1659 "
+            "menutup babak ini, tapi luka yang ditinggalkan tidak."
         ),
     },
     {
@@ -56,7 +57,8 @@ LINIMASA_ERAS = [
         "headline": "Panglima yang dulu dipaksa menyerang VOC atas nama Atjeh, kini memilih memberontak dari Atjeh sendiri.",
         "summary": (
             "Dalam tiga tahun, kesetiaan pantai barat runtuh: Ticco dan Indrapoura melepaskan diri, dan "
-            "pada 1663 konfederasi Songypagouers menandatangani Traktat Painan dengan VOC — titik resmi "
+            "pada 27 Juli 1663 konfederasi Songypagouers (Indrapoura, Painan, Padang, Tico) menandatangani "
+            "Traktat Painan dengan VOC — “kuk tak tertahankan” dari kekuasaan Atjeh dibuang, titik resmi "
             "berakhirnya kekuasaan Atjeh atas wilayah ini."
         ),
     },
@@ -64,11 +66,13 @@ LINIMASA_ERAS = [
         "slug": "pengusiran-penataan",
         "label": "Pengusiran & Penataan Ulang",
         "range": "1664–1681",
-        "headline": "Yang tersisa dari kekuasaan Atjeh di pantai barat akhirnya diusir dengan senjata — digantikan tatanan baru yang bertahan puluhan tahun.",
+        "headline": "Satu demi satu, pelabuhan pantai barat membuang kuk kekuasaan Atjeh — Sillida, Barus, Priaman, Singkil — sampai tak ada yang tersisa.",
         "summary": (
-            "Kampanye militer menuntaskan apa yang dimulai Traktat Painan. Sillida diserahkan resmi ke VOC "
-            "(1667), dan pada 1681 — delapan belas tahun kemudian — bahkan Barus diwajibkan menyerahkan "
-            "senjata terakhir bermahkota Atjeh."
+            "Kampanye militer & diplomasi menuntaskan apa yang dimulai Traktat Painan: Sillida & Pulau "
+            "Cingkuak diserahkan ke VOC (1667, pos berbenteng pertama VOC di westkust), Barus resmi lepas "
+            "dari Atjeh (1668), Priaman menyusul (1671) dengan formula bagi-hasil tol ke 12 pemimpin lokal, "
+            "Singkil bergabung (1672) — dan pada 1681, delapan belas tahun kemudian, bahkan Barus "
+            "diwajibkan menyerahkan senjata terakhir bermahkota Atjeh."
         ),
     },
 ]

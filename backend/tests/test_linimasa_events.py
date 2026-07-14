@@ -2,9 +2,9 @@
 Unit tests for seed_linimasa_events.py logic + CSV integrity.
 
 Pure function tests (no DB) — mirrors backend/tests/test_atjeh_trade.py pattern.
-Source: data/research/linimasa_events.csv (36 peristiwa suksesi/politik Atjeh,
+Source: data/research/linimasa_events.csv (50 peristiwa suksesi/politik Atjeh,
 1600-1681 -- distilasi atjeh_trade_records + docs/thesis/dr/korpus_tema_slim.csv
-+ docs/CD1.pdf/Corpus Diplomaticum). Sejak Fase 1
++ docs/CD1.pdf + docs/CD2.pdf/Corpus Diplomaticum). Sejak Fase 1
 (docs/prd-linimasa-kronik-pantai-barat.md) tiap baris juga punya era_slug
 (babak naratif) -- lihat ALLOWED_ERAS.
 """
@@ -258,3 +258,47 @@ class TestCsvIntegrity:
             notes = (r["notes"] or "")
             assert "CATATAN" in notes and "editor" in notes.lower(), \
                 f"baris p{r['source_page']} soal Iskandar Thani wajib tandai eksplisit bahwa sumbernya catatan kaki editor"
+
+    def test_cd2_treaties_present(self, rows):
+        """"tim MLOPS dan DBA sisir CD2.pdf" (2026-07-15): Corpus Diplomaticum
+        jilid II (~1655-1673), lensa tol/pajak & hadiah diplomasi -- 14
+        peristiwa baru, harus tetap dari OCR pipeline kami sendiri (bukan tag
+        'SUMBER BEDA PIPELINE' yg reserved utk korpus_tema_slim.csv)."""
+        cd2_rows = [r for r in rows if r["source_document"] == "CD2"]
+        assert len(cd2_rows) >= 14
+        for r in cd2_rows:
+            assert "SUMBER BEDA PIPELINE" not in (r["notes"] or ""), \
+                f"baris p{r['source_page']} (CD2) salah ditandai beda pipeline -- CD2 tetap OCR kami sendiri"
+
+    def test_cd2_complements_not_duplicates_existing_events(self, rows):
+        """Baris CD2 yg berkaitan dgn event yg sudah ada dari source_document
+        lain (mis. Traktat Painan 1663 dari korpus_tema_slim.csv, Sillida 1667)
+        wajib ditandai eksplisit 'MELENGKAPI' di notes -- bukan didiamkan
+        seolah event baru yg tak berkaitan/duplikat."""
+        painan_cd2 = [r for r in rows if r["source_document"] == "CD2" and r["year"] == 1663]
+        assert len(painan_cd2) >= 1
+        for r in painan_cd2:
+            assert "MELENGKAPI" in (r["notes"] or ""), \
+                f"baris p{r['source_page']} (CD2, 1663) wajib tandai eksplisit MELENGKAPI event Traktat Painan yg sudah ada"
+
+    def test_cd2_barus_1668_predates_1681_treaty(self, rows):
+        """Traktat Barus 29 April 1668 (CD2) adalah bukti Aceh-Barus PERTAMA yg
+        sesungguhnya -- 13 tahun lebih awal dari traktat Barus 1681
+        (korpus_tema_slim.csv) yg sebelumnya diklaim 'bukti pertama'. Kedua
+        baris harus tetap ada (bukan salah satu dihapus), tapi baris 1668
+        wajib menandai eksplisit bahwa ia mendahului 1681."""
+        barus_1668 = [r for r in rows if r["source_document"] == "CD2" and r["year"] == 1668
+                      and "Barus" in r["title"]]
+        barus_1681 = [r for r in rows if r["source_document"] == "1681"]
+        assert len(barus_1668) >= 1
+        assert len(barus_1681) >= 1, "baris traktat Barus 1681 (korpus_tema_slim.csv) harus tetap ada, bukan dihapus"
+        assert any("1681" in (r["notes"] or "") for r in barus_1668), \
+            "baris Barus 1668 wajib eksplisit sebut ia mendahului traktat 1681"
+
+    def test_perang_damai_era_extended_to_1655(self, rows):
+        """Traktat damai Perak 7 Des 1655 (CD2) masuk babak 'perang-damai' --
+        era ini diperluas dari 1656 ke 1655 utk menampungnya, non-overlap dgn
+        'ratu-puncak' (berakhir 1650) tetap terjaga."""
+        y1655 = [r for r in rows if r["year"] == 1655]
+        assert len(y1655) >= 1
+        assert all(r["era_slug"] == "perang-damai" for r in y1655)

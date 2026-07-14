@@ -46,6 +46,17 @@ faktanya cuma tersedia lewat anotasi editor (tandai eksplisit di notes kalau
 begitu). Baris CD1 wajib tag "SUMBER: Corpus Diplomaticum" di notes utk
 bedakan dari 9 volume Dagh-register.
 
+source_document="CD2" (2026-07-15): docs/CD2.pdf, Corpus Diplomaticum
+Neerlando-Indicum jilid II (ed. J.E. Heeres, 639 halaman) -- lanjutan
+kronologis CD1 (~1655-1673). Lensa sisir sesi ini: tol/pajak & hadiah
+diplomasi. 14 traktat ditemukan, termasuk RANGKAIAN pelepasan diri pantai
+barat dari Atjeh (Indrapoura 1663, Sillida 1667, Barus 1668, Priaman 1671,
+Cinkel/Singkil 1672) -- pola bahasa berulang "onverdraeglijck jock" (kuk tak
+tertahankan) di semua traktat ini. TEMUAN BESAR: traktat Barus 29 April 1668
+mundurkan bukti hubungan Aceh-Barus dari 1681 (13 tahun lebih awal) --
+caveat lama "Barus nihil sampai 1681" WAJIB direvisi. Sama pola tag notes
+spt CD1 ("SUMBER: Corpus Diplomaticum jilid II").
+
 Jalankan: docker compose exec backend python seed_atjeh_trade.py
 """
 import csv
@@ -67,7 +78,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659", "CD1"}
+ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659", "CD1", "CD2"}
 
 ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh", "politik"}
 # "politik": fakta politik/administratif Atjeh (klaim yurisdiksi, penegakan tol,
