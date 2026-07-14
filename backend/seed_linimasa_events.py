@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Babak naratif Fase 1 /linimasa (docs/prd-linimasa-kronik-pantai-barat.md) --
@@ -75,6 +75,18 @@ ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pe
 # ditandai eksplisit di notes sbg pelengkap, BUKAN duplikat/pengganti. Traktat
 # Barus 1668 (CD2) mundurkan bukti Aceh-Barus dari 1681 -- caveat lama "Barus
 # nihil sampai 1681" di riset_atjeh.html & sini WAJIB update.
+#
+# source_document="CD3" (2026-07-15): docs/CD3.pdf, Corpus Diplomaticum
+# Neerlando-Indicum jilid III -- lanjutan kronologis CD2 (~1678-1690), volume
+# PALING PADAT sejauh ini (18 event baru). Siklus berulang pemberontakan-
+# tunduk pantai barat (Priaman, Tiku, Bajang, Kotta-tengah, Baros, Singkil),
+# puncaknya traktat aliansi UMUM 29 Agustus 1680 yg menyatukan SEMUA
+# penguasa westkust dari Seblat sampai Air Bangis di bawah VOC. MAJUKAN
+# titik akhir linimasa dari 1681 ke 1690 (era "pengusiran-penataan" diperluas
+# 1664-1681 -> 1664-1690). Paruh kedua volume: konteks baru persaingan
+# Inggris (diusir dari Bantam) mencoba pijakan westkust. Beberapa baris
+# MELENGKAPI event lama (Sillida 1667, Barus 1681, Cinkel 1672) dgn detail
+# lanjutan -- ditandai eksplisit, bukan duplikat.
 
 
 def _clean(v):

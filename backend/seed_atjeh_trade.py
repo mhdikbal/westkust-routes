@@ -57,6 +57,19 @@ mundurkan bukti hubungan Aceh-Barus dari 1681 (13 tahun lebih awal) --
 caveat lama "Barus nihil sampai 1681" WAJIB direvisi. Sama pola tag notes
 spt CD1 ("SUMBER: Corpus Diplomaticum jilid II").
 
+source_document="CD3" (2026-07-15): docs/CD3.pdf, Corpus Diplomaticum
+Neerlando-Indicum jilid III (625 halaman) -- lanjutan kronologis CD2
+(~1678-1690), volume PALING PADAT sejauh ini (18 traktat). Mendokumentasikan
+siklus berulang pemberontakan-tunduk di sepanjang pantai barat (Priaman,
+Tiku, Bajang, Kotta-tengah, Baros, Singkil) dan puncaknya traktat aliansi
+UMUM 29 Agustus 1680 yg menyatukan SEMUA penguasa westkust (Indrapoura,
+Padang, Kottatenga, Sillida) dari Seblat sampai Air Bangis di bawah VOC.
+MUNDURKAN/MAJUKAN titik akhir linimasa dari 1681 ke 1690 (event terbaru:
+suksesi radja d'Ilhier Barus, 18 Okt 1690). Konteks baru muncul di paruh
+kedua volume: persaingan Inggris (diusir dari Bantam) mencoba pijakan di
+westkust, memicu VOC mempercepat konsolidasi. Sama pola tag notes
+("SUMBER: Corpus Diplomaticum jilid III").
+
 Jalankan: docker compose exec backend python seed_atjeh_trade.py
 """
 import csv
@@ -78,7 +91,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659", "CD1", "CD2"}
+ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659", "CD1", "CD2", "CD3"}
 
 ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh", "politik"}
 # "politik": fakta politik/administratif Atjeh (klaim yurisdiksi, penegakan tol,

@@ -232,11 +232,11 @@ class AtjehTradeRecord(Base):
     """Baris hasil ekstraksi laporan dagang dari/ke/di Atjeh, sumber primer
     sembilan volume "Dagh-register gehouden int casteel Batavia" (docs/): 1643-1644,
     1631-1634, 1637, 1636, 1624-1629, 1644-1645, 1647-1648, 1656-1657, dan 1659,
-    plus docs/CD1.pdf & docs/CD2.pdf (Corpus Diplomaticum Neerlando-Indicum jilid
-    I & II -- kompilasi traktat/kontrak, BEDA jenis sumber dari jurnal harian
-    Dagh-register, lihat catatan source_document="CD1"/"CD2" di
-    seed_atjeh_trade.py). Muat dari data/research/atjeh_trade.csv via
-    seed_atjeh_trade.py. Baris direction='politik'
+    plus docs/CD1.pdf, docs/CD2.pdf & docs/CD3.pdf (Corpus Diplomaticum
+    Neerlando-Indicum jilid I, II & III -- kompilasi traktat/kontrak, BEDA jenis
+    sumber dari jurnal harian Dagh-register, lihat catatan
+    source_document="CD1"/"CD2"/"CD3" di seed_atjeh_trade.py). Muat dari
+    data/research/atjeh_trade.csv via seed_atjeh_trade.py. Baris direction='politik'
     adalah fakta politik/administratif (klaim yurisdiksi, penegakan tol, suksesi
     raja, status ratu, traktat), BUKAN transaksi dagang -- dipisah dari 'in_atjeh'
     (transaksi yg terjadi di Atjeh) 2026-07-13.
@@ -252,7 +252,7 @@ class AtjehTradeRecord(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    source_document = Column(String(20), nullable=False, index=True)  # "1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648" | "1656-1657" | "1659" | "CD1" | "CD2"
+    source_document = Column(String(20), nullable=False, index=True)  # "1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648" | "1656-1657" | "1659" | "CD1" | "CD2" | "CD3"
     source_page = Column(Integer, nullable=False, index=True)   # halaman PDF scan (source_document)
     book_page = Column(String(20), nullable=True)                # halaman cetak asli, jika diketahui
     entry_date_raw = Column(String(50), nullable=True)           # mis. "9 Mei 1644"; NULL = tak bertanggal jelas
@@ -324,6 +324,17 @@ class LinimasaEvent(Base):
     ditandai eksplisit "MELENGKAPI" di notes, BUKAN duplikat. Traktat Barus 29
     April 1668 mundurkan bukti hubungan Aceh-Barus dari 1681 ke 1668.
 
+    Baris source_document="CD3" (2026-07-15, "tim MLOPS dan DBA sisir CD3.pdf"):
+    Corpus Diplomaticum jilid III (~1678-1690), volume PALING PADAT sejauh ini
+    (18 event baru). Siklus berulang pemberontakan-tunduk pantai barat
+    (Priaman, Tiku, Bajang, Kotta-tengah, Baros, Singkil), puncaknya traktat
+    aliansi UMUM 29 Agustus 1680 yg menyatukan SEMUA penguasa westkust
+    (Indrapoura, Padang, Kottatenga, Sillida) dari Seblat sampai Air Bangis di
+    bawah VOC. MAJUKAN titik akhir linimasa dari 1681 ke 1690 (event terbaru:
+    suksesi radja d'Ilhier Barus, 18 Okt 1690) -- era "pengusiran-penataan"
+    diperluas 1664-1681 -> 1664-1690. Paruh kedua volume: konteks baru
+    persaingan Inggris (diusir dari Bantam) mencoba pijakan di westkust.
+
     text_asli WAJIB (disiplin sama spt AtjehTradeRecord) -- setiap event harus
     tertelusur ke kutipan sumber, bukan klaim tanpa bukti. confidence_flag
     default 'unverified' krn OCR/terjemahan mentah, belum dicocokkan scan asli."""
@@ -331,7 +342,7 @@ class LinimasaEvent(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    source_document = Column(String(20), nullable=False, index=True)  # "1624-1629" | "1631-1634" | "1636" | "1637" | "1643-1644" | "1647-1648" | "1656-1657" | "1659" | "1661" | "1663" | "1664" | "1665" | "1681" | "CD1" | "CD2"
+    source_document = Column(String(20), nullable=False, index=True)  # "1624-1629" | "1631-1634" | "1636" | "1637" | "1643-1644" | "1647-1648" | "1656-1657" | "1659" | "1661" | "1663" | "1664" | "1665" | "1681" | "CD1" | "CD2" | "CD3"
     source_page = Column(Integer, nullable=False, index=True)
     book_page = Column(String(20), nullable=True)
     event_date_raw = Column(String(50), nullable=True)   # mis. "10 Des 1632", "27 Maret 1663"; NULL = tak bertanggal jelas

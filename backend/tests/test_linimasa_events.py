@@ -2,9 +2,9 @@
 Unit tests for seed_linimasa_events.py logic + CSV integrity.
 
 Pure function tests (no DB) — mirrors backend/tests/test_atjeh_trade.py pattern.
-Source: data/research/linimasa_events.csv (50 peristiwa suksesi/politik Atjeh,
-1600-1681 -- distilasi atjeh_trade_records + docs/thesis/dr/korpus_tema_slim.csv
-+ docs/CD1.pdf + docs/CD2.pdf/Corpus Diplomaticum). Sejak Fase 1
+Source: data/research/linimasa_events.csv (69 peristiwa suksesi/politik Atjeh,
+1600-1690 -- distilasi atjeh_trade_records + docs/thesis/dr/korpus_tema_slim.csv
++ docs/CD1.pdf + docs/CD2.pdf + docs/CD3.pdf/Corpus Diplomaticum). Sejak Fase 1
 (docs/prd-linimasa-kronik-pantai-barat.md) tiap baris juga punya era_slug
 (babak naratif) -- lihat ALLOWED_ERAS.
 """
@@ -302,3 +302,37 @@ class TestCsvIntegrity:
         y1655 = [r for r in rows if r["year"] == 1655]
         assert len(y1655) >= 1
         assert all(r["era_slug"] == "perang-damai" for r in y1655)
+
+    def test_cd3_treaties_present(self, rows):
+        """"tim MLOPS dan DBA sisir CD3.pdf" (2026-07-15): Corpus Diplomaticum
+        jilid III (~1678-1690), volume PALING PADAT -- 18 peristiwa baru,
+        harus tetap dari OCR pipeline kami sendiri (bukan tag 'SUMBER BEDA
+        PIPELINE' yg reserved utk korpus_tema_slim.csv)."""
+        cd3_rows = [r for r in rows if r["source_document"] == "CD3"]
+        assert len(cd3_rows) >= 18
+        for r in cd3_rows:
+            assert "SUMBER BEDA PIPELINE" not in (r["notes"] or ""), \
+                f"baris p{r['source_page']} (CD3) salah ditandai beda pipeline -- CD3 tetap OCR kami sendiri"
+
+    def test_1690_is_new_latest_year(self, rows):
+        """Suksesi radja d'Ilhier Barus (CD3, 18 Okt 1690) memajukan titik AKHIR
+        linimasa dari 1681 ke 1690 -- peristiwa TERBARU di seluruh korpus."""
+        years = [r["year"] for r in rows if r["year"] is not None]
+        assert max(years) == 1690
+        y1690 = [r for r in rows if r["year"] == 1690]
+        assert all(r["source_document"] == "CD3" for r in y1690)
+
+    def test_pengusiran_penataan_era_extended_to_1690(self, rows):
+        """Era 'pengusiran-penataan' diperluas dari 1664-1681 ke 1664-1690 utk
+        menampung 18 event CD3 (1678-1690), non-overlap dgn era lain tetap
+        terjaga (retak-painan berakhir 1663)."""
+        y1682_1690 = [r for r in rows if r["year"] is not None and 1682 <= r["year"] <= 1690]
+        assert len(y1682_1690) >= 1
+        assert all(r["era_slug"] == "pengusiran-penataan" for r in y1682_1690)
+
+    def test_cd3_grand_alliance_1680_present(self, rows):
+        """Traktat aliansi umum 29 Agustus 1680 (CD3) -- temuan terbesar sesi
+        CD3, menyatukan Indrapoura/Padang/Kottatenga/Sillida dalam satu
+        traktat pertama kalinya -- harus tercatat eksplisit."""
+        y1680 = [r for r in rows if r["source_document"] == "CD3" and r["year"] == 1680]
+        assert any("Seblat" in r["title"] or "seluruh pantai barat" in r["title"] for r in y1680)

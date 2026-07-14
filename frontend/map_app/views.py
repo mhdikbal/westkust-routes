@@ -65,14 +65,16 @@ LINIMASA_ERAS = [
     {
         "slug": "pengusiran-penataan",
         "label": "Pengusiran & Penataan Ulang",
-        "range": "1664–1681",
-        "headline": "Satu demi satu, pelabuhan pantai barat membuang kuk kekuasaan Atjeh — Sillida, Barus, Priaman, Singkil — sampai tak ada yang tersisa.",
+        "range": "1664–1690",
+        "headline": "Satu demi satu, pelabuhan pantai barat membuang kuk kekuasaan Atjeh — Sillida, Barus, Priaman, Singkil — sampai seluruh westkust bersatu di bawah VOC.",
         "summary": (
             "Kampanye militer & diplomasi menuntaskan apa yang dimulai Traktat Painan: Sillida & Pulau "
-            "Cingkuak diserahkan ke VOC (1667, pos berbenteng pertama VOC di westkust), Barus resmi lepas "
-            "dari Atjeh (1668), Priaman menyusul (1671) dengan formula bagi-hasil tol ke 12 pemimpin lokal, "
-            "Singkil bergabung (1672) — dan pada 1681, delapan belas tahun kemudian, bahkan Barus "
-            "diwajibkan menyerahkan senjata terakhir bermahkota Atjeh."
+            "Cingkuak diserahkan ke VOC (1667), Barus resmi lepas dari Atjeh (1668), dan pada 29 Agustus "
+            "1680 seluruh penguasa pantai barat — Indrapoura, Padang, Kottatenga, Sillida — bersatu dalam "
+            "satu aliansi umum dari Seblat sampai Air Bangis. Tapi kesetiaan tak pernah final: Priaman dan "
+            "Tiku memberontak lagi (1678, 1684), Barus baru benar-benar tuntas lepas Atjeh 1 Januari 1681 "
+            "(radja Ilir menyerahkan senjata terakhir bermahkota Atjeh), dan menjelang 1690 persaingan baru "
+            "muncul — Inggris, diusir dari Bantam, mencoba pijakan di westkust yang sama."
         ),
     },
 ]
