@@ -130,16 +130,56 @@ class TestCsvIntegrity:
         for r in painan:
             assert r["year"] in (1662, 1663)
 
-    def test_1663_rows_flag_different_pipeline(self, rows):
-        """Baris source_document='1663' sumbernya BEDA pipeline (korpus_tema_slim.csv,
-        terjemahan Indonesia) -- notes wajib menyebut ini eksplisit, jangan didiamkan
-        seolah sama dgn OCR Belanda baris lain."""
-        painan = [r for r in rows if r["source_document"] == "1663"]
-        for r in painan:
+    def test_korpus_tema_slim_rows_flag_different_pipeline(self, rows):
+        """Baris source_document dari korpus_tema_slim.csv (1661/1663/1664/1665/1681)
+        sumbernya BEDA pipeline (terjemahan Indonesia) -- notes wajib menyebut ini
+        eksplisit, jangan didiamkan seolah sama dgn OCR Belanda baris lain."""
+        corpus_sourced = [r for r in rows if r["source_document"] in ("1661", "1663", "1664", "1665", "1681")]
+        assert len(corpus_sourced) >= 10
+        for r in corpus_sourced:
             assert "SUMBER BEDA PIPELINE" in (r["notes"] or ""), \
-                f"baris p{r['source_page']} (1663) tak menandai provenance beda pipeline"
+                f"baris p{r['source_page']} ({r['source_document']}) tak menandai provenance beda pipeline"
 
     def test_years_ascending_or_covers_range(self, rows):
         years = [r["year"] for r in rows if r["year"] is not None]
-        assert min(years) <= 1637
-        assert max(years) >= 1663
+        assert min(years) <= 1625
+        assert max(years) >= 1681
+
+    def test_1625_earliest_jurisdiction_claim_present(self, rows):
+        """Klaim yurisdiksi Atjeh TERLUAS (VOC sendiri, vol.1624-1629) adalah
+        event TERTUA linimasa -- sempat terlewat sesi awal, jangan lewat lagi."""
+        y1625 = [r for r in rows if r["year"] == 1625]
+        assert len(y1625) >= 2
+        assert all(r["source_document"] == "1624-1629" for r in y1625)
+
+    def test_barus_treaty_present(self, rows):
+        """Ekstraksi 1661-1681 menemukan bukti Atjeh-Barus PERTAMA di seluruh korpus
+        riset (traktat 1681) -- harus tercatat eksplisit di linimasa, bukan diabaikan."""
+        barus_rows = [r for r in rows if "Barus" in r["title"] or "Barus" in (r["ruler_actor"] or "")]
+        assert len(barus_rows) >= 1
+        assert any(r["year"] == 1681 for r in barus_rows)
+
+    def test_sillida_expulsion_arc_present(self, rows):
+        """Arc pengusiran Atjeh dari Sillida (1664 kabur -> 1665 tuntas -> 1667
+        penyerahan formal) harus lengkap, bukan cuma satu titik."""
+        years_present = {r["year"] for r in rows if r["year"] is not None}
+        assert 1664 in years_present
+        assert 1665 in years_present
+        assert 1667 in years_present
+
+    def test_1656_1657_war_present_and_own_pipeline(self, rows):
+        """Perang terbuka VOC-Atjeh 1656-57 (didistilasi dari atjeh_trade_records,
+        BUKAN korpus_tema_slim.csv) harus ada, dan notes-nya TIDAK boleh salah
+        ditandai 'SUMBER BEDA PIPELINE' krn ini dari pipeline OCR docs/ kita sendiri."""
+        war_rows = [r for r in rows if r["source_document"] == "1656-1657"]
+        assert len(war_rows) >= 5
+        for r in war_rows:
+            assert "SUMBER BEDA PIPELINE" not in (r["notes"] or ""), \
+                f"baris p{r['source_page']} (1656-1657) salah ditandai beda pipeline -- ini dari OCR docs/ kita"
+
+    def test_1659_peace_resolves_the_war(self, rows):
+        """Perdamaian 1659 yg mengakhiri perang 1656-57 harus tercatat sbg event
+        'perjanjian', bukan diam-diam hilang dari linimasa."""
+        peace = [r for r in rows if r["source_document"] == "1659" and r["event_type"] == "perjanjian"]
+        assert len(peace) >= 1
+        assert peace[0]["year"] == 1659

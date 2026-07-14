@@ -84,7 +84,7 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22p
 /* ---- timeline SVG axis ---- */
 .axis-wrap{background:var(--panel);border:1px solid var(--line);border-radius:12px;
   padding:20px 16px 8px;margin-bottom:18px;overflow-x:auto}
-.axis-wrap svg{display:block;min-width:640px;width:100%;height:150px}
+.axis-wrap svg{display:block;min-width:640px;width:100%;height:220px}
 .axis-line{stroke:var(--line);stroke-width:2}
 .tick-label{font-family:var(--mono);font-size:11px;fill:var(--muted)}
 .evt-dot{cursor:pointer;stroke:#fff;stroke-width:2;transition:r .12s}
@@ -133,14 +133,18 @@ footer p{margin:0 0 10px;line-height:1.55}
   </nav>
 
   <header>
-    <p class="eyebrow">Linimasa Suksesi &middot; Dagh-register Batavia 1631-1663</p>
+    <p class="eyebrow">Linimasa Suksesi &middot; Dagh-register Batavia 1625-1681</p>
     <h1 class="title">Dari Iskandar Muda ke <em>Traktat Painan</em></h1>
-    <p class="lede">9 peristiwa kunci suksesi &amp; politik kekuasaan Atjeh atas pantai barat
-      Sumatra — dari titah tol Sultan <b>Iskandar Muda</b> (1632), wafatnya &amp; krisis suksesi
-      (1637), penegasan kekuasaan <b>Ratu Atjeh</b> (1644–1648), sampai konfederasi
-      Songypagouers (Padang, Pariaman, Tiku, Salida, Inderapura) memberontak dan menandatangani
-      <b>Traktat Painan 1663</b> dengan VOC — titik resmi berakhirnya kekuasaan Atjeh atas
-      wilayah ini di korpus riset ini.</p>
+    <p class="lede">30 peristiwa kunci suksesi &amp; politik kekuasaan Atjeh atas pantai barat
+      Sumatra — dari klaim yurisdiksi Atjeh <b>TERLUAS</b> yang dicatat VOC sendiri atas seluruh
+      Sumatra (1625), titah tol Sultan <b>Iskandar Muda</b> (1632), wafatnya &amp; krisis suksesi
+      (1637), penegasan kekuasaan <b>Ratu Atjeh</b> (1644–1648), <b>perang terbuka VOC-Atjeh
+      1656–57</b> (kerugian terbesar di seluruh korpus, tawanan Belanda disandera di Sillida &amp;
+      Priaman) yang diakhiri perdamaian resmi 1659, konfederasi Songypagouers (Padang, Pariaman,
+      Tiku, Salida, Inderapura) memberontak dan menandatangani <b>Traktat Painan 1663</b> dengan
+      VOC, kampanye pengusiran Atjeh dari pantai barat (1664–1665), penyerahan formal Sillida
+      (1667), sampai <b>traktat Barus 1681</b> — bukti Atjeh-Barus pertama di seluruh korpus
+      riset ini.</p>
     <div class="prov" id="prov">memuat…</div>
     <div class="tiles" id="tiles"></div>
   </header>
@@ -148,19 +152,46 @@ footer p{margin:0 0 10px;line-height:1.55}
   <div class="caveat">
     <h2>Batas bukti &amp; dua sumber berbeda — baca sebelum menafsirkan</h2>
     <p><b>Semua baris berstatus "belum diverifikasi"</b> (confidence_flag=unverified). Peristiwa
-      1632–1648 didistilasi dari <code>atjeh_trade_records</code> (OCR PDF docs/ kami sendiri,
-      ejaan asli VOC-Belanda dipertahankan). Peristiwa 1663 (Traktat Painan) sumbernya BEDA
-      pipeline: <code>docs/thesis/dr/korpus_tema_slim.csv</code>, corpus GLOBALISE/Huygens yang
-      sudah diterjemahkan ke Indonesia — kutipan baris-baris itu karena itu berbahasa Indonesia
+      1625–1657 didistilasi dari <code>atjeh_trade_records</code> (OCR PDF docs/ kami sendiri,
+      ejaan asli VOC-Belanda dipertahankan). Peristiwa 1661–1681 sumbernya BEDA pipeline:
+      <code>docs/thesis/dr/korpus_tema_slim.csv</code>, corpus GLOBALISE/Huygens yang sudah
+      diterjemahkan ke Indonesia — kutipan baris-baris itu karena itu berbahasa Indonesia
       (terjemahan), bukan OCR Belanda mentah seperti baris lain. Provenance persis (corpus_id
       asal) dicatat di catatan tiap baris.</p>
+    <p><b>Koreksi 2026-07-14 (ditegur user "jangan ada yang dilewatkan"):</b> seed awal cuma
+      distilasi 4 volume (1631-1634/1637/1643-1644/1647-1648), TERLEWAT dua volume yang sudah
+      lama ada di <code>atjeh_trade_records</code>: <b>1624-1629</b> (risalah VOC 29 Sep 1625,
+      klaim yurisdiksi Atjeh TERLUAS di seluruh korpus — sekarang jadi peristiwa TERTUA linimasa,
+      mendahului titah 1632 tujuh tahun) dan <b>1636</b> (surat Jacob Schooff, pejabat pungut-tol
+      Atjeh masih aktif di Indrapura). Ditambahkan, 4 peristiwa baru.</p>
+    <p><b>Temuan volume 1656-1657 (5 peristiwa baru, pipeline sama dgn kami sendiri):</b> perang
+      TERBUKA VOC-Atjeh, dibuka komisaris Johan Treuijtman — ratu Atjeh membalas dgn perintah
+      langsung ke panglima Sillida/Ticco/Priaman utk menangkap &amp; menyiksa SEMUA personel VOC.
+      Kerugian ~120.000 gulden, terbesar di seluruh korpus. Ekspedisi hukuman 200 tentara (Feb
+      1657) berhasil bebaskan 9 tawanan di Sillida, GAGAL di Priaman (10 tawanan, ~2.000 penjaga
+      bersenjata). VOC putuskan lanjutkan perang tanpa batas jelas. Peristiwa ini 6 tahun
+      MENDAHULUI pemberontakan 1662–63 — kemungkinan akar dendam panglima yg dipaksa Atjeh
+      menyerang VOC, nanti berbalik memberontak dari Atjeh sendiri.</p>
+    <p><b>Temuan volume 1659 (2 peristiwa baru, pipeline sama dgn kami sendiri):</b> Maret 1659
+      perang masih berjalan — 6 tawanan Belanda tersisa, panglima pantai barat SUDAH terbelah
+      soal kesetiaan ke Atjeh (2 tahun mendahului perpecahan yg sama tahun 1661). Lalu 26 Mei
+      1659, ratu Atjeh kirim surat perdamaian resmi via komisaris Balthasar Bort — perang 1656-57
+      resmi berakhir, 3 duta diterima di Batavia dgn upacara penuh. Titik balik SEMENTARA sebelum
+      tensi baru muncul lagi 1660-61.</p>
     <p><b>Sengaja tidak digambar "blok era"</b> (mis. blok "Iskandar Muda 1607–1636") karena
       tanggal naik takhta (1607) tidak ada di korpus kami — itu pengetahuan sejarah umum
       eksternal, bukan sesuatu yang tertelusur ke kutipan sumber di sini. Linimasa ini hanya
       menampilkan peristiwa yang punya kutipan asli.</p>
-    <p>Ini seed awal (9 peristiwa) dari data yang sudah diverifikasi sesi-sesi sebelumnya —
-      ekstraksi lebih dalam corpus 1661–1681 (termasuk detail penuh 49 baris volume 1663)
-      direncanakan sebagai sesi lanjutan terpisah.</p>
+    <p><b>Ekstraksi lanjutan corpus 1661–1681 (10 peristiwa baru):</b> menemukan akar sebab
+      pemberontakan — panglima Atjeh memakai suku Paeuw sbg proksi perangi Padang 4 tahun
+      (1657–1661), lalu panglima Priaman wafat mendadak diduga diracun (Des 1661) tepat sebelum
+      Traktat Painan. Pasca-traktat: panglima Atjeh di Sillida kabur diam-diam (Jan 1664), VOC
+      perintahkan pengusiran paksa, ~600–700 orang Atjeh bertahan di benteng Priaman sampai
+      akhirnya jatuh (kampanye tuntas Jan 1665). Sillida diserahkan formal ke VOC 1667. <b>Temuan
+      terbesar: traktat Barus 1681</b> — radja hulu/hilir Barus diwajibkan menyerahkan senjata
+      sisa "mahkota Aetehe" (mahkota Atjeh) — bukti Atjeh-Barus PERTAMA di seluruh korpus riset
+      ini, membuka pertanyaan baru yang tak terjawab OCR docs/ kami sendiri (lihat caveat Barus
+      di <a href="../riset/atjeh-dagang/">Dagang Atjeh</a>).</p>
   </div>
 
   <div class="controls">
@@ -177,7 +208,7 @@ footer p{margin:0 0 10px;line-height:1.55}
   </div>
 
   <div class="axis-wrap">
-    <svg id="axisSvg" viewBox="0 0 1000 150" preserveAspectRatio="xMinYMid meet"></svg>
+    <svg id="axisSvg" viewBox="0 0 1000 220" preserveAspectRatio="xMinYMid meet"></svg>
   </div>
 
   <div class="cards" id="cards"></div>
@@ -186,12 +217,15 @@ footer p{margin:0 0 10px;line-height:1.55}
     <h3>Metode &amp; batas</h3>
     <p>Sumber: <code>data/research/linimasa_events.csv</code>, dimuat via
       <code>seed_linimasa_events.py</code> ke tabel <code>linimasa_events</code>. Baris
-      1631-1634/1637/1643-1644/1647-1648 didistilasi dari baris <code>direction='politik'</code>
-      di <code>atjeh_trade_records</code> (lihat <a href="../riset/atjeh-dagang/">Dagang
-      Atjeh</a> untuk konteks dagang lengkap volume yang sama). Baris 1663 dari
-      <code>docs/thesis/dr/korpus_tema_slim.csv</code> corpus_id 608–612 (naskah Traktat Painan,
-      dinegosiasikan koopman VOC Groenewegen Jun–Nov 1662, dicatat daghregister Batavia 27 Maret
-      1663).</p>
+      1624-1629/1631-1634/1636/1637/1643-1644/1647-1648/1656-1657/1659 didistilasi dari baris
+      <code>direction='politik'</code> di <code>atjeh_trade_records</code> (lihat
+      <a href="../riset/atjeh-dagang/">Dagang Atjeh</a> untuk konteks dagang lengkap volume yang
+      sama — baris 1656-1657 khususnya berisi narasi perang terbuka VOC-Atjeh). Baris
+      1661/1663/1664/1665/1681 dari <code>docs/thesis/dr/korpus_tema_slim.csv</code>: corpus_id
+      569–594 (buluh peristiwa 1660–61), 608–612 (naskah Traktat Painan, dinegosiasikan koopman
+      VOC Groenewegen Jun–Nov 1662, dicatat daghregister Batavia 27 Maret 1663), 540/560/564
+      (pengusiran 1664), 648/668 (penuntasan 1665), dan 966–972 (penyerahan Sillida 1667 &amp;
+      traktat Barus 1681, dicatat ulang dlm volume 1681).</p>
     <p><span class="tag">thesis-only · noindex</span>
       <span class="tag">route: /linimasa (top-level, tidak di navbar publik)</span>
       <span class="tag">endpoint: /api/research/linimasa</span>
@@ -229,7 +263,8 @@ function renderAxis(rows){
   const years = rows.map(r => r.year).filter(y => y != null);
   if(!years.length){ svg.innerHTML = ''; return; }
   const yMin = Math.min(...years) - 2, yMax = Math.max(...years) + 2;
-  const W = 1000, H = 150, PAD = 40, axisY = 90;
+  const W = 1000, H = 220, PAD = 40, axisY = 110;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   const x = y => PAD + (y - yMin) / (yMax - yMin) * (W - PAD*2);
 
   let ticks = '';
@@ -238,15 +273,28 @@ function renderAxis(rows){
       <text x="${x(yr)}" y="${axisY+20}" class="tick-label" text-anchor="middle">${yr}</text>`;
   }
 
-  let dots = '';
-  rows.forEach((r, i) => {
-    if(r.year == null) return;
+  // stack dots that land close together in x across more vertical tiers,
+  // so 19 events across a 50-year span don't collide (regresi setelah
+  // ekstraksi 1661-1681 nambah 10 event ke linimasa)
+  const sorted = [...rows].filter(r => r.year != null).sort((a,b) => a.year - b.year);
+  const placed = [];
+  const MIN_GAP_PX = 46;
+  sorted.forEach(r => {
     const cx = x(r.year);
-    const cy = axisY + (i % 2 === 0 ? -26 : 26);
-    const color = TYPE_COLOR[r.event_type] || '#999';
-    dots += `<line x1="${cx}" y1="${cy>axisY?cy-8:cy+8}" x2="${cx}" y2="${axisY}" class="axis-line"/>
-      <circle cx="${cx}" cy="${cy}" r="6.5" fill="${color}" class="evt-dot" data-id="${r.id}"/>
-      <text x="${cx}" y="${cy>axisY? cy+16 : cy-12}" class="evt-title-svg" text-anchor="middle" data-id="${r.id}">${esc(r.year)}</text>`;
+    let tier = 0;
+    while(placed.some(p => p.tier === tier && Math.abs(p.cx - cx) < MIN_GAP_PX)) tier++;
+    placed.push({ id: r.id, cx, tier, event_type: r.event_type, year: r.year });
+  });
+
+  let dots = '';
+  placed.forEach(p => {
+    const side = p.tier % 2 === 0 ? -1 : 1;
+    const level = Math.floor(p.tier / 2) + 1;
+    const cy = axisY + side * (18 * level + 8);
+    const color = TYPE_COLOR[p.event_type] || '#999';
+    dots += `<line x1="${p.cx}" y1="${cy>axisY?cy-8:cy+8}" x2="${p.cx}" y2="${axisY}" class="axis-line"/>
+      <circle cx="${p.cx}" cy="${cy}" r="6.5" fill="${color}" class="evt-dot" data-id="${p.id}"/>
+      <text x="${p.cx}" y="${cy>axisY? cy+16 : cy-12}" class="evt-title-svg" text-anchor="middle" data-id="${p.id}">${esc(p.year)}</text>`;
   });
 
   svg.innerHTML = `<line x1="${PAD}" y1="${axisY}" x2="${W-PAD}" y2="${axisY}" class="axis-line"/>${ticks}${dots}`;

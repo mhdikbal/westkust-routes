@@ -134,11 +134,11 @@ footer p{margin:0 0 10px;line-height:1.55}
   </nav>
 
   <header>
-    <p class="eyebrow">Ekstraksi Sumber Primer · Dagh-register Batavia 1643-1644, 1631-1634, 1637, 1636, 1624-1629, 1644-1645 &amp; 1647-1648</p>
+    <p class="eyebrow">Ekstraksi Sumber Primer · Dagh-register Batavia 1643-1644, 1631-1634, 1637, 1636, 1624-1629, 1644-1645, 1647-1648, 1656-1657 &amp; 1659</p>
     <h1 class="title">Laporan Dagang <em>dari &amp; ke Atjeh</em></h1>
-    <p class="lede">73 baris hasil pembacaan manual atas tujuh volume Dagh-register gehouden int
+    <p class="lede">82 baris hasil pembacaan manual atas sembilan volume Dagh-register gehouden int
       casteel Batavia — <b>1643-1644</b>, <b>1631-1634</b>, <b>1637</b>, <b>1636</b>,
-      <b>1624-1629</b>, <b>1644-1645</b>, dan <b>1647-1648</b> — kapal, komoditas, harga, dan kebijakan dagang yang tercatat masuk
+      <b>1624-1629</b>, <b>1644-1645</b>, <b>1647-1648</b>, <b>1656-1657</b>, dan <b>1659</b> — kapal, komoditas, harga, dan kebijakan dagang yang tercatat masuk
       (<b>naar Atjeh</b>), keluar (<b>van Atjeh</b>), terjadi di dalam comptoir/wilayah
       kekuasaan Atjeh sendiri (<b>in Atjeh</b>), atau fakta <b>politik/administratif</b>
       (klaim yurisdiksi, penegakan tol, suksesi raja, status ratu) — kategori terpisah,
@@ -202,9 +202,30 @@ footer p{margin:0 0 10px;line-height:1.55}
       pedagang lokal, bukan tunduk otomatis. Nama <b>Barus</b> muncul pertama kali di seluruh
       korpus (sebagai kapal "joncq van Baros" dalam sengketa dagang Priaman) — tapi ini bukan
       bukti yurisdiksi, caveat di bawah tetap berlaku.</p>
+    <p><b>Temuan volume 1656-1657 (TERBESAR — perang terbuka VOC-Atjeh):</b> komisaris Johan
+      Treuijtman membuka perang terbuka dengan Atjeh; ratu Atjeh membalas dengan memerintahkan
+      panglima <b>Sillida, Ticco, dan Priaman</b> menangkap &amp; menyiksa SEMUA personel VOC di
+      ketiga pelabuhan itu — kerugian tunggal terbesar di seluruh korpus (~120.000 gulden).
+      Ekspedisi hukuman VOC (200 tentara, Feb 1657) membebaskan 9 tawanan di Sillida (memutus
+      pasung kaki sendiri di malam hari), tapi GAGAL di Priaman — 10 tawanan tetap ditahan di
+      balik benteng yang dijaga ~2.000 orang bersenjata. VOC memutuskan melanjutkan perang tanpa
+      batas waktu jelas. Perang ini 6 tahun MENDAHULUI pemberontakan Painan 1662-63 — kemungkinan
+      akar dendam panglima pantai barat yang dipaksa Atjeh menyerang VOC, lalu berbalik
+      memberontak dari Atjeh sendiri (lihat <a href="../../linimasa/">Linimasa suksesi</a> untuk
+      arc lengkap).</p>
+    <p><b>Temuan volume 1659 (penutup perang):</b> Maret 1659 perang masih berjalan — 6 tawanan
+      Belanda tersisa di Ticco/Priaman, 1 dibawa ke Atjeh sendiri & dirantai siang-malam, panglima
+      pantai barat SUDAH terbelah soal kesetiaan ke Atjeh (2 tahun mendahului perpecahan yang sama
+      di 1661). Lalu 26 Mei 1659, ratu Atjeh mengirim surat perdamaian resmi via komisaris
+      Balthasar Bort — perang 1656-57 berakhir, 3 duta diterima di Batavia dengan upacara penuh
+      (7 tembakan meriam). Titik balik sementara sebelum tensi baru muncul lagi 1660-61.</p>
     <p>Cakupan pelabuhan Sumbar yang ditanyakan tetap timpang: <span class="port-tag none">Barus</span>
-      <b>tidak punya satu pun kaitan eksplisit ke Atjeh</b> di ketujuh volume yang sudah disisir
-      (kemunculan nama kapal "van Baros" di volume 1647-1648 bukan bukti yurisdiksi/politik).</p>
+      <b>tidak punya satu pun kaitan eksplisit ke Atjeh</b> di kesembilan volume OCR docs/ yang sudah
+      disisir untuk tabel ini (kemunculan nama kapal "van Baros" di volume 1647-1648 bukan bukti
+      yurisdiksi/politik). <b>UPDATE:</b> bukti Atjeh-Barus PERTAMA justru ditemukan di corpus
+      terpisah (traktat Barus 1681, radja hulu/hilir diwajibkan serahkan senjata sisa "mahkota
+      Aetehe") — lihat <a href="../../linimasa/">Linimasa suksesi</a>, belum ditarik ke tabel
+      dagang ini krn beda pipeline sumber.</p>
     <p>Baris bertanda "agregat" mencampur nilai kargo lintas-kapal atau lintas-komoditas — jangan
       dijumlahkan sebagai volume dagang Atjeh tunggal. Istilah komoditas memakai ejaan asli
       VOC-Belanda sumber, bukan terjemahan Indonesia.</p>
@@ -229,6 +250,8 @@ footer p{margin:0 0 10px;line-height:1.55}
       <option value="1624-1629">1624-1629</option>
       <option value="1644-1645">1644-1645</option>
       <option value="1647-1648">1647-1648</option>
+      <option value="1656-1657">1656-1657</option>
+      <option value="1659">1659</option>
     </select>
     <span class="count" id="rowCount"></span>
   </div>
@@ -248,21 +271,24 @@ footer p{margin:0 0 10px;line-height:1.55}
     <p>Sumber: docs/"Dagh-register gehouden int casteel Batavia vant passerende daer ter plaetse
       als over geheel Nederlandts-India-1643-1644" (352 hlm.), docs/"...1631-1634" (493 hlm.),
       docs/"...1637" (331 hlm.), docs/"...1636" (328 hlm.), docs/"...1624-1629" (434 hlm.),
-      docs/"...1644-1645" (404 hlm.), dan docs/"...1647-1648" (218 hlm.), ketujuhnya di-OCR pypdf.
-      Jurnal harian Batavia di volume 1643-1644 hanya sampai ±Mei 1644; sisanya "sommier verbael"
-      per pos VOC lain (Malacca, Koromandel, dst.) — pola sama di volume 1644-1645 (bab khusus
-      "Verbael Atjeh" hlm. cetak 39-54, sisanya verbael pos lain). Volume 1647-1648 beda pola lagi:
-      jurnal harian Batavia penuh 1 tahun, dgn surat-surat asli (ratu Atjeh, koning Indrapoera,
-      panglima Bhandar Galiffa/Tikoe, panglima Priaman, panglima Sileda/Salida) disisipkan
-      langsung di tanggal kedatangannya (bukan bab verbael terpisah) — regex Atjeh SAJA tak cukup
-      utk temukan surat-surat pantai barat ini krn nama tempatnya (Salida, Priaman, Indrapoera,
-      Bhandar Galiffa) tak match pola "atch/atjeh"; dipakai regex tambahan
+      docs/"...1644-1645" (404 hlm.), docs/"...1647-1648" (218 hlm.), docs/"...1656-1657"
+      (384 hlm.), dan docs/"...1659" (288 hlm.), kesembilannya di-OCR pypdf. Jurnal harian
+      Batavia di volume 1643-1644 hanya sampai ±Mei 1644; sisanya "sommier verbael" per pos VOC
+      lain (Malacca, Koromandel, dst.) — pola sama di volume 1644-1645 (bab khusus "Verbael Atjeh"
+      hlm. cetak 39-54, sisanya verbael pos lain). Volume 1647-1648, 1656-1657 &amp; 1659 beda
+      pola: jurnal harian Batavia penuh 1 tahun, dgn surat-surat asli (ratu Atjeh, koning
+      Indrapoera, panglima Bhandar Galiffa/Tikoe, panglima Priaman, panglima Sileda/Salida) atau
+      narasi perang/perdamaian (1656-1659) disisipkan langsung di tanggal kejadiannya (bukan bab
+      verbael terpisah) — regex Atjeh SAJA tak cukup utk temukan surat/narasi pantai barat ini krn
+      nama tempatnya (Salida, Priaman, Indrapoera, Bhandar Galiffa, Westcust) tak match pola
+      "atch/atjeh"; dipakai regex tambahan
       `indrapoe|salida|sillida|cillida|priaman|tikoe|bhandar|westcust` lalu diverifikasi silang ke
       REGISTER (indeks) akhir buku. Regex seluruh varian ejaan Atjeh dijalankan ke semua halaman
       tiap volume — regex awal (`a[et]tch[ei]n|atjeh|...`) ternyata tak menangkap ejaan dominan
       "Atchijn"/"Atchin"/"Atchien" (diperbaiki 2026-07-13 jadi `atch\w*|aetch\w*|atjeh\w*|...`);
       volume 1643-1644 & 1631-1634 sudah disisir ulang dgn regex yg benar, volume 1624-1629, 1636,
-      1637, 1644-1645 &amp; 1647-1648 disisir langsung dgn regex ini sejak awal.</p>
+      1637, 1644-1645, 1647-1648, 1656-1657 &amp; 1659 disisir langsung dgn regex ini sejak awal
+      (dua regex sekaligus, Atjeh + westcust, sejak GOTCHA volume 1647-1648).</p>
     <p><span class="tag">thesis-only · noindex</span>
       <span class="tag">route: /riset/atjeh-dagang (tidak di navbar publik)</span>
       <span class="tag">endpoint: /api/research/atjeh-trade</span>
@@ -296,6 +322,8 @@ function renderTiles(meta){
     tile(fmt(meta.by_document['1624-1629']||0), 'vol. 1624-1629'),
     tile(fmt(meta.by_document['1644-1645']||0), 'vol. 1644-1645'),
     tile(fmt(meta.by_document['1647-1648']||0), 'vol. 1647-1648'),
+    tile(fmt(meta.by_document['1656-1657']||0), 'vol. 1656-1657'),
+    tile(fmt(meta.by_document['1659']||0), 'vol. 1659'),
   ].join('');
 }
 

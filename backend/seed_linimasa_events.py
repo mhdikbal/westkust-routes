@@ -3,17 +3,27 @@ seed_linimasa_events.py
 
 Muat data/research/linimasa_events.csv (peristiwa suksesi/politik kekuasaan
 Atjeh atas pantai barat Sumatra, dari Sultan Iskandar Muda sampai Traktat
-Painan 1663) ke tabel linimasa_events. Idempotent -- truncate & reload tiap
-run (dataset kecil, hand-curated, sama pola dgn seed_atjeh_trade.py).
+Painan 1663 dan pengusiran Atjeh 1664-1665, sampai penyerahan Sillida 1667 &
+traktat Barus 1681) ke tabel linimasa_events. Idempotent -- truncate & reload
+tiap run (dataset kecil, hand-curated, sama pola dgn seed_atjeh_trade.py).
 
 Dua sumber pipeline campur di CSV ini -- dibedakan via source_document:
-  - "1631-1634" | "1637" | "1643-1644" | "1647-1648": didistilasi dari baris
-    direction='politik' di atjeh_trade_records (OCR PDF docs/ kita, ejaan
-    asli VOC-Belanda dipertahankan di text_asli).
-  - "1663": dari docs/thesis/dr/korpus_tema_slim.csv (corpus GLOBALISE/
-    Huygens TERPISAH, sudah diterjemahkan Indonesia) -- text_asli di sini
-    BUKAN OCR Belanda, melainkan kutipan terjemahan Indonesia. Provenance
-    (corpus_id asal) dicatat eksplisit di kolom notes tiap baris.
+  - "1624-1629" | "1631-1634" | "1636" | "1637" | "1643-1644" | "1647-1648" |
+    "1656-1657": didistilasi dari baris direction='politik' di
+    atjeh_trade_records (OCR PDF docs/ kita, ejaan asli VOC-Belanda
+    dipertahankan di text_asli). Baris 1624-1629 (1625) berisi klaim
+    yurisdiksi TERLUAS -- event TERTUA di linimasa. Baris 1656-1657
+    mengungkap PERANG TERBUKA VOC-Atjeh, 6 tahun sebelum Traktat Painan.
+    GOTCHA: SETIAP kali atjeh_trade_records dapat volume baru dgn baris
+    politik, cek juga apakah perlu didistilasi ke sini -- jangan cuma proses
+    volume yg lagi disisir sesi itu (kejadian nyata: 1624-1629 & 1636
+    terlewat berbulan-bulan sampai user menegur).
+  - "1661" | "1663" | "1664" | "1665" | "1681": dari
+    docs/thesis/dr/korpus_tema_slim.csv (corpus GLOBALISE/Huygens TERPISAH,
+    sudah diterjemahkan Indonesia) -- text_asli di sini BUKAN OCR Belanda,
+    melainkan kutipan terjemahan Indonesia. Provenance (corpus_id asal)
+    dicatat eksplisit di kolom notes tiap baris. TEMUAN BESAR baris 1681:
+    traktat Barus -- bukti Atjeh-Barus PERTAMA di seluruh korpus riset.
 
 Jalankan: docker compose exec backend python seed_linimasa_events.py
 """
@@ -36,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1631-1634", "1637", "1643-1644", "1647-1648", "1663"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 
 

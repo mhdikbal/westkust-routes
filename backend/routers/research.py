@@ -406,7 +406,7 @@ async def get_atjeh_trade(
 ):
     """Daftar baris atjeh_trade_records, urut volume+halaman sumber. Filter
     direction opsional ('naar_atjeh'|'van_atjeh'|'in_atjeh'|'politik') dan source_document
-    opsional ('1643-1644'|'1631-1634'|'1637'|'1636'|'1624-1629'|'1644-1645'|'1647-1648'). Cache-aside Redis."""
+    opsional ('1643-1644'|'1631-1634'|'1637'|'1636'|'1624-1629'|'1644-1645'|'1647-1648'|'1656-1657'|'1659'). Cache-aside Redis."""
     cache_key = make_key("research_atjeh_trade", {"direction": direction, "source_document": source_document})
     cached = await cache_get(cache_key)
     if cached is not None:
@@ -436,12 +436,13 @@ async def get_atjeh_trade(
     return payload
 
 
-# ─── Linimasa Suksesi Kekuasaan Atjeh (1632-1663) ────────────────────────────
+# ─── Linimasa Suksesi Kekuasaan Atjeh (1625-1681) ────────────────────────────
 # Sumber: tabel linimasa_events (peristiwa suksesi/politik, dimuat via
 # seed_linimasa_events.py). Dua provenance campur -- lihat notes tiap baris:
-# baris 1631-1634..1647-1648 didistilasi dari atjeh_trade_records (OCR docs/
-# kita); baris 1663 dari corpus TERPISAH docs/thesis/dr/korpus_tema_slim.csv
-# (GLOBALISE/Huygens, sudah diterjemahkan Indonesia). Halaman /linimasa.
+# baris 1624-1629..1659 didistilasi dari atjeh_trade_records (OCR docs/
+# kita); baris 1661/1663/1664/1665/1681 dari corpus TERPISAH
+# docs/thesis/dr/korpus_tema_slim.csv (GLOBALISE/Huygens, sudah diterjemahkan
+# Indonesia). Halaman /linimasa.
 
 class LinimasaEventItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)

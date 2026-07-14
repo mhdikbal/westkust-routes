@@ -3,7 +3,7 @@ seed_atjeh_trade.py
 
 Muat data/research/atjeh_trade.csv (ekstraksi manual laporan dagang dari/ke/di
 Atjeh, sumber: tujuh volume docs/"Dagh-register gehouden int casteel Batavia"
--- 1643-1644, 1631-1634, 1637, 1636, 1624-1629, 1644-1645, dan 1647-1648) ke tabel atjeh_trade_records.
+-- 1643-1644, 1631-1634, 1637, 1636, 1624-1629, 1644-1645, 1647-1648, 1656-1657, dan 1659) ke tabel atjeh_trade_records.
 Idempotent -- truncate & reload tiap run (dataset kecil, hand-curated, tak ada
 natural key stabil lintas revisi).
 
@@ -13,7 +13,7 @@ CommodityGlossary utk padanan/definisi bila perlu.
 
 confidence_flag='unverified' pada semua baris: hasil pembacaan teks OCR PDF,
 belum dicocokkan ulang thd scan halaman asli. source_document membedakan
-volume PDF asal ("1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648")
+volume PDF asal ("1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648" | "1656-1657" | "1659")
 -- source_page saja ambigu lintas volume.
 
 GOTCHA regex sisir (2026-07-13): regex lama a[et]tch[ei]n|atjeh|acheh|achem|
@@ -55,7 +55,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648"}
+ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659"}
 
 ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh", "politik"}
 # "politik": fakta politik/administratif Atjeh (klaim yurisdiksi, penegakan tol,

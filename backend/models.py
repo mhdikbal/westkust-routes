@@ -230,8 +230,8 @@ class ResearchThemeRow(Base):
 
 class AtjehTradeRecord(Base):
     """Baris hasil ekstraksi laporan dagang dari/ke/di Atjeh, sumber primer
-    tujuh volume "Dagh-register gehouden int casteel Batavia" (docs/): 1643-1644,
-    1631-1634, 1637, 1636, 1624-1629, 1644-1645, dan 1647-1648. Muat dari data/research/atjeh_trade.csv via
+    sembilan volume "Dagh-register gehouden int casteel Batavia" (docs/): 1643-1644,
+    1631-1634, 1637, 1636, 1624-1629, 1644-1645, 1647-1648, 1656-1657, dan 1659. Muat dari data/research/atjeh_trade.csv via
     seed_atjeh_trade.py. Baris direction='politik' adalah fakta politik/administratif
     (klaim yurisdiksi, penegakan tol, suksesi raja, status ratu), BUKAN transaksi
     dagang -- dipisah dari 'in_atjeh' (transaksi yg terjadi di Atjeh) 2026-07-13.
@@ -247,7 +247,7 @@ class AtjehTradeRecord(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    source_document = Column(String(20), nullable=False, index=True)  # "1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648"
+    source_document = Column(String(20), nullable=False, index=True)  # "1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648" | "1656-1657" | "1659"
     source_page = Column(Integer, nullable=False, index=True)   # halaman PDF scan (source_document)
     book_page = Column(String(20), nullable=True)                # halaman cetak asli, jika diketahui
     entry_date_raw = Column(String(50), nullable=True)           # mis. "9 Mei 1644"; NULL = tak bertanggal jelas
@@ -272,17 +272,29 @@ class AtjehTradeRecord(Base):
 
 class LinimasaEvent(Base):
     """Peristiwa suksesi/politik kekuasaan Atjeh atas pantai barat Sumatra,
-    dari Sultan Iskandar Muda sampai Traktat Painan 1663 -- sumber halaman
-    `/linimasa`. Dimuat dari data/research/linimasa_events.csv via
-    seed_linimasa_events.py.
+    dari Sultan Iskandar Muda sampai Traktat Painan 1663 dan traktat Barus
+    1681 -- sumber halaman `/linimasa`. Dimuat dari
+    data/research/linimasa_events.csv via seed_linimasa_events.py.
 
     BERBEDA dari AtjehTradeRecord: scope tabel ini "peristiwa politik/suksesi"
-    (event_type), bukan "dagang dari/ke/di Atjeh" (direction). Sebagian baris
+    (event_type), bukan "dagang dari/ke/di Atjeh" (direction). Baris
+    source_document 1624-1629/1631-1634/1636/1637/1643-1644/1647-1648/1656-1657/1659
     didistilasi dari baris direction='politik' di atjeh_trade_records (sumber
-    docs/ PDF kita), sebagian lagi (source_document='1663') dari corpus
+    docs/ PDF kita, termasuk klaim yurisdiksi TERLUAS 1625 -- event tertua di
+    linimasa -- PERANG TERBUKA VOC-Atjeh 1656-57, dan perdamaian resmi yg
+    mengakhirinya 26 Mei 1659); baris 1661/1663/1664/1665/1681 dari corpus
     TERPISAH docs/thesis/dr/korpus_tema_slim.csv (GLOBALISE/Huygens, sudah
-    diterjemahkan) -- provenance dicatat eksplisit di kolom notes, TIDAK
-    diduplikasi ke atjeh_trade_records.
+    diterjemahkan Indonesia) -- provenance dicatat eksplisit di kolom notes,
+    TIDAK diduplikasi ke atjeh_trade_records. Baris 1681 (corpus_id 970-972)
+    berisi TEMUAN traktat Barus -- bukti Atjeh-Barus PERTAMA di seluruh
+    proyek riset ini, lihat notes.
+
+    GOTCHA (2026-07-14): sesi awal cuma distilasi dari 4 volume atjeh_trade_records
+    (1631-1634/1637/1643-1644/1647-1648), TERLEWAT volume 1624-1629 & 1636 yg
+    JUGA punya baris direction='politik' -- user menegur "jangan ada yang
+    dilewatkan". Kalau nambah volume atjeh_trade_records baru dgn baris
+    politik, WAJIB cek juga apakah perlu didistilasi ke linimasa_events,
+    jangan cuma proses volume yg lagi "hangat" disisir sesi itu.
 
     text_asli WAJIB (disiplin sama spt AtjehTradeRecord) -- setiap event harus
     tertelusur ke kutipan sumber, bukan klaim tanpa bukti. confidence_flag
@@ -291,7 +303,7 @@ class LinimasaEvent(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    source_document = Column(String(20), nullable=False, index=True)  # "1631-1634" | "1637" | "1643-1644" | "1647-1648" | "1663"
+    source_document = Column(String(20), nullable=False, index=True)  # "1624-1629" | "1631-1634" | "1636" | "1637" | "1643-1644" | "1647-1648" | "1656-1657" | "1659" | "1661" | "1663" | "1664" | "1665" | "1681"
     source_page = Column(Integer, nullable=False, index=True)
     book_page = Column(String(20), nullable=True)
     event_date_raw = Column(String(50), nullable=True)   # mis. "10 Des 1632", "27 Maret 1663"; NULL = tak bertanggal jelas
