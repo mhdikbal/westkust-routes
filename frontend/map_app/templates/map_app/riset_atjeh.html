@@ -133,11 +133,11 @@ footer p{margin:0 0 10px;line-height:1.55}
   </nav>
 
   <header>
-    <p class="eyebrow">Ekstraksi Sumber Primer · Dagh-register Batavia 1643-1644, 1631-1634, 1637, 1636 &amp; 1624-1629</p>
+    <p class="eyebrow">Ekstraksi Sumber Primer · Dagh-register Batavia 1643-1644, 1631-1634, 1637, 1636, 1624-1629 &amp; 1644-1645</p>
     <h1 class="title">Laporan Dagang <em>dari &amp; ke Atjeh</em></h1>
-    <p class="lede">58 baris hasil pembacaan manual atas lima volume Dagh-register gehouden int
-      casteel Batavia — <b>1643-1644</b>, <b>1631-1634</b>, <b>1637</b>, <b>1636</b>, dan
-      <b>1624-1629</b> — kapal, komoditas, harga, dan kebijakan dagang yang tercatat masuk
+    <p class="lede">65 baris hasil pembacaan manual atas enam volume Dagh-register gehouden int
+      casteel Batavia — <b>1643-1644</b>, <b>1631-1634</b>, <b>1637</b>, <b>1636</b>,
+      <b>1624-1629</b>, dan <b>1644-1645</b> — kapal, komoditas, harga, dan kebijakan dagang yang tercatat masuk
       (<b>naar Atjeh</b>), keluar (<b>van Atjeh</b>), terjadi di dalam comptoir/wilayah
       kekuasaan Atjeh sendiri (<b>in Atjeh</b>), atau fakta <b>politik/administratif</b>
       (klaim yurisdiksi, penegakan tol, suksesi raja, status ratu) — kategori terpisah,
@@ -177,8 +177,17 @@ footer p{margin:0 0 10px;line-height:1.55}
       sendiri sempat punya comptoir di Atjeh (modal 60.000 real) yang DITARIK karena takut
       pembalasan Atjeh. Dagang pepper VOC di Tiku dilaporkan rusak/terhambat oleh "prosedur
       monopoli" Atjeh sebanyak dua kali dalam setahun yang sama (Okt &amp; Des 1625).</p>
+    <p><b>Temuan volume 1644-1645 (paling padat):</b> volume ini punya bab khusus "Verbael Atjeh
+      1644-1645" (16 halaman cetak) laporan tahunan kepala comptoir VOC. Temuan kunci: VOC 2 kali
+      mengajukan usul memindahkan pos dagang dari Indrapura ke <b>Sillida/Cillida (= Salido
+      modern)</b> — DITOLAK ratu Atjeh kedua kalinya (1644 &amp; 1645), disebabkan perang lokal
+      Kotatangh (Kota Tangah) vs Pedangh (Padang) yang membuat ratu memihak Kotatangh. Panglima
+      Tiku melapor langsung ke ratu soal kapal VOC yang mengganggu prauwen pepper Atjeh — bukti
+      struktur administratif Atjeh masih aktif di Tiku. Kapal Jawa dari Pekalongan biasa singgah
+      dulu di Indrapura/Tiku/Priaman sebelum ke Atjeh — pola rute transit tetap. Ratu juga tercatat
+      memberi perintah tertulis langsung ke "gouverneurs" (bukan cuma panglima) di pantai barat.</p>
     <p>Cakupan pelabuhan Sumbar yang ditanyakan tetap timpang: <span class="port-tag none">Barus</span>
-      <b>tidak punya satu pun kaitan eksplisit ke Atjeh</b> di kelima volume yang sudah disisir.</p>
+      <b>tidak punya satu pun kaitan eksplisit ke Atjeh</b> di keenam volume yang sudah disisir.</p>
     <p>Baris bertanda "agregat" mencampur nilai kargo lintas-kapal atau lintas-komoditas — jangan
       dijumlahkan sebagai volume dagang Atjeh tunggal. Istilah komoditas memakai ejaan asli
       VOC-Belanda sumber, bukan terjemahan Indonesia.</p>
@@ -201,6 +210,7 @@ footer p{margin:0 0 10px;line-height:1.55}
       <option value="1637">1637</option>
       <option value="1636">1636</option>
       <option value="1624-1629">1624-1629</option>
+      <option value="1644-1645">1644-1645</option>
     </select>
     <span class="count" id="rowCount"></span>
   </div>
@@ -219,13 +229,16 @@ footer p{margin:0 0 10px;line-height:1.55}
     <h3>Metode &amp; batas</h3>
     <p>Sumber: docs/"Dagh-register gehouden int casteel Batavia vant passerende daer ter plaetse
       als over geheel Nederlandts-India-1643-1644" (352 hlm.), docs/"...1631-1634" (493 hlm.),
-      docs/"...1637" (331 hlm.), docs/"...1636" (328 hlm.), dan docs/"...1624-1629" (434 hlm.),
-      kelimanya di-OCR pypdf. Jurnal harian Batavia di volume 1643-1644 hanya sampai ±Mei 1644;
-      sisanya "sommier verbael" per pos VOC lain (Malacca, Koromandel, dst.). Regex seluruh
-      varian ejaan Atjeh dijalankan ke semua halaman kelima volume — regex awal
-      (`a[et]tch[ei]n|atjeh|...`) ternyata tak menangkap ejaan dominan "Atchijn"/"Atchin"/"Atchien"
-      (diperbaiki 2026-07-13 jadi `atch\w*|aetch\w*|atjeh\w*|...`); volume 1643-1644 & 1631-1634
-      sudah disisir ulang dgn regex yg benar.</p>
+      docs/"...1637" (331 hlm.), docs/"...1636" (328 hlm.), docs/"...1624-1629" (434 hlm.), dan
+      docs/"...1644-1645" (404 hlm.), keenamnya di-OCR pypdf. Jurnal harian Batavia di volume
+      1643-1644 hanya sampai ±Mei 1644; sisanya "sommier verbael" per pos VOC lain (Malacca,
+      Koromandel, dst.) — pola sama di volume 1644-1645 (bab khusus "Verbael Atjeh" hlm. cetak
+      39-54, sisanya verbael pos lain). Regex seluruh varian ejaan Atjeh dijalankan ke semua
+      halaman tiap volume — regex awal (`a[et]tch[ei]n|atjeh|...`) ternyata tak menangkap ejaan
+      dominan "Atchijn"/"Atchin"/"Atchien" (diperbaiki 2026-07-13 jadi
+      `atch\w*|aetch\w*|atjeh\w*|...`); volume 1643-1644 & 1631-1634 sudah disisir ulang dgn regex
+      yg benar, volume 1624-1629, 1636, 1637 &amp; 1644-1645 disisir langsung dgn regex ini sejak
+      awal.</p>
     <p><span class="tag">thesis-only · noindex</span>
       <span class="tag">route: /riset/atjeh-dagang (tidak di navbar publik)</span>
       <span class="tag">endpoint: /api/research/atjeh-trade</span>
@@ -257,6 +270,7 @@ function renderTiles(meta){
     tile(fmt(meta.by_document['1637']||0), 'vol. 1637'),
     tile(fmt(meta.by_document['1636']||0), 'vol. 1636'),
     tile(fmt(meta.by_document['1624-1629']||0), 'vol. 1624-1629'),
+    tile(fmt(meta.by_document['1644-1645']||0), 'vol. 1644-1645'),
   ].join('');
 }
 
