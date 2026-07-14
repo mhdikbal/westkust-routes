@@ -2,8 +2,10 @@
 Unit tests for seed_linimasa_events.py logic + CSV integrity.
 
 Pure function tests (no DB) — mirrors backend/tests/test_atjeh_trade.py pattern.
-Source: data/research/linimasa_events.csv (9 peristiwa suksesi/politik Atjeh,
-1632-1663 -- distilasi atjeh_trade_records + docs/thesis/dr/korpus_tema_slim.csv).
+Source: data/research/linimasa_events.csv (30 peristiwa suksesi/politik Atjeh,
+1625-1681 -- distilasi atjeh_trade_records + docs/thesis/dr/korpus_tema_slim.csv).
+Sejak Fase 1 (docs/prd-linimasa-kronik-pantai-barat.md) tiap baris juga punya
+era_slug (babak naratif) -- lihat ALLOWED_ERAS.
 """
 import csv
 import os
@@ -12,7 +14,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
-from seed_linimasa_events import parse_row, ALLOWED_EVENT_TYPES, ALLOWED_SOURCE_DOCUMENTS, CSV_FILE
+from seed_linimasa_events import parse_row, ALLOWED_EVENT_TYPES, ALLOWED_SOURCE_DOCUMENTS, ALLOWED_ERAS, CSV_FILE
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -25,6 +27,7 @@ class TestParseRow:
             "source_document": "1637", "source_page": "99", "book_page": "86",
             "event_date_raw": "10-12 Maret 1637", "year": "1637", "event_type": "suksesi",
             "ruler_actor": "Coninck van Atchijn", "title": "Raja Atjeh wafat",
+            "era_slug": "klaim-awal",
             "text_asli": "de anachoda van de joncgen rapporteert dat den coninck van Atchijn overleden is",
             "notes": "",
         }
@@ -33,12 +36,13 @@ class TestParseRow:
         assert rec["year"] == 1637
         assert rec["event_type"] == "suksesi"
         assert rec["title"] == "Raja Atjeh wafat"
+        assert rec["era_slug"] == "klaim-awal"
 
     def test_invalid_event_type_rejected(self):
         row = {
             "source_document": "1637", "source_page": "1", "book_page": "", "event_date_raw": "",
             "year": "", "event_type": "sideways", "ruler_actor": "", "title": "x",
-            "text_asli": "x", "notes": "",
+            "era_slug": "klaim-awal", "text_asli": "x", "notes": "",
         }
         with pytest.raises(ValueError):
             parse_row(row)
@@ -47,7 +51,7 @@ class TestParseRow:
         row = {
             "source_document": "9999", "source_page": "1", "book_page": "", "event_date_raw": "",
             "year": "", "event_type": "suksesi", "ruler_actor": "", "title": "x",
-            "text_asli": "x", "notes": "",
+            "era_slug": "klaim-awal", "text_asli": "x", "notes": "",
         }
         with pytest.raises(ValueError):
             parse_row(row)
@@ -56,7 +60,7 @@ class TestParseRow:
         row = {
             "source_document": "1637", "source_page": "1", "book_page": "", "event_date_raw": "",
             "year": "", "event_type": "suksesi", "ruler_actor": "", "title": "",
-            "text_asli": "x", "notes": "",
+            "era_slug": "klaim-awal", "text_asli": "x", "notes": "",
         }
         with pytest.raises(ValueError):
             parse_row(row)
@@ -65,7 +69,7 @@ class TestParseRow:
         row = {
             "source_document": "1637", "source_page": "1", "book_page": "", "event_date_raw": "",
             "year": "", "event_type": "suksesi", "ruler_actor": "", "title": "x",
-            "text_asli": "", "notes": "",
+            "era_slug": "klaim-awal", "text_asli": "", "notes": "",
         }
         with pytest.raises(ValueError):
             parse_row(row)
@@ -74,10 +78,20 @@ class TestParseRow:
         row = {
             "source_document": "1647-1648", "source_page": "94", "book_page": "80-81",
             "event_date_raw": "sebelum Mei 1648", "year": "", "event_type": "administratif",
-            "ruler_actor": "panglima van Cillida", "title": "x", "text_asli": "x", "notes": "",
+            "ruler_actor": "panglima van Cillida", "title": "x",
+            "era_slug": "ratu-puncak", "text_asli": "x", "notes": "",
         }
         rec = parse_row(row)
         assert rec["year"] is None
+
+    def test_invalid_era_slug_rejected(self):
+        row = {
+            "source_document": "1637", "source_page": "1", "book_page": "", "event_date_raw": "",
+            "year": "", "event_type": "suksesi", "ruler_actor": "", "title": "x",
+            "era_slug": "babak-yg-tak-ada", "text_asli": "x", "notes": "",
+        }
+        with pytest.raises(ValueError):
+            parse_row(row)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -183,3 +197,27 @@ class TestCsvIntegrity:
         peace = [r for r in rows if r["source_document"] == "1659" and r["event_type"] == "perjanjian"]
         assert len(peace) >= 1
         assert peace[0]["year"] == 1659
+
+    def test_all_rows_have_valid_era(self, rows):
+        """Fase 1 /linimasa (docs/prd-linimasa-kronik-pantai-barat.md): tiap event
+        wajib punya babak (era_slug), tak boleh NULL/di luar 5 babak yg didefinisikan."""
+        for r in rows:
+            assert r["era_slug"] in ALLOWED_ERAS, \
+                f"baris p{r['source_page']} era_slug={r['era_slug']!r} tak valid"
+
+    def test_all_five_eras_represented(self, rows):
+        """Kelima babak harus punya minimal 1 event -- babak kosong artinya
+        rentang tahunnya salah dipetakan atau perlu digabung dgn babak lain."""
+        eras_present = {r["era_slug"] for r in rows}
+        assert eras_present == ALLOWED_ERAS
+
+    def test_era_year_ranges_non_overlapping(self, rows):
+        """Tiap event hanya boleh masuk SATU babak berbasis tahun -- pastikan tak
+        ada tahun yg sama muncul di dua era_slug berbeda (rentang tumpang tindih)."""
+        year_to_eras = {}
+        for r in rows:
+            if r["year"] is None:
+                continue
+            year_to_eras.setdefault(r["year"], set()).add(r["era_slug"])
+        for year, eras in year_to_eras.items():
+            assert len(eras) == 1, f"tahun {year} muncul di >1 era: {eras}"

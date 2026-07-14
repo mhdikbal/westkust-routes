@@ -1095,9 +1095,17 @@ class LinimasaViewTest(SimpleTestCase):
         self.assertIn("noindex", html)
         self.assertIn('name="robots"', html)
 
-    def test_uses_linimasa_endpoint_not_hardcoded_data(self):
-        html = self.client.get(reverse("linimasa")).content.decode()
-        self.assertIn("/api/research/linimasa", html)
+    @patch("map_app.views.httpx.get")
+    def test_fetches_from_linimasa_endpoint_not_hardcoded_data(self, mock_get):
+        """View harus tarik data lewat httpx.get ke /api/research/linimasa (SSR
+        sinkron, Fase 1) -- bukan data hardcode. String endpoint sendiri sudah
+        tak lagi bocor ke HTML sejak fetch() client-side dihapus (lihat
+        LinimasaSsrTest di bawah utk bukti SSR-nya)."""
+        mock_get.return_value = _make_httpx_response({"items": [], "meta": {}})
+        self.client.get(reverse("linimasa"))
+        mock_get.assert_called_once()
+        called_url = mock_get.call_args[0][0]
+        self.assertIn("/api/research/linimasa", called_url)
 
     def test_uses_salido_fonts(self):
         html = self.client.get(reverse("linimasa")).content.decode()
@@ -1133,3 +1141,119 @@ class LinimasaViewTest(SimpleTestCase):
         halaman riset lain, dan sebaliknya."""
         html = self.client.get(reverse("riset_atjeh")).content.decode()
         self.assertIn("/linimasa/", html)
+
+
+# ─── Linimasa Fase 1: SSR fallback + narasi berbab (docs/prd-linimasa-kronik-pantai-barat.md) ──
+
+MOCK_LINIMASA_ITEMS = [
+    {
+        "id": 1, "source_document": "1624-1629", "source_page": 12, "book_page": "9",
+        "event_date_raw": "29 Sep 1625", "year": 1625, "event_type": "administratif",
+        "ruler_actor": "Coninck van Atchijn", "title": "Klaim yurisdiksi Atjeh atas seluruh pantai Sumatra",
+        "era_slug": "klaim-awal",
+        "text_asli": "dat den geheelen zeecant van Sumatra onder het gebiedt van Atchijn behoort",
+        "confidence_flag": "unverified", "notes": None,
+    },
+    {
+        "id": 2, "source_document": "1647-1648", "source_page": 94, "book_page": "80",
+        "event_date_raw": "Mei 1648", "year": 1648, "event_type": "diplomasi",
+        "ruler_actor": "Ratu van Atchijn", "title": "Ratu Atjeh menegaskan yurisdiksi atas Perak",
+        "era_slug": "ratu-puncak",
+        "text_asli": "de Con.ne van Atchijn... alle landen ende havens",
+        "confidence_flag": "unverified", "notes": None,
+    },
+    {
+        "id": 3, "source_document": "1656-1657", "source_page": 51, "book_page": "44",
+        "event_date_raw": "Feb 1657", "year": 1657, "event_type": "konflik",
+        "ruler_actor": "panglima van Sillida", "title": "Ekspedisi hukuman VOC bebaskan tawanan Sillida",
+        "era_slug": "perang-damai",
+        "text_asli": "200 soldaten... de gevangenen tot Sillida verlost",
+        "confidence_flag": "unverified", "notes": None,
+    },
+    {
+        "id": 4, "source_document": "1663", "source_page": 86, "book_page": "70",
+        "event_date_raw": "27 Maret 1663", "year": 1663, "event_type": "perjanjian",
+        "ruler_actor": "Songypagouers", "title": "Traktat Painan ditandatangani",
+        "era_slug": "retak-painan",
+        "text_asli": "1º diluaskan pertjajaan antara VOC ende de confederatie Songypagouers",
+        "confidence_flag": "unverified", "notes": "SUMBER BEDA PIPELINE: korpus_tema_slim.csv",
+    },
+    {
+        "id": 5, "source_document": "1681", "source_page": 12, "book_page": "8",
+        "event_date_raw": "1681", "year": 1681, "event_type": "perjanjian",
+        "ruler_actor": "radja hulu/hilir Barus", "title": "Traktat Barus: penyerahan mahkota Atjeh",
+        "era_slug": "pengusiran-penataan",
+        "text_asli": "de overgebleven wapenen van de croon van Atchijn",
+        "confidence_flag": "unverified", "notes": "SUMBER BEDA PIPELINE: korpus_tema_slim.csv",
+    },
+]
+
+MOCK_LINIMASA_META = {
+    "n_items": 5,
+    "by_event_type": {"administratif": 1, "diplomasi": 1, "konflik": 1, "perjanjian": 2},
+    "year_min": 1625, "year_max": 1681,
+}
+
+
+class LinimasaSsrTest(SimpleTestCase):
+    """Fase 1 (docs/prd-linimasa-kronik-pantai-barat.md): konten utama harus
+    terbaca tanpa JavaScript -- view SSR penuh dari httpx.get() sinkron
+    (bukan fetch() client-side seperti riset_tema/riset_jaringan/riset_atjeh)."""
+
+    def setUp(self):
+        self.client = Client()
+
+    @patch("map_app.views.httpx.get")
+    def test_content_rendered_server_side(self, mock_get):
+        """Judul & kutipan event spesifik harus muncul LANGSUNG di response.content
+        tanpa eksekusi JS -- bukti SSR nyata."""
+        mock_get.return_value = _make_httpx_response({"items": MOCK_LINIMASA_ITEMS, "meta": MOCK_LINIMASA_META})
+        response = self.client.get(reverse("linimasa"))
+        content = response.content.decode("utf-8")
+        self.assertIn("Klaim yurisdiksi Atjeh atas seluruh pantai Sumatra", content)
+        self.assertIn("Traktat Painan ditandatangani", content)
+        self.assertIn("dat den geheelen zeecant van Sumatra", content)
+        self.assertIn("de overgebleven wapenen van de croon van Atchijn", content)
+
+    @patch("map_app.views.httpx.get")
+    def test_era_headers_present(self, mock_get):
+        """Label babak (era) harus muncul di HTML, dikelompokkan per event yang
+        ada -- narasi berbab, bukan list kronologis datar."""
+        mock_get.return_value = _make_httpx_response({"items": MOCK_LINIMASA_ITEMS, "meta": MOCK_LINIMASA_META})
+        response = self.client.get(reverse("linimasa"))
+        content = response.content.decode("utf-8")
+        self.assertIn("Klaim Yurisdiksi", content)
+        self.assertIn("Ratu Atjeh", content)
+        self.assertIn("Perang", content)
+        self.assertIn("Pemberontakan Painan", content)
+        self.assertIn("Penataan Ulang", content)
+
+    @patch("map_app.views.httpx.get")
+    def test_cards_use_native_details_disclosure(self, mock_get):
+        """Card harus <details class="card"> -- disclosure native HTML5, bisa
+        dibuka tanpa JS (progressive enhancement, bukan div+class toggle JS)."""
+        mock_get.return_value = _make_httpx_response({"items": MOCK_LINIMASA_ITEMS, "meta": MOCK_LINIMASA_META})
+        response = self.client.get(reverse("linimasa"))
+        content = response.content.decode("utf-8")
+        self.assertIn('<details class="card"', content)
+        self.assertIn("<summary>", content)
+
+    @patch("map_app.views.httpx.get")
+    def test_no_client_side_fetch_of_linimasa_api(self, mock_get):
+        """JS tak lagi fetch() ke /api/research/linimasa saat load -- data sudah
+        inline via items_json, cuma dipakai timeline SVG & filter (non-destruktif)."""
+        mock_get.return_value = _make_httpx_response({"items": MOCK_LINIMASA_ITEMS, "meta": MOCK_LINIMASA_META})
+        response = self.client.get(reverse("linimasa"))
+        content = response.content.decode("utf-8")
+        self.assertNotIn("fetch(API)", content)
+        self.assertIn('id="linimasa-data"', content)
+
+    @patch("map_app.views.httpx.get")
+    def test_backend_error_still_renders_page_structure(self, mock_get):
+        """Kalau backend gagal, halaman TETAP render strukturnya (bukan 500/Http404)
+        -- beda dari port_detail yg memang 404 kalau target tak ada."""
+        mock_get.side_effect = Exception("connection refused")
+        response = self.client.get(reverse("linimasa"))
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode("utf-8")
+        self.assertIn("Backend tidak terjangkau", content)

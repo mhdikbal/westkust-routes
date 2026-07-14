@@ -11,22 +11,23 @@
 <title>Linimasa Suksesi Atjeh — Pesisir Barat Sumatra (VOC)</title>
 <style>
 :root{
-  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
-  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4;
-  --accent:#000000; --gold-ink:#6F5407;
-  --warn-bg:#FBF3E4; --warn-line:#D8B978; --warn-ink:#6F5407;
-  --evt-suksesi:#B0562A; --evt-perjanjian:#3A7D70; --evt-konflik:#8A2E2E;
-  --evt-diplomasi:#2C5364; --evt-administratif:#6B4C8A;
+  --paper:#f5f0e6; --paper-deep:#e8dfcf; --panel:#faf6ec; --panel-2:#e8dfcf;
+  --ink:#181611; --muted:#716b61; --muted-dark:#4d4638; --line:#d4c8b5; --border:#d4c8b5;
+  --accent:#8c6a21; --archive-gold:#8c6a21; --aceh-gold:#a77a2e; --voc-copper:#8b4b33;
+  --sea-ink:#29484b; --admin-umber:#6b5842; --gold-ink:#6b4f10;
+  --warn-bg:#efe2c4; --warn-line:#c7a256; --warn-ink:#5c4108;
+  --evt-suksesi:var(--archive-gold); --evt-perjanjian:var(--sea-ink); --evt-konflik:var(--voc-copper);
+  --evt-diplomasi:var(--aceh-gold); --evt-administratif:var(--admin-umber);
   --serif:"EB Garamond",Georgia,"Times New Roman",serif;
   --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --mono:"Space Grotesk",ui-monospace,Menlo,Consolas,monospace;
 }
 :root[data-theme]{
-  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
-  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4; --accent:#000000;
+  --paper:#f5f0e6; --paper-deep:#e8dfcf; --panel:#faf6ec; --panel-2:#e8dfcf;
+  --ink:#181611; --muted:#716b61; --muted-dark:#4d4638; --line:#d4c8b5; --accent:#8c6a21;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
   line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .wrap{max-width:1180px;margin:0 auto;padding:clamp(20px,4vw,52px) clamp(16px,4vw,44px) 80px}
 h1,h2,h3{margin:0;text-wrap:balance}
@@ -38,7 +39,7 @@ a{color:inherit}
 .topnav .home,.topnav .sib{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
   font-size:.9rem;font-weight:600;color:var(--ink);text-decoration:none;
   padding:8px 14px 8px 11px;border:1px solid var(--line);border-radius:999px;transition:.16s}
-.topnav .home:hover,.topnav .sib:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+.topnav .home:hover,.topnav .sib:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
 .topnav .home:focus-visible,.topnav .sib:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .topnav .home svg{width:16px;height:16px}
 .topnav .brand{font-family:var(--serif);font-size:1.1rem;font-weight:600;letter-spacing:.02em;color:var(--muted-dark)}
@@ -64,17 +65,19 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22p
 .caveat p{margin:0 0 8px;font-size:.92rem;color:#4a3c0e;line-height:1.55}
 .caveat p:last-child{margin-bottom:0}
 .caveat b{color:var(--warn-ink)}
+.caveat.error{background:#f3dede;border-color:#c07a7a}
+.caveat.error h2,.caveat.error b{color:#7a1f1f}
 
 .controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;
   background:var(--panel);border:1px solid var(--line);border-radius:12px;
   padding:13px 16px;margin-bottom:18px}
 .controls label{font-size:.78rem;color:var(--muted-dark);font-weight:600;margin-right:6px}
 .controls select{font-family:var(--sans);font-size:.88rem;padding:6px 10px;border:1px solid var(--line);
-  border-radius:8px;background:var(--panel)}
+  border-radius:8px;background:var(--panel);color:var(--ink)}
 .controls .count{font-family:var(--mono);font-size:.82rem;color:var(--muted);margin-left:auto}
 
 .evt-badge{display:inline-block;font-family:var(--mono);font-size:.68rem;font-weight:600;
-  padding:2px 8px;border-radius:999px;color:#fff;white-space:nowrap}
+  padding:2px 8px;border-radius:999px;color:var(--paper);white-space:nowrap}
 .evt-suksesi{background:var(--evt-suksesi)}
 .evt-perjanjian{background:var(--evt-perjanjian)}
 .evt-konflik{background:var(--evt-konflik)}
@@ -87,26 +90,42 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22p
 .axis-wrap svg{display:block;min-width:640px;width:100%;height:220px}
 .axis-line{stroke:var(--line);stroke-width:2}
 .tick-label{font-family:var(--mono);font-size:11px;fill:var(--muted)}
-.evt-dot{cursor:pointer;stroke:#fff;stroke-width:2;transition:r .12s}
+.evt-dot{cursor:pointer;stroke:var(--paper);stroke-width:2;transition:r .12s}
 .evt-dot:hover,.evt-dot.active{r:9}
 .evt-title-svg{font-family:var(--sans);font-size:10.5px;fill:var(--muted-dark);cursor:pointer}
 
-/* ---- event cards ---- */
+/* ---- era sections ---- */
+.era{margin-bottom:28px}
+.era-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;margin-bottom:6px}
+.era-range{font-size:.78rem;color:var(--accent);font-weight:600;letter-spacing:.02em}
+.era-label{font-family:var(--serif);font-weight:600;font-size:1.5rem;letter-spacing:-.01em}
+.era-headline{font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--muted-dark);
+  max-width:72ch;margin:0 0 6px}
+.era-summary{font-size:.92rem;color:var(--muted-dark);max-width:76ch;margin:0 0 14px}
+
+/* ---- event cards (native <details>) ---- */
 .cards{display:flex;flex-direction:column;gap:1px;background:var(--line);
   border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.card{background:var(--panel);padding:14px 18px;cursor:pointer}
-.card:hover,.card.active{background:var(--panel-2)}
-.card-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:4px}
+.card{background:var(--panel)}
+.card[open]{background:var(--panel-2)}
+.card[hidden]{display:none}
+.card summary{cursor:pointer;padding:14px 18px;list-style:none;position:relative}
+.card summary::-webkit-details-marker{display:none}
+.card summary::after{content:"+";position:absolute;right:18px;top:14px;font-family:var(--mono);
+  font-size:1rem;color:var(--muted);transition:transform .15s}
+.card[open] summary::after{content:"–"}
+.card summary:hover{background:var(--panel-2)}
+.card summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.card-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:4px;padding-right:24px}
 .card-year{font-family:var(--mono);font-weight:600;font-size:1.1rem;min-width:48px}
 .card-title{font-family:var(--serif);font-weight:600;font-size:1.05rem;flex:1;min-width:220px}
-.card-meta{font-size:.8rem;color:var(--muted-dark);margin:2px 0 0}
-.card-detail{display:none;margin-top:10px}
-.card-detail.open{display:block}
+.card-meta{font-size:.8rem;color:var(--muted-dark);margin:2px 0 0;padding-right:24px}
+.card-detail{padding:0 18px 16px}
 .card-detail .quote{font-family:var(--serif);font-style:italic;font-size:.94rem;padding:10px 14px;
-  border-left:3px solid var(--line);margin:4px 0;background:var(--panel-2)}
+  border-left:3px solid var(--accent);margin:4px 0;background:var(--paper)}
 .card-detail .notes{font-size:.84rem;color:var(--muted-dark);margin:8px 0 0}
 .unconf{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;margin-top:6px;display:block}
-.empty-note{color:var(--muted);font-style:italic}
+.empty-note{color:var(--muted);font-style:italic;padding:14px 18px}
 
 footer{margin-top:30px;padding-top:22px;border-top:1px solid var(--line);
   font-size:.86rem;color:var(--muted-dark)}
@@ -145,9 +164,25 @@ footer p{margin:0 0 10px;line-height:1.55}
       VOC, kampanye pengusiran Atjeh dari pantai barat (1664–1665), penyerahan formal Sillida
       (1667), sampai <b>traktat Barus 1681</b> — bukti Atjeh-Barus pertama di seluruh korpus
       riset ini.</p>
-    <div class="prov" id="prov">memuat…</div>
-    <div class="tiles" id="tiles"></div>
+    <div class="prov" id="prov">{{ n_items }} peristiwa &middot; sumber: linimasa_events &middot; dirender server-side</div>
+    <div class="tiles" id="tiles">
+      <div class="tile"><div class="k mono">{{ meta.n_items|default:n_items }}</div><div class="l">peristiwa</div></div>
+      <div class="tile"><div class="k mono">{{ meta.by_event_type.suksesi|default:0 }}</div><div class="l">suksesi</div></div>
+      <div class="tile"><div class="k mono">{{ meta.by_event_type.perjanjian|default:0 }}</div><div class="l">perjanjian</div></div>
+      <div class="tile"><div class="k mono">{{ meta.by_event_type.konflik|default:0 }}</div><div class="l">konflik</div></div>
+      <div class="tile"><div class="k mono">{{ meta.by_event_type.diplomasi|default:0 }}</div><div class="l">diplomasi</div></div>
+      <div class="tile"><div class="k mono">{{ meta.by_event_type.administratif|default:0 }}</div><div class="l">administratif</div></div>
+      <div class="tile"><div class="k mono">{{ meta.year_min|default:"—" }}–{{ meta.year_max|default:"—" }}</div><div class="l">rentang tahun</div></div>
+    </div>
   </header>
+
+  {% if backend_error %}
+  <div class="caveat error">
+    <h2>Backend tidak terjangkau</h2>
+    <p><b>Gagal memuat data</b> dari <code>/api/research/linimasa</code>. Struktur halaman tetap
+      dirender, tapi daftar peristiwa di bawah kosong. Coba muat ulang halaman.</p>
+  </div>
+  {% endif %}
 
   <div class="caveat">
     <h2>Batas bukti &amp; dua sumber berbeda — baca sebelum menafsirkan</h2>
@@ -178,10 +213,10 @@ footer p{margin:0 0 10px;line-height:1.55}
       1659, ratu Atjeh kirim surat perdamaian resmi via komisaris Balthasar Bort — perang 1656-57
       resmi berakhir, 3 duta diterima di Batavia dgn upacara penuh. Titik balik SEMENTARA sebelum
       tensi baru muncul lagi 1660-61.</p>
-    <p><b>Sengaja tidak digambar "blok era"</b> (mis. blok "Iskandar Muda 1607–1636") karena
-      tanggal naik takhta (1607) tidak ada di korpus kami — itu pengetahuan sejarah umum
-      eksternal, bukan sesuatu yang tertelusur ke kutipan sumber di sini. Linimasa ini hanya
-      menampilkan peristiwa yang punya kutipan asli.</p>
+    <p><b>Sengaja tidak digambar "blok era"</b> tunggal dgn tanggal naik takhta (1607) karena itu
+      tidak ada di korpus kami — pengetahuan sejarah umum eksternal, bukan sesuatu yang tertelusur
+      ke kutipan sumber di sini. Babak di bawah dikelompokkan HANYA dari rentang tahun peristiwa
+      yang benar-benar punya kutipan asli (lihat <code>docs/prd-linimasa-kronik-pantai-barat.md</code>).</p>
     <p><b>Ekstraksi lanjutan corpus 1661–1681 (10 peristiwa baru):</b> menemukan akar sebab
       pemberontakan — panglima Atjeh memakai suku Paeuw sbg proksi perangi Padang 4 tahun
       (1657–1661), lalu panglima Priaman wafat mendadak diduga diracun (Des 1661) tepat sebelum
@@ -204,14 +239,45 @@ footer p{margin:0 0 10px;line-height:1.55}
       <option value="diplomasi">Diplomasi</option>
       <option value="administratif">Administratif</option>
     </select>
-    <span class="count" id="rowCount"></span>
+    <span class="count" id="rowCount">{{ n_items }} peristiwa ditampilkan</span>
   </div>
 
   <div class="axis-wrap">
     <svg id="axisSvg" viewBox="0 0 1000 220" preserveAspectRatio="xMinYMid meet"></svg>
   </div>
 
-  <div class="cards" id="cards"></div>
+  {% for era in eras %}
+  <section class="era" id="era-{{ era.slug }}">
+    <div class="era-head">
+      <span class="era-range mono">{{ era.range }}</span>
+      <h2 class="era-label">{{ era.label }}</h2>
+    </div>
+    <p class="era-headline">{{ era.headline }}</p>
+    <p class="era-summary">{{ era.summary }}</p>
+    <div class="cards">
+      {% for r in era.events %}
+      <details class="card" data-id="{{ r.id }}" data-type="{{ r.event_type }}">
+        <summary>
+          <div class="card-head">
+            <span class="card-year mono">{{ r.year|default:"—" }}</span>
+            <span class="card-title">{{ r.title }}</span>
+            <span class="evt-badge evt-{{ r.event_type }}">{{ r.event_type }}</span>
+          </div>
+          <p class="card-meta">{{ r.event_date_raw|default:"—" }} &middot; {{ r.ruler_actor|default:"—" }} &middot;
+            <span class="mono">vol. {{ r.source_document }}, hlm. {{ r.source_page }}{% if r.book_page %} ({{ r.book_page }}){% endif %}</span></p>
+        </summary>
+        <div class="card-detail">
+          <div class="quote">&ldquo;{{ r.text_asli }}&rdquo;</div>
+          {% if r.notes %}<div class="notes">{{ r.notes }}</div>{% endif %}
+          <span class="unconf">confidence_flag: {{ r.confidence_flag }}</span>
+        </div>
+      </details>
+      {% endfor %}
+    </div>
+  </section>
+  {% empty %}
+  <div class="cards"><div class="empty-note">Tidak ada peristiwa untuk ditampilkan.</div></div>
+  {% endfor %}
 
   <footer>
     <h3>Metode &amp; batas</h3>
@@ -225,38 +291,25 @@ footer p{margin:0 0 10px;line-height:1.55}
       569–594 (buluh peristiwa 1660–61), 608–612 (naskah Traktat Painan, dinegosiasikan koopman
       VOC Groenewegen Jun–Nov 1662, dicatat daghregister Batavia 27 Maret 1663), 540/560/564
       (pengusiran 1664), 648/668 (penuntasan 1665), dan 966–972 (penyerahan Sillida 1667 &amp;
-      traktat Barus 1681, dicatat ulang dlm volume 1681).</p>
+      traktat Barus 1681, dicatat ulang dlm volume 1681). Babak (era) di halaman ini ditambahkan
+      Fase 1 (<code>docs/prd-linimasa-kronik-pantai-barat.md</code>) — label/headline editorial
+      disimpan terpisah dari data tersitasi (<code>frontend/map_app/views.py</code>), berbasis
+      rentang tahun yang benar-benar punya event, bukan skema 1600-1690 penuh.</p>
     <p><span class="tag">thesis-only · noindex</span>
       <span class="tag">route: /linimasa (top-level, tidak di navbar publik)</span>
-      <span class="tag">endpoint: /api/research/linimasa</span>
-      <span class="tag">design: salido.my.id (EB Garamond · Space Grotesk)</span></p>
+      <span class="tag">SSR: /api/research/linimasa (server-side, bukan client fetch)</span>
+      <span class="tag">design: salido.my.id (EB Garamond · Space Grotesk), palet arsip</span></p>
   </footer>
 </div>
 
+<script type="application/json" id="linimasa-data">{{ items_json|safe }}</script>
 <script type="module">
 "use strict";
-const API = '/api/research/linimasa';
 const esc = s => String(s ?? '').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-const fmt = n => Number(n).toLocaleString('id-ID');
-const TYPE_LABEL = {suksesi:'Suksesi', perjanjian:'Perjanjian', konflik:'Konflik', diplomasi:'Diplomasi', administratif:'Administratif'};
 const TYPE_COLOR = {suksesi:'var(--evt-suksesi)', perjanjian:'var(--evt-perjanjian)', konflik:'var(--evt-konflik)', diplomasi:'var(--evt-diplomasi)', administratif:'var(--evt-administratif)'};
 
-let ALL = [];
-
-function tile(k,l){ return `<div class="tile"><div class="k mono">${k}</div><div class="l">${l}</div></div>`; }
-
-function renderTiles(meta){
-  const t = document.getElementById('tiles');
-  t.innerHTML = [
-    tile(fmt(meta.n_items), 'peristiwa'),
-    tile(fmt(meta.by_event_type.suksesi||0), 'suksesi'),
-    tile(fmt(meta.by_event_type.perjanjian||0), 'perjanjian'),
-    tile(fmt(meta.by_event_type.konflik||0), 'konflik'),
-    tile(fmt(meta.by_event_type.diplomasi||0), 'diplomasi'),
-    tile(fmt(meta.by_event_type.administratif||0), 'administratif'),
-    tile(`${meta.year_min ?? '—'}–${meta.year_max ?? '—'}`, 'rentang tahun'),
-  ].join('');
-}
+const dataEl = document.getElementById('linimasa-data');
+const ALL = dataEl ? JSON.parse(dataEl.textContent || '[]') : [];
 
 function renderAxis(rows){
   const svg = document.getElementById('axisSvg');
@@ -274,8 +327,7 @@ function renderAxis(rows){
   }
 
   // stack dots that land close together in x across more vertical tiers,
-  // so 19 events across a 50-year span don't collide (regresi setelah
-  // ekstraksi 1661-1681 nambah 10 event ke linimasa)
+  // so 30 events across a 55-year span don't collide
   const sorted = [...rows].filter(r => r.year != null).sort((a,b) => a.year - b.year);
   const placed = [];
   const MIN_GAP_PX = 46;
@@ -304,63 +356,33 @@ function renderAxis(rows){
   });
 }
 
-function cardHtml(r){
-  return `
-    <div class="card" data-id="${r.id}">
-      <div class="card-head">
-        <span class="card-year mono">${r.year ?? '—'}</span>
-        <span class="card-title">${esc(r.title)}</span>
-        <span class="evt-badge evt-${r.event_type}">${TYPE_LABEL[r.event_type]||r.event_type}</span>
-      </div>
-      <p class="card-meta">${esc(r.event_date_raw || '—')} &middot; ${esc(r.ruler_actor || '—')} &middot;
-        <span class="mono">vol. ${esc(r.source_document)}, hlm. ${r.source_page}${r.book_page ? ` (${esc(r.book_page)})` : ''}</span></p>
-      <div class="card-detail" id="detail-${r.id}">
-        <div class="quote">&ldquo;${esc(r.text_asli)}&rdquo;</div>
-        ${r.notes ? `<div class="notes">${esc(r.notes)}</div>` : ''}
-        <span class="unconf">confidence_flag: ${esc(r.confidence_flag)}</span>
-      </div>
-    </div>`;
-}
-
-function render(rows){
-  document.getElementById('cards').innerHTML = rows.map(cardHtml).join('');
-  document.getElementById('rowCount').textContent = `${rows.length} peristiwa ditampilkan`;
-  document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => selectEvent(card.dataset.id));
-  });
-  renderAxis(rows);
-}
-
 function selectEvent(id){
-  document.querySelectorAll('.card-detail.open').forEach(d => { if(d.id !== `detail-${id}`) d.classList.remove('open'); });
-  document.querySelectorAll('.card.active').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.evt-dot.active').forEach(c => c.classList.remove('active'));
-
-  const detail = document.getElementById(`detail-${id}`);
-  const card = document.querySelector(`.card[data-id="${id}"]`);
+  const card = document.querySelector(`details.card[data-id="${id}"]`);
   const dot = document.querySelector(`.evt-dot[data-id="${id}"]`);
-  if(detail) detail.classList.toggle('open');
-  if(card){ card.classList.toggle('active'); card.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  if(card){ card.open = true; card.scrollIntoView({behavior:'smooth', block:'center'}); }
   if(dot) dot.classList.add('active');
 }
 
 function applyFilters(){
   const type = document.getElementById('typeFilter').value;
-  render(ALL.filter(r => !type || r.event_type === type));
+  let visible = 0;
+  document.querySelectorAll('.era').forEach(era => {
+    let eraVisible = 0;
+    era.querySelectorAll('details.card').forEach(card => {
+      const match = !type || card.dataset.type === type;
+      card.hidden = !match;
+      if(match){ eraVisible++; visible++; }
+    });
+    era.hidden = eraVisible === 0;
+  });
+  document.getElementById('rowCount').textContent = `${visible} peristiwa ditampilkan`;
+  renderAxis(type ? ALL.filter(r => r.event_type === type) : ALL);
 }
 
 document.getElementById('typeFilter').addEventListener('change', applyFilters);
 
-fetch(API).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }).then(data=>{
-  ALL = data.items;
-  renderTiles(data.meta);
-  document.getElementById('prov').textContent =
-    `${data.meta.n_items} peristiwa · sumber: linimasa_events · dimuat ${new Date().toLocaleDateString('id-ID')}`;
-  render(ALL);
-}).catch(err=>{
-  document.getElementById('cards').innerHTML =
-    `<div class="card empty-note">Gagal memuat data (${esc(err.message)}).</div>`;
-});
+renderAxis(ALL);
 </script>
 </body>
 </html>

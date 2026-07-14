@@ -20,6 +20,7 @@ def make_row(**overrides):
         id=1, source_document="1637", source_page=99, book_page="86",
         event_date_raw="10-12 Maret 1637", year=1637, event_type="suksesi",
         ruler_actor="Coninck van Atchijn", title="Raja Atjeh wafat",
+        era_slug="klaim-awal",
         text_asli="de anachoda van de joncgen rapporteert dat den coninck van Atchijn overleden is",
         confidence_flag="unverified", notes=None,
     )
@@ -120,5 +121,20 @@ async def test_year_from_year_to_query_params_accepted():
         assert r.status_code == 200
         data = r.json()
         assert len(data["items"]) == 1
+    finally:
+        app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_era_slug_passthrough():
+    """Fase 1 /linimasa (SSR + narasi berbab): era_slug wajib ikut ke response,
+    dipakai Django view utk kelompokkan event per babak sebelum di-render."""
+    app.dependency_overrides[get_db] = db_returning([
+        make_row(id=1, era_slug="retak-painan", title="Traktat Painan"),
+    ])
+    try:
+        r = await _get("/api/research/linimasa")
+        data = r.json()
+        assert data["items"][0]["era_slug"] == "retak-painan"
     finally:
         app.dependency_overrides.clear()

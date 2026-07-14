@@ -455,6 +455,7 @@ class LinimasaEventItem(BaseModel):
     event_type: str
     ruler_actor: Optional[str] = None
     title: str
+    era_slug: Optional[str] = None
     text_asli: str
     confidence_flag: str
     notes: Optional[str] = None

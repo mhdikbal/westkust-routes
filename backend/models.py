@@ -313,6 +313,12 @@ class LinimasaEvent(Base):
     ruler_actor = Column(String(200), nullable=True)      # mis. "Sultan Iskandar Muda", "coninginne van Atchin", "Songypagouers"
     title = Column(String(300), nullable=False)           # judul ringkas utk marker linimasa
 
+    era_slug = Column(String(40), nullable=True, index=True)  # "klaim-awal"|"ratu-puncak"|"perang-damai"|"retak-painan"|"pengusiran-penataan"
+    # -- babak naratif utk halaman /linimasa, dikelompokkan dari rentang tahun yg BENAR2 punya
+    # event bersitasi (1625-1681), BUKAN skema 1600-1690 dari design spec sumber yg blm py data.
+    # Label/headline per era SENGAJA tak disimpan di sini -- lihat ERAS dict di frontend
+    # map_app/views.py (copy editorial dipisah dari data event bersumber, PRD §5).
+
     text_asli = Column(Text, nullable=False)               # kutipan verbatim wajib
     notes = Column(Text, nullable=True)
 
