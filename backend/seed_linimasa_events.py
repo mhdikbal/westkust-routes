@@ -46,13 +46,23 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Babak naratif Fase 1 /linimasa (docs/prd-linimasa-kronik-pantai-barat.md) --
 # label/headline tiap era ada di frontend/map_app/views.py ERAS dict, BUKAN di sini
 # (data event vs copy editorial sengaja dipisah). Rentang tahun berbasis data
-# yg BENAR2 ada (1625-1681), bukan skema 1600-1690 design spec sumber.
+# yg BENAR2 ada, bukan skema 1600-1690 design spec sumber.
+#
+# source_document="CD1" (2026-07-14): docs/CD1.pdf, Corpus Diplomaticum
+# Neerlando-Indicum jilid I (ed. J.E. Heeres) -- kompilasi traktat/kontrak VOC,
+# BEDA dari 9 volume Dagh-register (jurnal harian) & korpus_tema_slim.csv
+# (GLOBALISE, sudah diterjemahkan). CD1 tetap OCR pipeline kita sendiri, ejaan
+# VOC-Belanda asli dipertahankan -- TAPI buku ini juga berisi anotasi editorial
+# modern (footnote Heeres) yg kadang jadi satu-satunya sumber suatu fakta (mis.
+# identitas "Iskander Tsani"/Iskandar Thani) -- baris begitu ditandai eksplisit
+# "catatan editor" di notes, beda dari kutipan traktat periode VOC asli. Mundurkan
+# titik awal linimasa dari 1625 ke 1600 (2 traktat VOC-Atjeh pertama, 1600 & 1607).
 
 
 def _clean(v):

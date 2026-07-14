@@ -231,10 +231,14 @@ class ResearchThemeRow(Base):
 class AtjehTradeRecord(Base):
     """Baris hasil ekstraksi laporan dagang dari/ke/di Atjeh, sumber primer
     sembilan volume "Dagh-register gehouden int casteel Batavia" (docs/): 1643-1644,
-    1631-1634, 1637, 1636, 1624-1629, 1644-1645, 1647-1648, 1656-1657, dan 1659. Muat dari data/research/atjeh_trade.csv via
-    seed_atjeh_trade.py. Baris direction='politik' adalah fakta politik/administratif
-    (klaim yurisdiksi, penegakan tol, suksesi raja, status ratu), BUKAN transaksi
-    dagang -- dipisah dari 'in_atjeh' (transaksi yg terjadi di Atjeh) 2026-07-13.
+    1631-1634, 1637, 1636, 1624-1629, 1644-1645, 1647-1648, 1656-1657, dan 1659,
+    plus docs/CD1.pdf (Corpus Diplomaticum Neerlando-Indicum jilid I -- kompilasi
+    traktat/kontrak, BEDA jenis sumber dari jurnal harian Dagh-register, lihat
+    catatan source_document="CD1" di seed_atjeh_trade.py). Muat dari
+    data/research/atjeh_trade.csv via seed_atjeh_trade.py. Baris direction='politik'
+    adalah fakta politik/administratif (klaim yurisdiksi, penegakan tol, suksesi
+    raja, status ratu, traktat), BUKAN transaksi dagang -- dipisah dari 'in_atjeh'
+    (transaksi yg terjadi di Atjeh) 2026-07-13.
 
     commodity_raw/unit_raw/actor_raw SENGAJA memakai ejaan asli VOC-Belanda
     dari sumber (mis. "peper", "thin", "salpeter"), BUKAN terjemahan Indonesia --
@@ -247,7 +251,7 @@ class AtjehTradeRecord(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    source_document = Column(String(20), nullable=False, index=True)  # "1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648" | "1656-1657" | "1659"
+    source_document = Column(String(20), nullable=False, index=True)  # "1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648" | "1656-1657" | "1659" | "CD1"
     source_page = Column(Integer, nullable=False, index=True)   # halaman PDF scan (source_document)
     book_page = Column(String(20), nullable=True)                # halaman cetak asli, jika diketahui
     entry_date_raw = Column(String(50), nullable=True)           # mis. "9 Mei 1644"; NULL = tak bertanggal jelas
@@ -296,6 +300,18 @@ class LinimasaEvent(Base):
     politik, WAJIB cek juga apakah perlu didistilasi ke linimasa_events,
     jangan cuma proses volume yg lagi "hangat" disisir sesi itu.
 
+    Baris source_document="CD1" (2026-07-14, "tim DBA sisir CD1.pdf"): dari
+    Corpus Diplomaticum Neerlando-Indicum jilid I (ed. J.E. Heeres) -- kompilasi
+    traktat/kontrak VOC, TIGA jenis sumber sekarang (Dagh-register OCR sendiri /
+    korpus_tema_slim.csv terjemahan / CD1 traktat+anotasi editor). Mundurkan
+    titik AWAL linimasa dari 1625 ke 1600 (traktat VOC-Atjeh pertama, Des 1600 &
+    17 Jan 1607). Traktat Feb-Mar 1641 (firman Ratu Atjeh soal Ticou/Priaman/
+    Indrapoura/Padang) jadi sumber PRIMER pertama utk identitas "Iskander Tsani"
+    (Iskandar Thani) sbg pendahulu/suami Ratu, wafat 15 Feb 1641 -- sebelumnya
+    EKSPLISIT ditolak masuk data krn tak tersitasi (lihat docs/prd-linimasa-
+    kronik-pantai-barat.md §2). Baris CD1 yg sumbernya cuma catatan kaki editor
+    (bukan kutipan traktat periode VOC langsung) ditandai eksplisit di notes.
+
     text_asli WAJIB (disiplin sama spt AtjehTradeRecord) -- setiap event harus
     tertelusur ke kutipan sumber, bukan klaim tanpa bukti. confidence_flag
     default 'unverified' krn OCR/terjemahan mentah, belum dicocokkan scan asli."""
@@ -303,7 +319,7 @@ class LinimasaEvent(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    source_document = Column(String(20), nullable=False, index=True)  # "1624-1629" | "1631-1634" | "1636" | "1637" | "1643-1644" | "1647-1648" | "1656-1657" | "1659" | "1661" | "1663" | "1664" | "1665" | "1681"
+    source_document = Column(String(20), nullable=False, index=True)  # "1624-1629" | "1631-1634" | "1636" | "1637" | "1643-1644" | "1647-1648" | "1656-1657" | "1659" | "1661" | "1663" | "1664" | "1665" | "1681" | "CD1"
     source_page = Column(Integer, nullable=False, index=True)
     book_page = Column(String(20), nullable=True)
     event_date_raw = Column(String(50), nullable=True)   # mis. "10 Des 1632", "27 Maret 1663"; NULL = tak bertanggal jelas

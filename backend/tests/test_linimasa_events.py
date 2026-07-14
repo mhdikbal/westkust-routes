@@ -2,10 +2,11 @@
 Unit tests for seed_linimasa_events.py logic + CSV integrity.
 
 Pure function tests (no DB) — mirrors backend/tests/test_atjeh_trade.py pattern.
-Source: data/research/linimasa_events.csv (30 peristiwa suksesi/politik Atjeh,
-1625-1681 -- distilasi atjeh_trade_records + docs/thesis/dr/korpus_tema_slim.csv).
-Sejak Fase 1 (docs/prd-linimasa-kronik-pantai-barat.md) tiap baris juga punya
-era_slug (babak naratif) -- lihat ALLOWED_ERAS.
+Source: data/research/linimasa_events.csv (36 peristiwa suksesi/politik Atjeh,
+1600-1681 -- distilasi atjeh_trade_records + docs/thesis/dr/korpus_tema_slim.csv
++ docs/CD1.pdf/Corpus Diplomaticum). Sejak Fase 1
+(docs/prd-linimasa-kronik-pantai-barat.md) tiap baris juga punya era_slug
+(babak naratif) -- lihat ALLOWED_ERAS.
 """
 import csv
 import os
@@ -221,3 +222,39 @@ class TestCsvIntegrity:
             year_to_eras.setdefault(r["year"], set()).add(r["era_slug"])
         for year, eras in year_to_eras.items():
             assert len(eras) == 1, f"tahun {year} muncul di >1 era: {eras}"
+
+    def test_cd1_treaties_present(self, rows):
+        """"tim DBA sisir CD1.pdf" (2026-07-14): Corpus Diplomaticum Neerlando-
+        Indicum jilid I -- 6 peristiwa baru, SUMBER KETIGA (beda dari 9 volume
+        Dagh-register kami sendiri MAUPUN korpus_tema_slim.csv). Harus ada &
+        dari OCR pipeline kami sendiri (bukan tag 'SUMBER BEDA PIPELINE' yg
+        reserved utk korpus_tema_slim.csv)."""
+        cd1_rows = [r for r in rows if r["source_document"] == "CD1"]
+        assert len(cd1_rows) >= 6
+        for r in cd1_rows:
+            assert "SUMBER BEDA PIPELINE" not in (r["notes"] or ""), \
+                f"baris p{r['source_page']} (CD1) salah ditandai beda pipeline -- CD1 tetap OCR kami sendiri"
+
+    def test_1600_is_new_earliest_year(self, rows):
+        """Traktat dagang lada pertama VOC-Atjeh (CD1, Des 1600) memundurkan
+        titik AWAL linimasa dari klaim yurisdiksi 1625 -- sebelumnya event
+        tertua di seluruh korpus (lihat test_1625_earliest_jurisdiction_claim_present)."""
+        years = [r["year"] for r in rows if r["year"] is not None]
+        assert min(years) == 1600
+        y1600 = [r for r in rows if r["year"] == 1600]
+        assert all(r["source_document"] == "CD1" for r in y1600)
+
+    def test_iskandar_thani_now_sourced(self, rows):
+        """Traktat CD1 Feb-Mar 1641 adalah SUMBER PRIMER PERTAMA di seluruh
+        korpus riset utk identitas 'Iskander Tsani' (Iskandar Thani) sbg
+        pendahulu/suami Ratu Atjeh -- sebelumnya EKSPLISIT ditolak masuk data
+        krn tak tersitasi (docs/prd-linimasa-kronik-pantai-barat.md §2). Baris
+        yg sumbernya cuma catatan kaki editor (bukan kutipan traktat periode
+        VOC langsung) wajib ditandai eksplisit di notes, bukan didiamkan
+        seolah setara kutipan primer lain."""
+        thani_rows = [r for r in rows if "Tsani" in r["text_asli"] or "Thani" in r["title"]]
+        assert len(thani_rows) >= 1
+        for r in thani_rows:
+            notes = (r["notes"] or "")
+            assert "CATATAN" in notes and "editor" in notes.lower(), \
+                f"baris p{r['source_page']} soal Iskandar Thani wajib tandai eksplisit bahwa sumbernya catatan kaki editor"

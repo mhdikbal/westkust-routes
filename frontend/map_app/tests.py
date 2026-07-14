@@ -1222,7 +1222,7 @@ class LinimasaSsrTest(SimpleTestCase):
         mock_get.return_value = _make_httpx_response({"items": MOCK_LINIMASA_ITEMS, "meta": MOCK_LINIMASA_META})
         response = self.client.get(reverse("linimasa"))
         content = response.content.decode("utf-8")
-        self.assertIn("Klaim Yurisdiksi", content)
+        self.assertIn("Kontrak Pertama", content)
         self.assertIn("Ratu Atjeh", content)
         self.assertIn("Perang", content)
         self.assertIn("Pemberontakan Painan", content)

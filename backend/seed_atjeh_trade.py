@@ -34,6 +34,18 @@ Kalau sisir volume baru lain dan cuma nemu sedikit hit regex Atjeh padahal
 user minta "pantai barat", curigai pola yg sama -- jalankan regex nama
 pelabuhan westkust langsung, jangan cuma regex Atjeh.
 
+source_document="CD1" (2026-07-14): BEDA SUMBER dari 9 volume Dagh-register di
+atas -- docs/CD1.pdf adalah Corpus Diplomaticum Neerlando-Indicum jilid I
+(ed. J.E. Heeres), kompilasi TRAKTAT/KONTRAK VOC, bukan jurnal harian. Masih
+diekstraksi via OCR pipeline kita sendiri (bukan korpus_tema_slim.csv), ejaan
+VOC-Belanda asli dipertahankan di text_asli, TAPI buku ini juga berisi banyak
+narasi/catatan kaki editorial modern (bahasa Belanda Heeres, awal abad 20) --
+saat kutip text_asli, prioritaskan teks traktat periode VOC asli (mis. "Aldus
+gedaen...", "Contract ende overeencominge..."), bukan prosa editor, KECUALI
+faktanya cuma tersedia lewat anotasi editor (tandai eksplisit di notes kalau
+begitu). Baris CD1 wajib tag "SUMBER: Corpus Diplomaticum" di notes utk
+bedakan dari 9 volume Dagh-register.
+
 Jalankan: docker compose exec backend python seed_atjeh_trade.py
 """
 import csv
@@ -55,7 +67,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659"}
+ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659", "CD1"}
 
 ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh", "politik"}
 # "politik": fakta politik/administratif Atjeh (klaim yurisdiksi, penegakan tol,

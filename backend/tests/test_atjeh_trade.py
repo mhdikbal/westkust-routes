@@ -176,6 +176,17 @@ class TestCsvIntegrity:
         for r in rows:
             assert r["source_document"], f"baris p{r['source_page']} tanpa source_document"
 
+    def test_cd1_treaties_documented(self, rows):
+        """"tim DBA sisir CD1.pdf" (2026-07-14): Corpus Diplomaticum
+        Neerlando-Indicum jilid I (traktat/kontrak VOC, ed. J.E. Heeres) --
+        5 traktat baru, direction='politik', mundurkan titik awal korpus dari
+        1631 ke 1600 (kontrak lada pertama VOC-Atjeh)."""
+        cd1_rows = [r for r in rows if r["source_document"] == "CD1"]
+        assert len(cd1_rows) >= 5
+        for r in cd1_rows:
+            assert r["direction"] == "politik"
+            assert "Corpus Diplomaticum" in (r["notes"] or "")
+
     def test_no_translated_commodity_terms(self, rows):
         """Jangan pakai istilah Indonesia hasil terjemahan (mis. 'sendawa') --
         harus ejaan asli sumber (mis. 'salpeter'). Regresi utk feedback user."""

@@ -14,24 +14,28 @@ API_BASE = os.getenv("API_BASE_URL", "http://voc_backend:8000")
 LINIMASA_ERAS = [
     {
         "slug": "klaim-awal",
-        "label": "Klaim Yurisdiksi & Kekuasaan Iskandar Muda",
-        "range": "1625–1637",
-        "headline": "Sebelum satu meriam pun ditembakkan, Atjeh sudah mengklaim seluruh pantai Sumatra sebagai wilayahnya.",
+        "label": "Kontrak Pertama & Kekuasaan Iskandar Muda",
+        "range": "1600–1637",
+        "headline": "Sebelum satu meriam pun ditembakkan, VOC dan Atjeh sudah menandatangani kontrak dagang pertama mereka.",
         "summary": (
-            "Dari risalah VOC sendiri (1625) yang mengakui yurisdiksi Atjeh atas “seluruh pantai "
-            "timur dan barat Sumatra”, sampai titah tol Sultan Iskandar Muda (1632) dan wafatnya yang "
-            "penuh gejolak (1637) — pondasi kekuasaan yang akan bertahan tiga dekade lebih diletakkan di sini."
+            "Dari kontrak lada pertama VOC-Atjeh (Desember 1600) dan traktat formal pertama (17 Januari "
+            "1607) — sumber Corpus Diplomaticum — sampai risalah VOC sendiri (1625) yang mengakui "
+            "yurisdiksi Atjeh atas “seluruh pantai timur dan barat Sumatra”, titah tol Sultan Iskandar "
+            "Muda (1632), dan wafatnya yang penuh gejolak (1637) — pondasi kekuasaan yang akan bertahan "
+            "tiga dekade lebih diletakkan di sini."
         ),
     },
     {
         "slug": "ratu-puncak",
         "label": "Ratu Atjeh & Puncak Kekuasaan",
-        "range": "1643–1648",
-        "headline": "Seorang perempuan memerintah dari Atjeh, dan VOC mencatatnya dengan hormat yang jarang diberikan pada penguasa lain.",
+        "range": "1641–1650",
+        "headline": "Iskandar Thani wafat, seorang perempuan naik takhta — dan VOC mencatatnya dengan hormat yang jarang diberikan pada penguasa lain.",
         "summary": (
-            "Ratu Atjeh (konsisten dengan Sultana Safiatuddin) menegaskan kembali klaim atas Perak dan "
-            "“segala tanah serta pelabuhan” di bawahnya — bahkan ketika panglima Salida mulai "
-            "mengundang VOC berdagang langsung, tanda pertama otonomi lokal yang akan tumbuh."
+            "Iskandar Thani wafat 15 Februari 1641, digantikan Ratu (konsisten dengan Sultana "
+            "Safiatuddin), yang langsung menegaskan ulang privilese VOC di Ticou, Priaman, Indrapoura, "
+            "dan Padang. Dalam dekade berikutnya monopoli dagang diformalkan tertulis — lada di tiga "
+            "pelabuhan westkust (1649) dan timah Perak (1650) — puncak kendali Atjeh atas jaringan "
+            "dagang pantai barat sebelum retak."
         ),
     },
     {
