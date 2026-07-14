@@ -2,8 +2,8 @@
 seed_atjeh_trade.py
 
 Muat data/research/atjeh_trade.csv (ekstraksi manual laporan dagang dari/ke/di
-Atjeh, sumber: lima volume docs/"Dagh-register gehouden int casteel Batavia"
--- 1643-1644, 1631-1634, 1637, 1636, 1624-1629, dan 1644-1645) ke tabel atjeh_trade_records.
+Atjeh, sumber: tujuh volume docs/"Dagh-register gehouden int casteel Batavia"
+-- 1643-1644, 1631-1634, 1637, 1636, 1624-1629, 1644-1645, dan 1647-1648) ke tabel atjeh_trade_records.
 Idempotent -- truncate & reload tiap run (dataset kecil, hand-curated, tak ada
 natural key stabil lintas revisi).
 
@@ -13,7 +13,7 @@ CommodityGlossary utk padanan/definisi bila perlu.
 
 confidence_flag='unverified' pada semua baris: hasil pembacaan teks OCR PDF,
 belum dicocokkan ulang thd scan halaman asli. source_document membedakan
-volume PDF asal ("1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645")
+volume PDF asal ("1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648")
 -- source_page saja ambigu lintas volume.
 
 GOTCHA regex sisir (2026-07-13): regex lama a[et]tch[ei]n|atjeh|acheh|achem|
@@ -24,6 +24,15 @@ lama cuma nemu 11/51 & 2/40 halaman asli). Regex benar (lihat scratchpad
 sesi, bukan file project): atch, aetch, atjeh, acheh, achem sbg awalan kata
 (lalu filter false-positive "Daetcheron"/"Datcherum", nama tempat Coromandel
 yg kebetulan mirip).
+
+GOTCHA regex kedua (volume 1647-1648): surat-surat asli dari panglima pantai
+barat (Priaman, Sileda/Salida, Bhandar Galiffa/Tikoe, koning Indrapoera) TIDAK
+match regex Atjeh di atas sama sekali krn nama tempatnya beda -- perlu regex
+tambahan `indrapoe|salida|sillida|cillida|priaman|tikoe|bhandar|westcust`
+dijalankan terpisah, lalu diverifikasi silang ke REGISTER (indeks) akhir buku.
+Kalau sisir volume baru lain dan cuma nemu sedikit hit regex Atjeh padahal
+user minta "pantai barat", curigai pola yg sama -- jalankan regex nama
+pelabuhan westkust langsung, jangan cuma regex Atjeh.
 
 Jalankan: docker compose exec backend python seed_atjeh_trade.py
 """
@@ -46,7 +55,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645"}
+ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648"}
 
 ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh", "politik"}
 # "politik": fakta politik/administratif Atjeh (klaim yurisdiksi, penegakan tol,
