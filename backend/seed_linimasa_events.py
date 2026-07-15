@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Babak naratif Fase 1 /linimasa (docs/prd-linimasa-kronik-pantai-barat.md) --
@@ -113,6 +113,19 @@ ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pe
 # (VOC lepas operasi langsung tapi pertahankan hak kedaulatan fiskal). MAJUKAN
 # titik akhir linimasa dari 1716 ke 1741 (era "pengusiran-penataan" diperluas
 # 1664-1716 -> 1664-1741).
+#
+# source_document="CD6" (2026-07-15): docs/CD6.pdf, Corpus Diplomaticum
+# Neerlando-Indicum jilid VI (~1755-1775). 8 event baru. Dibuka RANGKAIAN
+# RENOVASI BESAR (Feb 1755-Jan 1756): cemas aktivitas Inggris, VOC perbarui
+# traktat ~30 negeri di SELURUH pantai barat dalam <1 tahun. Perang Tujuh
+# Tahun (1756-63) merembet westkust: benteng Natal direbut Inggris lalu
+# Prancis (1760), diserahkan ke VOC lewat penguasa lokal -- Natal formal
+# kembali ke VOC stlh sempat menyimpang ke pengaruh Inggris. Traktat
+# Tigablas Cottas (1763): hadiah tahunan VOC demi jaga jalur gunung.
+# Pemberontakan Klein-Pasaman (1766-67, bukan faksi Aceh) ditumpas. VOC
+# tarik mundur dari loge Baros (1775) krn kalah saing Inggris Bengkulu.
+# MAJUKAN titik akhir linimasa dari 1741 ke 1775 (era "pengusiran-penataan"
+# diperluas 1664-1741 -> 1664-1775).
 
 
 def _clean(v):

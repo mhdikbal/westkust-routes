@@ -65,8 +65,8 @@ LINIMASA_ERAS = [
     {
         "slug": "pengusiran-penataan",
         "label": "Pengusiran & Penataan Ulang",
-        "range": "1664–1741",
-        "headline": "Satu demi satu, pelabuhan pantai barat membuang kuk kekuasaan Atjeh — sampai VOC mengejar penyelundup Atjeh ke pulau Nias, dan penataan berlanjut lebih dari tujuh dekade.",
+        "range": "1664–1775",
+        "headline": "Satu demi satu, pelabuhan pantai barat membuang kuk kekuasaan Atjeh — sampai ancaman berganti wajah dari Atjeh menjadi Inggris, dan VOC sendiri mulai mundur.",
         "summary": (
             "Kampanye militer & diplomasi menuntaskan apa yang dimulai Traktat Painan: Sillida & Pulau "
             "Cingkuak diserahkan ke VOC (1667), Barus resmi lepas dari Atjeh (1668), dan pada 29 Agustus "
@@ -83,7 +83,13 @@ LINIMASA_ERAS = [
             "berganti wajah menjelang pertengahan abad ke-18: pemberontakan besar 1740 menyatukan Paoeh, "
             "Kotta-Tengah, dan Priaman di bawah pemimpin pedalaman Abdul Jalil — bukan lagi faksi pro-Atjeh, "
             "tapi cukup kuat memaksa VOC melepas benteng Priaman — sementara sekutu lama Tigablas & "
-            "Doeapoeloeh-Kotta membuktikan kesetiaan mereka dengan memperbarui aliansi di tengah krisis itu (1741)."
+            "Doeapoeloeh-Kotta membuktikan kesetiaan mereka dengan memperbarui aliansi di tengah krisis itu (1741). "
+            "Dari 1755, ancaman berubah wajah lagi: kekhawatiran atas Inggris memicu VOC merenovasi aliansi dengan "
+            "hampir seluruh pantai barat dalam waktu kurang dari setahun, dan Perang Tujuh Tahun Eropa (1756–1763) "
+            "ikut merembet — benteng Natal berpindah tangan dari Inggris ke Prancis lalu ke VOC. Tapi keunggulan "
+            "itu tak bertahan: menjelang 1775 VOC sendiri terpaksa menutup logenya yang berusia satu abad di "
+            "Barus, kalah bersaing dagang dengan Inggris dari Bengkulu — tanda awal kemunduran VOC di pantai "
+            "barat menjelang akhir abad ke-18."
         ),
     },
 ]

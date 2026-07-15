@@ -100,6 +100,24 @@ lepas operasi langsung tapi pertahankan hak kedaulatan fiskal). Era
 "pengusiran-penataan" diperluas dari 1664-1716 ke 1664-1741. Sama pola tag
 notes ("SUMBER: Corpus Diplomaticum jilid V").
 
+source_document="CD6" (2026-07-15): docs/CD6.pdf, Corpus Diplomaticum
+Neerlando-Indicum jilid VI (~1755-1775). 8 traktat ditemukan. Dibuka
+RANGKAIAN RENOVASI BESAR (Feb 1755-Jan 1756): cemas "toenemende activiteit
+der Engelsen", VOC perbarui traktat dgn ~30 negeri di SELURUH pantai barat
+dalam <1 tahun (Trusan jadi template, diulang ke Salida, Painan, Indrapoura,
+Cottatenga, dst) -- hanya beberapa dicatat detail (yg lain literal
+"gelijkluidend", tak ditranskrip ulang oleh editor Heeres sendiri). Perang
+Tujuh Tahun (1756-63) merembet westkust: benteng Natal direbut Inggris,
+lalu direbut Prancis (1760), diserahkan ke VOC lewat penguasa lokal --
+Natal lalu formal kembali ke VOC stlh sempat "menyimpang" ke pengaruh
+Inggris. Traktat Tigablas Cottas (1763): VOC janji hadiah tahunan 8
+rijksdaalder/negeri demi jaga jalur gunung & larang dagang Inggris.
+Pemberontakan Klein-Pasaman (1766-67, bukan faksi Aceh) ditumpas. VOC
+tarik mundur dari loge Baros (1775) krn kalah saing dagang Inggris
+Bengkulu -- tanda awal kemunduran VOC westkust jelang akhir abad ke-18.
+Era "pengusiran-penataan" diperluas dari 1664-1741 ke 1664-1775. Sama pola
+tag notes ("SUMBER: Corpus Diplomaticum jilid VI").
+
 Jalankan: docker compose exec backend python seed_atjeh_trade.py
 """
 import csv
@@ -121,7 +139,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659", "CD1", "CD2", "CD3", "CD4", "CD5"}
+ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6"}
 
 ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh", "politik"}
 # "politik": fakta politik/administratif Atjeh (klaim yurisdiksi, penegakan tol,

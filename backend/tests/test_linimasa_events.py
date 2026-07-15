@@ -2,11 +2,12 @@
 Unit tests for seed_linimasa_events.py logic + CSV integrity.
 
 Pure function tests (no DB) — mirrors backend/tests/test_atjeh_trade.py pattern.
-Source: data/research/linimasa_events.csv (93 peristiwa suksesi/politik Atjeh,
-1600-1741 -- distilasi atjeh_trade_records + docs/thesis/dr/korpus_tema_slim.csv
-+ docs/CD1.pdf + docs/CD2.pdf + docs/CD3.pdf + docs/CD4.pdf + docs/CD5.pdf/
-Corpus Diplomaticum). Sejak Fase 1 (docs/prd-linimasa-kronik-pantai-barat.md)
-tiap baris juga punya era_slug (babak naratif) -- lihat ALLOWED_ERAS.
+Source: data/research/linimasa_events.csv (101 peristiwa suksesi/politik Atjeh,
+1600-1775 -- distilasi atjeh_trade_records + docs/thesis/dr/korpus_tema_slim.csv
++ docs/CD1.pdf + docs/CD2.pdf + docs/CD3.pdf + docs/CD4.pdf + docs/CD5.pdf +
+docs/CD6.pdf/Corpus Diplomaticum). Sejak Fase 1
+(docs/prd-linimasa-kronik-pantai-barat.md) tiap baris juga punya era_slug
+(babak naratif) -- lihat ALLOWED_ERAS.
 """
 import csv
 import os
@@ -360,6 +361,17 @@ class TestCsvIntegrity:
         years = [r["year"] for r in rows if r["year"] is not None]
         assert max(years) > 1716
 
+    def test_1741_superseded_as_latest_year_by_cd6(self, rows):
+        """Pembaruan aliansi Tigablas & Doeapoeloeh-Kotta (CD5, 21 Okt 1741)
+        SEMPAT jadi titik AKHIR linimasa, tapi CD6 (1755-1775) memajukannya
+        lagi -- 1741 harus tetap ada sbg event CD5, tapi bukan lagi tahun
+        terbaru di korpus."""
+        y1741 = [r for r in rows if r["year"] == 1741]
+        assert len(y1741) >= 1
+        assert all(r["source_document"] == "CD5" for r in y1741)
+        years = [r["year"] for r in rows if r["year"] is not None]
+        assert max(years) > 1741
+
     def test_pengusiran_penataan_era_extended_to_1716(self, rows):
         """Era 'pengusiran-penataan' diperluas lagi dari 1664-1690 ke 1664-1716
         utk menampung 20 event CD4 (1693-1716), non-overlap dgn era lain tetap
@@ -395,15 +407,6 @@ class TestCsvIntegrity:
             assert "SUMBER BEDA PIPELINE" not in (r["notes"] or ""), \
                 f"baris p{r['source_page']} (CD5) salah ditandai beda pipeline -- CD5 tetap OCR kami sendiri"
 
-    def test_1741_is_new_latest_year(self, rows):
-        """Pembaruan traktat aliansi Tigablas & Doeapoeloeh-Kotta (CD5, 21 Okt
-        1741) memajukan titik AKHIR linimasa dari 1716 ke 1741 -- peristiwa
-        TERBARU di seluruh korpus."""
-        years = [r["year"] for r in rows if r["year"] is not None]
-        assert max(years) == 1741
-        y1741 = [r for r in rows if r["year"] == 1741]
-        assert all(r["source_document"] == "CD5" for r in y1741)
-
     def test_pengusiran_penataan_era_extended_to_1741(self, rows):
         """Era 'pengusiran-penataan' diperluas lagi dari 1664-1716 ke 1664-1741
         utk menampung 4 event CD5 (1727-1741), non-overlap dgn era lain tetap
@@ -419,3 +422,38 @@ class TestCsvIntegrity:
         y1741 = [r for r in rows if r["source_document"] == "CD5" and r["year"] == 1741]
         assert len(y1741) >= 1
         assert any("Abdul Jalil" in (r["notes"] or "") for r in y1741)
+
+    def test_cd6_treaties_present(self, rows):
+        """"tim MLOPS dan DBA sisir CD6.pdf" (2026-07-15): Corpus Diplomaticum
+        jilid VI (~1755-1775) -- 8 peristiwa baru, harus tetap dari OCR
+        pipeline kami sendiri (bukan tag 'SUMBER BEDA PIPELINE' yg reserved
+        utk korpus_tema_slim.csv)."""
+        cd6_rows = [r for r in rows if r["source_document"] == "CD6"]
+        assert len(cd6_rows) >= 8
+        for r in cd6_rows:
+            assert "SUMBER BEDA PIPELINE" not in (r["notes"] or ""), \
+                f"baris p{r['source_page']} (CD6) salah ditandai beda pipeline -- CD6 tetap OCR kami sendiri"
+
+    def test_1775_is_new_latest_year(self, rows):
+        """Penutupan loge Baros (CD6, 23 Jan 1775) memajukan titik AKHIR
+        linimasa dari 1741 ke 1775 -- peristiwa TERBARU di seluruh korpus."""
+        years = [r["year"] for r in rows if r["year"] is not None]
+        assert max(years) == 1775
+        y1775 = [r for r in rows if r["year"] == 1775]
+        assert all(r["source_document"] == "CD6" for r in y1775)
+
+    def test_pengusiran_penataan_era_extended_to_1775(self, rows):
+        """Era 'pengusiran-penataan' diperluas lagi dari 1664-1741 ke 1664-1775
+        utk menampung 8 event CD6 (1755-1775), non-overlap dgn era lain tetap
+        terjaga."""
+        y1742_1775 = [r for r in rows if r["year"] is not None and 1742 <= r["year"] <= 1775]
+        assert len(y1742_1775) >= 1
+        assert all(r["era_slug"] == "pengusiran-penataan" for r in y1742_1775)
+
+    def test_cd6_1755_renewal_campaign_present(self, rows):
+        """Rangkaian renovasi besar Feb 1755-Jan 1756 (~30 negeri westkust,
+        dipicu kekhawatiran aktivitas Inggris) adalah temuan pembuka CD6 --
+        harus tercatat eksplisit di notes."""
+        y1755 = [r for r in rows if r["source_document"] == "CD6" and r["year"] == 1755]
+        assert len(y1755) >= 3
+        assert any("RENOVASI BESAR" in (r["notes"] or "") for r in y1755)

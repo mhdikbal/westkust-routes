@@ -233,6 +233,16 @@ class TestCsvIntegrity:
             assert r["direction"] == "politik"
             assert "Corpus Diplomaticum" in (r["notes"] or "")
 
+    def test_cd6_treaties_documented(self, rows):
+        """"tim MLOPS dan DBA sisir CD6.pdf" (2026-07-15): Corpus Diplomaticum
+        Neerlando-Indicum jilid VI (~1755-1775) -- 8 traktat baru,
+        direction='politik'."""
+        cd6_rows = [r for r in rows if r["source_document"] == "CD6"]
+        assert len(cd6_rows) >= 8
+        for r in cd6_rows:
+            assert r["direction"] == "politik"
+            assert "Corpus Diplomaticum" in (r["notes"] or "")
+
     def test_cd2_barus_treaty_predates_1681(self, rows):
         """Traktat Barus 29 April 1668 (CD2) ditemukan MENDAHULUI traktat Barus
         1681 (korpus_tema_slim.csv) 13 tahun -- caveat lama 'Barus nihil sampai
