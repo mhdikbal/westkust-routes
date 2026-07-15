@@ -7,7 +7,7 @@ Dagh-register, dimuat via seed_research_tema.py). Lihat docs/prd-sankey-tema-kor
 """
 from collections import defaultdict
 from itertools import combinations
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from fastapi import APIRouter, Depends, Query, Response
 from pydantic import BaseModel, ConfigDict
@@ -400,7 +400,7 @@ class AtjehTradeResponse(BaseModel):
 @router.get("/atjeh-trade", response_model=AtjehTradeResponse)
 async def get_atjeh_trade(
     response: Response,
-    direction: Optional[str] = None,
+    direction: Optional[Literal["naar_atjeh", "van_atjeh", "in_atjeh", "politik"]] = None,
     source_document: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
 ):
@@ -477,7 +477,7 @@ def _linimasa_year_lte(value: int):
 @router.get("/linimasa", response_model=LinimasaResponse)
 async def get_linimasa(
     response: Response,
-    event_type: Optional[str] = None,
+    event_type: Optional[Literal["suksesi", "perjanjian", "konflik", "diplomasi", "administratif"]] = None,
     year_from: Optional[int] = None,
     year_to: Optional[int] = None,
     db: AsyncSession = Depends(get_db),

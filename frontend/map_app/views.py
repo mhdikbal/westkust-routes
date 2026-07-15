@@ -159,6 +159,10 @@ def linimasa(request):
         "n_items": len(items),
         "backend_error": backend_error,
         "items_json": json.dumps(items),
+        "eras_meta_json": json.dumps([
+            {k: e[k] for k in ("slug", "label", "range", "headline", "summary")}
+            for e in eras_with_events
+        ]),
     }
     return render(request, "map_app/linimasa.html", context)
 

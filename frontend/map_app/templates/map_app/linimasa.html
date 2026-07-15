@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="utf-8">
@@ -7,77 +7,188 @@
 <meta name="googlebot" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <title>Linimasa Suksesi Atjeh — Pesisir Barat Sumatra (VOC)</title>
+<script>
+/* Gerbang motion (docs/ui-ux-mockup-kronik-pantai-barat.md §12/§17): kelas js-anim hanya
+   dipasang bila JS jalan DAN user tidak minta reduced-motion. Tanpa kelas ini semua konten
+   tampil penuh tanpa animasi -- prinsip "konten utama dapat dibaca tanpa JavaScript" tetap
+   utuh (state tersembunyi reveal tidak pernah berlaku di no-JS / reduced-motion). */
+document.documentElement.classList.add('js'); /* gerbang layout panggung 3-kolom: butuh JS, tapi tidak butuh motion */
+try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-anim')}catch(e){}
+</script>
 <style>
 :root{
-  --paper:#f5f0e6; --paper-deep:#e8dfcf; --panel:#faf6ec; --panel-2:#e8dfcf;
-  --ink:#181611; --muted:#716b61; --muted-dark:#4d4638; --line:#d4c8b5; --border:#d4c8b5;
-  --accent:#8c6a21; --archive-gold:#8c6a21; --aceh-gold:#a77a2e; --voc-copper:#8b4b33;
-  --sea-ink:#29484b; --admin-umber:#6b5842; --gold-ink:#6b4f10;
-  --warn-bg:#efe2c4; --warn-line:#c7a256; --warn-ink:#5c4108;
+  --paper:#000000; --paper-deep:#050505; --panel:rgba(243,234,217,.05); --panel-2:rgba(243,234,217,.08);
+  --ink:#f3ead9; --muted:#a09889; --muted-dark:#c4b9a5; --line:rgba(243,234,217,.1); --border:rgba(243,234,217,.1);
+  --accent:#29484b; --archive-gold:#29484b; --aceh-gold:#3a6366; --voc-copper:#8b4b33;
+  --sea-ink:#29484b; --admin-umber:#a08a6e; --gold-ink:#5a8a8d;
+  --route-aceh:#5a8a8d; --route-voc:#a04a35; --route-local:#29484b;
+  --node-active:#f3ead9; --node-related:#f3ead9; --node-dormant:rgba(243,234,217,.25);
+  --warn-bg:rgba(243,234,217,.06); --warn-line:rgba(243,234,217,.15); --warn-ink:#c4b9a5;
   --evt-suksesi:var(--archive-gold); --evt-perjanjian:var(--sea-ink); --evt-konflik:var(--voc-copper);
-  --evt-diplomasi:var(--aceh-gold); --evt-administratif:var(--admin-umber);
-  --serif:"EB Garamond",Georgia,"Times New Roman",serif;
-  --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  --mono:"Space Grotesk",ui-monospace,Menlo,Consolas,monospace;
+  --evt-diplomasi:var(--aceh-gold); --evt-administratif:var(--admin-umber); --wax-red:#c05a3c;
+  --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Sans",ui-monospace,Menlo,Consolas,monospace;
 }
 :root[data-theme]{
-  --paper:#f5f0e6; --paper-deep:#e8dfcf; --panel:#faf6ec; --panel-2:#e8dfcf;
-  --ink:#181611; --muted:#716b61; --muted-dark:#4d4638; --line:#d4c8b5; --accent:#8c6a21;
+  --paper:#000000; --paper-deep:#050505; --panel:rgba(243,234,217,.05); --panel-2:rgba(243,234,217,.08);
+  --ink:#f3ead9; --muted:#a09889; --muted-dark:#c4b9a5; --line:rgba(243,234,217,.1); --accent:#29484b;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
   line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-.wrap{max-width:1180px;margin:0 auto;padding:clamp(20px,4vw,52px) clamp(16px,4vw,44px) 80px}
+.wrap{width:100%;margin:0;padding:clamp(20px,4vw,52px) clamp(16px,4vw,44px) 80px}
 h1,h2,h3{margin:0;text-wrap:balance}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 a{color:inherit}
-.topnav{display:flex;align-items:center;justify-content:space-between;
-  padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--line)}
-.topnav .nav-l{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.topnav .home,.topnav .sib{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
-  font-size:.9rem;font-weight:600;color:var(--ink);text-decoration:none;
-  padding:8px 14px 8px 11px;border:1px solid var(--line);border-radius:999px;transition:.16s}
-.topnav .home:hover,.topnav .sib:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
-.topnav .home:focus-visible,.topnav .sib:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.topnav .home svg{width:16px;height:16px}
-.topnav .brand{font-family:var(--serif);font-size:1.1rem;font-weight:600;letter-spacing:.02em;color:var(--muted-dark)}
 
-header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px}
+/* Hero sinematik full-bleed -- ilustrasi kapal VOC & benteng pesisir, acuan visual
+   docs/DesignerMookup.png (bukan diadopsi utuh -- peta orbit interaktif & scrubber di
+   mockup itu tetap di luar scope, lihat catatan Fase Lanjutan di footer). Gambar penuh
+   satu layar (100dvh) tanpa scrim berat menutupi benteng/kapal -- gradasi cuma menebal
+   di kiri-bawah tempat teks duduk, sisanya foto tetap terang seperti referensi. Nav
+   dilebur ke atas foto (transparan gelap), bukan bar terpisah di bawahnya.
+   Token warna lokal (--hero-*) sengaja terpisah dari --paper/--ink dll. -- pola sama
+   frontend/map_app/templates/404.html (teks krem di atas foto, bukan di atas kertas). */
+.hero{position:relative;min-height:100dvh;width:100%;overflow:hidden;
+  display:flex;flex-direction:column}
+.hero .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%}
+.hero .scrim{position:absolute;inset:0;background:
+  linear-gradient(0deg,rgba(0,0,0,1) 0%,rgba(0,0,0,.95) 8%,rgba(0,0,0,.6) 25%,rgba(0,0,0,.15) 50%,rgba(0,0,0,0) 70%),
+  linear-gradient(100deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,.15) 38%,rgba(0,0,0,0) 62%),
+  linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,0) 16%)}
+.hero::after{content:"";position:absolute;bottom:0;left:0;right:0;height:120px;z-index:1;
+  background:linear-gradient(to top,rgba(0,0,0,1) 0%,rgba(0,0,0,.7) 30%,rgba(0,0,0,0) 100%);
+  pointer-events:none}
+.hero-nav{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;
+  padding:18px clamp(16px,4vw,44px);flex-wrap:wrap;gap:10px}
+.hero-nav .brand{font-family:var(--serif);font-size:1.15rem;font-weight:600;letter-spacing:.02em;color:#f3ead9}
+.hero-nav .nav-l{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hero-nav .home,.hero-nav .sib{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
+  font-size:.86rem;font-weight:600;color:#efe8da;text-decoration:none;
+  padding:7px 13px 7px 10px;border:1px solid rgba(243,234,217,.3);border-radius:999px;transition:.16s}
+.hero-nav .home:hover,.hero-nav .sib:hover{border-color:#f3ead9;background:rgba(243,234,217,.14);color:#f3ead9}
+.hero-nav .home:focus-visible,.hero-nav .sib:focus-visible{outline:2px solid #f3ead9;outline-offset:2px}
+.hero-nav .home svg{width:15px;height:15px}
+.hero-nav{transition:background .3s ease,padding .3s ease}
+.hero-nav.scrolled{background:rgba(8,23,25,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  padding:12px clamp(16px,4vw,44px)}
+.hero-content{position:relative;z-index:2;max-width:760px;margin-top:auto;
+  padding:clamp(20px,4vw,40px) clamp(16px,4vw,44px) clamp(40px,7vw,76px)}
+.hero-eyebrow{font-family:var(--sans);font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:600;color:#f3ead9;margin:0 0 16px}
+.hero-title{font-family:var(--serif);font-weight:600;font-size:clamp(2.3rem,6.5vw,4.8rem);
+  line-height:1.04;letter-spacing:-.01em;margin:0 0 18px;color:#f3ead9;text-shadow:0 2px 24px rgba(0,0,0,.55)}
+.hero-title em{font-style:italic;color:#f3ead9}
+.hero-lede{font-family:var(--serif);font-size:clamp(1.02rem,1.8vw,1.2rem);line-height:1.55;
+  max-width:52ch;margin:0 0 30px;color:#efe8da;text-shadow:0 1px 14px rgba(0,0,0,.55)}
+.hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-bottom:22px}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);font-weight:600;
+  font-size:.92rem;text-decoration:none;padding:13px 22px;border-radius:6px;transition:.18s;
+  border:1px solid transparent}
+.hero-cta.primary{background:#f3ead9;color:#1b1204;border-color:#f3ead9}
+.hero-cta.primary:hover{background:#f3ead9;border-color:#f3ead9}
+.hero-cta.secondary{background:rgba(15,12,7,.35);color:#f3ead9;border-color:rgba(243,234,217,.4)}
+.hero-cta.secondary:hover{border-color:#f3ead9;color:#f3ead9}
+.hero-cta:focus-visible{outline:2px solid #f3ead9;outline-offset:3px}
+.hero-cta svg{width:16px;height:16px}
+.hero-scroll{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);font-size:.84rem;
+  font-weight:600;color:#efe8da;text-decoration:none;opacity:.85;border-bottom:1px solid rgba(243,234,217,.35);
+  padding-bottom:3px;transition:.16s}
+.hero-scroll:hover{opacity:1;border-color:#f3ead9;color:#f3ead9}
+.hero-scroll:focus-visible{outline:2px solid #f3ead9;outline-offset:4px}
+.hero-scroll svg{width:15px;height:15px}
+@media(max-width:640px){
+  .hero{min-height:100svh}
+  .hero .bg{object-position:34% center}
+  .hero-nav .nav-l .sib{display:none}
+}
+
+/* ── Motion System (docs/ui-ux-mockup-kronik-pantai-barat.md §12) ──────────────
+   Rasa yang dikejar: kabut laut tersibak (hero), tinta meresap / arsip ditemukan
+   (reveal blur per entri), pasang-surut (drift panah gulir). Tanpa bounce/flip/
+   spring/zoom agresif. Semua state tersembunyi digerbang .js-anim (lihat <script>
+   di <head>) -- no-JS & prefers-reduced-motion selalu melihat konten penuh. */
+
+/* Kabut tersibak: foto hero mengendap pelan dari skala 1.06 ke 1. */
+.js-anim .hero .bg{animation:heroFog 2.8s ease-out both}
+@keyframes heroFog{from{transform:scale(1.06)}to{transform:scale(1)}}
+
+/* Konten hero muncul bertahap -- tinta meresap: fade + blur + naik. */
+.js-anim .hero-eyebrow,.js-anim .hero-title,.js-anim .hero-lede,
+.js-anim .hero-actions,.js-anim .hero-scroll{opacity:0;animation:inkIn .9s ease-out forwards}
+.js-anim .hero-eyebrow{animation-delay:.25s}
+.js-anim .hero-title{animation-delay:.4s}
+.js-anim .hero-lede{animation-delay:.55s}
+.js-anim .hero-actions{animation-delay:.7s}
+.js-anim .hero-scroll{animation-delay:.9s}
+@keyframes inkIn{from{opacity:0;filter:blur(4px);transform:translateY(18px)}
+  to{opacity:1;filter:blur(0);transform:none}}
+
+/* Reveal per entri kronik saat masuk viewport (spec §12 .chronicle-entry:
+   700ms ease, fade + blur 5px + translateY 20px). details.card ikut lewat
+   selektor (markup kartu tak berubah); blok lain diberi kelas .reveal. */
+.js-anim .reveal,.js-anim details.card{opacity:0;filter:blur(5px);transform:translateY(20px);
+  transition:opacity .7s ease,filter .7s ease,transform .7s ease}
+.js-anim .reveal.is-visible,.js-anim details.card.is-visible{opacity:1;filter:blur(0);transform:none}
+
+/* Belt-and-suspenders: kalau reduced-motion berubah setelah load, matikan semua. */
+@media (prefers-reduced-motion: reduce){
+  .js-anim .hero .bg,.js-anim .hero-eyebrow,.js-anim .hero-title,.js-anim .hero-lede,
+  .js-anim .hero-actions,.js-anim .hero-scroll{animation:none;opacity:1}
+  .js-anim .reveal,.js-anim details.card{opacity:1;filter:none;transform:none;transition:none}
+}
+
+header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22px;padding-top:30px}
 .eyebrow{font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--muted-dark);font-weight:600}
-.title{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.4vw,2.7rem);
-  line-height:1.06;letter-spacing:-.01em;margin:.5rem 0 .35rem}
-.title em{font-style:italic;color:var(--accent)}
-.lede{max-width:70ch;color:var(--ink);font-size:1.08rem;line-height:1.55;margin:0 0 4px}
+  color:var(--muted);font-weight:600}
+.lede{max-width:70ch;color:var(--ink);font-size:1.08rem;line-height:1.55;margin:.5rem 0 4px}
 .prov{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:14px;letter-spacing:.01em}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;
-  background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:22px}
-.tile{background:var(--panel);padding:13px 15px}
+  background:rgba(243,234,217,.06);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:22px}
+.tile{background:rgba(243,234,217,.03);padding:13px 15px}
 .tile .k{font-family:var(--mono);font-size:1.55rem;font-weight:600;letter-spacing:-.02em;
-  font-variant-numeric:tabular-nums;line-height:1}
+  font-variant-numeric:tabular-nums;line-height:1;color:var(--ink)}
 .tile .l{font-size:.73rem;color:var(--muted);margin-top:5px;letter-spacing:.02em}
+
+/* Sources footer — two-column layout */
+.sources-footer{margin-top:32px;padding-top:28px;border-top:1px solid var(--line)}
+.sources-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.sources-col h3{font-family:var(--serif);font-size:1.15rem;font-weight:600;margin:0 0 12px;color:var(--ink)}
+.sources-col p{font-size:.88rem;line-height:1.55;color:var(--muted);margin:0 0 10px}
+.sources-col p b{color:var(--ink);font-weight:600}
+.source-list{list-style:none;padding:0;margin:0 0 12px;font-size:.82rem;color:var(--muted);line-height:1.6}
+.source-list li{padding:3px 0;padding-left:14px;position:relative}
+.source-list li::before{content:"·";position:absolute;left:0;color:var(--accent);font-weight:700}
+.source-note{font-size:.8rem;color:var(--muted);font-style:italic}
+.source-note a{color:var(--accent);text-decoration:underline;text-decoration-color:rgba(41,72,75,.3)}
+.source-note a:hover{text-decoration-color:var(--accent)}
+.source-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.sources-col .tiles{margin-top:16px}
+@media(max-width:768px){.sources-grid{grid-template-columns:1fr;gap:24px}}
 
 .caveat{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;
   padding:18px 20px;margin:0 0 24px}
-.caveat h2{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--warn-ink);margin-bottom:8px}
-.caveat p{margin:0 0 8px;font-size:.92rem;color:#4a3c0e;line-height:1.55}
+.caveat h2{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--ink);margin-bottom:8px}
+.caveat p{margin:0 0 8px;font-size:.92rem;color:var(--muted);line-height:1.55}
 .caveat p:last-child{margin-bottom:0}
-.caveat b{color:var(--warn-ink)}
-.caveat.error{background:#f3dede;border-color:#c07a7a}
-.caveat.error h2,.caveat.error b{color:#7a1f1f}
+.caveat b{color:var(--ink)}
+.caveat.error{background:rgba(192,90,60,.12);border-color:rgba(192,90,60,.4)}
+.caveat.error h2,.caveat.error b{color:#e8a090}
 
 .controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;
-  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  background:rgba(243,234,217,.03);border:1px solid var(--line);border-radius:12px;
   padding:13px 16px;margin-bottom:18px}
-.controls label{font-size:.78rem;color:var(--muted-dark);font-weight:600;margin-right:6px}
+.controls label{font-size:.78rem;color:var(--muted);font-weight:600;margin-right:6px}
 .controls select{font-family:var(--sans);font-size:.88rem;padding:6px 10px;border:1px solid var(--line);
-  border-radius:8px;background:var(--panel);color:var(--ink)}
+  border-radius:8px;background:rgba(243,234,217,.06);color:var(--ink)}
 .controls .count{font-family:var(--mono);font-size:.82rem;color:var(--muted);margin-left:auto}
 
-.evt-badge{display:inline-block;font-family:var(--mono);font-size:.68rem;font-weight:600;
-  padding:2px 8px;border-radius:999px;color:var(--paper);white-space:nowrap}
+.evt-badge{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:.68rem;font-weight:600;
+  padding:2px 8px;border-radius:999px;color:#1a1610;white-space:nowrap}
+.evt-badge svg{width:11px;height:11px;flex:none;stroke:currentColor;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .evt-suksesi{background:var(--evt-suksesi)}
 .evt-perjanjian{background:var(--evt-perjanjian)}
 .evt-konflik{background:var(--evt-konflik)}
@@ -85,8 +196,9 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22p
 .evt-administratif{background:var(--evt-administratif)}
 
 /* ---- timeline SVG axis ---- */
-.axis-wrap{background:var(--panel);border:1px solid var(--line);border-radius:12px;
-  padding:20px 16px 8px;margin-bottom:18px;overflow-x:auto}
+.axis-wrap{background:rgba(243,234,217,.03);border:1px solid var(--line);border-radius:12px;
+  padding:20px clamp(16px,4vw,44px) 8px;margin-bottom:18px;overflow-x:auto;
+  width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
 .axis-wrap svg{display:block;min-width:640px;width:100%;height:220px}
 .axis-line{stroke:var(--line);stroke-width:2}
 .tick-label{font-family:var(--mono);font-size:11px;fill:var(--muted)}
@@ -94,51 +206,359 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22p
 .evt-dot:hover,.evt-dot.active{r:9}
 .evt-title-svg{font-family:var(--sans);font-size:10.5px;fill:var(--muted-dark);cursor:pointer}
 
+/* ---- lini masa: DesignerPanelPerjanjian blur fog ---- */
+.lini-masa-bg{position:relative;overflow:hidden}
+.lini-masa-bg::after{content:"";position:absolute;inset:0;
+  background:url("{% static 'map_app/img/DesignerPanelPerjanjian.png' %}") right center/cover no-repeat;
+  opacity:.07;filter:blur(32px) saturate(.2) brightness(.6);
+  mask-image:linear-gradient(to left,rgba(0,0,0,.85) 0%,rgba(0,0,0,.35) 40%,transparent 72%);
+  -webkit-mask-image:linear-gradient(to left,rgba(0,0,0,.85) 0%,rgba(0,0,0,.35) 40%,transparent 72%);
+  pointer-events:none;z-index:0}
+.lini-masa-bg > *{position:relative;z-index:1}
+
 /* ---- era sections ---- */
 .era{margin-bottom:28px}
 .era-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px;margin-bottom:6px}
 .era-range{font-size:.78rem;color:var(--accent);font-weight:600;letter-spacing:.02em}
-.era-label{font-family:var(--serif);font-weight:600;font-size:1.5rem;letter-spacing:-.01em}
-.era-headline{font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--muted-dark);
+.era-label{font-family:var(--serif);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;color:var(--ink)}
+.era-headline{font-family:var(--serif);font-style:italic;font-size:1.05rem;color:var(--muted);
   max-width:72ch;margin:0 0 6px}
-.era-summary{font-size:.92rem;color:var(--muted-dark);max-width:76ch;margin:0 0 14px}
+.era-summary{font-size:.92rem;color:var(--muted);margin:0 0 14px}
 
 /* ---- event cards (native <details>) ---- */
-.cards{display:flex;flex-direction:column;gap:1px;background:var(--line);
+.cards{display:flex;flex-direction:column;gap:1px;background:rgba(243,234,217,.04);
   border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.card{background:var(--panel)}
-.card[open]{background:var(--panel-2)}
+.card{background:rgba(243,234,217,.02)}
+.card[open]{background:rgba(243,234,217,.05)}
 .card[hidden]{display:none}
 .card summary{cursor:pointer;padding:14px 18px;list-style:none;position:relative}
 .card summary::-webkit-details-marker{display:none}
-.card summary::after{content:"+";position:absolute;right:18px;top:14px;font-family:var(--mono);
-  font-size:1rem;color:var(--muted);transition:transform .15s}
-.card[open] summary::after{content:"–"}
-.card summary:hover{background:var(--panel-2)}
+.card summary::after{content:"";position:absolute;right:18px;top:14px;
+  width:16px;height:16px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a09889' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center/contain no-repeat;
+  transition:transform .15s ease}
+.card[open] summary::after{transform:rotate(180deg)}
+.card summary:hover{background:rgba(243,234,217,.07)}
 .card summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .card-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:4px;padding-right:24px}
-.card-year{font-family:var(--mono);font-weight:600;font-size:1.1rem;min-width:48px}
-.card-title{font-family:var(--serif);font-weight:600;font-size:1.05rem;flex:1;min-width:220px}
-.card-meta{font-size:.8rem;color:var(--muted-dark);margin:2px 0 0;padding-right:24px}
+.card-year{font-family:var(--mono);font-weight:600;font-size:1.1rem;min-width:48px;color:var(--accent)}
+.card-title{font-family:var(--serif);font-weight:600;font-size:1.05rem;flex:1;min-width:220px;color:var(--ink)}
+.card-meta{font-size:.8rem;color:var(--muted);margin:2px 0 0;padding-right:24px}
 .card-detail{padding:0 18px 16px}
 .card-detail .quote{font-family:var(--serif);font-style:italic;font-size:.94rem;padding:10px 14px;
-  border-left:3px solid var(--accent);margin:4px 0;background:var(--paper)}
-.card-detail .notes{font-size:.84rem;color:var(--muted-dark);margin:8px 0 0}
+  border-left:3px solid var(--accent);margin:4px 0;background:rgba(243,234,217,.02);color:var(--ink)}
+.card-detail .notes{font-size:.84rem;color:var(--muted);margin:8px 0 0}
 .unconf{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;margin-top:6px;display:block}
 .empty-note{color:var(--muted);font-style:italic;padding:14px 18px}
 
+/* Panel sorotan traktat -- komponen reusable (docs/DesignerPanelPerjanjian.png: perkamen
+   terbakar-tepi + kapal/benteng/cap-lilin VOC, blank di kiri untuk teks). Dipakai sekali di
+   halaman ini untuk Traktat Painan 1663 (klimaks naratif linimasa), tapi kelas .treaty-highlight
+   berdiri sendiri dari .card supaya bisa dipasang ulang di tempat lain nanti (misalnya /riset/atjeh-dagang). */
+.treaty-highlight{position:relative;overflow:hidden;
+  min-height:clamp(340px,44vw,440px);display:flex;align-items:flex-end}
+.treaty-highlight .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:78% center}
+.treaty-highlight .scrim{position:absolute;inset:0;background:
+  linear-gradient(90deg,rgba(24,18,8,.88) 0%,rgba(24,18,8,.62) 34%,rgba(24,18,8,.08) 58%,rgba(24,18,8,0) 78%),
+  linear-gradient(0deg,rgba(24,18,8,.55) 0%,rgba(24,18,8,0) 30%)}
+.treaty-highlight-content{position:relative;z-index:2;max-width:520px;padding:clamp(22px,4vw,36px)}
+.treaty-highlight-tag{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);
+  font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:#f3ead9;margin:0 0 10px}
+.treaty-highlight-year{font-family:var(--mono);font-weight:600;font-size:2.4rem;line-height:1;
+  color:#f3ead9;margin:0 0 6px;text-shadow:0 2px 18px rgba(0,0,0,.55)}
+.treaty-highlight-title{font-family:var(--serif);font-weight:600;font-size:1.35rem;line-height:1.2;
+  color:#f3ead9;margin:0 0 12px;text-shadow:0 2px 18px rgba(0,0,0,.55)}
+.treaty-highlight-meta{font-size:.82rem;color:#d8cdb8;margin:0 0 14px}
+.treaty-highlight-quote{font-family:var(--serif);font-style:italic;font-size:.94rem;line-height:1.55;
+  color:#f3ead9;background:rgba(12,10,6,.4);border-left:3px solid #f3ead9;padding:10px 14px;margin:0 0 14px}
+.treaty-highlight-cta{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
+  font-size:.85rem;font-weight:600;color:#1b1204;background:#f3ead9;text-decoration:none;
+  padding:10px 18px;border-radius:6px;transition:.16s}
+.treaty-highlight-cta:hover{background:#f3ead9}
+.treaty-highlight-cta:focus-visible{outline:2px solid #f3ead9;outline-offset:3px}
+@media(max-width:640px){
+  .treaty-highlight .bg{object-position:88% center}
+}
+
+/* ── Panggung Kronik 3 kolom (mockup §4 DesignerMookup.png) ────────────────────
+   NAVIGASI ERA (kiri, sticky) | MARITIME STAGE (tengah, peta skematik gelap:
+   riak Aceh, orbit emas, jalur VOC tembaga, node pelabuhan) | PERISTIWA AKTIF
+   (kanan, panel kertas). Pengguna menavigasi via era/scrubber/prev-next, bukan
+   menggulir daftar panjang. Daftar kartu lama tetap di DOM sebagai fallback no-JS
+   dan "alternatif daftar" (§17) -- toggle #viewToggle menukar keduanya. */
+.view-toggle{display:none}
+.js .view-toggle{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
+  font-size:.82rem;font-weight:600;color:var(--ink);background:rgba(243,234,217,.04);cursor:pointer;
+  border:1px solid var(--line);border-radius:999px;padding:8px 16px;margin:18px 0 0;transition:.16s}
+.js .view-toggle svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.js .view-toggle .icon-columns{display:none}
+.js.show-list .view-toggle .icon-list{display:none}
+.js.show-list .view-toggle .icon-columns{display:block}
+.js .view-toggle:hover{border-color:var(--ink)}
+.js .view-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chronicle{display:none}
+/* Full-bleed satu layar penuh (permintaan user: "lini masa full width sebagai hero,
+   halaman penuh seperti foto di awal") -- keluar dari max-width .wrap via margin-inline
+   calc(50% - 50vw), tinggi 100dvh. */
+.js .chronicle{display:grid;grid-template-columns:minmax(200px,19%) 1fr minmax(300px,29%);
+  width:100vw;margin:18px calc(50% - 50vw) 30px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:rgba(243,234,217,.02);min-height:100dvh}
+.js.show-list .chronicle{display:none}
+.js #listView{display:none}
+.js.show-list #listView{display:block}
+
+/* kolom kiri: navigasi era */
+.chr-nav{counter-reset:cera;background:rgba(243,234,217,.02);border-right:1px solid var(--line);padding:20px 14px 20px 18px;
+  display:flex;flex-direction:column;gap:2px;min-height:0;overflow-y:auto}
+.chr-nav .hd{font-family:var(--sans);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:600;color:var(--muted);margin:0 0 12px}
+.chr-era{position:relative;display:block;width:100%;text-align:left;background:none;border:0;
+  cursor:pointer;padding:12px 6px 12px 42px;border-radius:8px;font-family:var(--sans);transition:.15s;
+  border-left:2px solid transparent}
+.chr-era:hover{background:rgba(41,72,75,.08)}
+.chr-era:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.chr-era::before{counter-increment:cera;content:counter(cera,decimal-leading-zero);
+  position:absolute;left:6px;top:12px;font-family:var(--mono);font-size:.68rem;
+  font-weight:600;color:var(--muted);letter-spacing:.05em;width:24px;text-align:center}
+.chr-era.active{border-left-color:var(--accent);background:rgba(41,72,75,.06)}
+.chr-era.active::before{color:var(--accent)}
+.chr-era .rng{display:block;font-family:var(--mono);font-size:.7rem;color:var(--muted);
+  letter-spacing:.02em;margin-bottom:2px}
+.chr-era .lbl{display:block;font-family:var(--serif);font-weight:600;font-size:.94rem;
+  line-height:1.25;color:var(--ink)}
+.chr-era .sum{display:none;font-size:.76rem;color:var(--muted);line-height:1.45;margin-top:4px}
+.chr-era.active .sum{display:block}
+
+/* Era progress line */
+.chr-nav{position:relative}
+.chr-nav::after{content:"";position:absolute;left:18px;top:48px;bottom:20px;width:2px;
+  background:var(--line);z-index:0}
+.chr-nav::before{content:"";position:absolute;left:18px;top:48px;width:2px;
+  background:var(--accent);z-index:1;transition:height .4s ease;height:0}
+
+/* kolom tengah: maritime stage -- latar SKETSA kapal VOC di lautan ombak + peta
+   pelayaran tua (DesignerPantaiBarat), digelapkan scrim supaya node/label/jalur
+   SVG di atasnya tetap >=3:1. Coastline SVG semi-transparan agar tekstur lukisan
+   tembus di sisi darat. */
+.chr-stage{position:relative;background:#0b1c1e;display:flex;flex-direction:column;min-height:0}
+.chr-stage::before{content:"";position:absolute;inset:0;z-index:0;
+  background:linear-gradient(rgba(8,20,22,.72),rgba(8,20,22,.82)),
+  url("{% static 'map_app/img/linimasa-hero.jpg' %}") center 60%/cover no-repeat}
+.chr-stage[data-era]::before{opacity:.88;transition:opacity .7s ease}
+.chr-stage.climax::before{opacity:1!important;filter:brightness(1.1);transition:opacity .7s ease,filter .7s ease}
+.chr-panel.climax{border-left:3px solid var(--wax-red)}
+.chr-stage svg{flex:1;width:100%;display:block;min-height:0;position:relative;z-index:1}
+.chr-eratag{position:absolute;top:14px;left:14px;z-index:2;border:1px solid rgba(90,138,141,.55);
+  color:#f3ead9;background:rgba(8,23,25,.65);border-radius:6px;padding:7px 13px;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  pointer-events:none}
+.chr-legend{display:none}
+/* elemen SVG */
+.chr-coast{fill:rgba(40,33,18,.62);stroke:rgba(90,138,141,.6);stroke-width:1.4}
+.chr-water{fill:none;stroke:rgba(90,138,141,.9);stroke-width:1}
+.chr-isle{fill:rgba(40,33,18,.55);stroke:rgba(90,138,141,.5);stroke-width:1}
+.chr-hatch line{stroke:rgba(90,138,141,.22);stroke-width:.8}
+.chr-ridge{fill:none;stroke:rgba(90,138,141,.38);stroke-width:1.1;stroke-linecap:round}
+.chr-eq{stroke:rgba(90,138,141,.35);stroke-width:1;stroke-dasharray:7 6}
+.chr-maplabel{fill:rgba(207,196,171,.55);font:600 9.5px var(--sans);letter-spacing:.22em}
+.chr-landname{fill:rgba(214,186,130,.10);font:italic 500 30px "Cormorant Garamond",Georgia,serif;letter-spacing:.55em}
+.chr-rhumb{stroke:rgba(90,138,141,.02);stroke-width:.7}
+.chr-compass{stroke:rgba(90,138,141,.35);fill:none}
+.chr-stage[data-era] .chr-compass{opacity:0;transition:opacity .7s ease}
+.orbit{stroke:#5a8a8d;fill:none;stroke-width:1.3;stroke-dasharray:3 5;opacity:.85;transition:opacity .7s ease}
+.vocline{stroke:#a04a35;fill:none;stroke-width:1.5;stroke-dasharray:7 4;opacity:.18;transition:opacity .7s ease}
+.chr-stage[data-era="perang-damai"] .orbit{opacity:.55}
+.chr-stage[data-era="perang-damai"] .vocline{opacity:.35}
+.chr-stage[data-era="retak-painan"] .orbit{opacity:.35}
+.chr-stage[data-era="retak-painan"] .vocline{opacity:.6}
+.chr-stage[data-era="pengusiran-penataan"] .orbit{opacity:.1}
+.chr-stage[data-era="pengusiran-penataan"] .vocline{opacity:.9}
+.ripplegrp{opacity:.9;transition:opacity .7s ease}
+.chr-stage[data-era="retak-painan"] .ripplegrp{opacity:.45}
+.chr-stage[data-era="pengusiran-penataan"] .ripplegrp{opacity:.18}
+.chr-stage[data-era] .orbit{opacity:.08;transition:opacity .7s ease}
+.chr-stage[data-era] .orbit.active{opacity:.85}
+.chr-stage[data-era] .orbit.secondary{opacity:.18}
+.chr-stage[data-era] .vocline{opacity:.08;transition:opacity .7s ease}
+.chr-stage[data-era] .vocline.active{opacity:.75;stroke:#3a6366}
+.chr-stage[data-era] .vocline.secondary{opacity:.12}
+.ripple{fill:none;stroke:#f3ead9;stroke-width:1.2;transform-box:fill-box;transform-origin:center;opacity:0}
+.js-anim .ripple{animation:rippleOut 4.8s linear infinite}
+.js-anim .ripple:nth-child(2){animation-delay:1.6s}
+.js-anim .ripple:nth-child(3){animation-delay:3.2s}
+@keyframes rippleOut{0%{transform:scale(.2);opacity:.75}100%{transform:scale(1.9);opacity:0}}
+@media (prefers-reduced-motion: reduce){.js-anim .ripple{animation:none;opacity:.3;transform:scale(1)}}
+.chr-ship{fill:#d8cdb8;opacity:.85}
+/* rute layar lewat selat Batu (jalur pelayaran VOC nyata), tidak menabrak
+   daratan/pulau di garis pantai geografis baru */
+.js-anim .chr-ship{animation:sail 26s ease-in-out infinite alternate}
+@keyframes sail{from{transform:translate(205px,300px)}to{transform:translate(440px,600px)}}
+@media (prefers-reduced-motion: reduce){.js-anim .chr-ship{animation:none;transform:translate(320px,450px)}}
+.chr-ship2{opacity:.12}
+.js-anim .chr-ship2{animation:none;transform:translate(120px,430px) scale(.55)}
+.chr-port circle.core{fill:#f3ead9;stroke:#081719;stroke-width:1}
+.chr-port text{fill:#cfc4ab;font:600 10.5px var(--sans);letter-spacing:.05em;paint-order:stroke;stroke:rgba(8,23,25,.85);stroke-width:2.5px}
+.chr-port{cursor:pointer}
+.chr-port:hover text{fill:#f3ead9}
+.chr-port.active circle.core{fill:#f3ead9;stroke:#29484b;stroke-width:2}
+.chr-port.active .core{box-shadow:0 0 12px 3px rgba(243,234,217,.35)}
+.js-anim .chr-port.active .core{animation:portGlow 2.4s ease-in-out infinite alternate}
+@keyframes portGlow{from{box-shadow:0 0 8px 2px rgba(243,234,217,.25)}
+  to{box-shadow:0 0 16px 4px rgba(243,234,217,.45)}}
+.chr-port.active text{fill:#f3ead9;font-size:11.5px}
+.chr-port .halo{fill:none;stroke:#f3ead9;opacity:0}
+.chr-port.active .halo{opacity:.9;transform-box:fill-box;transform-origin:center}
+.js-anim .chr-port.active .halo{animation:haloPulse 2.4s ease-out infinite}
+@keyframes haloPulse{0%{transform:scale(.5);opacity:.9}100%{transform:scale(2.1);opacity:0}}
+.chr-port.dormant circle.core{r:2.5;opacity:.25;transition:r .4s ease,opacity .4s ease}
+.chr-port.dormant text{opacity:0;transition:opacity .3s ease}
+.chr-port.related circle.core{r:4.5;fill:var(--node-related);transition:r .4s ease}
+.chr-port.related text{opacity:.7;font-size:9.5px}
+
+/* scrubber garis waktu */
+.chr-scrub{position:relative;z-index:2;display:flex;align-items:center;gap:10px;
+  padding:10px 14px 12px;border-top:1px solid rgba(90,138,141,.25);background:rgba(8,23,25,.9)}
+.chr-scrub--full{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);
+  padding:12px clamp(16px,4vw,44px);border-top:1px solid var(--line);background:#000;
+  position:sticky;top:0;z-index:10}
+.chr-nbtn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(90,138,141,.5);cursor:pointer;
+  background:none;color:#f3ead9;display:inline-flex;align-items:center;justify-content:center;transition:.15s;flex:none}
+.chr-nbtn svg{width:18px;height:18px}
+.chr-nbtn:hover{background:rgba(243,234,217,.15)}
+.chr-nbtn:focus-visible{outline:2px solid #f3ead9;outline-offset:2px}
+.chr-lane{position:relative;flex:1;height:40px;cursor:pointer;outline-offset:4px}
+.chr-lane:focus-visible{outline:2px solid #f3ead9}
+.chr-lane .rail{position:absolute;left:0;right:0;top:17px;height:1.5px;background:rgba(90,138,141,.35)}
+.chr-dot{position:absolute;top:15px;width:6px;height:6px;border-radius:50%;transform:translateX(-50%);
+  background:#5a8a8d;opacity:.5;cursor:pointer;transition:.15s}
+.chr-dot:hover{opacity:1}
+.chr-dot.active{width:13px;height:13px;top:11.5px;background:#f3ead9;opacity:1;
+  box-shadow:0 0 0 3px rgba(243,234,217,.3)}
+.chr-lane .yr{position:absolute;top:27px;transform:translateX(-50%);
+  font-family:var(--mono);font-size:.62rem;color:#8a7f68}
+.chr-count{font-family:var(--mono);font-size:.72rem;color:#d8cdb8;flex:none;min-width:64px;text-align:right}
+
+/* kolom kanan: panel peristiwa aktif */
+.chr-panel{position:relative;background:rgba(243,234,217,.02);border-left:1px solid var(--line);
+  padding:22px 20px 24px;overflow-y:auto;min-height:0}
+.chr-panel::before{content:"";position:absolute;inset:0;z-index:0;
+  background:url("{% static 'map_app/img/DesignerPanelPerjanjian.png' %}") right center/cover no-repeat;
+  opacity:.035;
+  filter:blur(18px) saturate(.3) brightness(.7);
+  mask-image:linear-gradient(to left,rgba(0,0,0,.7) 0%,rgba(0,0,0,.25) 45%,transparent 75%);
+  -webkit-mask-image:linear-gradient(to left,rgba(0,0,0,.7) 0%,rgba(0,0,0,.25) 45%,transparent 75%);
+  pointer-events:none}
+.chr-panel::after{content:"";position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse at 85% 50%,rgba(139,75,51,.08) 0%,transparent 60%);
+  pointer-events:none}
+.chr-panel > *{position:relative;z-index:1}
+.chr-panel .live{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);
+  font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--muted);margin:0 0 12px}
+.chr-panel .live::before{content:"";width:8px;height:8px;border-radius:50%;background:#c05a3c}
+.chr-year{font-family:var(--serif);font-weight:600;font-size:2.5rem;line-height:1;letter-spacing:-.02em;color:var(--ink)}
+.chr-title{font-family:var(--serif);font-weight:600;font-size:1.3rem;line-height:1.22;margin:6px 0 10px;color:var(--ink)}
+.chr-badges{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.chr-meta{font-size:.8rem;color:var(--muted);margin:0 0 12px;line-height:1.5}
+.chr-quote{font-family:var(--serif);font-style:italic;font-size:.93rem;line-height:1.55;
+  border-left:3px solid var(--accent);background:rgba(243,234,217,.02);padding:10px 13px;margin:0 0 12px;color:var(--ink)}
+.chr-notes{display:none;font-size:.83rem;color:var(--muted);line-height:1.55;margin:0 0 12px}
+.chr-panel.open-transcript .chr-notes{display:block}
+.chr-src{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin:0 0 16px}
+.chr-actions{display:flex;flex-wrap:wrap;gap:9px}
+.chr-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:.78rem;
+  font-weight:600;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;text-decoration:none;
+  padding:10px 15px;border-radius:6px;border:1px solid var(--ink);transition:.15s}
+.chr-btn svg{width:14px;height:14px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chr-btn.solid{background:var(--ink);color:#1a1610}
+.chr-btn.solid:hover{background:var(--accent);border-color:var(--accent)}
+.chr-btn.line{background:none;color:var(--ink)}
+.chr-btn.line:hover{border-color:var(--accent);color:var(--accent)}
+.chr-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chr-panel .evt-counter{font-family:var(--sans);font-size:.68rem;letter-spacing:.16em;
+  text-transform:uppercase;font-weight:600;color:var(--muted);margin:0 0 14px}
+.chr-panel .chr-divider{width:40px;height:2px;background:var(--accent);margin:8px 0 14px;border:none}
+.chr-panel .chr-subtitle{font-family:var(--sans);font-size:.8rem;color:var(--muted);
+  letter-spacing:.04em;margin:0 0 14px}
+.chr-panel .chr-source-header{font-family:var(--sans);font-size:.68rem;letter-spacing:.14em;
+  text-transform:uppercase;font-weight:600;color:var(--muted);margin:16px 0 6px}
+.chr-panel .chr-source-name{font-family:var(--sans);font-size:.84rem;color:var(--ink);margin:0 0 2px}
+.chr-panel .chr-source-page{font-family:var(--sans);font-size:.84rem;color:var(--ink);margin:0 0 8px}
+.chr-panel .chr-status{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin:0 0 16px;
+  padding:6px 10px;background:rgba(243,234,217,.02);border:1px solid var(--line);border-radius:6px;display:inline-flex;align-items:center;gap:6px}
+.chr-panel .chr-status svg{width:13px;height:13px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* klimaks Traktat Painan 1663 (§11): panel jadi lembar perjanjian */
+.chr-panel.treaty{color:#f3ead9}
+.chr-panel.treaty::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(rgba(24,18,8,.78),rgba(24,18,8,.66)),
+  url("{% static 'map_app/img/treaty-panel.jpg' %}") center/cover no-repeat}
+.chr-panel.treaty > *{position:relative}
+.chr-panel.treaty .live,.chr-panel.treaty .chr-meta,.chr-panel.treaty .chr-notes{color:#d8cdb8}
+.chr-panel.treaty .live::before{background:#e05545}
+.chr-panel.treaty .chr-src{color:#c9bda0}
+.chr-panel.treaty .chr-quote{background:rgba(12,10,6,.45);border-left-color:#f3ead9}
+.chr-panel.treaty .chr-btn.solid{background:#f3ead9;color:#1b1204;border-color:#f3ead9}
+.chr-panel.treaty .chr-btn.line{color:#f3ead9;border-color:rgba(243,234,217,.5)}
+.chr-climax{display:none;font-family:var(--serif);font-style:italic;font-size:1.05rem;
+  color:#f3ead9;margin:0 0 12px}
+.chr-panel.treaty .chr-climax{display:block}
+
+@media(max-width:980px){
+  .js .chronicle{grid-template-columns:1fr;min-height:0}
+  .chr-nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);
+    padding:12px 14px;gap:6px}
+  .chr-nav .hd{display:none}
+  .chr-era{min-width:168px;padding:8px 8px 8px 22px}
+  .chr-era .sum{display:none!important}
+  .chr-stage{min-height:440px}
+  .chr-legend{display:none}
+  .chr-panel{border-left:0;border-top:1px solid var(--line);max-height:none}
+  .chr-nav .era-num{display:none}
+  .chr-scrub--full{padding:10px 16px}
+}
+@media(min-width:981px){
+  .js .chronicle.reading{grid-template-columns:minmax(160px,16%) 1fr minmax(360px,32%)}
+}
+
 footer{margin-top:30px;padding-top:22px;border-top:1px solid var(--line);
-  font-size:.86rem;color:var(--muted-dark)}
+  font-size:.86rem;color:var(--muted)}
 footer h3{font-family:var(--serif);font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--ink)}
 footer p{margin:0 0 10px;line-height:1.55}
-.tag{display:inline-block;font-family:var(--mono);font-size:.72rem;background:var(--panel-2);
+.tag{display:inline-block;font-family:var(--mono);font-size:.72rem;background:rgba(243,234,217,.04);
   border:1px solid var(--line);border-radius:5px;padding:2px 7px;margin:2px 4px 2px 0;color:var(--muted)}
+@media print{
+  body{background:#fff;color:#000}
+  .hero-nav,.chr-scrub,.chr-legend,.view-toggle,.chr-actions,.hero-actions,.hero-scroll{display:none!important}
+  .hero{min-height:auto;page-break-after:always}
+  .hero .bg{position:static}
+  .hero .scrim{display:none}
+  .hero-content{color:#000;text-shadow:none}
+  .hero-eyebrow,.hero-title,.hero-lede{color:#000}
+  .chronicle{display:block!important;width:100%!important;margin:0!important;min-height:auto!important;background:#fff}
+  .chr-nav,.chr-panel{display:none!important}
+  .chr-stage{min-height:200px;page-break-after:always;background:#fff}
+  details.card{break-inside:avoid;background:#fff;color:#000}
+  details.card[open] .card-detail{display:block!important}
+  .wrap{background:#fff;color:#000}
+  .tile,.tile .k,.tile .l{color:#000;background:#fff}
+  .caveat{background:#f5f5f0;color:#000;border-color:#ccc}
+  .tag{background:#f5f5f0;color:#000;border-color:#ccc}
+  footer{color:#000;border-color:#ccc}
+  footer h3{color:#000}
+}
+.chr-source-details{margin:8px 0}
+.chr-source-details summary{cursor:pointer;font-family:var(--sans);font-size:.78rem;font-weight:600;
+  color:var(--muted);letter-spacing:.05em;text-transform:uppercase;padding:6px 0}
+.chr-source-details summary:hover{color:var(--ink)}
+.chr-source-details[open] .chr-source-name{font-size:.82rem;margin:4px 0 2px}
+.chr-source-details[open] .chr-source-page{font-size:.78rem;color:var(--muted)}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <nav class="topnav">
+<section class="hero">
+  <img class="bg" src="{% static 'map_app/img/linimasa-hero.jpg' %}" alt="Ilustrasi kapal-kapal dagang VOC berlayar mendekati benteng pesisir bertingkat, dengan peta pelayaran tua dan kompas sebagai lapisan langit">
+  <div class="scrim"></div>
+  <nav class="hero-nav">
     <div class="nav-l">
       <a class="home" href="../">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 19l-7-7 7-7"/><path d="M3 12h18"/></svg>
@@ -147,44 +567,37 @@ footer p{margin:0 0 10px;line-height:1.55}
       <a class="sib" href="../riset/tema/">Sankey tema</a>
       <a class="sib" href="../riset/jaringan/">Jaringan pelabuhan</a>
       <a class="sib" href="../riset/atjeh-dagang/">Dagang Atjeh</a>
+      </a>
     </div>
     <span class="brand">Salido</span>
   </nav>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Kronik Pantai Barat &middot; 1600&ndash;1775</p>
+    <h1 class="hero-title">Dari Kontrak Pertama ke <em>Mundurnya VOC dari Barus</em></h1>
+    <p class="hero-lede">Seratus satu peristiwa suksesi &amp; politik kekuasaan Atjeh atas pantai
+      barat Sumatra &mdash; dari kontrak lada pertama VOC-Atjeh sampai VOC sendiri menutup logenya
+      di Barus, kalah bersaing dagang dengan Inggris.</p>
+    <div class="hero-actions">
+      <a class="hero-cta primary" href="#content">
+        Mulai Menelusuri
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="hero-cta secondary" href="../">
+        Lihat Peta
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg>
+      </a>
+    </div>
+    <a class="hero-scroll" href="#content">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      Gulir untuk memulai penelusuran
+    </a>
+  </div>
+</section>
 
-  <header>
-    <p class="eyebrow">Linimasa Suksesi &middot; Corpus Diplomaticum &amp; Dagh-register Batavia 1600-1775</p>
-    <h1 class="title">Dari Kontrak Pertama ke <em>Mundurnya VOC dari Barus</em></h1>
-    <p class="lede">101 peristiwa kunci suksesi &amp; politik kekuasaan Atjeh atas pantai barat
-      Sumatra — dari <b>kontrak dagang lada pertama VOC-Atjeh</b> (Desember 1600) dan traktat
-      formal pertama (17 Januari 1607), klaim yurisdiksi Atjeh <b>TERLUAS</b> yang dicatat VOC
-      sendiri atas seluruh Sumatra (1625), titah tol Sultan <b>Iskandar Muda</b> (1632), wafatnya
-      &amp; suksesi ke <b>Iskandar Thani</b> lalu <b>Ratu Atjeh</b> (1637–1641), monopoli dagang
-      lada &amp; timah yang diformalkan tertulis (1649–1650), damai Perak 1655 dengan jadwal tol
-      timah paling rinci di korpus ini, <b>perang terbuka VOC-Atjeh 1656–57</b> (kerugian terbesar
-      di seluruh korpus, tawanan Belanda disandera di Sillida &amp; Priaman) yang diakhiri
-      perdamaian resmi 1659, konfederasi Songypagouers (Padang, Pariaman, Tiku, Salida, Inderapura)
-      memberontak dan menandatangani <b>Traktat Painan 1663</b> dengan VOC — "kuk tak tertahankan"
-      kekuasaan Atjeh dibuang berantai oleh Sillida &amp; Pulau Cingkuak (1667), <b>Barus</b>
-      (1668–1681), Priaman, Tiku, Singkil dan Kotta-tengah (berulang kali memberontak lalu tunduk
-      lagi), memuncak pada <b>29 Agustus 1680</b> ketika Indrapoura, Padang, Kottatenga, dan
-      Sillida bersatu dalam satu aliansi umum dari Seblat sampai Air Bangis, dan Inggris, diusir
-      dari Bantam, mencoba pijakan di pantai yang sama — lalu berlanjut jauh melampaui 1690:
-      ekspedisi <b>vaandrig Johannes Sas (1693)</b> memburu penyelundup Atjeh sampai menyerbu
-      benteng mereka di <b>pulau Nias</b>, Baros direstrukturisasi total pasca-pembunuhan pegawai
-      VOC (1694), Padang &amp; Sillida melepas hak pungut kuno mereka sendiri demi harga peper
-      (1698), dan Priaman kembali berpaling ke Atjeh hampir dua dekade sebelum ditundukkan ulang
-      (1712) — sampai Indrapoera, yang sempat berpihak ke Inggris, akhirnya kembali meminta
-      perlindungan VOC sendiri (1716), dan pemberontakan besar 1740 (Paoeh, Kotta-Tengah, Priaman
-      di bawah Abdul Jalil) memaksa VOC melepas benteng Priaman — meski sekutu lama Tigablas &amp;
-      Doeapoeloeh-Kotta tetap setia (1741). Dari 1755, ancaman berganti wajah: kekhawatiran atas
-      Inggris memicu VOC merenovasi aliansi dengan hampir seluruh pantai barat dalam kurang dari
-      setahun, Perang Tujuh Tahun Eropa (1756–1763) merembet lewat benteng Natal yang berpindah
-      tangan Inggris–Prancis–VOC (1760), dan traktat Tigablas Cottas (1763) menjanjikan hadiah
-      tahunan demi menjaga jalur gunung dari pengaruh dagang Inggris — sampai menjelang 1775 VOC
-      sendiri terpaksa menutup logenya yang berusia satu abad di Barus, kalah bersaing dagang
-      dengan Inggris dari Bengkulu.</p>
-    <div class="prov" id="prov">{{ n_items }} peristiwa &middot; sumber: linimasa_events &middot; dirender server-side</div>
-    <div class="tiles" id="tiles">
+<div class="wrap">
+
+  <header id="content">
+    <div class="tiles reveal" id="tiles">
       <div class="tile"><div class="k mono">{{ meta.n_items|default:n_items }}</div><div class="l">peristiwa</div></div>
       <div class="tile"><div class="k mono">{{ meta.by_event_type.suksesi|default:0 }}</div><div class="l">suksesi</div></div>
       <div class="tile"><div class="k mono">{{ meta.by_event_type.perjanjian|default:0 }}</div><div class="l">perjanjian</div></div>
@@ -203,162 +616,56 @@ footer p{margin:0 0 10px;line-height:1.55}
   </div>
   {% endif %}
 
-  <div class="caveat">
-    <h2>Batas bukti &amp; dua sumber berbeda — baca sebelum menafsirkan</h2>
-    <p><b>Semua baris berstatus "belum diverifikasi"</b> (confidence_flag=unverified). TIGA sumber
-      berbeda campur di halaman ini: peristiwa 1625–1657 didistilasi dari
-      <code>atjeh_trade_records</code> (OCR PDF Dagh-register docs/ kami sendiri, ejaan asli
-      VOC-Belanda dipertahankan); peristiwa 1600–1775 dari <code>docs/CD1.pdf</code>,
-      <code>docs/CD2.pdf</code>, <code>docs/CD3.pdf</code>, <code>docs/CD4.pdf</code>,
-      <code>docs/CD5.pdf</code> &amp; <code>docs/CD6.pdf</code> (Corpus Diplomaticum
-      Neerlando-Indicum jilid I-VI — kompilasi traktat, OCR kami sendiri juga, tapi buku BEDA dari
-      Dagh-register, lihat caveat CD1/CD2/CD3/CD4/CD5/CD6 di bawah); peristiwa 1661–1681 sumbernya
-      BEDA pipeline sepenuhnya:
-      <code>docs/thesis/dr/korpus_tema_slim.csv</code>, corpus GLOBALISE/Huygens yang sudah
-      diterjemahkan ke Indonesia — kutipan baris-baris itu karena itu berbahasa Indonesia
-      (terjemahan), bukan OCR Belanda mentah seperti baris lain. Provenance persis (corpus_id
-      asal) dicatat di catatan tiap baris.</p>
-    <p><b>Koreksi 2026-07-14 (ditegur user "jangan ada yang dilewatkan"):</b> seed awal cuma
-      distilasi 4 volume (1631-1634/1637/1643-1644/1647-1648), TERLEWAT dua volume yang sudah
-      lama ada di <code>atjeh_trade_records</code>: <b>1624-1629</b> (risalah VOC 29 Sep 1625,
-      klaim yurisdiksi Atjeh TERLUAS di seluruh korpus — sekarang jadi peristiwa TERTUA linimasa,
-      mendahului titah 1632 tujuh tahun) dan <b>1636</b> (surat Jacob Schooff, pejabat pungut-tol
-      Atjeh masih aktif di Indrapura). Ditambahkan, 4 peristiwa baru.</p>
-    <p><b>Temuan volume 1656-1657 (5 peristiwa baru, pipeline sama dgn kami sendiri):</b> perang
-      TERBUKA VOC-Atjeh, dibuka komisaris Johan Treuijtman — ratu Atjeh membalas dgn perintah
-      langsung ke panglima Sillida/Ticco/Priaman utk menangkap &amp; menyiksa SEMUA personel VOC.
-      Kerugian ~120.000 gulden, terbesar di seluruh korpus. Ekspedisi hukuman 200 tentara (Feb
-      1657) berhasil bebaskan 9 tawanan di Sillida, GAGAL di Priaman (10 tawanan, ~2.000 penjaga
-      bersenjata). VOC putuskan lanjutkan perang tanpa batas jelas. Peristiwa ini 6 tahun
-      MENDAHULUI pemberontakan 1662–63 — kemungkinan akar dendam panglima yg dipaksa Atjeh
-      menyerang VOC, nanti berbalik memberontak dari Atjeh sendiri.</p>
-    <p><b>Temuan volume 1659 (2 peristiwa baru, pipeline sama dgn kami sendiri):</b> Maret 1659
-      perang masih berjalan — 6 tawanan Belanda tersisa, panglima pantai barat SUDAH terbelah
-      soal kesetiaan ke Atjeh (2 tahun mendahului perpecahan yg sama tahun 1661). Lalu 26 Mei
-      1659, ratu Atjeh kirim surat perdamaian resmi via komisaris Balthasar Bort — perang 1656-57
-      resmi berakhir, 3 duta diterima di Batavia dgn upacara penuh. Titik balik SEMENTARA sebelum
-      tensi baru muncul lagi 1660-61.</p>
-    <p><b>Sengaja tidak digambar "blok era"</b> tunggal berdasarkan pengetahuan sejarah umum
-      eksternal (mis. rentang resmi pemerintahan tiap Sultan) — babak di bawah dikelompokkan HANYA
-      dari rentang tahun peristiwa yang benar-benar punya kutipan asli di korpus kami (lihat
-      <code>docs/prd-linimasa-kronik-pantai-barat.md</code>).</p>
-    <p><b>Temuan CD1.pdf, Corpus Diplomaticum Neerlando-Indicum jilid I (6 peristiwa baru,
-      SUMBER KETIGA — beda dari 9 volume Dagh-register kami sendiri MAUPUN
-      <code>korpus_tema_slim.csv</code>):</b> kompilasi traktat/kontrak VOC (ed. J.E. Heeres),
-      bukan jurnal harian. Berisi <b>kontrak dagang lada pertama VOC-Atjeh (Desember 1600)</b> dan
-      <b>traktat formal pertama (17 Januari 1607)</b> — memundurkan titik awal linimasa dari 1625
-      ke 1600. Traktat Februari–Maret 1641 (firman Ratu Atjeh soal Ticou/Priaman/Indrapoura/Padang)
-      jadi <b>sumber primer pertama</b> yang menyebut eksplisit <b>"Iskander Tsani"</b> (Iskandar
-      Thani) sebagai pendahulu/suami Ratu, wafat 15 Februari 1641 — nama ini sebelumnya EKSPLISIT
-      TIDAK dimasukkan ke data karena tak tersitasi (lihat
-      <code>docs/prd-linimasa-kronik-pantai-barat.md</code> §2). Kutipan sumber itu berasal dari
-      catatan kaki editor (bukan dokumen periode VOC langsung) — ditandai eksplisit di baris
-      terkait. Dua traktat lain (6 &amp; 9 November 1649, 15 Agustus 1650) memformalkan tertulis
-      monopoli VOC-Atjeh atas lada (Tiku/Priaman/Indrapoura) dan timah (Perak).</p>
-    <p><b>Ekstraksi lanjutan corpus 1661–1681 (10 peristiwa baru):</b> menemukan akar sebab
-      pemberontakan — panglima Atjeh memakai suku Paeuw sbg proksi perangi Padang 4 tahun
-      (1657–1661), lalu panglima Priaman wafat mendadak diduga diracun (Des 1661) tepat sebelum
-      Traktat Painan. Pasca-traktat: panglima Atjeh di Sillida kabur diam-diam (Jan 1664), VOC
-      perintahkan pengusiran paksa, ~600–700 orang Atjeh bertahan di benteng Priaman sampai
-      akhirnya jatuh (kampanye tuntas Jan 1665). Sillida diserahkan formal ke VOC 1667. Traktat
-      Barus 1681 — radja hulu/hilir Barus diwajibkan menyerahkan senjata sisa "mahkota Aetehe"
-      (mahkota Atjeh) — sempat kami catat sbg "bukti Atjeh-Barus PERTAMA di seluruh korpus riset
-      ini"; klaim itu KOREKSI sejak temuan CD2 di bawah (traktat Barus 1668 mendahuluinya 13
-      tahun).</p>
-    <p><b>Temuan CD2.pdf, Corpus Diplomaticum Neerlando-Indicum jilid II, ~1655–1673 (14 peristiwa
-      baru, lensa sisir: tol/pajak &amp; hadiah diplomasi):</b> traktat 7 Desember 1655 mengakhiri
-      konflik Perak dgn ganti rugi 50.000 real + jadwal tol ekspor timah paling rinci di korpus
-      kami (per bahar, per jenis kapal). Traktat 27 Juli 1663 (Songypagouers) MELENGKAPI Traktat
-      Painan yang sudah ada dengan teks primer 8 pasal lengkap — frasa <b>"onverdraeglijck jock"</b>
-      (kuk tak tertahankan) muncul berulang di traktat-traktat berikutnya saat pelabuhan pantai
-      barat satu demi satu lepas dari Atjeh: Sillida &amp; Pulau Cingkuak (1667, MELENGKAPI event
-      yang sudah ada — catatan editor menyebut Cingkuak jadi loge berbenteng PERTAMA VOC di
-      westkust), <b>Barus (29 April 1668 — KOREKSI: bukti Atjeh-Barus PERTAMA yang sesungguhnya,
-      bukan 1681)</b>, Priaman (6 Desember 1671, dgn formula bagi-hasil tol ke 12 regent bernama),
-      Singkil (19 Maret 1672). Temuan tol/pajak paling eksplisit: regent Padang <b>sukarela
-      menyerahkan hak pungut tol 10%</b> — dulu milik Aceh — ke VOC selamanya (1 Agustus 1671).
-      Temuan hadiah diplomasi: VOC memberi bendera Kompeni ke orangkaya Pere (14 Juli 1668) sbg
-      tanda persahabatan. <b>Temuan hadiah paling rinci (16 Agustus 1660, pasal 2 traktat
-      Indrapoura):</b> jadwal <i>vereering</i> TAHUNAN dari VOC ke Raja Indrapoura & pejabatnya
-      tiap kapal kargo tiba — kain laken, bafta Gujarat, sutra patola, dan <b>"groote spiegel"/
-      "spiegel" (cermin/kaca besar)</b> khusus untuk Raja & pejabat Goedjerwan, mengikuti hierarki
-      jabatan sampai ke 20 mantri istana.</p>
-    <p><b>Temuan CD3.pdf, Corpus Diplomaticum Neerlando-Indicum jilid III, ~1678–1690 (18
-      peristiwa baru, volume PALING PADAT sejauh ini):</b> siklus berulang pemberontakan-tunduk di
-      sepanjang pantai barat — Priaman (1678, 1684), Tiku (1684), Bajang (1679, perang tambang
-      emas dgn Sillida), Kotta-tengah (1680, 1682) — semua dipicu "Atchinse partijgangers"
-      (faksi pro-Aceh) yang terus muncul kembali meski sudah berulang kali ditundukkan. Puncaknya:
-      <b>29 Agustus 1680</b>, traktat aliansi UMUM PERTAMA yang menyatukan SEMUA penguasa pantai
-      barat — Indrapoura, Padang, Kottatenga, Sillida — dalam satu perjanjian, mendefinisikan
-      batas wilayah penuh dari Seblat (selatan) sampai Air Bangis (utara) di bawah perlindungan
-      VOC. Baru empat bulan kemudian (1 Januari 1681) Barus benar-benar tuntas lepas dari Aceh —
-      radja Ilir bersumpah lepas mahkota Aceh selamanya dan menyerahkan senjata Aceh terakhir
-      (MELENGKAPI event Barus 1681 yang sudah ada dengan teks primer lengkap); ia lalu ketahuan
-      masih menyembunyikan dua agen Aceh, ditahan, dan wafat dalam tahanan. Batas tambang emas
-      Sillida &amp; Pulau Cingkuak (1667) ditegaskan ulang presisi (27 Februari 1681), dan Painan
-      sendiri — asal nama Traktat Painan 1663 — akhirnya diserahkan penuh ke VOC oleh vryheer-nya,
-      radja Carbouw (10 Maret 1681). <b>Konteks baru muncul di paruh kedua volume:</b> Inggris,
-      diusir dari Bantam, mencoba pijakan di westkust (Silebar, lalu dekat Priaman) — memicu
-      pangeran Minangkabau membatalkan semua konsesi tanah yang sempat diberikan ke mereka (23
-      Januari 1687). Suksesi radja d'Ilhier Barus yang baru, 18 Oktober 1690, sempat jadi peristiwa
-      TERBARU korpus kami — sampai temuan CD4 di bawah memajukannya lagi.</p>
-    <p><b>Temuan CD4.pdf, Corpus Diplomaticum Neerlando-Indicum jilid IV, ~1693–1716 (20 peristiwa
-      baru, rentang &amp; volume TERBESAR sejauh ini):</b> babak baru dibuka ekspedisi
-      militer-diplomasi <b>vaandrig Johannes Sas</b> (Januari–Mei 1693) menumpas "Atchinse
-      lorrendraeyers" (penyelundup/bajak laut Aceh) — dimulai Air Bangis &amp; Batahan, lalu
-      <b>MELUAS ke pulau Nias</b> lewat 7 traktat aliansi terpisah, termasuk serbuan benteng Aceh
-      berbenteng di Gido (15 Maret 1693) yang menumpas basis bajak laut Simon Touala —
-      jangkauan geografis terjauh utara di seluruh korpus kami. Baros direstrukturisasi total 1694
-      pasca-pembunuhan seorang cirurgien &amp; tentara VOC oleh pihak radja d'Hoeloe: pemerintahan
-      dipangkas jadi satu raja + empat poungel, dengan skema hadiah tahunan (rijksdaalder per bahar
-      kemenyan &amp; kapur barus, berlaku sejak 1681) dan "handbloem" (bunga-tangan — eufemisme
-      hadiah pengganti tol) untuk kapal dari Padang. <b>Temuan tol paling langka:</b> panglima
-      Padang &amp; Sillida — bandhar resmi penimbangan peper westkust — melepas SENDIRI hak pungut
-      kuno mereka ("salimoet") demi VOC menaikkan harga beli peper dari 14 ke 16 rijksdaalder per
-      bahar (19 Juni 1698). Priaman &amp; lima negeri sekitarnya kembali berpaling ke Atjeh selama
-      hampir dua dekade — jeda relaps terlama tercatat di seluruh siklus westkust — sebelum
-      ditundukkan ulang (19 Maret 1712). <b>Peristiwa TERBARU di seluruh korpus kami:</b>
-      Indrapoera, yang sempat berpaling ke Inggris pasca-1684, akhirnya minta sendiri VOC kembali
-      mendirikan pagger &amp; pakhuys di negerinya, memperbarui traktat 1663 (Maret 1716) —
-      sempat jadi titik akhir linimasa, sampai temuan CD5 di bawah memajukannya lagi.</p>
-    <p><b>Temuan CD5.pdf, Corpus Diplomaticum Neerlando-Indicum jilid V, ~1727–1741 (4 peristiwa
-      baru, volume PALING SEDIKIT konten westkust/Aceh sejauh ini):</b> buku ini didominasi
-      Ternate, Molukka, Persia, Bantam dan Koromandel — bukan kegagalan sisir, korpus sumber
-      memang lebih jarang bahas westkust di rentang ini. Dua traktat aliansi Tigablas &amp;
-      Doeapoeloeh-Kotta (13 &amp; 20 negeri pedalaman Padang) — 11 Maret 1727 dan 21 Oktober 1741 —
-      keduanya berisi pasal anti-Atjeh yang sama, dan yang kedua ditandatangani di tengah
-      <b>pemberontakan besar 1740</b>: Paoeh, Kotta-Tengah, dan Priaman bersatu di bawah pemimpin
-      pedalaman Abdul Jalil, memaksa VOC — yang cuma punya 108 tentara Eropa di seluruh westkust
-      akibat penghematan — melepas benteng Priaman beserta meriamnya. Dua peristiwa lain: sengketa
-      lokal Pasariboe-Baros (22 Maret 1731, diselesaikan denda 40 rijksdaalder + sumpah ulang
-      monopoli dagang kemenyan ke Baros) dan penyewaan tambang emas Sillida ke radja Nanxatti
-      (20 Desember 1737) — VOC melepas operasi langsung yang merugi bertahun-tahun, tapi sengaja
-      tetap menyewakannya (bukan melepas sepenuhnya) demi mempertahankan hak kedaulatan fiskal.
-      <b>Peristiwa TERBARU korpus kami saat itu:</b> pembaruan aliansi Tigablas &amp;
-      Doeapoeloeh-Kotta di tengah krisis 1740 (21 Oktober 1741) — sampai temuan CD6 di bawah
-      memajukannya lagi.</p>
-    <p><b>Temuan CD6.pdf, Corpus Diplomaticum Neerlando-Indicum jilid VI, ~1755–1775 (8 peristiwa
-      baru):</b> dibuka <b>rangkaian renovasi besar</b> (Februari 1755–Januari 1756) — cemas
-      "toenemende activiteit der Engelsen" (aktivitas Inggris yang meningkat), commandeur Thymon
-      Pieter van Herzeele berkeliling memperbarui traktat dengan hampir <b>30 negeri</b> di
-      seluruh pantai barat dalam kurang dari setahun (Trusan, Bajang, Salida, Painan, Indrapoura,
-      Cottatenga, dan banyak lagi — sebagian besar begitu identik sehingga editor Heeres sendiri
-      tak menyalin ulang teksnya). Raja Salida meminta &amp; menerima gelar kehormatan
-      "Siri-nara"; hanya traktat Indrapoura yang secara eksplisit menyebut ancaman laut Atjeh.
-      <b>Perang Tujuh Tahun Eropa (1756–1763) merembet ke westkust:</b> benteng Natal yang
-      dibangun Inggris direbut Prancis (1760), lalu sengaja diserahkan ke penguasa lokal dengan
-      syarat mereka teruskan ke VOC — Natal kemudian resmi kembali ke VOC setelah sempat
-      "menyimpang" ke pengaruh Inggris, dengan rincian pungutan douceur 1,25% paling jelas di
-      seluruh korpus kami. Traktat Tigablas Cottas (5 Juni 1763) menjanjikan hadiah tahunan 8
-      rijksdaalder per negeri sebagai imbalan menjaga jalur gunung — dibatalkan jika mereka
-      berdagang dengan Inggris. Pemberontakan Klein-Pasaman (1766–67, bukan faksi Atjeh)
-      ditumpas dengan ekspedisi gabungan Eropa-Bugis. <b>Peristiwa TERBARU di seluruh korpus
-      kami:</b> setelah hampir satu abad, VOC menutup logenya di Barus (23 Januari 1775) karena
-      kalah bersaing dagang dengan Inggris dari Bengkulu — memajukan titik akhir linimasa dari
-      1741 ke 1775.</p>
+  {% if eras %}
+  <!-- Panggung Kronik 3 kolom (mockup §4): DIBANGUN JS dari #linimasa-data + #era-meta.
+       Default saat JS aktif; daftar kartu (#listView) jadi fallback no-JS & mode alternatif. -->
+  <button type="button" id="viewToggle" class="view-toggle" aria-pressed="false">
+    <svg class="icon-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    <svg class="icon-columns" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+    <span class="toggle-label">Tampilan daftar</span>
+  </button>
+  <section class="chronicle" id="kronik" aria-label="Panggung kronik interaktif pantai barat Sumatra">
+    <nav class="chr-nav" id="chrNav" aria-label="Navigasi era">
+      <p class="hd">Era Sejarah</p>
+    </nav>
+    <div class="chr-stage" id="chrStage" data-era="">
+      <div class="chr-eratag" id="chrEratag" aria-hidden="true"></div>
+      <div id="chrMapWrap" style="position:relative; width:100%; aspect-ratio:3/2; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+        <img id="chrMap" src="/static/map_app/img/amh-5147-na.jpg" 
+             alt="Kaart van de Westkust van Sumatra (VOC-era)"
+             style="width:100%; height:100%; object-fit:cover; opacity:0.5; filter:grayscale(60%) brightness(0.7);"
+             loading="lazy">
+        <div id="chrMapOverlay" style="position:absolute; inset:0; pointer-events:none;"></div>
+      </div>
+    </div>
+    <aside class="chr-panel" id="chrPanel" aria-live="polite"></aside>
+  </section>
+
+  <div class="chr-scrub chr-scrub--full" id="chrScrub">
+    <button type="button" id="chrPrev" class="chr-nbtn" aria-label="Peristiwa sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="chr-lane" id="chrLane" tabindex="0" role="group"
+      aria-label="Garis waktu 1600 sampai 1775 — gunakan panah kiri dan kanan untuk berpindah peristiwa">
+      <div class="rail"></div>
+    </div>
+    <button type="button" id="chrNext" class="chr-nbtn" aria-label="Peristiwa berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+    <span class="chr-count" id="chrCount"></span>
+  </div>
+  {% endif %}
+
+  <div id="listView">
+  <div class="lini-masa-bg">
+
+  <div class="caveat reveal">
+    <h2>Sumber &amp; verifikasi</h2>
+    <p>Seluruh peristiwa bersumber dari dokumen arsip VOC asli — <i>Dagh-register</i>
+      (jurnal harian Batavia, 8 volume) dan <i>Corpus Diplomaticum Neerlando-Indicum</i>
+      (kompilasi traktat, 6 jilid).</p>
+    <p>Beberapa peristiwa 1661–1681 dari <i>GLOBALISE/Huygens Corpus</i>
+      (terjemahan Inggris, bukan OCR Belanda mentah). Lihat footer untuk
+      rincian lengkap per volume.</p>
   </div>
 
-  <div class="controls">
+  <div class="controls reveal">
     <label for="typeFilter">Jenis</label>
     <select id="typeFilter">
       <option value="">Semua</option>
@@ -371,26 +678,48 @@ footer p{margin:0 0 10px;line-height:1.55}
     <span class="count" id="rowCount">{{ n_items }} peristiwa ditampilkan</span>
   </div>
 
-  <div class="axis-wrap">
+  <div class="axis-wrap reveal">
     <svg id="axisSvg" viewBox="0 0 1000 220" preserveAspectRatio="xMinYMid meet"></svg>
   </div>
 
   {% for era in eras %}
   <section class="era" id="era-{{ era.slug }}">
-    <div class="era-head">
+    <div class="era-head reveal">
       <span class="era-range mono">{{ era.range }}</span>
       <h2 class="era-label">{{ era.label }}</h2>
     </div>
-    <p class="era-headline">{{ era.headline }}</p>
-    <p class="era-summary">{{ era.summary }}</p>
+    <p class="era-headline reveal">{{ era.headline }}</p>
+    <p class="era-summary reveal">{{ era.summary }}</p>
     <div class="cards">
       {% for r in era.events %}
+      {% if r.title == "Traktat Painan: pasal-pasal VOC-Songypagouers, akhiri kekuasaan Atjeh" %}
+      <details class="card treaty-highlight" data-id="{{ r.id }}" data-type="{{ r.event_type }}" open>
+        <img class="bg" src="{% static 'map_app/img/treaty-panel.jpg' %}" alt="Ilustrasi perkamen tua bertepi terbakar dengan sketsa benteng pesisir, pohon kelapa, dan dua kapal dagang VOC, disegel cap lilin merah bermonogram VOC">
+        <div class="scrim"></div>
+        <div class="treaty-highlight-content">
+          <p class="treaty-highlight-tag">Klimaks narasi &middot; {{ r.event_type }}</p>
+          <p class="treaty-highlight-year mono">{{ r.year|default:"—" }}</p>
+          <h3 class="treaty-highlight-title">{{ r.title }}</h3>
+          <p class="treaty-highlight-meta">{{ r.event_date_raw|default:"—" }} &middot; {{ r.ruler_actor|default:"—" }} &middot;
+            vol. {{ r.source_document }}, hlm. {{ r.source_page }}{% if r.book_page %} ({{ r.book_page }}){% endif %}</p>
+          <div class="treaty-highlight-quote">&ldquo;{{ r.text_asli }}&rdquo;</div>
+          {% if r.notes %}<div class="notes" style="color:#d8cdb8;font-size:.84rem;margin:0 0 4px">{{ r.notes }}</div>{% endif %}
+          <span class="unconf" style="color:#c9bda0">confidence_flag: {{ r.confidence_flag }}</span>
+        </div>
+      </details>
+      {% else %}
       <details class="card" data-id="{{ r.id }}" data-type="{{ r.event_type }}">
         <summary>
           <div class="card-head">
             <span class="card-year mono">{{ r.year|default:"—" }}</span>
             <span class="card-title">{{ r.title }}</span>
-            <span class="evt-badge evt-{{ r.event_type }}">{{ r.event_type }}</span>
+            <span class="evt-badge evt-{{ r.event_type }}">
+              {% if r.event_type == "suksesi" %}<svg viewBox="0 0 24 24"><path d="M12 2l2.09 6.26L20 9.27l-4.91 3.82L16.18 20 12 16.77 7.82 20l1.09-6.91L4 9.27l5.91-1.01z"/></svg>
+              {% elif r.event_type == "perjanjian" %}<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+              {% elif r.event_type == "konflik" %}<svg viewBox="0 0 24 24"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/></svg>
+              {% elif r.event_type == "diplomasi" %}<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              {% elif r.event_type == "administratif" %}<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              {% endif %}{{ r.event_type }}</span>
           </div>
           <p class="card-meta">{{ r.event_date_raw|default:"—" }} &middot; {{ r.ruler_actor|default:"—" }} &middot;
             <span class="mono">vol. {{ r.source_document }}, hlm. {{ r.source_page }}{% if r.book_page %} ({{ r.book_page }}){% endif %}</span></p>
@@ -401,57 +730,78 @@ footer p{margin:0 0 10px;line-height:1.55}
           <span class="unconf">confidence_flag: {{ r.confidence_flag }}</span>
         </div>
       </details>
+      {% endif %}
       {% endfor %}
     </div>
   </section>
   {% empty %}
   <div class="cards"><div class="empty-note">Tidak ada peristiwa untuk ditampilkan.</div></div>
   {% endfor %}
+  </div><!-- /.lini-masa-bg -->
+  </div><!-- /#listView -->
 
-  <footer>
-    <h3>Metode &amp; batas</h3>
-    <p>Sumber: <code>data/research/linimasa_events.csv</code>, dimuat via
-      <code>seed_linimasa_events.py</code> ke tabel <code>linimasa_events</code>. Baris
-      1624-1629/1631-1634/1636/1637/1643-1644/1647-1648/1656-1657/1659 didistilasi dari baris
-      <code>direction='politik'</code> di <code>atjeh_trade_records</code> (lihat
-      <a href="../riset/atjeh-dagang/">Dagang Atjeh</a> untuk konteks dagang lengkap volume yang
-      sama — baris 1656-1657 khususnya berisi narasi perang terbuka VOC-Atjeh). Baris CD1
-      (1600/1607/1641/1649/1650) dari <code>docs/CD1.pdf</code>, Corpus Diplomaticum
-      Neerlando-Indicum jilid I (ed. J.E. Heeres) — kompilasi traktat/kontrak VOC, disisir
-      2026-07-14, SUMBER KETIGA terpisah dari 9 volume Dagh-register maupun
-      <code>korpus_tema_slim.csv</code>. Baris CD2 (1655/1659/1660×2/1663/1667/1668×3/1671×3/
-      1672/1673) dari <code>docs/CD2.pdf</code>, Corpus Diplomaticum Neerlando-Indicum jilid II —
-      lanjutan kronologis CD1, disisir 2026-07-15 dgn lensa tol/pajak &amp; hadiah diplomasi.
-      Baris CD3 (1678/1679/1679/1680×2/1681×4/1682×2/1684×2/1685/1687/1689/1690) dari
-      <code>docs/CD3.pdf</code>, Corpus Diplomaticum Neerlando-Indicum jilid III — lanjutan
-      kronologis CD2, volume PALING PADAT sampai saat itu. Baris CD4
-      (1693×10/1694×2/1698×2/1705/1707×2/1712/1716×2) dari <code>docs/CD4.pdf</code>, Corpus
-      Diplomaticum Neerlando-Indicum jilid IV — lanjutan kronologis CD3, rentang &amp; volume
-      TERBESAR sampai saat itu (1693-1716). Baris CD5 (1727/1731/1737/1741) dari
-      <code>docs/CD5.pdf</code>, Corpus Diplomaticum Neerlando-Indicum jilid V — lanjutan
-      kronologis CD4, volume PALING SEDIKIT konten westkust/Aceh sampai saat itu (1727-1741).
-      Baris CD6 (1755×3/1760×2/1763/1767/1775) dari <code>docs/CD6.pdf</code>, Corpus Diplomaticum
-      Neerlando-Indicum jilid VI — lanjutan kronologis CD5, dibuka rangkaian renovasi ~30 negeri
-      Feb 1755-Jan 1756 (1755-1775). Beberapa baris CD2/CD3/CD4/CD5/CD6 ditandai eksplisit
-      "MELENGKAPI" event yang sudah ada dari sumber lain (bukan duplikat). Baris
-      1661/1663/1664/1665/1681 dari <code>docs/thesis/dr/korpus_tema_slim.csv</code>: corpus_id
-      569–594 (buluh peristiwa 1660–61), 608–612 (naskah Traktat Painan, dinegosiasikan koopman
-      VOC Groenewegen Jun–Nov 1662, dicatat daghregister Batavia 27 Maret 1663), 540/560/564
-      (pengusiran 1664), 648/668 (penuntasan 1665), dan 966–972 (penyerahan Sillida 1667 &amp;
-      traktat Barus 1681, dicatat ulang dlm volume 1681). Babak (era) di halaman ini ditambahkan
-      Fase 1 (<code>docs/prd-linimasa-kronik-pantai-barat.md</code>) — label/headline editorial
-      disimpan terpisah dari data tersitasi (<code>frontend/map_app/views.py</code>), berbasis
-      rentang tahun yang benar-benar punya event tersitasi (1600–1775) — sudah MELAMPAUI rentang
-      skema 1600-1690 design spec sumber sejak sisir CD4, murni hasil sisir bertahap yang terus
-      menemukan volume baru, bukan diadopsi langsung dari skema tersebut.</p>
-    <p><span class="tag">thesis-only · noindex</span>
-      <span class="tag">route: /linimasa (top-level, tidak di navbar publik)</span>
-      <span class="tag">SSR: /api/research/linimasa (server-side, bukan client fetch)</span>
-      <span class="tag">design: salido.my.id (EB Garamond · Space Grotesk), palet arsip</span></p>
+  <footer class="reveal sources-footer">
+    <div class="sources-grid">
+      <!-- Kolom kiri: Sumber & Metode -->
+      <div class="sources-col">
+        <h3>Sumber &amp; Metode</h3>
+        <p>Seluruh peristiwa dalam linimasa ini bersumber dari dokumen arsip VOC abad ke-17–18
+          yang dibaca langsung dari naskah asli (OCR + verifikasi manual). Tidak ada sumber
+          sekunder atau sintesis AI.</p>
+        <p><i>Dagh-register gehouden int casteel Batavia</i> — jurnal harian VOC Batavia,
+          diterbitkan oleh Lembaga Sejarah Indonesia (<i>Reeks van Nederlandsche Historische Bronnen</i>).
+          Sembilan volume yang disisir:</p>
+        <ul class="source-list">
+          <li>Vol. 1624–1629 (risalah politik &amp; klaim yurisdiksi Atjeh terluas)</li>
+          <li>Vol. 1631–1634 (titah tol Sultan Iskandar Muda)</li>
+          <li>Vol. 1636 (surat Jacob Schooff, pungut-tol Atjeh di Indrapura)</li>
+          <li>Vol. 1637 (suksesi ke Iskandar Thani)</li>
+          <li>Vol. 1643–1644 (monopoli lada diformalkan)</li>
+          <li>Vol. 1647–1648 (jadwal tol timah)</li>
+          <li>Vol. 1656–1657 (perang terbuka VOC-Atjeh, kerugian 120.000 gulden)</li>
+          <li>Vol. 1659 (perdamaian resmi via Balthasar Bort)</li>
+        </ul>
+        <p class="source-note">Lihat <a href="../riset/atjeh-dagang/">Dagang Atjeh</a> untuk
+          konteks dagang lengkap volume yang sama.</p>
+      </div>
+
+      <!-- Kolom kanan: Corpus & Cakupan -->
+      <div class="sources-col">
+        <h3>Corpus Diplomaticum &amp; Cakupan</h3>
+        <p><i>Corpus Diplomaticum Neerlando-Indicum</i> (ed. J.E. Heeres, G.K. Niemeijer, dkk.) —
+          kompilasi traktat/kontrak VOC dengan penguasa lokal di Nusantara. Enam volume yang disisir:</p>
+        <ul class="source-list">
+          <li><b>Jilid I</b> (~1600–1650): Kontrak dagang lada pertama VOC-Atjeh (Des 1600),
+            traktat formal pertama (17 Jan 1607), monopoli lada &amp; timah (1649–1650)</li>
+          <li><b>Jilid II</b> (~1655–1673): Damai Perak (1655), Traktat Painan (1663),
+            Sillida &amp; Pulau Cingkuak (1667), Barus (1668), Priaman (1671)</li>
+          <li><b>Jilid III</b> (~1678–1690): Aliansi umum 29 Agustus 1680, Priaman berulang,
+            Traktat Barus 1681</li>
+          <li><b>Jilid IV</b> (~1693–1716): Ekspedisi Johannes Sas ke Nias (1693),
+            Baros direstrukturisasi (1694), Indrapoera kembali ke VOC (1716)</li>
+          <li><b>Jilid V</b> (~1727–1741): Pemberontakan besar 1740, benteng Priaman dilepas</li>
+          <li><b>Jilid VI</b> (~1755–1775): Renovasi ~30 negeri (1755–56), Perang Tujuh Tahun,
+            VOC tutup loge Barus (1775)</li>
+        </ul>
+        <p class="source-note">Beberapa peristiwa 1661–1681 dari <i>GLOBALISE/Huygens Corpus</i>
+          — terjemahan Inggris, bukan OCR Belanda mentah.</p>
+        <div class="tiles" id="tiles">
+          <div class="tile"><div class="k mono">{{ meta.n_items|default:n_items }}</div><div class="l">peristiwa</div></div>
+          <div class="tile"><div class="k mono">14</div><div class="l">pelabuhan</div></div>
+          <div class="tile"><div class="k mono">5</div><div class="l">era</div></div>
+          <div class="tile"><div class="k mono">{{ meta.year_min|default:"1600" }}–{{ meta.year_max|default:"1775" }}</div><div class="l">rentang</div></div>
+        </div>
+      </div>
+    </div>
+    <p class="source-tags"><span class="tag">thesis-only · noindex</span>
+      <span class="tag">route: /linimasa</span>
+      <span class="tag">SSR: server-side render</span>
+      <span class="tag">Cormorant Garamond · IBM Plex Sans</span></p>
   </footer>
 </div>
 
 <script type="application/json" id="linimasa-data">{{ items_json|safe }}</script>
+<script type="application/json" id="era-meta">{{ eras_meta_json|safe }}</script>
 <script type="module">
 "use strict";
 const esc = s => String(s ?? '').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
@@ -465,7 +815,7 @@ function renderAxis(rows){
   const years = rows.map(r => r.year).filter(y => y != null);
   if(!years.length){ svg.innerHTML = ''; return; }
   const yMin = Math.min(...years) - 2, yMax = Math.max(...years) + 2;
-  const W = 1000, H = 220, PAD = 40, axisY = 110;
+  const W = 1000, H = 220, PAD = 5, axisY = 110;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   const x = y => PAD + (y - yMin) / (yMax - yMin) * (W - PAD*2);
 
@@ -498,7 +848,7 @@ function renderAxis(rows){
       <text x="${p.cx}" y="${cy>axisY? cy+16 : cy-12}" class="evt-title-svg" text-anchor="middle" data-id="${p.id}">${esc(p.year)}</text>`;
   });
 
-  svg.innerHTML = `<line x1="${PAD}" y1="${axisY}" x2="${W-PAD}" y2="${axisY}" class="axis-line"/>${ticks}${dots}`;
+  svg.innerHTML = `<line x1="0" y1="${axisY}" x2="${W}" y2="${axisY}" class="axis-line"/>${ticks}${dots}`;
 
   svg.querySelectorAll('[data-id]').forEach(el => {
     el.addEventListener('click', () => selectEvent(el.dataset.id));
@@ -532,6 +882,336 @@ function applyFilters(){
 document.getElementById('typeFilter').addEventListener('change', applyFilters);
 
 renderAxis(ALL);
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Reveal saat scroll (mockup §12 ".chronicle-entry" + §17): satu IntersectionObserver
+   dipakai bersama untuk semua elemen .reveal & kartu. Entri dalam satu batch di-stagger
+   45ms (maks 8 tingkat) lalu di-unobserve -- reveal sekali jalan, tak ada kerja
+   observer tersisa setelah semua tampil. Hanya aktif di bawah gerbang .js-anim
+   (no-JS / reduced-motion tak pernah menyembunyikan konten, lihat <script> di head).
+   ───────────────────────────────────────────────────────────────────────────── */
+if(document.documentElement.classList.contains('js-anim') && 'IntersectionObserver' in window){
+  const io = new IntersectionObserver(entries => {
+    let i = 0;
+    entries.forEach(en => {
+      if(!en.isIntersecting) return;
+      const el = en.target;
+      el.style.transitionDelay = `${Math.min(i++, 8) * 45}ms`;
+      el.classList.add('is-visible');
+      el.addEventListener('transitionend', () => { el.style.transitionDelay = ''; }, { once: true });
+      io.unobserve(el);
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+  document.querySelectorAll('.reveal, details.card').forEach(el => io.observe(el));
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   PANGGUNG KRONIK 3 KOLOM (mockup §4 DesignerMookup.png)
+   Era sidebar | maritime stage (peta skematik + riak Aceh + orbit + jalur VOC +
+   scrubber) | panel peristiwa aktif. Satu peristiwa aktif pada satu waktu --
+   navigasi via era, dot scrubber, prev/next, panah kiri-kanan. Data dari JSON
+   inline yang sama (tanpa fetch tambahan). Daftar kartu lama = fallback.
+   ═════════════════════════════════════════════════════════════════════════════ */
+const ERAS_META = JSON.parse(document.getElementById('era-meta')?.textContent || '[]');
+const chrStage = document.getElementById('chrStage');
+if (chrStage && ALL.length && ERAS_META.length) {
+  const SEQ = [...ALL].sort((a, b) => (a.year || 0) - (b.year || 0));
+  const Y0 = 1600, Y1 = 1775;
+
+  /* pelabuhan: persentase posisi relatif terhadap peta gambar
+     [y%, x%] — disesuaikan secara visual dengan peta VOC asli */
+  const PORT_PCT = {
+    'Aceh':[5.0,13.2],'Barus':[43.7,43.9],'Singkil':[41.3,37.9],'Nias':[52.4,36.1],
+    'Natal':[60.6,51.1],'Air Bangis':[64.4,53.8],'Tiku':[71.1,59.4],'Pariaman':[73.6,61.2],
+    'Padang':[77.2,63.5],'Bayang':[78.7,65.2],'Salido':[81.1,66.0],'Painan':[82.4,66.8],
+    'Air Haji':[85.8,68.2],'Inderapura':[88.9,69.5]
+  };
+
+  const PORT_KEYS = [
+    [/barus|baros/i,'Barus'],[/priaman|pariaman/i,'Pariaman'],[/\btiku|ticou|tycou|tikoe/i,'Tiku'],
+    [/padang/i,'Padang'],[/salida|sillida|cillida|salido|cingkuak|chinco|zillida/i,'Salido'],
+    [/painan|pynang|peynang/i,'Painan'],[/indrapoura|indrapura|inderapura|indrapoera/i,'Inderapura'],
+    [/air ?bangis|ayerbang/i,'Air Bangis'],[/natal|natter/i,'Natal'],
+    [/singkil|sinkel|cinkel|chincol|sinckel/i,'Singkil'],[/nias|sillibo|hinako|gomboe|lahomi/i,'Nias'],
+    [/air ?haji|ajerhadj/i,'Air Haji'],[/bayang|bajang/i,'Bayang'],[/atjeh|aceh|atchin|aetchin/i,'Aceh']
+  ];
+  const portOf = ev => {
+    const hay = `${ev.title || ''} ${ev.ruler_actor || ''}`;
+    for (const [re, port] of PORT_KEYS) if (re.test(hay)) return port;
+    return null;
+  };
+
+  /* ── render port dots di overlay peta gambar ── */
+  const overlay = document.getElementById('chrMapOverlay');
+  const LBL_END = new Set(['Nias','Singkil','Bayang','Painan']);
+  const PORT_DOTS = {};
+  Object.entries(PORT_PCT).forEach(([name, [yPct, xPct]]) => {
+    const dot = document.createElement('div');
+    dot.className = 'chr-port';
+    dot.dataset.port = name;
+    const anchor = LBL_END.has(name);
+    dot.style.cssText = `position:absolute;left:${xPct}%;top:${yPct}%;transform:translate(-50%,-50%);cursor:pointer;text-align:${anchor?'right':'left'};z-index:2;pointer-events:auto;`;
+    const isActive = name === 'Aceh';
+    dot.innerHTML = `<span class="halo" style="display:inline-block;width:20px;height:20px;border-radius:50%;border:2px solid rgba(243,234,217,.0);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;"></span>
+      <span class="core" style="display:inline-block;width:${name==='Aceh'?13:9}px;height:${name==='Aceh'?13:9}px;border-radius:50%;background:#f3ead9;border:2px solid #29484b;position:relative;z-index:1;"></span>
+      <span class="lbl" style="position:absolute;top:-18px;${anchor?'right:0':'left:0'};white-space:nowrap;font:600 10.5px var(--sans);color:#cfc4ab;letter-spacing:.05em;text-shadow:0 1px 4px rgba(8,23,25,.9);pointer-events:none;font-size:9px;">${name.toUpperCase()}</span>`;
+    overlay.appendChild(dot);
+    PORT_DOTS[name] = dot;
+  });
+
+
+  /* ── Route lines antar port ── */
+  function drawRoutes() {
+    const overlay = document.getElementById('chrMapOverlay');
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1';
+    
+    const acehPort = PORT_PCT['Aceh'];
+    const vocRoutes = [
+      ['Aceh','Barus'],['Barus','Singkil'],['Singkil','Natal'],
+      ['Natal','Air Bangis'],['Air Bangis','Tiku'],['Tiku','Pariaman'],
+      ['Pariaman','Padang'],['Padang','Salido'],['Salido','Painan'],
+      ['Painan','Air Haji'],['Air Haji','Inderapura']
+    ];
+    
+    vocRoutes.forEach(([from, to]) => {
+      const fromPos = PORT_PCT[from];
+      const toPos = PORT_PCT[to];
+      if (!fromPos || !toPos) return;
+      const line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', fromPos[1]); line.setAttribute('y1', fromPos[0]);
+      line.setAttribute('x2', toPos[1]); line.setAttribute('y2', toPos[0]);
+      line.setAttribute('class', 'route-line route-voc');
+      line.setAttribute('stroke', '#a04a35');
+      line.setAttribute('stroke-width', '0.3');
+      line.setAttribute('stroke-dasharray', '1 1.5');
+      line.setAttribute('opacity', '0.35');
+      svg.appendChild(line);
+    });
+    
+    // Aceh orbit lines to major ports
+    ['Barus','Padang','Inderapura'].forEach(port => {
+      const toPos = PORT_PCT[port];
+      if (!toPos) return;
+      const line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', acehPort[1]); line.setAttribute('y1', acehPort[0]);
+      line.setAttribute('x2', toPos[1]); line.setAttribute('y2', toPos[0]);
+      line.setAttribute('class', 'route-line route-orbit');
+      line.setAttribute('stroke', '#5a8a8d');
+      line.setAttribute('stroke-width', '0.25');
+      line.setAttribute('stroke-dasharray', '0.8 1.2');
+      line.setAttribute('opacity', '0.3');
+      svg.appendChild(line);
+    });
+    
+    overlay.appendChild(svg);
+  }
+  drawRoutes();
+
+  /* ── sidebar era ── */
+  const nav = document.getElementById('chrNav');
+  ERAS_META.forEach(era => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chr-era'; b.dataset.slug = era.slug;
+    b.innerHTML = `<span class="rng">${esc(era.range)}</span><span class="lbl">${esc(era.label)}</span>
+      <span class="sum">${esc(era.headline)}</span>`;
+    b.addEventListener('click', () => {
+      const idx = SEQ.findIndex(ev => ev.era_slug === era.slug);
+      if (idx >= 0) setActive(idx);
+    });
+    nav.appendChild(b);
+  });
+
+  /* ── scrubber ── */
+  const lane = document.getElementById('chrLane');
+  [Y0, 1650, 1700, 1750, Y1].forEach(yr => {
+    const l = document.createElement('span'); l.className = 'yr';
+    l.style.left = `${((yr - Y0) / (Y1 - Y0)) * 100}%`; l.textContent = yr;
+    lane.appendChild(l);
+  });
+  const dots = SEQ.map((ev, i) => {
+    const d = document.createElement('button');
+    d.type = 'button'; d.className = 'chr-dot'; d.tabIndex = -1;
+    d.style.left = `${(((ev.year || Y0) - Y0) / (Y1 - Y0)) * 100}%`;
+    d.setAttribute('aria-label', `${ev.year || '—'}: ${ev.title}`);
+    d.addEventListener('click', () => setActive(i));
+    lane.appendChild(d);
+    return d;
+  });
+
+  /* ── panel peristiwa aktif ── */
+  const panel = document.getElementById('chrPanel');
+  const TREATY_TITLE = 'Traktat Painan: pasal-pasal VOC-Songypagouers, akhiri kekuasaan Atjeh';
+  function renderPanel(ev) {
+    const isTreaty = ev.title === TREATY_TITLE;
+    panel.classList.toggle('treaty', isTreaty);
+    panel.classList.remove('open-transcript');
+    const eraMeta = ERAS_META.find(e => e.slug === ev.era_slug);
+
+    const statusMap = {
+      'unverified': {text: 'Belum diverifikasi silang', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'},
+      'verified': {text: 'Terverifikasi silang', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>'},
+      'partial': {text: 'Sebagian terverifikasi', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>'}
+    };
+    const statusEntry = statusMap[ev.confidence_flag] || {text: ev.confidence_flag || 'Belum diverifikasi silang', icon: ''};
+    const statusHTML = statusEntry.icon ? `<span class="chr-status">${statusEntry.icon} ${statusEntry.text}</span>` : `<span class="chr-status">${statusEntry.text}</span>`;
+
+    const counter = `PERISTIWA ${String(active + 1).padStart(2, '0')} / ${String(SEQ.length).padStart(2, '0')}`;
+    const subtitle = [ev.event_type, ev.ruler_actor].filter(Boolean).join(' · ');
+
+    panel.innerHTML = `
+      <p class="evt-counter">${counter}</p>
+      <p class="chr-year">${esc(ev.year ?? '—')}</p>
+      <hr class="chr-divider">
+      <h3 class="chr-title">${esc(ev.title)}</h3>
+      ${isTreaty ? '<p class="chr-climax">&ldquo;Arus tidak lagi menuju satu pusat.&rdquo;</p>' : ''}
+      ${subtitle ? `<p class="chr-subtitle">${esc(subtitle)}</p>` : ''}
+      <p class="chr-meta">${esc(ev.event_date_raw || '—')}</p>
+      <div class="chr-quote">&ldquo;${esc(ev.text_asli)}&rdquo;</div>
+      ${ev.notes ? `<div class="chr-notes">${esc(ev.notes)}</div>` : ''}
+      <details class="chr-source-details">
+        <summary class="chr-source-header">Sumber Primer</summary>
+        <p class="chr-source-name">Arsip ${esc(ev.source_document || '—')}</p>
+        <p class="chr-source-page">Halaman ${esc(ev.source_page || '—')}${ev.book_page ? `, baris ${esc(ev.book_page)}` : ''}</p>
+        ${statusHTML}
+      </details>
+      <div class="chr-actions">
+        ${ev.notes ? '<button type="button" class="chr-btn solid" data-act="transcript"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Baca transkrip</button>' : ''}
+        <a class="chr-btn line" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Tampilkan pada peta</a>
+      </div>`;
+    panel.querySelector('[data-act="transcript"]')?.addEventListener('click', e => {
+      const open = panel.classList.toggle('open-transcript');
+      document.querySelector('.chronicle')?.classList.toggle('reading', open);
+      const btn = e.currentTarget;
+      const label = btn.childNodes[btn.childNodes.length - 1];
+      if (label) label.textContent = open ? 'Tutup transkrip' : 'Baca transkrip';
+    });
+    panel.scrollTop = 0;
+  }
+
+  function renderLegend(ev, activePort, eraMeta) {
+    const legend = document.querySelector('.chr-legend');
+    if (!legend) return;
+    const hasActive = !!activePort;
+    legend.style.display = hasActive ? 'block' : 'none';
+    if (!hasActive) return;
+    const eraLabel = eraMeta ? eraMeta.label : '';
+    legend.innerHTML = `
+      <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f3ead9;vertical-align:middle;margin-right:6px"></span>${esc(activePort)}<br>
+      <span style="display:inline-block;width:16px;height:0;border-top:2px solid #5a8a8d;vertical-align:middle;margin-right:6px"></span>Rute kekuasaan<br>
+      <span style="display:inline-block;width:16px;height:0;border-top:2px dashed #a04a35;vertical-align:middle;margin-right:6px"></span>Rute VOC`;
+  }
+
+  /* ── state tunggal ── */
+  let active = -1;
+  const eratag = document.getElementById('chrEratag');
+  const count = document.getElementById('chrCount');
+  function setActive(i) {
+    active = Math.max(0, Math.min(SEQ.length - 1, i));
+    const ev = SEQ[active];
+    document.title = `${ev.year || '—'}: ${ev.title || 'Linimasa'} — Salido`;
+    chrStage.dataset.era = ev.era_slug || '';
+    chrStage.classList.toggle('climax', ev.title?.includes('Traktat Painan'));
+    panel.classList.toggle('climax', ev.title?.includes('Traktat Painan'));
+    const eraMeta = ERAS_META.find(e => e.slug === ev.era_slug);
+    eratag.textContent = eraMeta ? `${eraMeta.label} · ${eraMeta.range}` : '';
+
+    // --- Era sidebar highlight ---
+    nav.querySelectorAll('.chr-era').forEach(b => b.classList.toggle('active', b.dataset.slug === ev.era_slug));
+    // Update progress line
+    const eraIdx = ERAS_META.findIndex(e => e.slug === ev.era_slug);
+    const navEl = document.getElementById('chrNav');
+    if (navEl && eraIdx >= 0) {
+      const eraBtns = navEl.querySelectorAll('.chr-era');
+      if (eraBtns.length > 0) {
+        const lastBtn = eraBtns[Math.min(eraIdx, eraBtns.length - 1)];
+        const navRect = navEl.getBoundingClientRect();
+        const btnRect = lastBtn.getBoundingClientRect();
+        const progressPx = btnRect.bottom - navRect.top;
+        navEl.style.setProperty('--progress-h', progressPx + 'px');
+      }
+    }
+
+    // --- Port visibility: active / related / dormant ---
+    const activePort = portOf(ev);
+    const PORT_ORDER = ['Aceh','Barus','Singkil','Nias','Natal','Air Bangis','Tiku','Pariaman','Padang','Bayang','Salido','Painan','Air Haji','Inderapura'];
+    const activeIdx = activePort ? PORT_ORDER.indexOf(activePort) : -1;
+    const relatedPorts = new Set();
+    if (activeIdx >= 0) {
+      if (activeIdx > 0) relatedPorts.add(PORT_ORDER[activeIdx - 1]);
+      if (activeIdx < PORT_ORDER.length - 1) relatedPorts.add(PORT_ORDER[activeIdx + 1]);
+    }
+    relatedPorts.delete('Aceh');
+
+    Object.entries(PORT_DOTS).forEach(([port, dot]) => {
+      const core = dot.querySelector('.core');
+      const halo = dot.querySelector('.halo');
+      const lbl = dot.querySelector('.lbl');
+      dot.classList.remove('active', 'related', 'dormant');
+      if (port === activePort) {
+        dot.classList.add('active');
+        if (core) { core.style.background = '#f3ead9'; core.style.borderColor = '#29484b'; core.style.width = port==='Aceh'?'17px':'13px'; core.style.height = port==='Aceh'?'17px':'13px'; }
+        if (halo) { halo.style.borderColor = 'rgba(90,138,141,.7)'; }
+        if (lbl) { lbl.style.color = '#f3ead9'; lbl.style.fontSize = '11px'; }
+      } else if (relatedPorts.has(port)) {
+        dot.classList.add('related');
+        if (core) { core.style.background = '#f3ead9'; core.style.opacity = '0.7'; core.style.width = '10px'; core.style.height = '10px'; }
+        if (lbl) { lbl.style.opacity = '0.7'; }
+      } else if (port !== 'Aceh') {
+        dot.classList.add('dormant');
+        if (core) { core.style.opacity = '0.25'; core.style.width = '6px'; core.style.height = '6px'; }
+        if (lbl) { lbl.style.opacity = '0'; }
+        if (halo) { halo.style.borderColor = 'rgba(243,234,217,0)'; }
+      } else {
+        if (core) { core.style.opacity = '1'; core.style.background = '#f3ead9'; core.style.borderColor = '#29484b'; }
+        if (lbl) { lbl.style.opacity = '1'; }
+      }
+    });
+
+    // --- Scrubber dots ---
+    dots.forEach((d, j) => d.classList.toggle('active', j === active));
+    count.textContent = `${active + 1} / ${SEQ.length}`;
+
+    // --- Panel ---
+    renderPanel(ev);
+    renderLegend(ev, activePort, eraMeta);
+  }
+  document.getElementById('chrPrev').addEventListener('click', () => setActive(active - 1));
+  document.getElementById('chrNext').addEventListener('click', () => setActive(active + 1));
+  lane.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); setActive(active - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); setActive(active + 1); }
+  });
+  Object.values(PORT_DOTS).forEach(dot => {
+    dot.addEventListener('click', () => {
+      const idx = SEQ.findIndex(ev => portOf(ev) === dot.dataset.port);
+      if (idx >= 0) setActive(idx);
+    });
+  });
+
+  /* toggle panggung <-> daftar */
+  const vt = document.getElementById('viewToggle');
+  vt.addEventListener('click', () => {
+    const listOn = document.documentElement.classList.toggle('show-list');
+    vt.querySelector('.toggle-label').textContent = listOn ? 'Tampilan panggung' : 'Tampilan daftar';
+    vt.setAttribute('aria-pressed', String(listOn));
+  });
+
+  /* ── Header scroll state ── */
+  const heroEl = document.querySelector('.hero');
+  const heroNav = document.querySelector('.hero-nav');
+  if (heroEl && heroNav) {
+    const heroObs = new IntersectionObserver(([e]) => {
+      heroNav.classList.toggle('scrolled', !e.isIntersecting);
+    }, { threshold: 0.1 });
+    heroObs.observe(heroEl);
+  }
+
+  setActive(0);
+}
 </script>
 </body>
 </html>
