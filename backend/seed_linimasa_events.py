@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Babak naratif Fase 1 /linimasa (docs/prd-linimasa-kronik-pantai-barat.md) --
@@ -87,6 +87,32 @@ ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pe
 # Inggris (diusir dari Bantam) mencoba pijakan westkust. Beberapa baris
 # MELENGKAPI event lama (Sillida 1667, Barus 1681, Cinkel 1672) dgn detail
 # lanjutan -- ditandai eksplisit, bukan duplikat.
+#
+# source_document="CD4" (2026-07-15): docs/CD4.pdf, Corpus Diplomaticum
+# Neerlando-Indicum jilid IV -- lanjutan kronologis CD3, rentang jauh lebih
+# panjang (1693-1716). 20 event baru, volume TERPADAT sejauh ini. Ekspedisi
+# vaandrig Johannes Sas (Jan-Mei 1693) menumpas "lorrendraeyers" Aceh, MELUAS
+# ke pulau Nias (7 traktat terpisah, termasuk serbuan benteng Aceh di Gido,
+# 15 Maret 1693) -- jangkauan geografis terjauh utara di seluruh korpus kami.
+# Baros direstrukturisasi total 1694 pasca-pembunuhan pegawai VOC. Padang &
+# Sillida lepas hak pungut "salimoet" demi harga peper naik (1698). Priaman
+# dkk RELAPS ke Aceh ~20 tahun (jeda relaps terlama tercatat), ditundukkan
+# ulang 1712. Indrapoera sempat berpaling ke Inggris pasca-1684, kembali
+# minta perlindungan VOC 1716. MAJUKAN titik akhir linimasa dari 1690 ke
+# 1716 (era "pengusiran-penataan" diperluas 1664-1690 -> 1664-1716).
+# Beberapa baris MELENGKAPI event lama (Baros 1694 x Minuassa 1698/1707,
+# Indrapoera 1660/1663, Padang 1680) -- ditandai eksplisit, bukan duplikat.
+#
+# source_document="CD5" (2026-07-15): docs/CD5.pdf, Corpus Diplomaticum
+# Neerlando-Indicum jilid V (~1727-1741). Volume PALING SEDIKIT konten
+# westkust/Aceh sejauh ini -- cuma 4 event, buku didominasi Ternate/Molukka/
+# Persia/Bantam/Koromandel. Dua traktat aliansi Tigablas & Doeapoeloeh-Kotta
+# (1727 & 1741) -- yang kedua di tengah PEMBERONTAKAN BESAR 1740 (Paoeh/
+# Kotta-Tengah/Priaman bersatu di bawah Abdul Jalil, VOC lepas benteng
+# Priaman). Traktat Pasariboe-Baros 1731 & sewa tambang emas Sillida 1737
+# (VOC lepas operasi langsung tapi pertahankan hak kedaulatan fiskal). MAJUKAN
+# titik akhir linimasa dari 1716 ke 1741 (era "pengusiran-penataan" diperluas
+# 1664-1716 -> 1664-1741).
 
 
 def _clean(v):

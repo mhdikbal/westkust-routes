@@ -232,10 +232,11 @@ class AtjehTradeRecord(Base):
     """Baris hasil ekstraksi laporan dagang dari/ke/di Atjeh, sumber primer
     sembilan volume "Dagh-register gehouden int casteel Batavia" (docs/): 1643-1644,
     1631-1634, 1637, 1636, 1624-1629, 1644-1645, 1647-1648, 1656-1657, dan 1659,
-    plus docs/CD1.pdf, docs/CD2.pdf & docs/CD3.pdf (Corpus Diplomaticum
-    Neerlando-Indicum jilid I, II & III -- kompilasi traktat/kontrak, BEDA jenis
-    sumber dari jurnal harian Dagh-register, lihat catatan
-    source_document="CD1"/"CD2"/"CD3" di seed_atjeh_trade.py). Muat dari
+    plus docs/CD1.pdf, docs/CD2.pdf, docs/CD3.pdf, docs/CD4.pdf & docs/CD5.pdf
+    (Corpus Diplomaticum Neerlando-Indicum jilid I-V -- kompilasi
+    traktat/kontrak, BEDA jenis sumber dari jurnal harian Dagh-register,
+    lihat catatan source_document="CD1"/"CD2"/"CD3"/"CD4"/"CD5" di
+    seed_atjeh_trade.py). Muat dari
     data/research/atjeh_trade.csv via seed_atjeh_trade.py. Baris direction='politik'
     adalah fakta politik/administratif (klaim yurisdiksi, penegakan tol, suksesi
     raja, status ratu, traktat), BUKAN transaksi dagang -- dipisah dari 'in_atjeh'
@@ -252,7 +253,7 @@ class AtjehTradeRecord(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    source_document = Column(String(20), nullable=False, index=True)  # "1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648" | "1656-1657" | "1659" | "CD1" | "CD2" | "CD3"
+    source_document = Column(String(20), nullable=False, index=True)  # "1643-1644" | "1631-1634" | "1637" | "1636" | "1624-1629" | "1644-1645" | "1647-1648" | "1656-1657" | "1659" | "CD1" | "CD2" | "CD3" | "CD4" | "CD5"
     source_page = Column(Integer, nullable=False, index=True)   # halaman PDF scan (source_document)
     book_page = Column(String(20), nullable=True)                # halaman cetak asli, jika diketahui
     entry_date_raw = Column(String(50), nullable=True)           # mis. "9 Mei 1644"; NULL = tak bertanggal jelas
@@ -335,6 +336,36 @@ class LinimasaEvent(Base):
     diperluas 1664-1681 -> 1664-1690. Paruh kedua volume: konteks baru
     persaingan Inggris (diusir dari Bantam) mencoba pijakan di westkust.
 
+    Baris source_document="CD4" (2026-07-15, "tim MLOPS dan DBA sisir CD4.pdf"):
+    Corpus Diplomaticum jilid IV, rentang jauh lebih panjang (1693-1716, 23
+    tahun) dibanding volume sebelumnya. 20 event baru, volume TERPADAT sejauh
+    ini. Babak baru: ekspedisi militer-diplomasi vaandrig Johannes Sas (Jan-Mei
+    1693) menumpas "Atchinse lorrendraeyers" (penyelundup/bajak laut Aceh)
+    mulai Air Bangis & Batahan, MELUAS ke pulau Nias (7 traktat aliansi
+    terpisah, termasuk serbuan benteng Aceh berbenteng di Gido, 15 Maret
+    1693) -- jangkauan geografis terjauh utara dlm seluruh korpus kami. Baros
+    direstrukturisasi total 1694 pasca-pembunuhan pegawai VOC (kaya data tol/
+    hadiah). TEMUAN UTAMA: Padang & Sillida lepas hak pungut "salimoet" demi
+    harga peper naik (1698); Priaman dkk RELAPS ke Aceh ~20 tahun (jeda relaps
+    terlama tercatat), ditundukkan ulang 1712; Indrapoera sempat berpaling ke
+    Inggris pasca-1684, kembali minta perlindungan VOC 1716. MAJUKAN titik
+    akhir linimasa dari 1690 ke 1716 -- era "pengusiran-penataan" diperluas
+    1664-1690 -> 1664-1716. Beberapa baris MELENGKAPI event lama (Baros 1694 x
+    Minuassa 1698/1707, Indrapoera 1660/1663, Padang 1680).
+
+    Baris source_document="CD5" (2026-07-15, "tim MLOPS dan DBA sisir CD5.pdf"):
+    Corpus Diplomaticum jilid V (~1727-1741), volume PALING SEDIKIT konten
+    westkust/Aceh sejauh ini -- cuma 4 event baru (buku didominasi Ternate/
+    Molukka/Persia/Bantam/Koromandel, bukan kegagalan sisir -- korpus sumber
+    memang lebih sedikit bahas westkust di rentang ini). Dua traktat aliansi
+    Tigablas & Doeapoeloeh-Kotta (1727 & 1741) -- yang kedua di tengah
+    PEMBERONTAKAN BESAR 1740 (Paoeh/Kotta-Tengah/Priaman bersatu di bawah
+    Abdul Jalil, VOC lepas benteng Priaman krn cuma 108 tentara di seluruh
+    westkust). Traktat Pasariboe-Baros 1731 & sewa tambang emas Sillida 1737
+    (VOC lepas operasi langsung tapi pertahankan hak kedaulatan fiskal).
+    MAJUKAN titik akhir linimasa dari 1716 ke 1741 -- era "pengusiran-penataan"
+    diperluas 1664-1716 -> 1664-1741.
+
     text_asli WAJIB (disiplin sama spt AtjehTradeRecord) -- setiap event harus
     tertelusur ke kutipan sumber, bukan klaim tanpa bukti. confidence_flag
     default 'unverified' krn OCR/terjemahan mentah, belum dicocokkan scan asli."""
@@ -342,7 +373,7 @@ class LinimasaEvent(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    source_document = Column(String(20), nullable=False, index=True)  # "1624-1629" | "1631-1634" | "1636" | "1637" | "1643-1644" | "1647-1648" | "1656-1657" | "1659" | "1661" | "1663" | "1664" | "1665" | "1681" | "CD1" | "CD2" | "CD3"
+    source_document = Column(String(20), nullable=False, index=True)  # "1624-1629" | "1631-1634" | "1636" | "1637" | "1643-1644" | "1647-1648" | "1656-1657" | "1659" | "1661" | "1663" | "1664" | "1665" | "1681" | "CD1" | "CD2" | "CD3" | "CD4" | "CD5"
     source_page = Column(Integer, nullable=False, index=True)
     book_page = Column(String(20), nullable=True)
     event_date_raw = Column(String(50), nullable=True)   # mis. "10 Des 1632", "27 Maret 1663"; NULL = tak bertanggal jelas

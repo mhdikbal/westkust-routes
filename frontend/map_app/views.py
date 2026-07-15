@@ -65,16 +65,25 @@ LINIMASA_ERAS = [
     {
         "slug": "pengusiran-penataan",
         "label": "Pengusiran & Penataan Ulang",
-        "range": "1664–1690",
-        "headline": "Satu demi satu, pelabuhan pantai barat membuang kuk kekuasaan Atjeh — Sillida, Barus, Priaman, Singkil — sampai seluruh westkust bersatu di bawah VOC.",
+        "range": "1664–1741",
+        "headline": "Satu demi satu, pelabuhan pantai barat membuang kuk kekuasaan Atjeh — sampai VOC mengejar penyelundup Atjeh ke pulau Nias, dan penataan berlanjut lebih dari tujuh dekade.",
         "summary": (
             "Kampanye militer & diplomasi menuntaskan apa yang dimulai Traktat Painan: Sillida & Pulau "
             "Cingkuak diserahkan ke VOC (1667), Barus resmi lepas dari Atjeh (1668), dan pada 29 Agustus "
             "1680 seluruh penguasa pantai barat — Indrapoura, Padang, Kottatenga, Sillida — bersatu dalam "
             "satu aliansi umum dari Seblat sampai Air Bangis. Tapi kesetiaan tak pernah final: Priaman dan "
             "Tiku memberontak lagi (1678, 1684), Barus baru benar-benar tuntas lepas Atjeh 1 Januari 1681 "
-            "(radja Ilir menyerahkan senjata terakhir bermahkota Atjeh), dan menjelang 1690 persaingan baru "
-            "muncul — Inggris, diusir dari Bantam, mencoba pijakan di westkust yang sama."
+            "(radja Ilir menyerahkan senjata terakhir bermahkota Atjeh), dan Inggris — diusir dari Bantam — "
+            "sempat mencoba pijakan di westkust yang sama. Penataan berlanjut jauh melampaui 1690: ekspedisi "
+            "vaandrig Johannes Sas (1693) memburu penyelundup Atjeh sampai menyerbu benteng mereka di pulau "
+            "Nias, Baros direstrukturisasi total pasca-pembunuhan pegawai VOC (1694), Padang & Sillida "
+            "melepas hak pungut kuno mereka sendiri demi harga peper (1698), dan Priaman kembali sempat "
+            "berpaling ke Atjeh selama hampir dua dekade sebelum ditundukkan ulang (1712) — sampai Indrapoera, "
+            "yang sempat berpihak ke Inggris, akhirnya kembali meminta perlindungan VOC sendiri (1716). Ancaman "
+            "berganti wajah menjelang pertengahan abad ke-18: pemberontakan besar 1740 menyatukan Paoeh, "
+            "Kotta-Tengah, dan Priaman di bawah pemimpin pedalaman Abdul Jalil — bukan lagi faksi pro-Atjeh, "
+            "tapi cukup kuat memaksa VOC melepas benteng Priaman — sementara sekutu lama Tigablas & "
+            "Doeapoeloeh-Kotta membuktikan kesetiaan mereka dengan memperbarui aliansi di tengah krisis itu (1741)."
         ),
     },
 ]

@@ -207,6 +207,32 @@ class TestCsvIntegrity:
             assert r["direction"] == "politik"
             assert "Corpus Diplomaticum" in (r["notes"] or "")
 
+    def test_cd4_treaties_documented(self, rows):
+        """"tim MLOPS dan DBA sisir CD4.pdf" (2026-07-15): Corpus Diplomaticum
+        Neerlando-Indicum jilid IV (~1693-1716), rentang terpanjang & volume
+        terpadat sejauh ini -- 20 traktat baru, direction='politik'."""
+        cd4_rows = [r for r in rows if r["source_document"] == "CD4"]
+        assert len(cd4_rows) >= 20
+        for r in cd4_rows:
+            assert r["direction"] == "politik"
+            assert "Corpus Diplomaticum" in (r["notes"] or "")
+
+    def test_cd4_nias_expedition_present(self, rows):
+        """Ekspedisi vaandrig Johannes Sas (1693) MELUAS ke pulau Nias --
+        temuan geografis terjauh utara di seluruh korpus kami."""
+        nias_rows = [r for r in rows if r["source_document"] == "CD4" and "Nias" in (r["text_asli"] or "") + (r["notes"] or "")]
+        assert len(nias_rows) >= 5
+
+    def test_cd5_treaties_documented(self, rows):
+        """"tim MLOPS dan DBA sisir CD5.pdf" (2026-07-15): Corpus Diplomaticum
+        Neerlando-Indicum jilid V (~1727-1741), volume PALING SEDIKIT konten
+        westkust/Aceh sejauh ini -- 4 traktat baru, direction='politik'."""
+        cd5_rows = [r for r in rows if r["source_document"] == "CD5"]
+        assert len(cd5_rows) >= 4
+        for r in cd5_rows:
+            assert r["direction"] == "politik"
+            assert "Corpus Diplomaticum" in (r["notes"] or "")
+
     def test_cd2_barus_treaty_predates_1681(self, rows):
         """Traktat Barus 29 April 1668 (CD2) ditemukan MENDAHULUI traktat Barus
         1681 (korpus_tema_slim.csv) 13 tahun -- caveat lama 'Barus nihil sampai

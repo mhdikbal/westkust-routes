@@ -70,6 +70,36 @@ kedua volume: persaingan Inggris (diusir dari Bantam) mencoba pijakan di
 westkust, memicu VOC mempercepat konsolidasi. Sama pola tag notes
 ("SUMBER: Corpus Diplomaticum jilid III").
 
+source_document="CD4" (2026-07-15): docs/CD4.pdf, Corpus Diplomaticum
+Neerlando-Indicum jilid IV -- lanjutan kronologis CD3, rentang jauh lebih
+panjang (1693-1716, 23 tahun). 20 traktat ditemukan. Babak baru: ekspedisi
+militer-diplomasi vaandrig Johannes Sas (Jan-Mei 1693) menumpas "Atchinse
+lorrendraeyers" (penyelundup/bajak laut Aceh) mulai Air Bangis & Batahan
+sampai MELUAS ke pulau Nias (7 traktat aliansi terpisah, termasuk serbuan
+benteng Aceh berbenteng di Gido, 15 Maret 1693) -- jangkauan geografis
+terjauh utara dlm korpus kami. Baros direstrukturisasi total 1694 pasca-
+pembunuhan pegawai VOC (kaya data tol/hadiah: skema hadiah tahunan rijks-
+daalder/bahar kemenyan sejak 1681, toll garam, "handbloem" pengganti tol).
+TEMUAN UTAMA: Padang & Sillida lepas hak pungut "salimoet" demi harga peper
+naik (1698) -- Priaman dkk RELAPS ke Aceh ~20 tahun lalu ditundukkan ulang
+(1712, jeda terlama dari semua pola relaps yg tercatat) -- Indrapoera
+sempat berpaling ke Inggris (pasca-1684) lalu kembali minta perlindungan
+VOC sendiri (1716). Era "pengusiran-penataan" diperluas dari 1664-1690 ke
+1664-1716. Sama pola tag notes ("SUMBER: Corpus Diplomaticum jilid IV").
+
+source_document="CD5" (2026-07-15): docs/CD5.pdf, Corpus Diplomaticum
+Neerlando-Indicum jilid V (~1727-1741). Volume PALING SEDIKIT konten
+westkust/Aceh sejauh ini -- cuma 4 traktat (44 halaman kandidat, vs 107 CD4)
+krn buku ini didominasi Ternate/Molukka/Persia/Bantam/Koromandel. Dua
+traktat aliansi Tigablas & Doeapoeloeh-Kotta (13&20 negeri, pedalaman
+Padang) tahun 1727 & 1741 -- yang kedua di tengah PEMBERONTAKAN BESAR 1740
+(Paoeh/Kotta-Tengah/Priaman bersatu di bawah Abdul Jalil, VOC lepas benteng
+Priaman krn cuma 108 tentara di seluruh westkust). Traktat Pasariboe-Baros
+1731 (sengketa lokal, bukan Aceh) & sewa tambang emas Sillida 1737 (VOC
+lepas operasi langsung tapi pertahankan hak kedaulatan fiskal). Era
+"pengusiran-penataan" diperluas dari 1664-1716 ke 1664-1741. Sama pola tag
+notes ("SUMBER: Corpus Diplomaticum jilid V").
+
 Jalankan: docker compose exec backend python seed_atjeh_trade.py
 """
 import csv
@@ -91,7 +121,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659", "CD1", "CD2", "CD3"}
+ALLOWED_SOURCE_DOCUMENTS = {"1643-1644", "1631-1634", "1637", "1636", "1624-1629", "1644-1645", "1647-1648", "1656-1657", "1659", "CD1", "CD2", "CD3", "CD4", "CD5"}
 
 ALLOWED_DIRECTIONS = {"naar_atjeh", "van_atjeh", "in_atjeh", "politik"}
 # "politik": fakta politik/administratif Atjeh (klaim yurisdiksi, penegakan tol,

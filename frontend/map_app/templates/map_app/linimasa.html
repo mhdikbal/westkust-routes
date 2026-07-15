@@ -152,9 +152,9 @@ footer p{margin:0 0 10px;line-height:1.55}
   </nav>
 
   <header>
-    <p class="eyebrow">Linimasa Suksesi &middot; Corpus Diplomaticum &amp; Dagh-register Batavia 1600-1690</p>
-    <h1 class="title">Dari Kontrak Pertama ke <em>Aliansi Umum Pantai Barat</em></h1>
-    <p class="lede">69 peristiwa kunci suksesi &amp; politik kekuasaan Atjeh atas pantai barat
+    <p class="eyebrow">Linimasa Suksesi &middot; Corpus Diplomaticum &amp; Dagh-register Batavia 1600-1741</p>
+    <h1 class="title">Dari Kontrak Pertama ke <em>Perburuan Penyelundup di Nias</em></h1>
+    <p class="lede">93 peristiwa kunci suksesi &amp; politik kekuasaan Atjeh atas pantai barat
       Sumatra — dari <b>kontrak dagang lada pertama VOC-Atjeh</b> (Desember 1600) dan traktat
       formal pertama (17 Januari 1607), klaim yurisdiksi Atjeh <b>TERLUAS</b> yang dicatat VOC
       sendiri atas seluruh Sumatra (1625), titah tol Sultan <b>Iskandar Muda</b> (1632), wafatnya
@@ -167,8 +167,16 @@ footer p{margin:0 0 10px;line-height:1.55}
       kekuasaan Atjeh dibuang berantai oleh Sillida &amp; Pulau Cingkuak (1667), <b>Barus</b>
       (1668–1681), Priaman, Tiku, Singkil dan Kotta-tengah (berulang kali memberontak lalu tunduk
       lagi), memuncak pada <b>29 Agustus 1680</b> ketika Indrapoura, Padang, Kottatenga, dan
-      Sillida bersatu dalam satu aliansi umum dari Seblat sampai Air Bangis — dan menjelang 1690,
-      persaingan baru muncul saat Inggris, diusir dari Bantam, mencoba pijakan di pantai yang sama.</p>
+      Sillida bersatu dalam satu aliansi umum dari Seblat sampai Air Bangis, dan Inggris, diusir
+      dari Bantam, mencoba pijakan di pantai yang sama — lalu berlanjut jauh melampaui 1690:
+      ekspedisi <b>vaandrig Johannes Sas (1693)</b> memburu penyelundup Atjeh sampai menyerbu
+      benteng mereka di <b>pulau Nias</b>, Baros direstrukturisasi total pasca-pembunuhan pegawai
+      VOC (1694), Padang &amp; Sillida melepas hak pungut kuno mereka sendiri demi harga peper
+      (1698), dan Priaman kembali berpaling ke Atjeh hampir dua dekade sebelum ditundukkan ulang
+      (1712) — sampai Indrapoera, yang sempat berpihak ke Inggris, akhirnya kembali meminta
+      perlindungan VOC sendiri (1716), dan pemberontakan besar 1740 (Paoeh, Kotta-Tengah, Priaman
+      di bawah Abdul Jalil) memaksa VOC melepas benteng Priaman — meski sekutu lama Tigablas &amp;
+      Doeapoeloeh-Kotta tetap setia (1741).</p>
     <div class="prov" id="prov">{{ n_items }} peristiwa &middot; sumber: linimasa_events &middot; dirender server-side</div>
     <div class="tiles" id="tiles">
       <div class="tile"><div class="k mono">{{ meta.n_items|default:n_items }}</div><div class="l">peristiwa</div></div>
@@ -194,14 +202,15 @@ footer p{margin:0 0 10px;line-height:1.55}
     <p><b>Semua baris berstatus "belum diverifikasi"</b> (confidence_flag=unverified). TIGA sumber
       berbeda campur di halaman ini: peristiwa 1625–1657 didistilasi dari
       <code>atjeh_trade_records</code> (OCR PDF Dagh-register docs/ kami sendiri, ejaan asli
-      VOC-Belanda dipertahankan); peristiwa 1600–1690 dari <code>docs/CD1.pdf</code>,
-      <code>docs/CD2.pdf</code> &amp; <code>docs/CD3.pdf</code> (Corpus Diplomaticum
-      Neerlando-Indicum jilid I, II &amp; III — kompilasi traktat, OCR kami sendiri juga, tapi buku
-      BEDA dari Dagh-register, lihat caveat CD1/CD2/CD3 di bawah); peristiwa 1661–1681 sumbernya
-      BEDA pipeline sepenuhnya: <code>docs/thesis/dr/korpus_tema_slim.csv</code>, corpus
-      GLOBALISE/Huygens yang sudah diterjemahkan ke Indonesia — kutipan baris-baris itu karena itu
-      berbahasa Indonesia (terjemahan), bukan OCR Belanda mentah seperti baris lain. Provenance
-      persis (corpus_id asal) dicatat di catatan tiap baris.</p>
+      VOC-Belanda dipertahankan); peristiwa 1600–1741 dari <code>docs/CD1.pdf</code>,
+      <code>docs/CD2.pdf</code>, <code>docs/CD3.pdf</code>, <code>docs/CD4.pdf</code> &amp;
+      <code>docs/CD5.pdf</code> (Corpus Diplomaticum Neerlando-Indicum jilid I-V — kompilasi
+      traktat, OCR kami sendiri juga, tapi buku BEDA dari Dagh-register, lihat caveat
+      CD1/CD2/CD3/CD4/CD5 di bawah); peristiwa 1661–1681 sumbernya BEDA pipeline sepenuhnya:
+      <code>docs/thesis/dr/korpus_tema_slim.csv</code>, corpus GLOBALISE/Huygens yang sudah
+      diterjemahkan ke Indonesia — kutipan baris-baris itu karena itu berbahasa Indonesia
+      (terjemahan), bukan OCR Belanda mentah seperti baris lain. Provenance persis (corpus_id
+      asal) dicatat di catatan tiap baris.</p>
     <p><b>Koreksi 2026-07-14 (ditegur user "jangan ada yang dilewatkan"):</b> seed awal cuma
       distilasi 4 volume (1631-1634/1637/1643-1644/1647-1648), TERLEWAT dua volume yang sudah
       lama ada di <code>atjeh_trade_records</code>: <b>1624-1629</b> (risalah VOC 29 Sep 1625,
@@ -284,8 +293,43 @@ footer p{margin:0 0 10px;line-height:1.55}
       radja Carbouw (10 Maret 1681). <b>Konteks baru muncul di paruh kedua volume:</b> Inggris,
       diusir dari Bantam, mencoba pijakan di westkust (Silebar, lalu dekat Priaman) — memicu
       pangeran Minangkabau membatalkan semua konsesi tanah yang sempat diberikan ke mereka (23
-      Januari 1687). <b>Peristiwa TERBARU di seluruh korpus kami:</b> suksesi radja d'Ilhier Barus
-      yang baru, 18 Oktober 1690 — memajukan titik akhir linimasa dari 1681 ke 1690.</p>
+      Januari 1687). Suksesi radja d'Ilhier Barus yang baru, 18 Oktober 1690, sempat jadi peristiwa
+      TERBARU korpus kami — sampai temuan CD4 di bawah memajukannya lagi.</p>
+    <p><b>Temuan CD4.pdf, Corpus Diplomaticum Neerlando-Indicum jilid IV, ~1693–1716 (20 peristiwa
+      baru, rentang &amp; volume TERBESAR sejauh ini):</b> babak baru dibuka ekspedisi
+      militer-diplomasi <b>vaandrig Johannes Sas</b> (Januari–Mei 1693) menumpas "Atchinse
+      lorrendraeyers" (penyelundup/bajak laut Aceh) — dimulai Air Bangis &amp; Batahan, lalu
+      <b>MELUAS ke pulau Nias</b> lewat 7 traktat aliansi terpisah, termasuk serbuan benteng Aceh
+      berbenteng di Gido (15 Maret 1693) yang menumpas basis bajak laut Simon Touala —
+      jangkauan geografis terjauh utara di seluruh korpus kami. Baros direstrukturisasi total 1694
+      pasca-pembunuhan seorang cirurgien &amp; tentara VOC oleh pihak radja d'Hoeloe: pemerintahan
+      dipangkas jadi satu raja + empat poungel, dengan skema hadiah tahunan (rijksdaalder per bahar
+      kemenyan &amp; kapur barus, berlaku sejak 1681) dan "handbloem" (bunga-tangan — eufemisme
+      hadiah pengganti tol) untuk kapal dari Padang. <b>Temuan tol paling langka:</b> panglima
+      Padang &amp; Sillida — bandhar resmi penimbangan peper westkust — melepas SENDIRI hak pungut
+      kuno mereka ("salimoet") demi VOC menaikkan harga beli peper dari 14 ke 16 rijksdaalder per
+      bahar (19 Juni 1698). Priaman &amp; lima negeri sekitarnya kembali berpaling ke Atjeh selama
+      hampir dua dekade — jeda relaps terlama tercatat di seluruh siklus westkust — sebelum
+      ditundukkan ulang (19 Maret 1712). <b>Peristiwa TERBARU di seluruh korpus kami:</b>
+      Indrapoera, yang sempat berpaling ke Inggris pasca-1684, akhirnya minta sendiri VOC kembali
+      mendirikan pagger &amp; pakhuys di negerinya, memperbarui traktat 1663 (Maret 1716) —
+      sempat jadi titik akhir linimasa, sampai temuan CD5 di bawah memajukannya lagi.</p>
+    <p><b>Temuan CD5.pdf, Corpus Diplomaticum Neerlando-Indicum jilid V, ~1727–1741 (4 peristiwa
+      baru, volume PALING SEDIKIT konten westkust/Aceh sejauh ini):</b> buku ini didominasi
+      Ternate, Molukka, Persia, Bantam dan Koromandel — bukan kegagalan sisir, korpus sumber
+      memang lebih jarang bahas westkust di rentang ini. Dua traktat aliansi Tigablas &amp;
+      Doeapoeloeh-Kotta (13 &amp; 20 negeri pedalaman Padang) — 11 Maret 1727 dan 21 Oktober 1741 —
+      keduanya berisi pasal anti-Atjeh yang sama, dan yang kedua ditandatangani di tengah
+      <b>pemberontakan besar 1740</b>: Paoeh, Kotta-Tengah, dan Priaman bersatu di bawah pemimpin
+      pedalaman Abdul Jalil, memaksa VOC — yang cuma punya 108 tentara Eropa di seluruh westkust
+      akibat penghematan — melepas benteng Priaman beserta meriamnya. Dua peristiwa lain: sengketa
+      lokal Pasariboe-Baros (22 Maret 1731, diselesaikan denda 40 rijksdaalder + sumpah ulang
+      monopoli dagang kemenyan ke Baros) dan penyewaan tambang emas Sillida ke radja Nanxatti
+      (20 Desember 1737) — VOC melepas operasi langsung yang merugi bertahun-tahun, tapi sengaja
+      tetap menyewakannya (bukan melepas sepenuhnya) demi mempertahankan hak kedaulatan fiskal.
+      <b>Peristiwa TERBARU di seluruh korpus kami:</b> pembaruan aliansi Tigablas &amp;
+      Doeapoeloeh-Kotta di tengah krisis 1740 (21 Oktober 1741) — memajukan titik akhir linimasa
+      dari 1716 ke 1741.</p>
   </div>
 
   <div class="controls">
@@ -354,8 +398,14 @@ footer p{margin:0 0 10px;line-height:1.55}
       lanjutan kronologis CD1, disisir 2026-07-15 dgn lensa tol/pajak &amp; hadiah diplomasi.
       Baris CD3 (1678/1679/1679/1680×2/1681×4/1682×2/1684×2/1685/1687/1689/1690) dari
       <code>docs/CD3.pdf</code>, Corpus Diplomaticum Neerlando-Indicum jilid III — lanjutan
-      kronologis CD2, volume PALING PADAT sejauh ini. Beberapa baris CD2/CD3 ditandai eksplisit
-      "MELENGKAPI" event yang sudah ada dari sumber lain (bukan duplikat). Baris
+      kronologis CD2, volume PALING PADAT sampai saat itu. Baris CD4
+      (1693×10/1694×2/1698×2/1705/1707×2/1712/1716×2) dari <code>docs/CD4.pdf</code>, Corpus
+      Diplomaticum Neerlando-Indicum jilid IV — lanjutan kronologis CD3, rentang &amp; volume
+      TERBESAR sampai saat itu (1693-1716). Baris CD5 (1727/1731/1737/1741) dari
+      <code>docs/CD5.pdf</code>, Corpus Diplomaticum Neerlando-Indicum jilid V — lanjutan
+      kronologis CD4, volume PALING SEDIKIT konten westkust/Aceh sejauh ini (1727-1741). Beberapa
+      baris CD2/CD3/CD4/CD5 ditandai eksplisit "MELENGKAPI" event yang sudah ada dari sumber lain
+      (bukan duplikat). Baris
       1661/1663/1664/1665/1681 dari <code>docs/thesis/dr/korpus_tema_slim.csv</code>: corpus_id
       569–594 (buluh peristiwa 1660–61), 608–612 (naskah Traktat Painan, dinegosiasikan koopman
       VOC Groenewegen Jun–Nov 1662, dicatat daghregister Batavia 27 Maret 1663), 540/560/564
@@ -363,9 +413,9 @@ footer p{margin:0 0 10px;line-height:1.55}
       traktat Barus 1681, dicatat ulang dlm volume 1681). Babak (era) di halaman ini ditambahkan
       Fase 1 (<code>docs/prd-linimasa-kronik-pantai-barat.md</code>) — label/headline editorial
       disimpan terpisah dari data tersitasi (<code>frontend/map_app/views.py</code>), berbasis
-      rentang tahun yang benar-benar punya event tersitasi (1600–1690) — kini SAMA dengan rentang
-      skema 1600-1690 design spec sumber, tapi murni kebetulan hasil sisir bertahap, bukan
-      diadopsi langsung dari skema tersebut.</p>
+      rentang tahun yang benar-benar punya event tersitasi (1600–1741) — sudah MELAMPAUI rentang
+      skema 1600-1690 design spec sumber sejak sisir CD4, murni hasil sisir bertahap yang terus
+      menemukan volume baru, bukan diadopsi langsung dari skema tersebut.</p>
     <p><span class="tag">thesis-only · noindex</span>
       <span class="tag">route: /linimasa (top-level, tidak di navbar publik)</span>
       <span class="tag">SSR: /api/research/linimasa (server-side, bukan client fetch)</span>
