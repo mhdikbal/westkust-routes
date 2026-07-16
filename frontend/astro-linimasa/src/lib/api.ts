@@ -1,6 +1,10 @@
 import type { LinimasaResponse } from './types';
 
-const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_API_BASE_URL) || 'http://localhost:8000';
+// Client-side: use relative URL (goes through nginx proxy)
+// SSR/build-time: use internal Docker URL if needed
+const API_BASE = (typeof window === 'undefined')
+  ? (import.meta.env?.PUBLIC_API_BASE_URL || 'http://backend:8000')
+  : '';
 
 export async function fetchLinimasa(): Promise<LinimasaResponse> {
   const res = await fetch(`${API_BASE}/api/research/linimasa`);
