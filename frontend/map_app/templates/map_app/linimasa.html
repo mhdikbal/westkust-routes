@@ -36,10 +36,6 @@ try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.document
   --paper:#000000; --paper-deep:#050505; --panel:rgba(243,234,217,.05); --panel-2:rgba(243,234,217,.08);
   --ink:#f3ead9; --muted:#a09889; --muted-dark:#c4b9a5; --line:rgba(243,234,217,.1); --accent:#29484b;
 }
-@font-face{
-  font-family:"Yasraf Piliang"; src:url("{% static 'map_app/fonts/Yasraf-Amir-Piliang.otf' %}") format("opentype");
-  font-weight:400; font-style:normal; font-display:swap;
-}
 *{box-sizing:border-box}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -367,8 +363,7 @@ button.tile--filter[aria-pressed="true"] .l{color:var(--ink)}
    keduanya sibling dari .chronicle (bukan child), jadi tidak ikut hilang saat
    .show-list disetel, nyempil di atas tampilan Daftar. */
 .js.show-list #chrToolbar,
-.js.show-list #chrScrub,
-.js.show-list #chrEraBands{display:none}
+.js.show-list #chrScrub{display:none}
 
 /* kolom kiri: navigasi era */
 .chr-nav{counter-reset:cera;background:rgba(243,234,217,.02);border-right:1px solid var(--line);padding:20px 14px 20px 18px;
@@ -513,18 +508,6 @@ button.tile--filter[aria-pressed="true"] .l{color:var(--ink)}
 .chr-lane .yr{position:absolute;top:27px;transform:translateX(-50%);
   font-family:var(--mono);font-size:.62rem;color:#8a7f68}
 .chr-count{font-family:var(--mono);font-size:.72rem;color:#d8cdb8;flex:none;min-width:64px;text-align:right}
-
-/* P3.4: era band di bawah scrubber -- navigasi era dari garis waktu, bukan cuma sidebar */
-.chr-era-bands{display:flex;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);
-  border-bottom:1px solid var(--line);background:#000}
-.chr-era-band{flex:1 1 0;min-width:0;padding:9px 12px;font-family:var(--sans);font-size:.68rem;
-  letter-spacing:.02em;color:var(--muted);background:none;border:0;border-right:1px solid var(--line);
-  cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;transition:.15s}
-.chr-era-band:last-child{border-right:none}
-.chr-era-band:hover{background:rgba(243,234,217,.06);color:var(--ink)}
-.chr-era-band:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.chr-era-band.active{background:var(--accent);color:var(--ink);font-weight:600}
-@media(max-width:768px){.chr-era-band{font-size:.6rem;padding:8px 6px}}
 
 /* kolom kanan: panel peristiwa aktif */
 .chr-panel{position:relative;background:rgba(243,234,217,.02);border-left:1px solid var(--line);
@@ -770,7 +753,6 @@ footer p{margin:0 0 10px;line-height:1.55}
     <button type="button" id="chrNext" class="chr-nbtn" aria-label="Peristiwa berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
     <span class="chr-count" id="chrCount"></span>
   </div>
-  <div class="chr-era-bands" id="chrEraBands" role="group" aria-label="Navigasi era pada garis waktu"></div>
   {% endif %}
 
   <div id="listView">
@@ -1127,26 +1109,6 @@ if (chrStage && ALL.length && ERAS_META.length) {
     nav.appendChild(b);
   });
 
-  /* P3.4: era band di bawah scrubber -- reuse ERAS_META yang sama dengan sidebar,
-     lebar proporsional terhadap rentang tahun (flex-grow = jumlah tahun era itu) */
-  const eraBands = document.getElementById('chrEraBands');
-  const ERA_BAND_BTNS = {};
-  ERAS_META.forEach(era => {
-    const [y0, y1] = era.range.split(/[–-]/).map(s => parseInt(s.trim(), 10));
-    const span = (Number.isFinite(y0) && Number.isFinite(y1)) ? Math.max(1, y1 - y0) : 1;
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'chr-era-band'; b.dataset.slug = era.slug;
-    b.style.flexGrow = String(span);
-    b.title = `${era.label} · ${era.range}`;
-    b.textContent = era.label;
-    b.addEventListener('click', () => {
-      const idx = SEQ.findIndex(ev => ev.era_slug === era.slug);
-      if (idx >= 0) setActive(idx);
-    });
-    eraBands.appendChild(b);
-    ERA_BAND_BTNS[era.slug] = b;
-  });
-
   /* footer sidebar: ringkasan periode aktif -- mengisi ruang kosong di bawah
      daftar era (audit ruang-kosong §2.3/§6), bukan dekorasi */
   const navFooter = document.createElement('footer');
@@ -1328,7 +1290,6 @@ if (chrStage && ALL.length && ERAS_META.length) {
 
     // --- Era sidebar highlight ---
     nav.querySelectorAll('.chr-era').forEach(b => b.classList.toggle('active', b.dataset.slug === ev.era_slug));
-    Object.entries(ERA_BAND_BTNS).forEach(([slug, b]) => b.classList.toggle('active', slug === ev.era_slug));
     // Update progress line
     const eraIdx = ERAS_META.findIndex(e => e.slug === ev.era_slug);
     const navEl = document.getElementById('chrNav');

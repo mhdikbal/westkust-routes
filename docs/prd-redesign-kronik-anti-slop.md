@@ -153,6 +153,20 @@ Efek samping dari §2e (tipografi lebih besar) + tindak lanjut observasi samping
 
 ---
 
+## 2g. Era Band Dihapus, Font Kutipan Dikonfirmasi (2026-07-17)
+
+Dua item cepat susulan §2f:
+
+1. **`.chr-quote` pakai font apa?** User tanya apakah kutipan arsip pakai font tulisan-tangan `Yasraf-Amir-Piliang.otf` (docs/). Dicek: **tidak** — `.chr-quote` pakai `var(--serif)` = EB Garamond italic (§2e). Yasraf Piliang cuma pernah dipakai di thumbnail `traktat.png` yang sudah dihapus user sebelumnya. **Rekomendasi: jangan pakai font tulisan-tangan untuk kutipan** — kutipan arsip bisa 300–400 karakter teks Belanda arkais, font script/handwriting akan menurunkan keterbacaan drastis, bertentangan dengan perbaikan tipografi §2e. EB Garamond italic sudah tepat, dipertahankan. `@font-face "Yasraf Piliang"` yang sudah tidak dipakai di mana pun dihapus (aset font tetap ada di `static/`, cuma tidak direferensikan).
+
+2. **Era band di timeline dihapus.** User: "menggangu estetika tampilan". P3.4 (Sprint 3, era band proporsional di bawah scrubber) dicabut total — markup `#chrEraBands`, CSS `.chr-era-bands`/`.chr-era-band`, JS builder (`ERA_BAND_BTNS` + populate loop), referensi toggle `.active` di `setActive()`, dan rule `.js.show-list #chrEraBands`. Navigasi era tetap tersedia via sidebar kiri (`.chr-era` buttons) — tidak ada fungsi yang hilang, cuma satu jalur akses redundan yang dihapus.
+
+**Verifikasi Playwright:** `chrEraBands` terkonfirmasi tidak ada lagi di DOM; `.chr-quote` computed font-family terkonfirmasi `"EB Garamond", Georgia, "Times New Roman", serif`; screenshot scrubber bersih tanpa strip era band.
+
+**File:** `linimasa.html` — hapus `@font-face` Yasraf Piliang, markup/CSS/JS `.chr-era-bands`/`#chrEraBands`/`ERA_BAND_BTNS`
+
+---
+
 ## 3. Prinsip Desain
 
 Dari audit §15 — yang menjadi north star redesign:
@@ -596,7 +610,9 @@ Ditemukan lewat perbandingan screenshot langsung terhadap `docs/Designer-fix.png
 
 **File:** `linimasa.html` — `renderPanel()`, CSS `.chr-meta-row`/`.chr-meta-item`
 
-### P3.4 Era band pada timeline scrubber — ✅ SELESAI (2026-07-16)
+### P3.4 Era band pada timeline scrubber — ⛔ DICABUT (2026-07-17, lihat §2g)
+
+Sempat selesai & diverifikasi 2026-07-16, tapi user menilai "menggangu estetika tampilan" — dihapus total 2026-07-17. Navigasi era tetap via sidebar kiri. Detail asli di bawah untuk referensi historis.
 
 **Masalah:** Mockup punya baris segmen berwarna di bawah tick tahun, berlabel nama era ("Gelombang Penaklukan", dst.), era aktif disorot. Scrubber kita cuma titik + panah + 5 label tahun — tidak ada baris band era.
 
