@@ -356,7 +356,83 @@ export default function ChronicleController({ events: initialEvents, eras }: Pro
         </div>
       )}
 
-      {/* Hidden — list view is handled by parent linimasa.astro */}
+      {/* List view */}
+      {!showStage.value && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {filtered.value.map((ev, i) => {
+            const era = eras.find(e => e.slug === ev.era_slug);
+            const isActive = i === activeIndex.value;
+            const badgeColor = ev.event_type === 'perjanjian' ? 'var(--evt-perjanjian)'
+              : ev.event_type === 'konflik' ? 'var(--evt-konflik)'
+              : ev.event_type === 'diplomasi' ? 'var(--evt-diplomasi)'
+              : ev.event_type === 'administratif' ? 'var(--evt-administratif)'
+              : 'var(--evt-suksesi)';
+            return (
+              <button
+                key={ev.id}
+                type="button"
+                onClick={() => { setActive(i); showStage.value = true; }}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '1rem 1.25rem',
+                  borderRadius: '0.75rem',
+                  border: isActive ? `1px solid ${badgeColor}` : '1px solid var(--line)',
+                  background: isActive ? 'var(--panel-2)' : 'var(--panel)',
+                  cursor: 'pointer',
+                  transition: 'background 0.15s, border-color 0.15s',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                  <span style={{
+                    display: 'inline-block',
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    background: badgeColor,
+                    flexShrink: 0,
+                  }} />
+                  <span class="mono" style={{ fontSize: '0.75rem', color: 'var(--muted)', fontWeight: 700 }}>
+                    {ev.year ?? '—'}
+                  </span>
+                  <span style={{
+                    fontSize: '0.625rem',
+                    padding: '0.125rem 0.375rem',
+                    borderRadius: '9999px',
+                    background: `${badgeColor}20`,
+                    color: badgeColor,
+                    fontWeight: 600,
+                    textTransform: 'capitalize',
+                  }}>
+                    {ev.event_type}
+                  </span>
+                  {era && (
+                    <span style={{ fontSize: '0.625rem', color: 'var(--muted)', marginLeft: 'auto' }}>
+                      {era.label}
+                    </span>
+                  )}
+                </div>
+                <p style={{
+                  fontFamily: 'var(--serif)',
+                  fontSize: '0.9375rem',
+                  fontWeight: 600,
+                  color: 'var(--ink)',
+                  margin: 0,
+                  lineHeight: 1.4,
+                }}>
+                  {ev.title}
+                </p>
+                {ev.ruler_actor && (
+                  <p style={{ fontSize: '0.75rem', color: 'var(--muted)', margin: '0.25rem 0 0' }}>
+                    {ev.ruler_actor}
+                  </p>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
