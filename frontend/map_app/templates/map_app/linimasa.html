@@ -572,15 +572,17 @@ footer p{margin:0 0 10px;line-height:1.55}
 /* Thumbnail dokumen -- perkamen VOC asli (docs/traktat.png) dgn kutipan
    pembuka text_asli (kutipan arsip nyata, bukan lorem ipsum) ditulis dalam
    font tulisan-tangan khusus. Dekoratif, murni penguat "sumber primer nyata";
-   kutipan lengkap tetap di .chr-quote yang mudah dibaca. */
-.chr-doc-thumb{float:right;width:118px;aspect-ratio:2/3;margin:0 0 10px 14px;
+   kutipan lengkap tetap di .chr-quote yang mudah dibaca. Diletakkan di bawah
+   tombol aksi -- bukan nyempil float di samping, biar jadi penutup panel yg
+   proporsional, bukan elemen kecil terjepit. */
+.chr-doc-thumb{width:min(100%,220px);aspect-ratio:2/3;margin:22px 0 4px;
   background:url("{% static 'map_app/img/traktat.png' %}") center/cover no-repeat;
-  border-radius:2px;box-shadow:0 6px 18px rgba(0,0,0,.5);padding:16px 14px 34px;
+  border-radius:3px;box-shadow:0 8px 22px rgba(0,0,0,.55);padding:22px 20px 44px;
   display:flex;align-items:flex-start}
-.chr-doc-thumb-text{font-family:"Yasraf Piliang",var(--serif);font-size:1.05rem;line-height:1.3;
+.chr-doc-thumb-text{font-family:"Yasraf Piliang",var(--serif);font-size:1.2rem;line-height:1.32;
   color:#3a2308;margin:0}
-@media(max-width:640px){.chr-doc-thumb{width:96px;padding:12px 10px 28px}
-  .chr-doc-thumb-text{font-size:.92rem}}
+@media(max-width:640px){.chr-doc-thumb{width:min(100%,180px);padding:18px 16px 36px}
+  .chr-doc-thumb-text{font-size:1.05rem}}
 </style>
 </head>
 <body>
@@ -1105,7 +1107,6 @@ if (chrStage && ALL.length && ERAS_META.length) {
       ${subtitle ? `<p class="chr-subtitle">${esc(subtitle)}</p>` : ''}
       <p class="chr-meta">${esc(ev.event_date_raw || '—')}</p>
       <div class="chr-quote">&ldquo;${esc(ev.text_asli)}&rdquo;</div>
-      ${docExcerpt ? `<div class="chr-doc-thumb" aria-hidden="true"><p class="chr-doc-thumb-text">${esc(docExcerpt)}</p></div>` : ''}
       <details class="chr-source-details">
         <summary class="chr-source-header">Sumber Primer</summary>
         <p class="chr-source-name">Arsip ${esc(ev.source_document || '—')}</p>
@@ -1115,7 +1116,8 @@ if (chrStage && ALL.length && ERAS_META.length) {
       <div class="chr-actions">
         ${ev.notes ? '<button type="button" class="chr-btn solid" data-act="transcript"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Baca transkrip</button>' : ''}
         <a class="chr-btn line" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Tampilkan pada peta</a>
-      </div>`;
+      </div>
+      ${docExcerpt ? `<div class="chr-doc-thumb" aria-hidden="true"><p class="chr-doc-thumb-text">${esc(docExcerpt)}</p></div>` : ''}`;
     panel.querySelector('[data-act="transcript"]')?.addEventListener('click', e => {
       const open = panel.classList.toggle('open-transcript');
       document.querySelector('.chronicle')?.classList.toggle('reading', open);
