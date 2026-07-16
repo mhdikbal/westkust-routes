@@ -308,6 +308,10 @@ Lihat seluruh peristiwa era →
 
 **File:** `linimasa.html` — fungsi `renderPanel()`
 
+**Regresi ditemukan user (2026-07-16), sudah diperbaiki:** tombol "Baca Transkrip" **tidak dihapus** saat P0.10 dikerjakan — tombol ini didesain khusus untuk mem-toggle `.open-transcript` yang menampilkan `.chr-notes` (via CSS `.chr-panel.open-transcript .chr-notes{display:block}`). Setelah div `.chr-notes` dihapus dari markup, klik tombol itu cuma memicu efek samping resize grid P1.7 (`.chronicle.reading`, sidebar menyempit/panel melebar) **tanpa konten baru muncul** — persis keluhan user "ukuran dan posisi huruf berubah tapi tidak ada perubahan lain". Root cause: dependensi antara P0.10 dan tombol transkrip tidak diperiksa silang saat P0.10 dikerjakan.
+
+**Perbaikan:** tombol "Baca Transkrip" **dihapus total** (bukan diperbaiki untuk menampilkan sesuatu) — `ev.text_asli` (transkrip/kutipan arsip asli) sudah tampil penuh di `.chr-quote`, dan `ev.notes` (yang tombol ini dulu buka) memang sengaja disembunyikan karena isinya catatan kurator internal, bukan transkrip. Tidak ada konten legitimate lagi untuk tombol ini buka. Ikut dihapus: CSS `.chr-notes`, `.chr-panel.open-transcript .chr-notes`, `.chronicle.reading` grid (P1.7 jadi N/A lagi — trigger satu-satunya sudah tidak ada), dan referensi `.chr-notes`/`.chr-meta` mati di `.chr-panel.treaty`.
+
 ---
 
 ## 5. Fase P1 — Bangun Sistem Visual
@@ -461,9 +465,9 @@ Dari audit §11:
 
 **File:** `linimasa.html` — CSS `.chr-stage::before`, `.chr-coast`, `.chr-isle`, inline style `#chrMap`
 
-### P1.7 Responsive: panel kanan menyempit/melebar — ✅ SUDAH SELESAI (verifikasi 2026-07-16)
+### P1.7 Responsive: panel kanan menyempit/melebar — ⛔ TIDAK BERLAKU LAGI (regresi ditemukan & diperbaiki 2026-07-16, lihat P0.10)
 
-**Ground-truth check:** state "reading mode" sudah ada — tombol "Baca transkrip" toggle `panel.classList.toggle('open-transcript')` + `.chronicle.classList.toggle('reading', open)`, dengan CSS `@media(min-width:981px){.js .chronicle.reading{grid-template-columns:minmax(160px,16%) 1fr minmax(360px,32%)}}`. Sidebar kiri menyempit & panel kanan melebar saat baca transkrip, persis prinsip audit §13. Tidak perlu kerja lagi.
+Sebelumnya ditandai selesai karena tombol "Baca Transkrip" memicu `.chronicle.reading` (grid resize). Tombol itu ternyata sudah tidak berfungsi sejak `.chr-notes` dihapus di P0.10 (klik cuma resize tanpa konten baru — bug yang ditemukan user). Tombol beserta seluruh mekanisme `.reading`/`.open-transcript` **dihapus total**, bukan diperbaiki, karena tidak ada konten legitimate lagi untuk trigger ini. Item ditutup tanpa implementasi — kalau nanti ada kebutuhan nyata utk expand/collapse panel, desain ulang dari awal, jangan pakai sisa mekanisme lama.
 
 Dari audit §13:
 - Saat eksplorasi peta: panel kanan menyempit (300px)
@@ -497,6 +501,8 @@ Ditemukan lewat perbandingan screenshot langsung terhadap `docs/Designer-fix.png
 **File:** `linimasa.html` — markup `.chr-toolbar` sebelum `.chronicle`, CSS `.chr-toolbar*`/`.chr-tb-*`, JS state `categoryFilter`/`matchesCategory`/`findNextMatch`/`applyCategoryFilterVisual`, modifikasi listener `chrPrev`/`chrNext`/`ArrowLeft`/`ArrowRight` yang sudah ada
 
 **Verifikasi Playwright:** search "Traktat Painan" ketemu match benar; filter "konflik" meredupkan 80/101 dot (tepat 101−21, cocok stat tile); 5× klik "Berikutnya" berturut-turut semua tetap badge "konflik" (navigasi benar-benar tertahan filter, bukan cuma tampilan); era jump & reset bekerja; tanpa page error.
+
+**Bug ditemukan user (2026-07-16), sudah diperbaiki:** dropdown `#chrCategoryFilter`/`#chrEraJump` (dan `#typeFilter` lama di list view, bug yang sama, belum pernah dilaporkan sebelumnya) — teks opsi tak terbaca saat dropdown dibuka. Root cause: `<select>` di-styling `color:var(--ink)` (krem) di atas `background` transparan, tapi popup opsi dirender browser dengan background putih bawaan OS (di luar cascade normal CSS) — krem-di-atas-putih nyaris tak terbaca. Fix: `select option{background:#14100a;color:var(--ink)}` eksplisit di kedua tempat (`.chr-tb-select` dan `.controls select`).
 
 ### P3.2 Badge kategori berwarna di panel kanan — ✅ SELESAI (2026-07-16)
 
