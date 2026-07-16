@@ -2,6 +2,7 @@ import { useSignal, useComputed } from '@preact/signals';
 import { useEffect } from 'preact/hooks';
 import type { LinimasaEvent, Era, PortName, EventType } from '../../lib/types';
 import { portOf, EVENT_TYPE_LABELS, EVENT_TYPE_ICONS } from '../../lib/types';
+import { fetchLinimasa } from '../../lib/api';
 import SVGAxis from './SVGAxis';
 import Scrubber from './Scrubber';
 import PortMap from './PortMap';
@@ -15,14 +16,38 @@ interface Props {
 const TREATY_TITLE = 'Traktat Painan: pasal-pasal VOC-Songypagouers, akhiri kekuasaan Atjeh';
 const EVENT_TYPES: EventType[] = ['suksesi', 'perjanjian', 'konflik', 'diplomasi', 'administratif'];
 
-export default function ChronicleController({ events, eras }: Props) {
+export default function ChronicleController({ events: initialEvents, eras }: Props) {
   const activeIndex = useSignal(0);
   const showStage = useSignal(true);
   const typeFilter = useSignal<EventType | ''>('');
+  const events = useSignal<LinimasaEvent[]>(initialEvents);
+  const loading = useSignal(initialEvents.length === 0);
+  const error = useSignal('');
 
-  const sorted = [...events].sort((a, b) => (a.year || 0) - (b.year || 0));
+  // Client-side fetch on mount
+  useEffect(() => {
+    if (initialEvents.length > 0) return; // already have data from SSR
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await fetchLinimasa();
+        if (!cancelled) {
+          events.value = data.items ?? [];
+          loading.value = false;
+        }
+      } catch (e) {
+        if (!cancelled) {
+          error.value = 'Backend tidak terjangkau. Pastikan backend berjalan.';
+          loading.value = false;
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const sorted = useComputed(() => [...events.value].sort((a, b) => (a.year || 0) - (b.year || 0)));
   const filtered = useComputed(() =>
-    typeFilter.value ? sorted.filter(e => e.event_type === typeFilter.value) : sorted
+    typeFilter.value ? sorted.value.filter(e => e.event_type === typeFilter.value) : sorted.value
   );
 
   const activeEvent = useComputed(() => filtered.value[activeIndex.value] ?? null);
@@ -61,6 +86,19 @@ export default function ChronicleController({ events, eras }: Props) {
 
   return (
     <div class="chr-stage" data-era={activeEvent.value?.era_slug || ''}>
+      {/* Loading / error states */}
+      {loading.value && (
+        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--muted)' }}>
+          <p>Memuat data dari backend...</p>
+        </div>
+      )}
+      {error.value && (
+        <div class="caveat error" style={{ marginBottom: '1rem' }}>
+          <h2>API tidak tersedia</h2>
+          <p>{error.value}</p>
+        </div>
+      )}
+
       {/* Type filter pills */}
       <div class="chr-filter-pills">
         <button
