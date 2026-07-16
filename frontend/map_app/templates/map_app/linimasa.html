@@ -390,12 +390,14 @@ button.tile--filter[aria-pressed="true"] .l{color:var(--ink)}
    pelayaran tua (DesignerPantaiBarat), digelapkan scrim supaya node/label/jalur
    SVG di atasnya tetap >=3:1. Coastline SVG semi-transparan agar tekstur lukisan
    tembus di sisi darat. */
-.chr-stage{position:relative;background:#0b1c1e;display:flex;flex-direction:column;min-height:0}
-.chr-stage::before{content:"";position:absolute;inset:0;z-index:0;
-  background:linear-gradient(rgba(8,20,22,.72),rgba(8,20,22,.82)),
-  url("{% static 'map_app/img/linimasa-hero.jpg' %}") center 60%/cover no-repeat}
-.chr-stage[data-era]::before{opacity:.88;transition:opacity .7s ease}
-.chr-stage.climax::before{opacity:1!important;filter:brightness(1.1);transition:opacity .7s ease,filter .7s ease}
+/* Peta dikunci aspect-ratio 3/2 (rasio asli peta-untukruangtengah.png) supaya
+   dot pelabuhan (posisi persentase, dikalibrasi thd rasio ini) tetap akurat
+   di semua tinggi viewport -- sebelumnya flex:1 bikin kotak jadi portrait
+   ganjil, object-fit:cover meng-crop parah & dot jadi salah tempat ("bocor").
+   Sisa ruang vertikal (kalau kolom lebih tinggi dari 2/3 lebar) jadi letterbox
+   solid #0b1c1e, bukan gambar kedua yang bocor di belakang. */
+.chr-stage{position:relative;background:#0b1c1e;display:flex;flex-direction:column;
+  justify-content:center;min-height:0}
 .chr-panel.climax{border-left:3px solid var(--wax-red)}
 .chr-stage svg{flex:1;width:100%;display:block;min-height:0;position:relative;z-index:1}
 .chr-legend{display:none}
@@ -617,21 +619,6 @@ footer p{margin:0 0 10px;line-height:1.55}
 .chr-source-details summary:hover{color:var(--ink)}
 .chr-source-details[open] .chr-source-name{font-size:.82rem;margin:4px 0 2px}
 .chr-source-details[open] .chr-source-page{font-size:.78rem;color:var(--muted)}
-
-/* Thumbnail dokumen -- perkamen VOC asli (docs/traktat.png) dgn kutipan
-   pembuka text_asli (kutipan arsip nyata, bukan lorem ipsum) ditulis dalam
-   font tulisan-tangan khusus. Dekoratif, murni penguat "sumber primer nyata";
-   kutipan lengkap tetap di .chr-quote yang mudah dibaca. Diletakkan di bawah
-   tombol aksi -- bukan nyempil float di samping, biar jadi penutup panel yg
-   proporsional, bukan elemen kecil terjepit. */
-.chr-doc-thumb{width:min(100%,220px);aspect-ratio:2/3;margin:22px 0 4px;
-  background:url("{% static 'map_app/img/traktat.png' %}") center/cover no-repeat;
-  border-radius:3px;box-shadow:0 8px 22px rgba(0,0,0,.55);padding:22px 20px 44px;
-  display:flex;align-items:flex-start}
-.chr-doc-thumb-text{font-family:"Yasraf Piliang",var(--serif);font-size:1.2rem;line-height:1.32;
-  color:#3a2308;margin:0}
-@media(max-width:640px){.chr-doc-thumb{width:min(100%,180px);padding:18px 16px 36px}
-  .chr-doc-thumb-text{font-size:1.05rem}}
 </style>
 </head>
 <body>
@@ -729,7 +716,7 @@ footer p{margin:0 0 10px;line-height:1.55}
       <p class="hd">Era Sejarah</p>
     </nav>
     <div class="chr-stage" id="chrStage" data-era="">
-      <div id="chrMapWrap" style="position:relative; flex:1; width:100%; min-height:0; background:#1a1a1a; border-radius:8px; overflow:hidden;">
+      <div id="chrMapWrap" style="position:relative; width:100%; aspect-ratio:3/2; background:#1a1a1a; border-radius:8px; overflow:hidden;">
         <img id="chrMap" src="{% static 'map_app/img/peta-untukruangtengah.png' %}"
              alt="Peta tua pantai barat Sumatra bergaya engraving dengan kapal-kapal layar VOC"
              style="width:100%; height:100%; object-fit:cover;"
@@ -905,14 +892,6 @@ footer p{margin:0 0 10px;line-height:1.55}
 <script type="module">
 "use strict";
 const esc = s => String(s ?? '').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-/* Kutipan pembuka (bukan seluruh text_asli) untuk thumbnail dokumen -- perkamen
-   kecil cuma cukup utk beberapa kata pertama, kutipan lengkap tetap di .chr-quote. */
-const openingWords = (text, maxLen) => {
-  const t = String(text ?? '').trim();
-  if (!t) return '';
-  if (t.length <= maxLen) return t;
-  return t.slice(0, t.lastIndexOf(' ', maxLen)) + '…';
-};
 const TYPE_COLOR = {suksesi:'var(--evt-suksesi)', perjanjian:'var(--evt-perjanjian)', konflik:'var(--evt-konflik)', diplomasi:'var(--evt-diplomasi)', administratif:'var(--evt-administratif)'};
 
 const dataEl = document.getElementById('linimasa-data');
@@ -1245,7 +1224,6 @@ if (chrStage && ALL.length && ERAS_META.length) {
     const statusHTML = statusEntry.icon ? `<span class="chr-status">${statusEntry.icon} ${statusEntry.text}</span>` : `<span class="chr-status">${statusEntry.text}</span>`;
 
     const counter = `PERISTIWA ${String(active + 1).padStart(2, '0')} / ${String(SEQ.length).padStart(2, '0')}`;
-    const docExcerpt = openingWords(ev.text_asli, 90);
     const evPort = portOf(ev);
 
     const badgesHTML = ev.event_type
@@ -1275,8 +1253,7 @@ if (chrStage && ALL.length && ERAS_META.length) {
       </details>
       <div class="chr-actions">
         <a class="chr-btn line" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Tampilkan pada peta</a>
-      </div>
-      ${docExcerpt ? `<div class="chr-doc-thumb" aria-hidden="true"><p class="chr-doc-thumb-text">${esc(docExcerpt)}</p></div>` : ''}`;
+      </div>`;
     panel.scrollTop = 0;
   }
 

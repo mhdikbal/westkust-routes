@@ -82,6 +82,25 @@ User (bukan dari dokumen audit) memberi arahan langsung setelah melihat panggung
 
 ---
 
+## 2d. Thumbnail Dokumen Dihapus + Perbaikan Ukuran Peta (2026-07-16, susulan §2c)
+
+User menilai thumbnail `traktat.png` (baru ditambahkan §2c) **terlalu ramai** — dicabut lagi. Sekaligus melaporkan dua masalah nyata pada ukuran panggung peta yang ternyata **berhubungan sebab-akibat**, ditemukan lewat pengukuran DOM langsung (bukan tebakan):
+
+**Diagnosis:** `#chrMapWrap` dari Sprint 1 pakai `flex:1` (mengisi penuh tinggi grid `.chronicle`, `min-height:100dvh`) — di viewport 1440×900 kotaknya jadi **748×1021px (rasio ~0.73, portrait)**, padahal `peta-untukruangtengah.png` asli **1536×1024px (rasio 1.5, landscape 3:2)**. `object-fit:cover` pada rasio kotak yang salah ini meng-crop/zoom parah secara horizontal — dan karena posisi titik pelabuhan (`PORT_PCT`, persentase tetap terhadap kotak) dikalibrasi utk rasio 3:2, titik-titik itu jadi bergeser dari lokasi geografis yang benar begitu rasio kotak berubah ("bocor" yang dilaporkan user — cek DOM nunjukkan `<span class="core">` port Aceh nongkrong di posisi yang tidak konsisten dgn crop gambar). Masalah ini laten sejak Sprint 1, baru kentara sekarang karena user memperhatikan detail posisi titik.
+
+**Perbaikan:**
+- `#chrMapWrap`: `flex:1` → `aspect-ratio:3/2` (rasio asli gambar, persis) — dot pelabuhan otomatis akurat lagi krn kotak kembali ke rasio yang sama dgn saat `PORT_PCT` dikalibrasi
+- `.chr-stage`: tambah `justify-content:center` supaya kotak peta (skrg berukuran tetap, bukan mengisi penuh) berada di tengah scara vertikal
+- `.chr-stage::before` (background `linimasa-hero.jpg` yang bleed di belakang, sisa dari rencana lama "layer atmosfer" P1.6) **dihapus total** — kalau tidak, sisa ruang vertikal di atas/bawah kotak peta yang sekarang lebih pendek akan menampakkan gambar hero yang beda, mengulang bug "dua peta bertumpuk" dari Sprint 1. Sisa ruang sekarang jadi letterbox solid `#0b1c1e` (warna latar `.chr-stage` yang sudah ada) — matte rapi, bukan gambar kedua
+- `.chr-stage.climax::before`/`.chr-stage[data-era]::before` (variasi opacity utk climax Traktat Painan) ikut dihapus — sudah tidak relevan tanpa `::before`
+- Thumbnail `.chr-doc-thumb`/`traktat.png`/font `Yasraf Piliang` **dihapus dari rendering** (markup, CSS, helper `openingWords()`, variabel `docExcerpt`) — aset font & gambar dibiarkan ada di `static/` (tidak dihapus filenya), cuma tidak dipakai. Kalau nanti mau dipakai lagi di tempat lain, tidak perlu upload ulang.
+
+**Verifikasi Playwright:** `wrapAspect` terukur `1.500`, persis `3/2`; dot Aceh terkonfirmasi berada dalam batas kotak (`acehDotVisibleWithinWrap: true`); `.chr-doc-thumb` terkonfirmasi tidak ada lagi di DOM. Screenshot menunjukkan peta utuh, dua kapal & kompas terlihat, letterbox atas-bawah solid tanpa gambar kedua bocor.
+
+**File:** `linimasa.html` — CSS `#chrMapWrap` (inline style), `.chr-stage` (`justify-content:center`, hapus `::before` & variannya), hapus markup/CSS/JS `.chr-doc-thumb`
+
+---
+
 ## 3. Prinsip Desain
 
 Dari audit §15 — yang menjadi north star redesign:
