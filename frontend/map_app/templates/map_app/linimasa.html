@@ -369,10 +369,6 @@ button.tile--filter[aria-pressed="true"] .l{color:var(--ink)}
 .chr-stage.climax::before{opacity:1!important;filter:brightness(1.1);transition:opacity .7s ease,filter .7s ease}
 .chr-panel.climax{border-left:3px solid var(--wax-red)}
 .chr-stage svg{flex:1;width:100%;display:block;min-height:0;position:relative;z-index:1}
-.chr-eratag{position:absolute;top:14px;left:14px;z-index:2;border:1px solid rgba(90,138,141,.55);
-  color:#f3ead9;background:rgba(8,23,25,.65);border-radius:6px;padding:7px 13px;
-  font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
-  pointer-events:none}
 .chr-legend{display:none}
 /* elemen SVG */
 .chr-coast{fill:rgba(40,33,18,.62);stroke:rgba(90,138,141,.6);stroke-width:1.4}
@@ -663,7 +659,6 @@ footer p{margin:0 0 10px;line-height:1.55}
       <p class="hd">Era Sejarah</p>
     </nav>
     <div class="chr-stage" id="chrStage" data-era="">
-      <div class="chr-eratag" id="chrEratag" aria-hidden="true"></div>
       <div id="chrMapWrap" style="position:relative; flex:1; width:100%; min-height:0; background:#1a1a1a; border-radius:8px; overflow:hidden;">
         <img id="chrMap" src="{% static 'map_app/img/peta-untukruangtengah.png' %}"
              alt="Peta tua pantai barat Sumatra bergaya engraving dengan kapal-kapal layar VOC"
@@ -1110,9 +1105,9 @@ if (chrStage && ALL.length && ERAS_META.length) {
       ${subtitle ? `<p class="chr-subtitle">${esc(subtitle)}</p>` : ''}
       <p class="chr-meta">${esc(ev.event_date_raw || '—')}</p>
       <div class="chr-quote">&ldquo;${esc(ev.text_asli)}&rdquo;</div>
+      ${docExcerpt ? `<div class="chr-doc-thumb" aria-hidden="true"><p class="chr-doc-thumb-text">${esc(docExcerpt)}</p></div>` : ''}
       <details class="chr-source-details">
         <summary class="chr-source-header">Sumber Primer</summary>
-        ${docExcerpt ? `<div class="chr-doc-thumb" aria-hidden="true"><p class="chr-doc-thumb-text">${esc(docExcerpt)}</p></div>` : ''}
         <p class="chr-source-name">Arsip ${esc(ev.source_document || '—')}</p>
         <p class="chr-source-page">Halaman ${esc(ev.source_page || '—')}${ev.book_page ? `, baris ${esc(ev.book_page)}` : ''}</p>
         ${statusHTML}
@@ -1146,7 +1141,6 @@ if (chrStage && ALL.length && ERAS_META.length) {
 
   /* ── state tunggal ── */
   let active = -1;
-  const eratag = document.getElementById('chrEratag');
   const count = document.getElementById('chrCount');
   function setActive(i) {
     active = Math.max(0, Math.min(SEQ.length - 1, i));
@@ -1156,7 +1150,6 @@ if (chrStage && ALL.length && ERAS_META.length) {
     chrStage.classList.toggle('climax', ev.title?.includes('Traktat Painan'));
     panel.classList.toggle('climax', ev.title?.includes('Traktat Painan'));
     const eraMeta = ERAS_META.find(e => e.slug === ev.era_slug);
-    eratag.textContent = eraMeta ? `${eraMeta.label} · ${eraMeta.range}` : '';
 
     // --- Footer sidebar: ringkasan periode aktif ---
     if (eraMeta) {
