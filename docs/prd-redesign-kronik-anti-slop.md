@@ -1,6 +1,6 @@
 # PRD: Redesign Kronik Pantai Barat — Anti AI Slop
 
-**Status:** Sprint 1 selesai & di-commit (`1d52078`). Sprint 2 selesai, siap commit.
+**Status:** Sprint 1 & 2 selesai & di-commit (`1d52078`, `40a633d`). Arahan desain langsung user (2026-07-16) menggantikan sebagian P0.1 -- lihat §2c.
 **Sumber:** `docs/audit-ux-ui-ai-slop-salido.md` (audit UX/UI senior manager) + temuan susulan dari `docs/audit-redesign-ruang-kosong-django-tailwind.md` (lihat §2b).
 **Target:** `/linimasa` di repo ini (Django template + vanilla JS + SVG)
 **Scope:** P0 + P1 + P2 (full scope sesuai audit §16) + item susulan §2b
@@ -61,6 +61,24 @@ Sesi critique terpisah membandingkan mockup final desainer (`docs/Designer-fix.p
 - Rekomendasi: hapus CSS dead code (`.chr-compass` dkk.) di sprint pembersihan terpisah agar tidak membingungkan kontributor berikutnya — di luar scope P0/P1 saat ini.
 
 **Bug tambahan ditemukan saat verifikasi Sprint 1 (screenshot Playwright):** `#chrMapWrap` dikunci `aspect-ratio:3/2` (`linimasa.html:633`) padahal parent-nya (`.chr-stage`, flex column yang mengisi tinggi grid `100dvh`) lebih tinggi dari rasio itu — menyisakan celah kosong di bawah gambar peta yang menampakkan `.chr-stage::before` (background `linimasa-hero.jpg`, gambar berbeda) tembus, menciptakan efek "dua peta bertumpuk". **Sudah diperbaiki**: `aspect-ratio:3/2` diganti `flex:1;min-height:0` supaya gambar mengisi penuh panggung tanpa celah. Diverifikasi via screenshot Playwright — kapal dan kompas dari `peta-untukruangtengah.png` sekarang terlihat penuh, bukan cuma sepotong.
+
+---
+
+## 2c. Arahan Desain Langsung User — Peta Polos + Thumbnail Dokumen Tulisan Tangan (2026-07-16)
+
+User (bukan dari dokumen audit) memberi arahan langsung setelah melihat panggung peta jalan: peta terlalu ramai dengan tulisan/garis, dan warnanya sengaja diredupkan padahal aslinya berwarna. Ini **membalik sebagian keputusan P0.1** yang baru dikerjakan Sprint 1 — dicatat di sini supaya tidak ada yang bingung kenapa `ROUTE_LINES`/filter aktif-sekunder-dorman hilang lagi dari histori commit.
+
+**Perubahan:**
+- Label nama pelabuhan (`.lbl` span, 14 kota) **dihapus total** dari overlay peta — port ditandai titik polos saja (`.core`/`.halo`), tanpa teks. Keputusan user: lokasi cukup ditunjukkan lewat panel kanan + caption era, bukan tulisan di atas gambar.
+- Garis rute `route-voc`/`route-orbit` (fungsi `drawRoutes()`, array `ROUTE_LINES`, dan logic active/secondary/dormant di `setActive()` yang baru dibuat P0.1) **dihapus seluruhnya**, bukan cuma diredupkan. Peta sekarang murni ilustrasi + titik pelabuhan, tanpa elemen garis.
+- `#chrMap` inline style `opacity:.5; filter:grayscale(60%) brightness(.7)` **dihapus** — gambar `peta-untukruangtengah.png` tampil warna asli (opacity 1, tanpa filter).
+- **Item baru:** thumbnail dokumen di panel `Sumber Primer` — perkamen `docs/traktat.png` (dicopy ke `static/map_app/img/traktat.png`) dengan kutipan pembuka `ev.text_asli` (≤90 karakter, kutipan arsip nyata Dagh-register/Corpus Diplomaticum, bukan teks placeholder) yang dirender pakai font tulisan-tangan custom `docs/Yasraf-Amir-Piliang.otf` (dicopy ke `static/map_app/fonts/`, didaftarkan via `@font-face`). Berlaku utk **semua 101 event** (bukan cuma Traktat Painan) — sesuai arahan user, supaya jadi satu sistem ilustrasi konsisten, bukan dekorasi sekali pakai. Kutipan lengkap tetap ada di `.chr-quote` yang mudah dibaca; thumbnail murni penguat visual (`aria-hidden="true"`, tidak duplikat ke screen reader).
+
+**Dampak ke item PRD sebelumnya:**
+- P0.1 (audit §9, "garis rute = efek bukan informasi") — **selesai dengan cara berbeda dari rencana**: bukan diberi hierarki aktif/sekunder/dorman, tapi dihapus total atas keputusan desain user. Tidak perlu dikerjakan ulang.
+- P1.6 (pisahkan layer atmosfer/geografi/peristiwa, opacity overlay) — **berubah arah**: overlay dihapus total (bukan diturunkan sebagian), karena user minta warna asli. Item P1.6 dianggap selesai dengan solusi paling sederhana (tidak ada overlay).
+
+**File:** `linimasa.html` — hapus `.lbl` span & CSS terkait, hapus `drawRoutes()`/`ROUTE_LINES`, ubah inline style `#chrMap`, tambah `@font-face` + `.chr-doc-thumb` CSS + markup di `renderPanel()` + helper `openingWords()`
 
 ---
 

@@ -36,6 +36,10 @@ try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.document
   --paper:#000000; --paper-deep:#050505; --panel:rgba(243,234,217,.05); --panel-2:rgba(243,234,217,.08);
   --ink:#f3ead9; --muted:#a09889; --muted-dark:#c4b9a5; --line:rgba(243,234,217,.1); --accent:#29484b;
 }
+@font-face{
+  font-family:"Yasraf Piliang"; src:url("{% static 'map_app/fonts/Yasraf-Amir-Piliang.otf' %}") format("opentype");
+  font-weight:400; font-style:normal; font-display:swap;
+}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
   line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -568,6 +572,19 @@ footer p{margin:0 0 10px;line-height:1.55}
 .chr-source-details summary:hover{color:var(--ink)}
 .chr-source-details[open] .chr-source-name{font-size:.82rem;margin:4px 0 2px}
 .chr-source-details[open] .chr-source-page{font-size:.78rem;color:var(--muted)}
+
+/* Thumbnail dokumen -- perkamen VOC asli (docs/traktat.png) dgn kutipan
+   pembuka text_asli (kutipan arsip nyata, bukan lorem ipsum) ditulis dalam
+   font tulisan-tangan khusus. Dekoratif, murni penguat "sumber primer nyata";
+   kutipan lengkap tetap di .chr-quote yang mudah dibaca. */
+.chr-doc-thumb{float:right;width:118px;aspect-ratio:2/3;margin:0 0 10px 14px;
+  background:url("{% static 'map_app/img/traktat.png' %}") center/cover no-repeat;
+  border-radius:2px;box-shadow:0 6px 18px rgba(0,0,0,.5);padding:16px 14px 34px;
+  display:flex;align-items:flex-start}
+.chr-doc-thumb-text{font-family:"Yasraf Piliang",var(--serif);font-size:1.05rem;line-height:1.3;
+  color:#3a2308;margin:0}
+@media(max-width:640px){.chr-doc-thumb{width:96px;padding:12px 10px 28px}
+  .chr-doc-thumb-text{font-size:.92rem}}
 </style>
 </head>
 <body>
@@ -650,7 +667,7 @@ footer p{margin:0 0 10px;line-height:1.55}
       <div id="chrMapWrap" style="position:relative; flex:1; width:100%; min-height:0; background:#1a1a1a; border-radius:8px; overflow:hidden;">
         <img id="chrMap" src="{% static 'map_app/img/peta-untukruangtengah.png' %}"
              alt="Peta tua pantai barat Sumatra bergaya engraving dengan kapal-kapal layar VOC"
-             style="width:100%; height:100%; object-fit:cover; opacity:0.5; filter:grayscale(60%) brightness(0.7);"
+             style="width:100%; height:100%; object-fit:cover;"
              loading="lazy">
         <div id="chrMapOverlay" style="position:absolute; inset:0; pointer-events:none;"></div>
       </div>
@@ -822,6 +839,14 @@ footer p{margin:0 0 10px;line-height:1.55}
 <script type="module">
 "use strict";
 const esc = s => String(s ?? '').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+/* Kutipan pembuka (bukan seluruh text_asli) untuk thumbnail dokumen -- perkamen
+   kecil cuma cukup utk beberapa kata pertama, kutipan lengkap tetap di .chr-quote. */
+const openingWords = (text, maxLen) => {
+  const t = String(text ?? '').trim();
+  if (!t) return '';
+  if (t.length <= maxLen) return t;
+  return t.slice(0, t.lastIndexOf(' ', maxLen)) + '…';
+};
 const TYPE_COLOR = {suksesi:'var(--evt-suksesi)', perjanjian:'var(--evt-perjanjian)', konflik:'var(--evt-konflik)', diplomasi:'var(--evt-diplomasi)', administratif:'var(--evt-administratif)'};
 
 const dataEl = document.getElementById('linimasa-data');
@@ -991,81 +1016,22 @@ if (chrStage && ALL.length && ERAS_META.length) {
     return null;
   };
 
-  /* ── render port dots di overlay peta gambar ── */
+  /* ── render port dots di overlay peta gambar ──
+     Tanpa label teks (permintaan user: peta murni visual, lokasi ditunjukkan
+     lewat panel kanan + caption era, bukan tulisan di atas gambar). */
   const overlay = document.getElementById('chrMapOverlay');
-  const LBL_END = new Set(['Nias','Singkil','Bayang','Painan']);
   const PORT_DOTS = {};
   Object.entries(PORT_PCT).forEach(([name, [yPct, xPct]]) => {
     const dot = document.createElement('div');
     dot.className = 'chr-port';
     dot.dataset.port = name;
-    const anchor = LBL_END.has(name);
-    dot.style.cssText = `position:absolute;left:${xPct}%;top:${yPct}%;transform:translate(-50%,-50%);cursor:pointer;text-align:${anchor?'right':'left'};z-index:2;pointer-events:auto;`;
-    const isActive = name === 'Aceh';
+    dot.style.cssText = `position:absolute;left:${xPct}%;top:${yPct}%;transform:translate(-50%,-50%);cursor:pointer;z-index:2;pointer-events:auto;`;
     dot.innerHTML = `<span class="halo" style="display:inline-block;width:20px;height:20px;border-radius:50%;border:2px solid rgba(243,234,217,.0);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;"></span>
-      <span class="core" style="display:inline-block;width:${name==='Aceh'?13:9}px;height:${name==='Aceh'?13:9}px;border-radius:50%;background:#f3ead9;border:2px solid #29484b;position:relative;z-index:1;"></span>
-      <span class="lbl" style="position:absolute;top:-18px;${anchor?'right:0':'left:0'};white-space:nowrap;font:600 10.5px var(--sans);color:#cfc4ab;letter-spacing:.05em;text-shadow:0 1px 4px rgba(8,23,25,.9);pointer-events:none;font-size:9px;">${name.toUpperCase()}</span>`;
+      <span class="core" style="display:inline-block;width:${name==='Aceh'?13:9}px;height:${name==='Aceh'?13:9}px;border-radius:50%;background:#f3ead9;border:2px solid #29484b;position:relative;z-index:1;"></span>`;
     overlay.appendChild(dot);
     PORT_DOTS[name] = dot;
   });
 
-
-  /* ── Route lines antar port ──
-     Setiap line disimpan di ROUTE_LINES dengan from/to supaya setActive()
-     bisa menandai active/secondary/dormant per event (audit §9: rute
-     statis semua tampil sekaligus = efek, bukan informasi). */
-  const ROUTE_LINES = [];
-  function drawRoutes() {
-    const overlay = document.getElementById('chrMapOverlay');
-    const svgNS = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(svgNS, 'svg');
-    svg.setAttribute('viewBox', '0 0 100 100');
-    svg.setAttribute('preserveAspectRatio', 'none');
-    svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1';
-
-    const acehPort = PORT_PCT['Aceh'];
-    const vocRoutes = [
-      ['Aceh','Barus'],['Barus','Singkil'],['Singkil','Natal'],
-      ['Natal','Air Bangis'],['Air Bangis','Tiku'],['Tiku','Pariaman'],
-      ['Pariaman','Padang'],['Padang','Salido'],['Salido','Painan'],
-      ['Painan','Air Haji'],['Air Haji','Inderapura']
-    ];
-
-    vocRoutes.forEach(([from, to]) => {
-      const fromPos = PORT_PCT[from];
-      const toPos = PORT_PCT[to];
-      if (!fromPos || !toPos) return;
-      const line = document.createElementNS(svgNS, 'line');
-      line.setAttribute('x1', fromPos[1]); line.setAttribute('y1', fromPos[0]);
-      line.setAttribute('x2', toPos[1]); line.setAttribute('y2', toPos[0]);
-      line.setAttribute('class', 'route-line route-voc');
-      line.setAttribute('stroke', '#a04a35');
-      line.setAttribute('stroke-width', '0.3');
-      line.setAttribute('stroke-dasharray', '1 1.5');
-      line.style.transition = 'opacity .5s ease';
-      svg.appendChild(line);
-      ROUTE_LINES.push({ el: line, from, to });
-    });
-
-    // Aceh orbit lines to major ports
-    ['Barus','Padang','Inderapura'].forEach(port => {
-      const toPos = PORT_PCT[port];
-      if (!toPos) return;
-      const line = document.createElementNS(svgNS, 'line');
-      line.setAttribute('x1', acehPort[1]); line.setAttribute('y1', acehPort[0]);
-      line.setAttribute('x2', toPos[1]); line.setAttribute('y2', toPos[0]);
-      line.setAttribute('class', 'route-line route-orbit');
-      line.setAttribute('stroke', '#5a8a8d');
-      line.setAttribute('stroke-width', '0.25');
-      line.setAttribute('stroke-dasharray', '0.8 1.2');
-      line.style.transition = 'opacity .5s ease';
-      svg.appendChild(line);
-      ROUTE_LINES.push({ el: line, from: 'Aceh', to: port });
-    });
-
-    overlay.appendChild(svg);
-  }
-  drawRoutes();
 
   /* ── sidebar era ── */
   const nav = document.getElementById('chrNav');
@@ -1133,6 +1099,7 @@ if (chrStage && ALL.length && ERAS_META.length) {
 
     const counter = `PERISTIWA ${String(active + 1).padStart(2, '0')} / ${String(SEQ.length).padStart(2, '0')}`;
     const subtitle = [ev.event_type, ev.ruler_actor].filter(Boolean).join(' · ');
+    const docExcerpt = openingWords(ev.text_asli, 90);
 
     panel.innerHTML = `
       <p class="evt-counter">${counter}</p>
@@ -1145,6 +1112,7 @@ if (chrStage && ALL.length && ERAS_META.length) {
       <div class="chr-quote">&ldquo;${esc(ev.text_asli)}&rdquo;</div>
       <details class="chr-source-details">
         <summary class="chr-source-header">Sumber Primer</summary>
+        ${docExcerpt ? `<div class="chr-doc-thumb" aria-hidden="true"><p class="chr-doc-thumb-text">${esc(docExcerpt)}</p></div>` : ''}
         <p class="chr-source-name">Arsip ${esc(ev.source_document || '—')}</p>
         <p class="chr-source-page">Halaman ${esc(ev.source_page || '—')}${ev.book_page ? `, baris ${esc(ev.book_page)}` : ''}</p>
         ${statusHTML}
@@ -1229,38 +1197,21 @@ if (chrStage && ALL.length && ERAS_META.length) {
     Object.entries(PORT_DOTS).forEach(([port, dot]) => {
       const core = dot.querySelector('.core');
       const halo = dot.querySelector('.halo');
-      const lbl = dot.querySelector('.lbl');
       dot.classList.remove('active', 'related', 'dormant');
       if (port === activePort) {
         dot.classList.add('active');
         if (core) { core.style.background = '#f3ead9'; core.style.borderColor = '#29484b'; core.style.width = port==='Aceh'?'17px':'13px'; core.style.height = port==='Aceh'?'17px':'13px'; }
         if (halo) { halo.style.borderColor = 'rgba(90,138,141,.7)'; }
-        if (lbl) { lbl.style.color = '#f3ead9'; lbl.style.fontSize = '11px'; }
       } else if (relatedPorts.has(port)) {
         dot.classList.add('related');
         if (core) { core.style.background = '#f3ead9'; core.style.opacity = '0.7'; core.style.width = '10px'; core.style.height = '10px'; }
-        if (lbl) { lbl.style.opacity = '0.7'; }
       } else if (port !== 'Aceh') {
         dot.classList.add('dormant');
         if (core) { core.style.opacity = '0.25'; core.style.width = '6px'; core.style.height = '6px'; }
-        if (lbl) { lbl.style.opacity = '0'; }
         if (halo) { halo.style.borderColor = 'rgba(243,234,217,0)'; }
       } else {
         if (core) { core.style.opacity = '1'; core.style.background = '#f3ead9'; core.style.borderColor = '#29484b'; }
-        if (lbl) { lbl.style.opacity = '1'; }
       }
-    });
-
-    // --- Route lines: active (menyentuh port aktif) / secondary (menyentuh port terkait) / dormant ---
-    ROUTE_LINES.forEach(({ el, from, to }) => {
-      const isVoc = el.classList.contains('route-voc');
-      const touchesActive = activePort && (from === activePort || to === activePort);
-      const touchesRelated = relatedPorts.has(from) || relatedPorts.has(to);
-      let opacity;
-      if (touchesActive) opacity = isVoc ? '0.85' : '0.75';
-      else if (touchesRelated) opacity = isVoc ? '0.3' : '0.25';
-      else opacity = '0.06';
-      el.setAttribute('opacity', opacity);
     });
 
     // --- Scrubber dots ---
