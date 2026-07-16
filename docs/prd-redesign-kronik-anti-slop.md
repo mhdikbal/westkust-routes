@@ -135,6 +135,24 @@ Dua sistem font yang sama sekali berbeda antara halaman utama situs dan `/linima
 
 ---
 
+## 2f. Empat Perbaikan Susulan (2026-07-17): Ruang Kosong Kembali, Kebocoran Dot, Toolbar/Scrubber, Ikon Hilang
+
+Efek samping dari §2e (tipografi lebih besar) + tindak lanjut observasi sampingan yang dicatat di §2e.
+
+**1. Ruang kosong peta kembali muncul.** Root cause: setelah `min-height:100dvh` dihapus dari `.chronicle` (§2d), section jadi *auto-height* mengikuti kolom terpanjang — sebelum §2e itu cukup kecil (~664px di 1440×900), tapi setelah font/line-height dibesarkan, panel kanan (badge+meta-row+quote lebih besar) jadi kolom terpanjang alami di **836px**, dan `#chrNav`/`#chrPanel` yang didesain `overflow-y:auto` untuk scroll internal jadi tidak pernah aktif (tak ada batas tinggi utk discroll), keduanya melar penuh, ikut menyeret `.chr-stage`/peta jadi 836px juga — letterbox balik ke ±169px per sisi. **Perbaikan:** `.chronicle` dikunci `height:min(78vh,720px)` (bukan auto, bukan 100dvh) — sidebar/panel yang lebih panjang dari itu scroll internal (fitur yang memang sudah didesain, cuma tidak pernah ketemu situasi utk aktif), peta dapat letterbox yang lebih konsisten dan tidak lagi terikat panjang konten sidebar/panel. Hasil: leftover turun ke ±100px per sisi (1440×900) — tidak senol sebelum §2e krn font memang sengaja dibesarkan, tapi jauh dari ±169px dan sekarang **stabil** (tidak lagi tergantung panjang quote/konten).
+
+**2. "Kebocoran" dot pelabuhan.** User menunjukkan ulang `<span class="core" style="...">` yang sama persis dua kali — setelah dicek, bukan bug visual baru (posisi dot sudah benar sejak perbaikan rasio 3:2), melainkan keluhan soal **inline style JS yang bulky** (~300 karakter per dot × 14 dot, semua warna/ukuran/posisi state di-set langsung via `core.style.xxx` dari JS, bukan class CSS) — gaya ini sendiri yang "bocor" ke markup. **Perbaikan:** refactor total — `.chr-port .core`/`.halo` dan modifier `.active`/`.related`/`.dormant` sepenuhnya jadi CSS class (termasuk ukuran, warna, opacity per state), JS di `setActive()` disederhanakan jadi murni `classList.add/remove` tanpa satupun `element.style.xxx`. Bonus: ditemukan CSS mati peninggalan versi SVG lama (`.chr-port circle.core`, `.chr-port text` — selector yang tak pernah match elemen HTML `<div>`/`<span>` yang dipakai sekarang) — dihapus. Bonus lain: `haloPulse` keyframe punya bug laten (animasi `transform:scale()` menimpa `transform:translate(-50%,-50%)` dasarnya, bikin halo "meloncat" posisi saat animasi) — diperbaiki sekalian jadi `translate(-50%,-50%) scale()` gabungan.
+
+**3. Toolbar & scrubber muncul di tampilan Daftar.** Dikonfirmasi bug nyata (bukan cuma observasi) — `#chrToolbar`/`#chrScrub`/`#chrEraBands` adalah sibling `.chronicle`, bukan child, jadi `.js.show-list .chronicle{display:none}` tidak menyembunyikan mereka. **Perbaikan:** tambah `.js.show-list #chrToolbar, #chrScrub, #chrEraBands{display:none}`. Diverifikasi: ketiganya `display:none` saat mode Daftar aktif.
+
+**4. Ikon hilang di toolbar.** User tanya soal Streamline (streamlinehq.com) sbg sumber ikon. Dicek: search box toolbar (P3.1) tidak punya ikon kaca pembesar, tombol Reset tidak punya ikon — gap nyata dibanding elemen lain yang sudah konsisten pakai outline 24×24/stroke-width 2 (gaya setara Feather/Lucide, semua inline SVG hand-coded, tanpa dependency eksternal). **Keputusan:** tambah ikon yang hilang (search glyph di search box, refresh-icon di tombol Reset) dengan gaya yang SAMA (bukan pindah ke Streamline) — lihat jawaban lengkap di respons chat soal kenapa Streamline tidak direkomendasikan utk proyek ini (lisensi berbayar utk sebagian besar set, dependency eksternal baru utk sesuatu yang sudah bisa dibuat konsisten inline).
+
+**Verifikasi Playwright:** leftover ±100px (turun dari ±169px), `navScrollable`/`panelScrollable` keduanya `true` (scroll internal aktif), `chrToolbar`/`chrScrub`/`chrEraBands` semua `display:none` di mode Daftar, tanpa console/page error.
+
+**File:** `linimasa.html` — CSS `.chronicle` (`height:min(78vh,720px)`), `.chr-port`/`.core`/`.halo` + modifier (refactor dari inline style), JS `setActive()` port-state loop (disederhanakan), `.js.show-list` rules baru, markup+CSS ikon search/reset toolbar
+
+---
+
 ## 3. Prinsip Desain
 
 Dari audit §15 — yang menjadi north star redesign:

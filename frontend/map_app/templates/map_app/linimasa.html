@@ -322,8 +322,11 @@ button.tile--filter[aria-pressed="true"] .l{color:var(--ink)}
 .chr-toolbar{display:none}
 .js .chr-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:18px 0 0}
 .chr-toolbar-controls{display:flex;align-items:center;flex-wrap:wrap;gap:10px;flex:1;min-width:0}
-.chr-tb-search{flex:1;min-width:180px;max-width:320px;background:rgba(243,234,217,.04);
-  border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-family:var(--sans);
+.chr-tb-search-wrap{position:relative;flex:1;min-width:180px;max-width:320px}
+.chr-tb-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  width:15px;height:15px;color:var(--muted);pointer-events:none}
+.chr-tb-search{width:100%;background:rgba(243,234,217,.04);
+  border:1px solid var(--line);border-radius:999px;padding:9px 16px 9px 38px;font-family:var(--sans);
   font-size:.82rem;color:var(--ink)}
 .chr-tb-search::placeholder{color:var(--muted)}
 .chr-tb-search:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
@@ -334,28 +337,38 @@ button.tile--filter[aria-pressed="true"] .l{color:var(--ink)}
    (krem di atas transparan) kebawa ke opsi tapi background popup tetap putih
    bawaan OS, teks jadi tak terbaca. Set eksplisit di sini. */
 .chr-tb-select option{background:#14100a;color:var(--ink)}
-.chr-tb-reset{background:none;border:1px solid var(--line);border-radius:8px;padding:9px 14px;
-  font-family:var(--sans);font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer;transition:.15s}
+.chr-tb-reset{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--line);
+  border-radius:8px;padding:9px 14px;font-family:var(--sans);font-size:.78rem;font-weight:600;
+  color:var(--muted);cursor:pointer;transition:.15s}
+.chr-tb-reset svg{width:14px;height:14px;flex:none}
 .chr-tb-reset:hover{color:var(--ink);border-color:var(--ink)}
 .chr-tb-reset:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .chr-tb-reset[disabled]{opacity:.4;cursor:default}
 @media(max-width:768px){.js .chr-toolbar{flex-direction:column;align-items:stretch}
   .chr-toolbar-controls{flex-direction:column;align-items:stretch}
-  .chr-tb-search{max-width:none}}
+  .chr-tb-search-wrap{max-width:none}}
 /* Full-bleed lebar penuh (permintaan user lama: "lini masa full width sebagai hero")
-   -- keluar dari max-width .wrap via margin-inline calc(50% - 50vw). Tinggi TIDAK lagi
-   dipaksa 100dvh (revisi 2026-07-16): peta rasio 3:2 di lebar kolom ini cuma butuh
-   ~500px, memaksa 100dvh menyisakan ratusan px kosong solid di atas+bawah peta --
-   persis dead-space yang jadi prinsip inti proyek ini utk dihindari. Tinggi sekarang
-   mengikuti konten (align-items:stretch bawaan grid tetap menyamakan 3 kolom, tapi
-   berdasar kolom terpanjang alami, bukan viewport). */
+   -- keluar dari max-width .wrap via margin-inline calc(50% - 50vw).
+   Tinggi DIKUNCI (revisi 2026-07-17, bukan auto seperti revisi sehari sebelumnya):
+   tanpa batas tinggi eksplisit, grid auto-size ke kolom TERPANJANG (panel kanan,
+   makin tinggi stlh tipografi diperbesar §2e) -- overflow-y:auto pada
+   #chrNav/#chrPanel jadi tak pernah aktif krn tak ada batas tinggi utk di-scroll,
+   dan peta ikut melar mengikuti tinggi itu (ruang kosong muncul lagi). Dikunci ke
+   min(78vh,720px): peta (~500px pd 1440px lebar) dapat letterbox wajar & konsisten,
+   sidebar/panel yang kontennya lebih panjang scroll internal (sudah didesain utk itu). */
 .js .chronicle{display:grid;grid-template-columns:minmax(200px,19%) 1fr minmax(300px,29%);
-  width:100vw;margin:18px calc(50% - 50vw) 30px;
+  width:100vw;height:min(78vh,720px);margin:18px calc(50% - 50vw) 30px;
   border-top:1px solid var(--line);border-bottom:1px solid var(--line);
   background:rgba(243,234,217,.02)}
 .js.show-list .chronicle{display:none}
 .js #listView{display:none}
 .js.show-list #listView{display:block}
+/* Toolbar & scrubber cuma relevan utk mode Peta (#chronicle) -- sebelumnya
+   keduanya sibling dari .chronicle (bukan child), jadi tidak ikut hilang saat
+   .show-list disetel, nyempil di atas tampilan Daftar. */
+.js.show-list #chrToolbar,
+.js.show-list #chrScrub,
+.js.show-list #chrEraBands{display:none}
 
 /* kolom kiri: navigasi era */
 .chr-nav{counter-reset:cera;background:rgba(243,234,217,.02);border-right:1px solid var(--line);padding:20px 14px 20px 18px;
@@ -453,24 +466,30 @@ button.tile--filter[aria-pressed="true"] .l{color:var(--ink)}
 @media (prefers-reduced-motion: reduce){.js-anim .chr-ship{animation:none;transform:translate(320px,450px)}}
 .chr-ship2{opacity:.12}
 .js-anim .chr-ship2{animation:none;transform:translate(120px,430px) scale(.55)}
-.chr-port circle.core{fill:#f3ead9;stroke:#081719;stroke-width:1}
-.chr-port text{fill:#cfc4ab;font:600 10.5px var(--sans);letter-spacing:.05em;paint-order:stroke;stroke:rgba(8,23,25,.85);stroke-width:2.5px}
-.chr-port{cursor:pointer}
-.chr-port:hover text{fill:#f3ead9}
-.chr-port.active circle.core{fill:#f3ead9;stroke:#29484b;stroke-width:2}
-.chr-port.active .core{box-shadow:0 0 12px 3px rgba(243,234,217,.35)}
+/* Dot pelabuhan -- dulu inline style JS penuh per elemen ("kebocoran" style ke
+   markup, tiap dot ~300 karakter style="..."), sekarang murni CSS class +
+   modifier state (.active/.related/.dormant) yang sudah di-toggle JS. */
+.chr-port{cursor:pointer;position:absolute;transform:translate(-50%,-50%);z-index:2}
+.chr-port .halo{display:inline-block;width:20px;height:20px;border-radius:50%;
+  border:2px solid transparent;position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);pointer-events:none;opacity:0;
+  transition:opacity .3s ease,border-color .3s ease}
+.chr-port .core{display:inline-block;width:9px;height:9px;border-radius:50%;
+  background:#f3ead9;border:2px solid #29484b;position:relative;z-index:1;
+  transition:width .3s ease,height .3s ease,opacity .3s ease}
+.chr-port[data-port="Aceh"] .core{width:13px;height:13px}
+.chr-port.active .core{width:13px;height:13px;box-shadow:0 0 12px 3px rgba(243,234,217,.35)}
+.chr-port[data-port="Aceh"].active .core{width:17px;height:17px}
+.chr-port.active .halo{opacity:.9;border-color:rgba(90,138,141,.7)}
 .js-anim .chr-port.active .core{animation:portGlow 2.4s ease-in-out infinite alternate}
 @keyframes portGlow{from{box-shadow:0 0 8px 2px rgba(243,234,217,.25)}
   to{box-shadow:0 0 16px 4px rgba(243,234,217,.45)}}
-.chr-port.active text{fill:#f3ead9;font-size:11.5px}
-.chr-port .halo{fill:none;stroke:#f3ead9;opacity:0}
-.chr-port.active .halo{opacity:.9;transform-box:fill-box;transform-origin:center}
 .js-anim .chr-port.active .halo{animation:haloPulse 2.4s ease-out infinite}
-@keyframes haloPulse{0%{transform:scale(.5);opacity:.9}100%{transform:scale(2.1);opacity:0}}
-.chr-port.dormant circle.core{r:2.5;opacity:.25;transition:r .4s ease,opacity .4s ease}
-.chr-port.dormant text{opacity:0;transition:opacity .3s ease}
-.chr-port.related circle.core{r:4.5;fill:var(--node-related);transition:r .4s ease}
-.chr-port.related text{opacity:.7;font-size:9.5px}
+@keyframes haloPulse{0%{transform:translate(-50%,-50%) scale(.5);opacity:.9}
+  100%{transform:translate(-50%,-50%) scale(2.1);opacity:0}}
+.chr-port.related .core{width:10px;height:10px;opacity:.7}
+.chr-port.dormant .core{width:6px;height:6px;opacity:.25}
+.chr-port.dormant .halo{opacity:0}
 
 /* scrubber garis waktu */
 .chr-scrub{position:relative;z-index:2;display:flex;align-items:center;gap:10px;
@@ -703,9 +722,12 @@ footer p{margin:0 0 10px;line-height:1.55}
       <span class="toggle-label">Tampilan daftar</span>
     </button>
     <form class="chr-toolbar-controls" id="chrToolbarForm">
-      <label class="sr-only" for="chrSearch">Cari peristiwa, lokasi, atau tokoh</label>
-      <input type="search" id="chrSearch" class="chr-tb-search"
-        placeholder="Cari peristiwa, lokasi, atau tokoh…" autocomplete="off">
+      <div class="chr-tb-search-wrap">
+        <svg class="chr-tb-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <label class="sr-only" for="chrSearch">Cari peristiwa, lokasi, atau tokoh</label>
+        <input type="search" id="chrSearch" class="chr-tb-search"
+          placeholder="Cari peristiwa, lokasi, atau tokoh…" autocomplete="off">
+      </div>
       <label class="sr-only" for="chrCategoryFilter">Kategori</label>
       <select id="chrCategoryFilter" class="chr-tb-select">
         <option value="">Semua kategori</option>
@@ -717,7 +739,10 @@ footer p{margin:0 0 10px;line-height:1.55}
       </select>
       <label class="sr-only" for="chrEraJump">Era</label>
       <select id="chrEraJump" class="chr-tb-select"><option value="">Semua era</option></select>
-      <button type="button" id="chrToolbarReset" class="chr-tb-reset">Reset</button>
+      <button type="button" id="chrToolbarReset" class="chr-tb-reset">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.64-6.36"/><polyline points="3 4 3 9 8 9"/></svg>
+        Reset
+      </button>
     </form>
   </div>
   <section class="chronicle" id="kronik" aria-label="Panggung kronik interaktif pantai barat Sumatra">
@@ -1079,9 +1104,10 @@ if (chrStage && ALL.length && ERAS_META.length) {
     const dot = document.createElement('div');
     dot.className = 'chr-port';
     dot.dataset.port = name;
-    dot.style.cssText = `position:absolute;left:${xPct}%;top:${yPct}%;transform:translate(-50%,-50%);cursor:pointer;z-index:2;pointer-events:auto;`;
-    dot.innerHTML = `<span class="halo" style="display:inline-block;width:20px;height:20px;border-radius:50%;border:2px solid rgba(243,234,217,.0);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;"></span>
-      <span class="core" style="display:inline-block;width:${name==='Aceh'?13:9}px;height:${name==='Aceh'?13:9}px;border-radius:50%;background:#f3ead9;border:2px solid #29484b;position:relative;z-index:1;"></span>`;
+    dot.style.left = `${xPct}%`;
+    dot.style.top = `${yPct}%`;
+    dot.style.pointerEvents = 'auto';
+    dot.innerHTML = `<span class="halo"></span><span class="core"></span>`;
     overlay.appendChild(dot);
     PORT_DOTS[name] = dot;
   });
@@ -1329,23 +1355,10 @@ if (chrStage && ALL.length && ERAS_META.length) {
     relatedPorts.delete('Aceh');
 
     Object.entries(PORT_DOTS).forEach(([port, dot]) => {
-      const core = dot.querySelector('.core');
-      const halo = dot.querySelector('.halo');
       dot.classList.remove('active', 'related', 'dormant');
-      if (port === activePort) {
-        dot.classList.add('active');
-        if (core) { core.style.background = '#f3ead9'; core.style.borderColor = '#29484b'; core.style.width = port==='Aceh'?'17px':'13px'; core.style.height = port==='Aceh'?'17px':'13px'; }
-        if (halo) { halo.style.borderColor = 'rgba(90,138,141,.7)'; }
-      } else if (relatedPorts.has(port)) {
-        dot.classList.add('related');
-        if (core) { core.style.background = '#f3ead9'; core.style.opacity = '0.7'; core.style.width = '10px'; core.style.height = '10px'; }
-      } else if (port !== 'Aceh') {
-        dot.classList.add('dormant');
-        if (core) { core.style.opacity = '0.25'; core.style.width = '6px'; core.style.height = '6px'; }
-        if (halo) { halo.style.borderColor = 'rgba(243,234,217,0)'; }
-      } else {
-        if (core) { core.style.opacity = '1'; core.style.background = '#f3ead9'; core.style.borderColor = '#29484b'; }
-      }
+      if (port === activePort) dot.classList.add('active');
+      else if (relatedPorts.has(port)) dot.classList.add('related');
+      else if (port !== 'Aceh') dot.classList.add('dormant');
     });
 
     // --- Scrubber dots ---
