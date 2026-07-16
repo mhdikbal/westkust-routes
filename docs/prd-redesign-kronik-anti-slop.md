@@ -107,6 +107,34 @@ User menilai thumbnail `traktat.png` (baru ditambahkan §2c) **terlalu ramai** �
 
 ---
 
+## 2e. Tipografi Disamakan dengan `salido.my.id` (2026-07-17)
+
+User melaporkan font `/linimasa` terasa sangat kecil, minta dicek terhadap font di halaman utama `salido.my.id`. **Temuan penting saat verifikasi:** `salido.my.id` bukan bagian dari repo Django ini — itu proyek Astro terpisah (`salido-web`, lihat memori server production). Diambil langsung dari HTML/CSS live (`curl` ke domain produksi):
+
+| | `salido.my.id` (live, Astro) | `/linimasa` (sebelum) |
+|---|---|---|
+| Font serif/heading | `"EB Garamond"` | `"Cormorant Garamond"` |
+| Font UI/sans | `"Space Grotesk"` | `"IBM Plex Sans"` |
+| Body base size | `1.0625rem` (~17px) | 16px (default, tak diset) |
+| Body line-height | `1.8` | `1.55` |
+
+Dua sistem font yang sama sekali berbeda antara halaman utama situs dan `/linimasa` — bukan cuma soal ukuran. User memilih **disamakan penuh** (opsi lain yang ditawarkan: pertahankan font lama, cuma naikkan ukuran — ditolak).
+
+**Implementasi:**
+- Google Fonts `<link>`: `Cormorant+Garamond` + `IBM+Plex+Sans` → `EB+Garamond` + `Space+Grotesk`
+- CSS vars: `--serif`, `--sans`, `--mono` diarahkan ke font baru
+- **Root fix penting:** `html{font-size:106.25%}` (≈17px) ditambahkan — bukan `body{font-size}`. `rem` dihitung relatif ke `<html>`, bukan `<body>`; sempat salah taruh di `body` dulu (tidak berpengaruh ke elemen manapun karena semua ukuran di file ini pakai `rem`), dikoreksi sebelum rebuild
+- `body{line-height:1.55→1.8}` menyamakan kelonggaran baris dgn situs utama
+- Elemen bacaan yang jauh di bawah baseline dinaikkan manual (di atas efek scale 106.25% otomatis): `.chr-quote` .93rem→1.1rem, `.chr-meta-item` .8rem→.92rem, `.chr-era .sum` .76rem→.88rem, `.chr-source-name`/`.chr-source-page` .84rem→.94rem. Label kecil huruf-kapital (`.evt-counter`, `.chr-source-header`, `.chr-status` — pola "eyebrow" yang salido.my.id sendiri pakai di `.eyebrow{font-size:.65rem}`) **tidak diubah**, itu gaya label yang disengaja kecil, bukan teks bacaan
+
+**Verifikasi Playwright:** `rootFontSize` terukur `17px`, `bodyFont`/`quoteFontFamily`/`titleFontFamily` semua terkonfirmasi `"Space Grotesk"`/`"EB Garamond"`, `.chr-quote` terukur `18.7px` (dari ~14.9px sebelumnya). Screenshot tampilan peta dan tampilan daftar keduanya dicek.
+
+**Observasi sampingan (belum diperbaiki, di luar scope task ini):** toolbar (P3.1) dan timeline scrubber+era-band (P3.4) adalah sibling dari `.chronicle`, bukan child-nya — jadi tetap terlihat saat pindah ke mode Daftar (`.js.show-list .chronicle{display:none}` tidak menyembunyikan mereka). Kemungkinan sudah begitu sejak scrubber pertama dibuat, bukan regresi dari sesi ini. Tidak dieksekusi karena user tidak memintanya kali ini.
+
+**File:** `linimasa.html` — `<link>` Google Fonts, CSS vars `--serif`/`--sans`/`--mono`, `html{font-size}`, `body{line-height}`, `.chr-quote`/`.chr-meta-item`/`.chr-era .sum`/`.chr-source-name`/`.chr-source-page`
+
+---
+
 ## 3. Prinsip Desain
 
 Dari audit §15 — yang menjadi north star redesign:
