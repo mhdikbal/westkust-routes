@@ -99,6 +99,12 @@ User menilai thumbnail `traktat.png` (baru ditambahkan §2c) **terlalu ramai** �
 
 **File:** `linimasa.html` — CSS `#chrMapWrap` (inline style), `.chr-stage` (`justify-content:center`, hapus `::before` & variannya), hapus markup/CSS/JS `.chr-doc-thumb`
 
+**Susulan (2026-07-16, user hard-restart tapi ruang kosong masih ada):** perbaikan §2d di atas menghilangkan bug crop/dot-salah-tempat, tapi menyisakan letterbox solid ~200px di atas+bawah peta pada 1440×900 (diukur via Playwright: `leftoverTop`/`leftoverBottom` ±199px tiap sisi) — karena `.chronicle{min-height:100dvh}` (permintaan user **lain, lebih lama**: "lini masa full width sebagai hero, halaman penuh seperti foto di awal") memaksa section setinggi viewport penuh, padahal peta rasio 3:2 di lebar kolom tengah cuma butuh ~500px. Dua requirement ini bentrok. **Diprioritaskan menghilangkan ruang kosong** (sejalan dgn prinsip inti proyek §3 di bawah) — `min-height:100dvh` dihapus dari `.chronicle`, tinggi section sekarang mengikuti konten kolom terpanjang secara alami (bukan dipaksa 1 layar).
+
+**Hasil terukur:** leftover per sisi turun dari ±199px → ±83px (1440×900), ±0px (1920×1080, peta pas persis dgn tinggi sidebar/panel), ±107px (1366×768). Tidak nol sempurna di semua ukuran (kolom sidebar/panel kadang lebih tinggi dari peta secara alami), tapi jauh berkurang dan terlihat proporsional, bukan area kosong yang mencolok. Kalau butuh nol mutlak di semua ukuran, perlu redesain proporsi lebar kolom grid supaya rasionya pas dgn 3:2 peta — di luar scope perbaikan cepat ini.
+
+**File:** `linimasa.html` — CSS `.chronicle` (hapus `min-height:100dvh`)
+
 ---
 
 ## 3. Prinsip Desain
