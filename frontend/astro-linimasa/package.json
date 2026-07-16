@@ -1,0 +1,18 @@
+{
+  "name": "astro-linimasa",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/node": "^8.3.4",
+    "@astrojs/preact": "^3.5.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "astro": "^4.16.0",
+    "preact": "^10.19.0",
+    "tailwindcss": "^3.4.0"
+  }
+}

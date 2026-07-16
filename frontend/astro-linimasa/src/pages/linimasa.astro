@@ -1,0 +1,235 @@
+---
+import { fetchLinimasa } from '../lib/api';
+import type { LinimasaEvent, EraWithEvents, EventType } from '../lib/types';
+import { EVENT_TYPE_LABELS } from '../lib/types';
+import { ERAS } from '../data/eras';
+import LinimasaLayout from '../layouts/LinimasaLayout.astro';
+import HeroSection from '../components/linimasa/HeroSection.astro';
+import EventCard from '../components/linimasa/EventCard.astro';
+import EraNav from '../components/linimasa/EraNav.astro';
+import ChronicleController from '../components/linimasa/ChronicleController';
+
+let events: LinimasaEvent[] = [];
+let apiError = false;
+try {
+  const data = await fetchLinimasa();
+  events = data.items ?? [];
+} catch {
+  apiError = true;
+}
+
+// Group events by era
+const eraOrder = ERAS.map(e => e.slug);
+const eraYearRanges: Record<string, [number|null, number|null]> = {
+  'klaim-awal': [1600, 1637],
+  'ratu-puncak': [1641, 1650],
+  'perang-damai': [1655, 1659],
+  'retak-painan': [1660, 1663],
+  'pengusiran-penataan': [1664, 1775],
+};
+
+const erasWithEvents: EraWithEvents[] = ERAS.map(era => {
+  const [from, to] = eraYearRanges[era.slug] ?? [null, null];
+  const filtered = events.filter(e => {
+    if (e.era_slug === era.slug) return true;
+    if (e.year == null) return false;
+    if (from != null && e.year < from) return false;
+    if (to != null && e.year > to) return false;
+    return true;
+  });
+  return { ...era, events: filtered };
+});
+
+// Stats
+const totalEvents = events.length;
+const byType = events.reduce<Record<string, number>>((acc, ev) => {
+  acc[ev.event_type] = (acc[ev.event_type] || 0) + 1;
+  return acc;
+}, {});
+const years = events.map(e => e.year).filter((y): y is number => y != null);
+const yearMin = years.length > 0 ? Math.min(...years) : null;
+const yearMax = years.length > 0 ? Math.max(...years) : null;
+const yearSpan = yearMin != null && yearMax != null ? yearMax - yearMin : 175;
+
+// Treaty event (highest id, type=perjanjian, typically the last entry)
+const treatyEvent = [...events]
+  .filter(e => e.event_type === 'perjanjian')
+  .sort((a, b) => b.id - a.id)[0];
+
+// Event type icons for filter buttons
+const evtIcons: Record<EventType, string> = {
+  suksesi: 'M12 2l2.09 6.26L20 9.27l-4.91 3.82L16.18 20 12 16.77 7.82 20l1.09-6.91L4 9.27l5.91-1.01z',
+  perjanjian: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8',
+  konflik: 'M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2',
+  diplomasi: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2zM9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+  administratif: 'M3 4h18v18H3zM16 2v4M8 2v4M3 10h18',
+};
+---
+
+<LinimasaLayout title="Kronik Pantai Barat — Linimasa">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
+
+  <HeroSection />
+
+  <div id="content" class="relative min-h-screen">
+    <div class="lini-masa-bg">
+      <img
+        class="w-full h-full object-cover opacity-50"
+        style="filter: grayscale(60%) brightness(0.7);"
+        src="/img/amh-5147-na.jpg"
+        alt="Peta VOC pantai barat Sumatra dengan jalur perdagangan laut berwarna merah, memperlihatkan posisi Atjeh di utara dan jaringan pelabuhan westkust — silakan gunakan slider atau panah untuk memperbesar dan melihat detail nama pelabuhan"
+      />
+    </div>
+
+    <div class="wrap relative z-10" id="app-root">
+      <div class="lg:grid lg:grid-cols-[220px_1fr] lg:gap-12">
+        <EraNav eras={erasWithEvents} />
+
+        <main>
+          <header class="mb-6">
+            <h2 class="font-serif text-2xl md:text-3xl font-bold text-ink mb-2">Kronik Pantai Barat</h2>
+            <p class="text-sm text-muted leading-relaxed">
+              Linimasa 101 peristiwa suksesi &amp; politik kekuasaan Atjeh atas pantai barat Sumatra dari
+              Corpus Diplomaticum Neerlando-Indicum &amp; Dagh-register.
+            </p>
+          </header>
+
+          {apiError && (
+            <div class="caveat error">
+              <h2>API tidak tersedia</h2>
+              <p>Backend FastAPI belum merespons. Pastikan backend berjalan dan endpoint <code class="mono text-xs bg-line px-1.5 py-0.5 rounded">/api/research/linimasa</code> aktif.</p>
+            </div>
+          )}
+
+          {!apiError && events.length === 0 && (
+            <div class="caveat">
+              <h2>Belum ada data</h2>
+              <p>Belum ada peristiwa yang dimuat dari backend.</p>
+            </div>
+          )}
+
+          {/* Stats */}
+          <div class="tiles">
+            <div class="tile">
+              <p class="k">{totalEvents}</p>
+              <p class="l">Total peristiwa</p>
+            </div>
+            <div class="tile">
+              <p class="k">{yearMin ?? '—'}</p>
+              <p class="l">Tahun paling awal</p>
+            </div>
+            <div class="tile">
+              <p class="k">{yearMax ?? '—'}</p>
+              <p class="l">Tahun paling akhir</p>
+            </div>
+            {Object.entries(byType).map(([type, count]) => (
+              <div class="tile">
+                <p class="k">{count}</p>
+                <p class="l">{EVENT_TYPE_LABELS[type as EventType] ?? type}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Controls */}
+          <div class="controls">
+            <label for="filter-type">Saring jenis:</label>
+            <select id="filter-type" class="filter-type">
+              <option value="">Semua jenis</option>
+              {(['suksesi', 'perjanjian', 'konflik', 'diplomasi', 'administratif'] as EventType[]).map(t => (
+                <option value={t}>{EVENT_TYPE_LABELS[t]}</option>
+              ))}
+            </select>
+            <span class="count">{totalEvents} peristiwa</span>
+          </div>
+
+          <button
+            class="view-toggle"
+            aria-pressed="false"
+            aria-label="Ganti ke tampilan kolom"
+            data-tooltip="Tampilkan 3 kolom: era / peristiwa / detail"
+          >
+            <svg class="icon-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            <svg class="icon-columns" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/></svg>
+            3 kolom
+          </button>
+
+          {/* Event cards per era */}
+          {erasWithEvents.map(era => (
+            <section class="era" id={`era-${era.slug}`}>
+              <div class="era-head">
+                <span class="era-range mono">{era.range}</span>
+                <h3 class="era-label">{era.label}</h3>
+              </div>
+              <p class="era-headline">{era.headline}</p>
+              <p class="era-summary">{era.summary}</p>
+              {era.events.length === 0 && (
+                <p class="text-xs text-muted italic">Tidak ada peristiwa dalam rentang ini.</p>
+              )}
+              {era.events.map(ev => (
+                <EventCard event={ev} isTreaty={ev.id === treatyEvent?.id} />
+              ))}
+            </section>
+          ))}
+
+          {/* Chronicle 3-column interactive stage */}
+          <ChronicleController
+            client:load
+            events={events}
+            eras={ERAS}
+          />
+
+          {/* Caveat */}
+          <div class="caveat mt-8">
+            <h2>Satuan analisis</h2>
+            <p>
+              Unit analisis bukan peristiwa tunggal, melainkan <strong>perubahan yurisdiksi atau hubungan kekuasaan</strong>
+              antara VOC dan Atjeh, yang terdiri dari satu atau lebih kejadian terkait di lokasi
+              yang sama atau berdekatan — misalnya penguasaan oleh Atjeh, penolakan VOC, dan
+              negosiasi yang mengarah pada serah terima lokasi.
+            </p>
+            <p>
+              Banyak peristiwa penting <strong>tidak memiliki tanggal pasti</strong> — hanya kuartal
+              atau tahun yang tercatat dalam surat. Di sinilah keterbatasan Dagh-register terasa:
+              dokumen ini mencatat peristiwa secara harian, tapi <strong>bukan kronologi resmi</strong>
+              — kejadian mungkin dicatat setelah waktunya, atau peristiwa penting terlewat
+              karena konflik kepentingan penulis.
+            </p>
+            <p>
+              Dampaknya pada rekonstruksi: <strong>urutan kejadian di beberapa bagian ini mungkin tidak
+              akurat</strong>, terutama untuk periode 1637–1641 (gejolak suksesi) dan 1656–1659
+              (perang singkat). Kami menggunakan Corpus Diplomaticum sebagai acuan utama untuk
+              perjanjian, tapi untuk peristiwa tanpa dokumen diplomatik, urutan bergantung pada
+              kapan Dagh-register mencatatnya.
+            </p>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.documentElement.classList.add('js');
+    try {
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
+        document.documentElement.classList.add('js-anim');
+    } catch {}
+  </script>
+
+  {/* Scroll reveal observer */}
+  <script>
+    if (document.documentElement.classList.contains('js-anim') && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        let i = 0;
+        entries.forEach(en => {
+          if (!en.isIntersecting) return;
+          const el = en.target;
+          el.style.transitionDelay = `${Math.min(i++, 8) * 45}ms`;
+          el.classList.add('is-visible');
+          el.addEventListener('transitionend', () => { el.style.transitionDelay = ''; }, { once: true });
+          io.unobserve(el);
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+      document.querySelectorAll('.reveal, details.card').forEach(el => io.observe(el));
+    }
+  </script>
+</LinimasaLayout>

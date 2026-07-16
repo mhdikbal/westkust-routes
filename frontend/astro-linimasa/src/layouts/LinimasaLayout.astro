@@ -1,0 +1,50 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Kronik Pantai Barat Sumatra — 101 peristiwa suksesi & politik kekuasaan Atjeh, 1600–1775' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, 'https://westkust-routes.salido.my.id');
+---
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="description" content={description}>
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content={canonicalURL.href}>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={title}>
+  <meta name="twitter:description" content={description}>
+  <link rel="canonical" href={canonicalURL.href}>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <title>{title}</title>
+
+  {/* Structured data */}
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": title,
+    "description": description,
+    "url": canonicalURL.href,
+    "inLanguage": "id",
+    "about": {
+      "@type": "Thing",
+      "name": "Kronik Pantai Barat Sumatra",
+      "description": "Linimasa 101 peristiwa suksesi & politik kekuasaan Atjeh atas pantai barat Sumatra, 1600-1775"
+    }
+  })} />
+</head>
+<body>
+  <slot />
+</body>
+</html>

@@ -1,0 +1,22 @@
+---
+import type { EraWithEvents } from '../../lib/types';
+
+interface Props {
+  eras: EraWithEvents[];
+}
+
+const { eras } = Astro.props;
+---
+
+<nav class="chr-nav hidden lg:block sticky top-0 h-screen overflow-y-auto" aria-label="Navigasi era">
+  <p class="text-xs uppercase tracking-widest text-muted mb-4 font-sans">Era Sejarah</p>
+  {eras.map(era => (
+    <a
+      href={`#era-${era.slug}`}
+      class="block py-3 px-3 rounded-lg text-sm text-muted hover:text-ink hover:bg-panel transition-colors mb-1 border-l-2 border-transparent hover:border-voc-copper"
+    >
+      <span class="mono text-xs text-muted-dark">{era.range}</span>
+      <span class="block font-serif font-semibold text-sm mt-0.5">{era.label}</span>
+    </a>
+  ))}
+</nav>
