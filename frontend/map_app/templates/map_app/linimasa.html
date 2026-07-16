@@ -152,6 +152,14 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22p
 .tile .k{font-family:var(--mono);font-size:1.55rem;font-weight:600;letter-spacing:-.02em;
   font-variant-numeric:tabular-nums;line-height:1;color:var(--ink)}
 .tile .l{font-size:.73rem;color:var(--muted);margin-top:5px;letter-spacing:.02em}
+.tile--primary .k{font-size:1.9rem;color:var(--accent)}
+button.tile--filter{border:1px solid transparent;cursor:pointer;text-align:left;font:inherit;
+  transition:background .15s,border-color .15s}
+button.tile--filter:hover{background:rgba(243,234,217,.06)}
+button.tile--filter:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+button.tile--filter[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
+button.tile--filter[aria-pressed="true"] .k,
+button.tile--filter[aria-pressed="true"] .l{color:var(--ink)}
 
 /* Sources footer — two-column layout */
 .sources-footer{margin-top:32px;padding-top:28px;border-top:1px solid var(--line)}
@@ -328,6 +336,15 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:22p
   line-height:1.25;color:var(--ink)}
 .chr-era .sum{display:none;font-size:.76rem;color:var(--muted);line-height:1.45;margin-top:4px}
 .chr-era.active .sum{display:block}
+
+.chr-nav-footer{margin-top:auto;padding:16px 10px 4px;border-top:1px solid var(--line)}
+.chr-nav-footer .hd{margin-bottom:8px}
+.chr-nav-footer-range{font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--accent);margin:0}
+.chr-nav-footer-count{font-size:.76rem;color:var(--muted);margin:4px 0 0;line-height:1.4}
+.chr-nav-footer-link{display:inline-block;margin-top:10px;font-family:var(--sans);font-size:.74rem;
+  font-weight:600;letter-spacing:.04em;color:var(--accent);text-decoration:none;cursor:pointer}
+.chr-nav-footer-link:hover{text-decoration:underline}
+.chr-nav-footer-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* Era progress line */
 .chr-nav{position:relative}
@@ -598,13 +615,13 @@ footer p{margin:0 0 10px;line-height:1.55}
 
   <header id="content">
     <div class="tiles reveal" id="tiles">
-      <div class="tile"><div class="k mono">{{ meta.n_items|default:n_items }}</div><div class="l">peristiwa</div></div>
-      <div class="tile"><div class="k mono">{{ meta.by_event_type.suksesi|default:0 }}</div><div class="l">suksesi</div></div>
-      <div class="tile"><div class="k mono">{{ meta.by_event_type.perjanjian|default:0 }}</div><div class="l">perjanjian</div></div>
-      <div class="tile"><div class="k mono">{{ meta.by_event_type.konflik|default:0 }}</div><div class="l">konflik</div></div>
-      <div class="tile"><div class="k mono">{{ meta.by_event_type.diplomasi|default:0 }}</div><div class="l">diplomasi</div></div>
-      <div class="tile"><div class="k mono">{{ meta.by_event_type.administratif|default:0 }}</div><div class="l">administratif</div></div>
-      <div class="tile"><div class="k mono">{{ meta.year_min|default:"—" }}–{{ meta.year_max|default:"—" }}</div><div class="l">rentang tahun</div></div>
+      <div class="tile tile--primary"><div class="k mono">{{ meta.n_items|default:n_items }}</div><div class="l">peristiwa</div></div>
+      <button type="button" class="tile tile--filter" data-filter="suksesi" aria-pressed="false"><div class="k mono">{{ meta.by_event_type.suksesi|default:0 }}</div><div class="l">suksesi</div></button>
+      <button type="button" class="tile tile--filter" data-filter="perjanjian" aria-pressed="false"><div class="k mono">{{ meta.by_event_type.perjanjian|default:0 }}</div><div class="l">perjanjian</div></button>
+      <button type="button" class="tile tile--filter" data-filter="konflik" aria-pressed="false"><div class="k mono">{{ meta.by_event_type.konflik|default:0 }}</div><div class="l">konflik</div></button>
+      <button type="button" class="tile tile--filter" data-filter="diplomasi" aria-pressed="false"><div class="k mono">{{ meta.by_event_type.diplomasi|default:0 }}</div><div class="l">diplomasi</div></button>
+      <button type="button" class="tile tile--filter" data-filter="administratif" aria-pressed="false"><div class="k mono">{{ meta.by_event_type.administratif|default:0 }}</div><div class="l">administratif</div></button>
+      <div class="tile tile--primary"><div class="k mono">{{ meta.year_min|default:"—" }}–{{ meta.year_max|default:"—" }}</div><div class="l">rentang tahun</div></div>
     </div>
   </header>
 
@@ -879,7 +896,40 @@ function applyFilters(){
   renderAxis(type ? ALL.filter(r => r.event_type === type) : ALL);
 }
 
-document.getElementById('typeFilter').addEventListener('change', applyFilters);
+document.getElementById('typeFilter').addEventListener('change', () => {
+  syncTileFilterState();
+  applyFilters();
+});
+
+/* switch ke #listView (satu-satunya tampilan yang bisa difilter) supaya aksi
+   filter/link langsung terlihat efeknya, bukan diam tanpa umpan balik */
+function switchToListView(){
+  document.documentElement.classList.add('show-list');
+  const viewToggle = document.getElementById('viewToggle');
+  viewToggle?.setAttribute('aria-pressed', 'true');
+  const toggleLabel = viewToggle?.querySelector('.toggle-label');
+  if (toggleLabel) toggleLabel.textContent = 'Tampilan panggung';
+  document.getElementById('listView')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* P0.8: statistik header jadi filter -- satu sumber kebenaran tetap #typeFilter,
+   tile cuma set value-nya lalu panggil applyFilters() yang sudah ada. */
+function syncTileFilterState(){
+  const current = document.getElementById('typeFilter').value;
+  document.querySelectorAll('.tile--filter').forEach(btn => {
+    btn.setAttribute('aria-pressed', String(btn.dataset.filter === current));
+  });
+}
+document.querySelectorAll('.tile--filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const typeFilter = document.getElementById('typeFilter');
+    const isActive = btn.getAttribute('aria-pressed') === 'true';
+    typeFilter.value = isActive ? '' : btn.dataset.filter;
+    syncTileFilterState();
+    applyFilters();
+    switchToListView();
+  });
+});
 
 renderAxis(ALL);
 
@@ -1031,6 +1081,22 @@ if (chrStage && ALL.length && ERAS_META.length) {
     nav.appendChild(b);
   });
 
+  /* footer sidebar: ringkasan periode aktif -- mengisi ruang kosong di bawah
+     daftar era (audit ruang-kosong §2.3/§6), bukan dekorasi */
+  const navFooter = document.createElement('footer');
+  navFooter.className = 'chr-nav-footer';
+  navFooter.innerHTML = `
+    <p class="hd">Periode Aktif</p>
+    <p class="chr-nav-footer-range"></p>
+    <p class="chr-nav-footer-count"></p>
+    <a class="chr-nav-footer-link" href="#"></a>`;
+  nav.appendChild(navFooter);
+  const navFooterLink = navFooter.querySelector('.chr-nav-footer-link');
+  navFooterLink.addEventListener('click', e => {
+    e.preventDefault();
+    switchToListView();
+  });
+
   /* ── scrubber ── */
   const lane = document.getElementById('chrLane');
   [Y0, 1650, 1700, 1750, Y1].forEach(yr => {
@@ -1077,7 +1143,6 @@ if (chrStage && ALL.length && ERAS_META.length) {
       ${subtitle ? `<p class="chr-subtitle">${esc(subtitle)}</p>` : ''}
       <p class="chr-meta">${esc(ev.event_date_raw || '—')}</p>
       <div class="chr-quote">&ldquo;${esc(ev.text_asli)}&rdquo;</div>
-      ${ev.notes ? `<div class="chr-notes">${esc(ev.notes)}</div>` : ''}
       <details class="chr-source-details">
         <summary class="chr-source-header">Sumber Primer</summary>
         <p class="chr-source-name">Arsip ${esc(ev.source_document || '—')}</p>
@@ -1124,6 +1189,15 @@ if (chrStage && ALL.length && ERAS_META.length) {
     panel.classList.toggle('climax', ev.title?.includes('Traktat Painan'));
     const eraMeta = ERAS_META.find(e => e.slug === ev.era_slug);
     eratag.textContent = eraMeta ? `${eraMeta.label} · ${eraMeta.range}` : '';
+
+    // --- Footer sidebar: ringkasan periode aktif ---
+    if (eraMeta) {
+      const eraEventCount = SEQ.filter(e => e.era_slug === ev.era_slug).length;
+      navFooter.querySelector('.chr-nav-footer-range').textContent = eraMeta.range;
+      navFooter.querySelector('.chr-nav-footer-count').textContent =
+        `${eraEventCount} peristiwa dari ${SEQ.length}`;
+      navFooterLink.textContent = 'Lihat seluruh peristiwa era →';
+    }
 
     // --- Era sidebar highlight ---
     nav.querySelectorAll('.chr-era').forEach(b => b.classList.toggle('active', b.dataset.slug === ev.era_slug));

@@ -1,6 +1,6 @@
 # PRD: Redesign Kronik Pantai Barat — Anti AI Slop
 
-**Status:** Disetujui untuk eksekusi — mulai Sprint 1.
+**Status:** Sprint 1 selesai & di-commit (`1d52078`). Sprint 2 selesai, siap commit.
 **Sumber:** `docs/audit-ux-ui-ai-slop-salido.md` (audit UX/UI senior manager) + temuan susulan dari `docs/audit-redesign-ruang-kosong-django-tailwind.md` (lihat §2b).
 **Target:** `/linimasa` di repo ini (Django template + vanilla JS + SVG)
 **Scope:** P0 + P1 + P2 (full scope sesuai audit §16) + item susulan §2b
@@ -112,9 +112,11 @@ Dari audit §15 — yang menjadi north star redesign:
 
 **File:** `linimasa.html` — CSS `.chr-ship2`
 
-### P0.3 Ubah sidebar era dari radio button ke bab editorial
+### P0.3 Ubah sidebar era dari radio button ke bab editorial — ✅ SUDAH SELESAI (verifikasi 2026-07-16)
 
-**Masalah:** Dot `::before` menyerupai radio button / stepper formulir.
+**Ground-truth check saat mulai Sprint 2:** dicek langsung `document.getElementById('chrNav').outerHTML` di browser — `.chr-era::before` sudah pakai `counter(cera,decimal-leading-zero)` (nomor bab 01/02/03, bukan dot), sudah ada rail vertikal (`.chr-nav::before/::after`, progress mengikuti era aktif), label pakai `.lbl` (serif), summary (`.sum`) hanya tampil saat aktif. **Tidak ada dot radio-button di kode saat ini** — audit ini menjelaskan versi kode yang lebih lama. Tidak perlu kerja lagi untuk item ini.
+
+**Masalah (versi audit asli, sudah tidak berlaku):** Dot `::before` menyerupai radio button / stepper formulir.
 **Solusi:** Format bab kronik:
 
 ```
@@ -136,9 +138,11 @@ Iskandar Muda
 
 **File:** `linimasa.html` — CSS `.chr-era`, `.chr-era::before`, `.chr-era.active`
 
-### P0.4 Redesign panel kanan menjadi lembar editorial
+### P0.4 Redesign panel kanan menjadi lembar editorial — ✅ SUDAH SELESAI (verifikasi 2026-07-16)
 
-**Masalah:** Panel terasa seperti detail drawer dashboard.
+**Ground-truth check:** `renderPanel()` saat ini SUDAH menghasilkan persis format target: counter "PERISTIWA 01 / 101", tahun besar + `<hr class="chr-divider">`, judul, subtitle (`event_type · ruler_actor`), quote, source details ("Arsip CD1" / "Halaman 47, baris 19–20"), status editorial ("Belum diverifikasi silang"), tombol "Baca transkrip" + "Tampilkan pada peta". Tidak perlu kerja lagi untuk item ini — **kecuali** temuan baru P0.10 di bawah (kebocoran `chr-notes`).
+
+**Masalah (versi audit asli, sudah tidak berlaku):** Panel terasa seperti detail drawer dashboard.
 **Solusi:** Format editorial:
 
 ```
@@ -208,9 +212,13 @@ Tampilkan pada peta →
 - Rute sekunder: `stroke-width:1`, `opacity:0.2`
 - Panel kanan: tahun + judul harus paling terang dan paling besar
 
-### P0.7 Microcopy bahasa Indonesia
+### P0.7 Microcopy bahasa Indonesia — ✅ SUDAH SELESAI (verifikasi 2026-07-16)
 
-**Masalah:** `vol. CD1 · hlm. 47 (19–20) · unverified`
+**Ground-truth check:** semua mapping di bawah ini SUDAH ada di `renderPanel()`/`statusMap` saat ini. Tidak perlu kerja lagi untuk item ini — kecuali baris terakhir ("Aceh" vs "Atjeh"), lihat catatan di bawah.
+
+**Catatan tersisa (bukan bug template, keputusan editorial data):** judul event masih memakai ejaan "Atjeh" pada teks yang jelas ditulis modern/editorial (bukan kutipan), mis. "Kontrak dagang lada pertama VOC-**Atjeh**". Audit minta "Aceh" di narasi modern, "Atjeh" hanya di kutipan sumber. ini nilai di data JSON (title event), bukan di template — perbaikannya butuh sentuh sumber data, di luar scope perubahan template `linimasa.html`. Tidak dieksekusi di sprint ini; catat sebagai item terbuka untuk tim data/kurator.
+
+**Masalah (versi audit asli):** `vol. CD1 · hlm. 47 (19–20) · unverified`
 **Solusi:**
 
 ```
@@ -248,6 +256,39 @@ Halaman 47
 - CSS: pisahkan `.tile--primary` (peristiwa + rentang tahun, font lebih besar) dari `.tile--filter` (kategori, interaktif)
 
 **File:** `linimasa.html` — markup `.tiles` (`:601-608`), CSS `.tile`, JS filter handler
+
+### P0.9 Footer ringkasan "Periode Aktif" pada sidebar era (baru, verifikasi Sprint 2)
+
+**Masalah:** Diverifikasi via Playwright — `#chrNav` tinggi 898px, era terakhir berakhir di 465px → **~433px ruang kosong** di bawah daftar 5 era. Ini persis dead space audit ruang-kosong §2.3/§6, dan belum ada penanganannya di kode saat ini (JS cuma `nav.appendChild(b)` untuk tiap era, tidak ada elemen footer).
+
+**Solusi (dari audit ruang-kosong §6):**
+```
+PERIODE AKTIF
+1600–1637
+
+5 peristiwa dari 101
+
+Lihat seluruh peristiwa era →
+```
+
+**Implementasi:**
+- Tambah `<footer>` statis di dalam `.chr-nav` (setelah loop era), diisi oleh `setActive()`: era aktif range + label, jumlah event di era itu (hitung dari `SEQ.filter(ev => ev.era_slug === activeEraSlug).length`) dari total `SEQ.length`
+- Link "Lihat seluruh peristiwa era" scroll/filter ke era aktif (reuse `#typeFilter`-style filtering atau scroll ke `#listView` dengan filter era)
+- CSS: `.chr-nav` jadi flex column dengan footer `margin-top:auto` supaya menempel ke bawah tanpa mengubah tinggi 5 tombol era di atasnya
+
+**File:** `linimasa.html` — markup `.chr-nav` (tambah footer), JS `setActive()`, CSS `.chr-nav-footer`
+
+### P0.10 Sembunyikan `chr-notes` (catatan kurator internal) dari panel publik (baru, verifikasi Sprint 2)
+
+**Masalah:** Dicek via API `/api/research/linimasa` — **101/101 event** (100%) punya field `notes` berisi catatan riset internal mentah ("SUMBER: Corpus Diplomaticum (CD1.pdf)...", "Didistilasi dari atjeh_trade_records...", "TEMUAN PENTING -- ..."). Field ini dirender apa adanya ke pengunjung publik di `renderPanel()` (`${ev.notes ? '<div class="chr-notes">'+esc(ev.notes)+'</div>' : ''}`) — ini pelanggaran langsung prinsip "teks melewati proses editorial, bukan data mentah" (audit §15), dan sistemik (bukan kasus khusus 1-2 event).
+
+**Solusi:** Hapus render `.chr-notes` dari panel yang dilihat publik. Data JSON **tidak diubah** (sesuai CLAUDE.md — sumber data historis tidak diedit langsung), hanya template berhenti menampilkannya. Jika suatu saat dibutuhkan untuk debugging, tampilkan lewat `console.debug()`, bukan DOM visible.
+
+**Implementasi:**
+- `linimasa.html` — hapus baris `${ev.notes ? ... : ''}` dari `renderPanel()`
+- CSS `.chr-notes` jadi dead code — boleh dibiarkan (dead CSS lain sudah ada preseden) atau dihapus sekalian saat sprint pembersihan
+
+**File:** `linimasa.html` — fungsi `renderPanel()`
 
 ---
 
@@ -469,11 +510,13 @@ Sudah ada di kode saat ini — pastikan SEMUA animasi baru juga punya fallback i
 5. **Verifikasi:** Buka `/linimasa`, pastikan tampilan lebih bersih, fokus ke event aktif; pastikan gambar panggung peta termuat (bukan broken image) — **SELESAI (2026-07-16)**, diverifikasi via Playwright headless: gambar termuat, filter rute aktif/sekunder/dorman bekerja di 6 event/port berbeda, tanpa console/page error, celah kosong `#chrMapWrap` diperbaiki (`flex:1` ganti `aspect-ratio:3/2`)
 
 ### Sprint 2: Editorial Polish (P0 continued)
-6. P0.3 — Ubah sidebar ke format bab kronik
-7. P0.4 — Redesign panel kanan ke lembar editorial
-8. P0.7 — Microcopy bahasa Indonesia
+6. ~~P0.3 — Ubah sidebar ke format bab kronik~~ — **sudah selesai**, diverifikasi ground-truth 2026-07-16 (lihat catatan di §4)
+7. ~~P0.4 — Redesign panel kanan ke lembar editorial~~ — **sudah selesai**, diverifikasi ground-truth 2026-07-16
+8. ~~P0.7 — Microcopy bahasa Indonesia~~ — **sudah selesai**, diverifikasi ground-truth 2026-07-16 (kecuali item data "Aceh"/"Atjeh", di luar scope template)
 9. P0.8 — Statistik sebagai filter interaktif (baru, §2b)
-10. **Verifikasi:** Bandingkan dengan wireframe audit §17; cek kontras `.chr-quote`/`.quote` (kutipan sumber primer) terhadap WCAG AA; cek `aria-pressed` dan `:focus-visible` pada tile filter baru
+10. P0.9 — Footer ringkasan "Periode Aktif" pada sidebar (baru, ditemukan saat verifikasi Sprint 2)
+11. P0.10 — Sembunyikan `chr-notes` catatan kurator internal dari panel publik (baru, ditemukan saat verifikasi Sprint 2)
+12. **Verifikasi:** Bandingkan dengan wireframe audit §17; cek kontras `.chr-quote`/`.quote` (kutipan sumber primer) terhadap WCAG AA; cek `aria-pressed` dan `:focus-visible` pada tile filter baru; screenshot sidebar footer mengisi dead space; pastikan tidak ada lagi teks `SUMBER:`/`Didistilasi dari` di panel publik — **SELESAI (2026-07-16)**, diverifikasi via Playwright: chr-notes leak hilang (101/101 event dicek via `.innerText` regex), footer sidebar mengisi ruang 747–878px dari 898px tinggi nav, tile filter "perjanjian" bekerja end-to-end (aria-pressed, sinkron ke `#typeFilter`, 51/101 kartu terfilter, auto-pindah ke tampilan daftar, toggle-off mengembalikan semua), tanpa console/page error. Kontras WCAG AA `.chr-quote` **belum** diukur numerik — item terbuka untuk sprint berikut.
 
 ### Sprint 3: Sistem Visual (P1)
 10. P1.1 — Semantik warna dan garis
