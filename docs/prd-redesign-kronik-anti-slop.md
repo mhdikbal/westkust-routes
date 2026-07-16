@@ -1,6 +1,6 @@
 # PRD: Redesign Kronik Pantai Barat — Anti AI Slop
 
-**Status:** Sprint 1 & 2 selesai & di-commit (`1d52078`, `40a633d`). Arahan desain langsung user (2026-07-16) menggantikan sebagian P0.1 -- lihat §2c.
+**Status:** Sprint 1, 2, 3 selesai (Sprint 1&2 di-commit `1d52078`..`f8ec1e0`; Sprint 3 P3.1-P3.4 selesai 2026-07-16, siap commit). Fase P1 lama dibubarkan (selesai/superseded, lihat §5). Sprint 4 (P3.5 footer 5-kolom + motion P2) menanti -- lihat §8.
 **Sumber:** `docs/audit-ux-ui-ai-slop-salido.md` (audit UX/UI senior manager) + temuan susulan dari `docs/audit-redesign-ruang-kosong-django-tailwind.md` (lihat §2b).
 **Target:** `/linimasa` di repo ini (Django template + vanilla JS + SVG)
 **Scope:** P0 + P1 + P2 (full scope sesuai audit §16) + item susulan §2b
@@ -312,7 +312,11 @@ Lihat seluruh peristiwa era →
 
 ## 5. Fase P1 — Bangun Sistem Visual
 
-### P1.1 Semantik warna dan garis
+### P1.1 Semantik warna dan garis — ⛔ TIDAK BERLAKU (superseded 2026-07-16, lihat §2c)
+
+Seluruh rute (`route-voc`/`route-orbit`), orbit, dan node aktif/related/dormant berbasis garis **dihapus total** atas arahan langsung user (§2c) — peta sekarang murni ilustrasi + titik pelabuhan polos, tanpa garis apa pun. Tidak ada lagi "semantik garis" untuk diformalkan karena garisnya sendiri sudah tidak ada. Item ini ditutup tanpa implementasi.
+
+**Masalah (versi audit asli, sudah tidak berlaku):**
 
 Dari audit §9 — formalisasikan makna setiap elemen visual:
 
@@ -332,7 +336,9 @@ Dari audit §9 — formalisasikan makna setiap elemen visual:
 
 **File:** `linimasa.html` — `:root` CSS vars + SVG build
 
-### P1.2 Sistem ukuran kapal dan node
+### P1.2 Sistem ukuran kapal dan node — ⛔ TIDAK BERLAKU (superseded 2026-07-16)
+
+Tidak ada elemen kapal di overlay peta (lihat P0.2 §2). Ukuran node aktif/related/dormant **sudah** diimplementasi di `setActive()` sejak Sprint 1 (verifikasi P0.6) — port polos tanpa label, tapi ukuran/opacity 3-state-nya tetap berlaku. Tabel di bawah untuk referensi historis saja.
 
 | Elemen | Ukuran | Keterangan |
 |---|---|---|
@@ -343,7 +349,9 @@ Dari audit §9 — formalisasikan makna setiap elemen visual:
 | Kapal aktif | `scale:1` + animasi | Bergerak di rute |
 | Kapal dekoratif | `scale:0.4` + opacity 0.12 | Statis, background |
 
-### P1.3 Batasi tipografi
+### P1.3 Batasi tipografi — ✅ SUDAH SELESAI (verifikasi 2026-07-16)
+
+**Ground-truth check:** `.chr-year{font-family:var(--serif);font-weight:600;font-size:2.5rem}` (`linimasa.html:475`) — persis target tabel di bawah. Font stack pakai "Cormorant Garamond" (bukan literal "EB Garamond") tapi serif editorial yang sama fungsinya — keputusan yang sudah dikunci, bukan gap. Tidak perlu kerja lagi.
 
 Dari audit §8:
 
@@ -366,7 +374,9 @@ Dari audit §8:
 
 **File:** `linimasa.html` — CSS `.chr-year`, `.chr-title`, `.era-label`
 
-### P1.4 Ubah sidebar kiri menjadi daftar bab kronik
+### P1.4 Ubah sidebar kiri menjadi daftar bab kronik — ✅ SUDAH SELESAI (via P0.3, verifikasi 2026-07-16)
+
+Rail vertikal, nomor bab, dan footer "Periode Aktif" sudah ada (P0.3 + P0.9). Tidak perlu kerja lagi.
 
 Dari P0.3 + enhancement:
 
@@ -406,7 +416,11 @@ Dari P0.3 + enhancement:
 
 **File:** `linimasa.html` — CSS `.chr-nav`, `.chr-era`, `.chr-era::before`
 
-### P1.5 Buat legenda kontekstual
+### P1.5 Buat legenda kontekstual — ⛔ TIDAK BERLAKU (superseded 2026-07-16)
+
+Peta sekarang polos (tanpa rute/label/orbit) — tidak ada lagi elemen visual yang perlu dijelaskan lewat legenda. `.chr-legend` tetap CSS mati, sengaja tidak dibangun. Jika suatu saat peta menambah simbol baru, legenda bisa dipertimbangkan lagi saat itu.
+
+**Rencana asli (tidak lagi relevan):**
 
 Saat ini legenda statis (`.chr-legend`). Ubah menjadi dinamis:
 
@@ -426,7 +440,9 @@ Saat ini legenda statis (`.chr-legend`). Ubah menjadi dinamis:
 
 **File:** `linimasa.html` — buat `renderLegend()` baru, CSS `.chr-legend`
 
-### P1.6 Pisahkan layer atmosfer/geografi/peristiwa
+### P1.6 Pisahkan layer atmosfer/geografi/peristiwa — ✅ SELESAI DENGAN SOLUSI LEBIH SEDERHANA (§2c, 2026-07-16)
+
+Overlay gelap dihapus total (bukan diturunkan sebagian) — user minta warna peta asli. Tidak ada lagi "layer" untuk dipisahkan karena cuma tersisa satu gambar utuh + titik pelabuhan polos.
 
 Dari audit §11:
 
@@ -445,7 +461,9 @@ Dari audit §11:
 
 **File:** `linimasa.html` — CSS `.chr-stage::before`, `.chr-coast`, `.chr-isle`, inline style `#chrMap`
 
-### P1.7 Responsive: panel kanan menyempit/melebar
+### P1.7 Responsive: panel kanan menyempit/melebar — ✅ SUDAH SELESAI (verifikasi 2026-07-16)
+
+**Ground-truth check:** state "reading mode" sudah ada — tombol "Baca transkrip" toggle `panel.classList.toggle('open-transcript')` + `.chronicle.classList.toggle('reading', open)`, dengan CSS `@media(min-width:981px){.js .chronicle.reading{grid-template-columns:minmax(160px,16%) 1fr minmax(360px,32%)}}`. Sidebar kiri menyempit & panel kanan melebar saat baca transkrip, persis prinsip audit §13. Tidak perlu kerja lagi.
 
 Dari audit §13:
 - Saat eksplorasi peta: panel kanan menyempit (300px)
@@ -458,6 +476,73 @@ Dari audit §13:
 - Mobile (< 980px): sudah single column, pertahankan
 
 **File:** `linimasa.html` — CSS `.chronicle` grid, JS state management
+
+---
+
+## 5b. Fase P3 — Gap dari `Designer-fix.png` (audit ruang-kosong, belum pernah masuk sprint manapun)
+
+Ditemukan lewat perbandingan screenshot langsung terhadap `docs/Designer-fix.png` (2026-07-16) — bukan dari audit anti-slop, tapi dari audit ruang-kosong yang PRD-nya terpisah dan rekomendasi toolbar/footer-nya belum pernah dieksekusi di sprint manapun. Legenda peta (rencana lama P1.5) **tidak dimasukkan** ke sini karena sudah tidak relevan (peta polos, tidak ada elemen untuk dijelaskan).
+
+### P3.1 Toolbar eksplorasi di bawah statistik (mode Peta) — ✅ SELESAI (2026-07-16, scope disesuaikan)
+
+**Masalah:** Di mode Peta, satu-satunya kontrol adalah tombol "Tampilan daftar" berdiri sendiri — tidak ada cara mencari/memfilter tanpa pindah ke mode Daftar dulu. Ini persis dead-space yang diflag audit ruang-kosong §2.2, tapi belum pernah diimplementasikan.
+
+**Diimplementasikan:**
+- Search box "Cari peristiwa, lokasi, atau tokoh…" — cari `title`/`ruler_actor`/`text_asli` (case-insensitive), lompat ke match pertama via `setActive()`. Tidak ketemu → `setCustomValidity` + `reportValidity()` (pesan native browser, bukan toast custom)
+- Dropdown Kategori — **filter navigasi sungguhan**, bukan dekoratif: `categoryFilter` state + `matchesCategory()` + `findNextMatch()` membuat prev/next/panah keyboard **cuma berhenti di event yang cocok**, dot scrubber non-match diredupkan (`opacity:.15`)
+- Dropdown Era — jump langsung ke event pertama era itu, setara klik sidebar/era-band
+- Tombol Reset — clear search + kategori + era, kembalikan opacity semua dot
+- **Drop dari rencana awal:** dropdown "Rentang Tahun" — tidak ada widget range yang pas tanpa membangun date-range-picker terpisah (scrubber sudah bisa discrub visual by year); dan tombol "Legenda" — tidak ada lagi elemen peta yang perlu dijelaskan (P1.5 superseded)
+
+**File:** `linimasa.html` — markup `.chr-toolbar` sebelum `.chronicle`, CSS `.chr-toolbar*`/`.chr-tb-*`, JS state `categoryFilter`/`matchesCategory`/`findNextMatch`/`applyCategoryFilterVisual`, modifikasi listener `chrPrev`/`chrNext`/`ArrowLeft`/`ArrowRight` yang sudah ada
+
+**Verifikasi Playwright:** search "Traktat Painan" ketemu match benar; filter "konflik" meredupkan 80/101 dot (tepat 101−21, cocok stat tile); 5× klik "Berikutnya" berturut-turut semua tetap badge "konflik" (navigasi benar-benar tertahan filter, bukan cuma tampilan); era jump & reset bekerja; tanpa page error.
+
+### P3.2 Badge kategori berwarna di panel kanan — ✅ SELESAI (2026-07-16)
+
+**Masalah:** Mockup menampilkan tag `PERJANJIAN`/`DIPLOMASI` sebagai pill berwarna terpisah. Panel kita saat ini cuma teks polos `perjanjian · sabander van Atchin (Raja Atjeh)` di `.chr-subtitle`. `TYPE_COLOR` map **sudah ada** di JS (`:842`) tapi tidak dipakai di `renderPanel()`.
+
+**Diimplementasikan:** `.chr-badge` pakai teks berwarna (`color:currentColor` dari `TYPE_COLOR`) di atas background gelap translucent (`rgba(0,0,0,.35)`) + border-left aksen warna — **bukan** fill solid seperti draft awal, supaya kontras aman utk semua 5 warna kategori tanpa perlu cek manual satu-satu (beberapa `--evt-*` seperti `--admin-umber:#a08a6e` cukup terang, fill solid + teks krem akan gagal kontras). `.chr-subtitle`/`.chr-meta` lama (sekarang dead) dihapus.
+
+**Temuan tambahan (belum diperbaiki, dicatat untuk nanti):** `--evt-suksesi` dan `--evt-perjanjian` sama-sama `#29484b` (variabel bernama "gold" tapi nilainya teal) — dua kategori berbeda jadi warna badge identik. Bukan bug baru dari sprint ini, tapi terekspos lebih jelas sekarang karena warnanya dipakai sebagai badge yang lebih menonjol daripada dot kecil di peta.
+
+**File:** `linimasa.html` — `renderPanel()`, CSS `.chr-badges`/`.chr-badge`
+
+### P3.3 Meta row dengan ikon (tanggal, lokasi, pihak terlibat) — ✅ SELESAI (2026-07-16)
+
+**Masalah:** Mockup punya 3 baris meta berikon (kalender/lokasi/institusi: "Desember 1600", "Aceh Darussalam", "VOC & Kerajaan Aceh"). Data kita **tidak** punya field lokasi/institusi terpisah — cuma `event_date_raw` dan `ruler_actor` gabungan. Tidak boleh mengarang field baru (CLAUDE.md: sumber data historis tidak diedit langsung).
+
+**Diimplementasikan** pakai data yang sudah ada, tanpa field baru:
+- Ikon kalender + `event_date_raw`
+- Ikon lokasi + hasil `portOf(ev)` (fungsi ini **sudah ada**, dipakai jg utk port dot di peta — reuse, bukan data baru)
+- Ikon institusi + `ruler_actor` (dipisah dari lokasi, bukan digabung 1 baris subtitle spt sebelumnya)
+
+**File:** `linimasa.html` — `renderPanel()`, CSS `.chr-meta-row`/`.chr-meta-item`
+
+### P3.4 Era band pada timeline scrubber — ✅ SELESAI (2026-07-16)
+
+**Masalah:** Mockup punya baris segmen berwarna di bawah tick tahun, berlabel nama era ("Gelombang Penaklukan", dst.), era aktif disorot. Scrubber kita cuma titik + panah + 5 label tahun — tidak ada baris band era.
+
+**Diimplementasikan:**
+- `<div class="chr-era-bands">` di bawah `#chrScrub` (bukan di dalamnya — beda baris, scrubber tetap sticky, band tidak), di-generate dari `ERAS_META` yang sama dgn sidebar
+- Lebar tiap band proporsional pakai `flex-grow` = jumlah tahun era itu (parse dari string `era.range`, mis. "1600–1637" → span 37) — CSS flexbox native, tanpa hitung persentase manual
+- Era aktif: `background:var(--accent)`; era lain: muted, truncate dgn ellipsis kalau sempit (era pendek spt "Retak & Pemberontakan Painan" cuma 3 tahun — `title` attribute kasih label lengkap on-hover)
+- Klik band = pindah ke event pertama era itu, sinkron dgn highlight sidebar
+
+**File:** `linimasa.html` — markup `#chrEraBands`, JS build dari `ERAS_META` + toggle `.active` di `setActive()`, CSS `.chr-era-bands`/`.chr-era-band`
+
+### P3.5 Footer 5-kolom yang selalu terlihat (bukan cuma di mode Daftar)
+
+**Masalah:** Footer kita cuma 2 kolom (`Sumber & Metode` / `Corpus Diplomaticum & Cakupan`) dan **tersembunyi di mode Peta** (ada di dalam `#listView` yang `display:none` default). Mockup punya 5 kolom (`Tentang Kronik`, `Jelajah Cepat`, `Dokumen Terbaru`, `Statistik Periode Aktif`, `Arsip Digital`) yang selalu terlihat di bawah peta+scrubber.
+
+**Solusi bertahap (jangan duplikasi footer 2-kolom yang sudah ada):**
+- Pindahkan footer keluar dari `#listView` supaya selalu terlihat di kedua mode (di bawah `#chrScrub`)
+- Tambah 3 kolom baru: `Jelajah Cepat` (link ke `/riset/*` yang sudah ada — Peta Pelabuhan, Jalur Perdagangan, Tokoh Penting), `Dokumen Terbaru` (perlu cek apakah backend punya endpoint utk "dokumen terbaru" atau ini hardcode dari beberapa event terbaru), `Statistik Periode Aktif` (hitung dari `SEQ.filter(era aktif)`, mirip `.chr-nav-footer` yang sudah ada — reuse logic, jangan duplikasi)
+- `Arsip Digital` — cek dulu apakah ada halaman/endpoint arsip digital sungguhan sebelum bikin tombol yang mengarah ke tempat tidak ada (jangan bikin dead link)
+
+**File:** `linimasa.html` — restrukturisasi markup footer, keluar dari `#listView`
+
+**Catatan implementasi:** P3.5 punya risiko terbesar bikin dead link/konten kosong (Dokumen Terbaru, Arsip Digital) — cek ketersediaan data/halaman dulu sebelum build UI-nya, jangan sebaliknya.
 
 ---
 
@@ -536,19 +621,20 @@ Sudah ada di kode saat ini — pastikan SEMUA animasi baru juga punya fallback i
 11. P0.10 — Sembunyikan `chr-notes` catatan kurator internal dari panel publik (baru, ditemukan saat verifikasi Sprint 2)
 12. **Verifikasi:** Bandingkan dengan wireframe audit §17; cek kontras `.chr-quote`/`.quote` (kutipan sumber primer) terhadap WCAG AA; cek `aria-pressed` dan `:focus-visible` pada tile filter baru; screenshot sidebar footer mengisi dead space; pastikan tidak ada lagi teks `SUMBER:`/`Didistilasi dari` di panel publik — **SELESAI (2026-07-16)**, diverifikasi via Playwright: chr-notes leak hilang (101/101 event dicek via `.innerText` regex), footer sidebar mengisi ruang 747–878px dari 898px tinggi nav, tile filter "perjanjian" bekerja end-to-end (aria-pressed, sinkron ke `#typeFilter`, 51/101 kartu terfilter, auto-pindah ke tampilan daftar, toggle-off mengembalikan semua), tanpa console/page error. Kontras WCAG AA `.chr-quote` **belum** diukur numerik — item terbuka untuk sprint berikut.
 
-### Sprint 3: Sistem Visual (P1)
-10. P1.1 — Semantik warna dan garis
-11. P1.2 — Sistem ukuran node
-12. P1.3 — Batasi tipografi
-13. P1.5 — Legenda kontekstual
-14. **Verifikasi:** Periksa konsistensi semua elemen visual
+### ~~Sprint 3: Sistem Visual (P1)~~ — dibubarkan, seluruh isinya sudah selesai/tidak berlaku
+~~P1.1~~ (superseded, peta polos), ~~P1.2~~ (superseded, tanpa kapal), ~~P1.3~~ (sudah selesai — verifikasi ground-truth 2026-07-16), ~~P1.4~~ (sudah selesai via P0.3), ~~P1.5~~ (superseded, tanpa legenda), ~~P1.6~~ (selesai via §2c), ~~P1.7~~ (sudah selesai — reading-mode grid sudah ada). Tidak ada kerja tersisa dari Fase P1 asli.
 
-### Sprint 4: Layout & Motion (P1 + P2)
-15. P1.4 — Sidebar bab kronik (enhanced)
-16. P1.6 — Pisahkan layer
-17. P1.7 — Responsive panel
-18. P2.1-P2.5 — Motion system
-19. **Verifikasi:** Full test aksesibilitas + `prefers-reduced-motion`
+### Sprint 3 (baru): Fitur Eksplorasi dari `Designer-fix.png` (P3, gap analysis 2026-07-16) — ✅ SELESAI
+1. ~~P3.2~~ — Badge kategori berwarna di panel kanan — selesai, teks berwarna atas gelap (bukan fill solid, demi kontras)
+2. ~~P3.3~~ — Meta row berikon (tanggal/lokasi/institusi via `portOf(ev)`) — selesai
+3. ~~P3.4~~ — Era band pada timeline scrubber (`flex-grow` proporsional dari `ERAS_META`) — selesai
+4. ~~P3.1~~ — Toolbar eksplorasi mode Peta — selesai, **kecuali** dropdown Rentang Tahun (dicoret, butuh keputusan desain terpisah utk widget range) dan tombol Legenda (dicoret, superseded)
+5. **Verifikasi:** **SELESAI** via Playwright — search/filter kategori (navigasi benar-benar tertahan, bukan cuma dot diredupkan)/era-jump/reset semua diverifikasi bekerja end-to-end, tanpa page error. Kontras WCAG AA `.chr-quote` (item terbuka dari Sprint 2) **masih belum diukur numerik** — dibawa ke Sprint 4
+
+### Sprint 4: Footer 5-Kolom + Motion (P3.5 + P2)
+6. P3.5 — Footer 5-kolom selalu terlihat (**cek dulu ketersediaan konten** "Dokumen Terbaru"/"Arsip Digital" sebelum build, hindari dead link)
+7. P2.1-P2.5 — Motion system (riak, kapal, rute tergambar bertahap — **catatan:** P2.2/P2.3 soal kapal & rute tergambar sudah tidak relevan karena keduanya dihapus per §2c, kemungkinan besar dicoret juga)
+8. **Verifikasi:** Full test aksesibilitas + `prefers-reduced-motion`
 
 ---
 
