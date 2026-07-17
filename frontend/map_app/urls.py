@@ -7,5 +7,6 @@ urlpatterns = [
     path("riset/petunjuk-arsip/", views.riset_petunjuk_arsip, name="riset_petunjuk_arsip"),
     path("riset/jaringan/", views.riset_jaringan, name="riset_jaringan"),
     path("riset/atjeh-dagang/", views.riset_atjeh, name="riset_atjeh"),
+    path("linimasa/", views.linimasa, name="linimasa"),
     path("ports/<slug:slug>/", views.port_detail, name="port_detail"),
 ]

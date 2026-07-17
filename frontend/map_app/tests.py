@@ -1159,6 +1159,13 @@ class LinimasaViewTest(SimpleTestCase):
         self.assertIn('name="robots"', html)
 
     @patch("map_app.views.httpx.get")
+    def test_links_to_petunjuk_arsip(self, mock_get):
+        """SPLIT-1: nav harus menautkan ke halaman GLOBALISE baru juga."""
+        mock_get.return_value = _make_httpx_response({"items": [], "meta": {}})
+        html = self.client.get(reverse("linimasa")).content.decode()
+        self.assertIn("/riset/petunjuk-arsip/", html)
+
+    @patch("map_app.views.httpx.get")
     def test_fetches_from_linimasa_endpoint_not_hardcoded_data(self, mock_get):
         """View harus tarik data lewat httpx.get ke /api/research/linimasa (SSR
         sinkron, Fase 1) -- bukan data hardcode. String endpoint sendiri sudah

@@ -1,9 +1,98 @@
+import json
 import os
 import httpx
 from django.shortcuts import render
 from django.http import Http404
 
 API_BASE = os.getenv("API_BASE_URL", "http://voc_backend:8000")
+
+# Babak naratif /linimasa Fase 1 (docs/prd-linimasa-kronik-pantai-barat.md).
+# Copy editorial (label/headline/summary) SENGAJA dipisah dari data event
+# bersumber (linimasa_events.era_slug, backend/models.py) -- interpretasi vs
+# fakta tersitasi tak boleh campur di satu tempat. Urutan list = urutan babak
+# kronologis, dipakai langsung utk grouping di bawah (bukan alfabetis).
+LINIMASA_ERAS = [
+    {
+        "slug": "klaim-awal",
+        "label": "Kontrak Pertama & Kekuasaan Iskandar Muda",
+        "range": "1600–1637",
+        "headline": "Sebelum satu meriam pun ditembakkan, VOC dan Atjeh sudah menandatangani kontrak dagang pertama mereka.",
+        "summary": (
+            "Dari kontrak lada pertama VOC-Atjeh (Desember 1600) dan traktat formal pertama (17 Januari "
+            "1607) — sumber Corpus Diplomaticum — sampai risalah VOC sendiri (1625) yang mengakui "
+            "yurisdiksi Atjeh atas “seluruh pantai timur dan barat Sumatra”, titah tol Sultan Iskandar "
+            "Muda (1632), dan wafatnya yang penuh gejolak (1637) — pondasi kekuasaan yang akan bertahan "
+            "tiga dekade lebih diletakkan di sini."
+        ),
+    },
+    {
+        "slug": "ratu-puncak",
+        "label": "Ratu Atjeh & Puncak Kekuasaan",
+        "range": "1641–1650",
+        "headline": "Iskandar Thani wafat, seorang perempuan naik takhta — dan VOC mencatatnya dengan hormat yang jarang diberikan pada penguasa lain.",
+        "summary": (
+            "Iskandar Thani wafat 15 Februari 1641, digantikan Ratu (konsisten dengan Sultana "
+            "Safiatuddin), yang langsung menegaskan ulang privilese VOC di Ticou, Priaman, Indrapoura, "
+            "dan Padang. Dalam dekade berikutnya monopoli dagang diformalkan tertulis — lada di tiga "
+            "pelabuhan westkust (1649) dan timah Perak (1650) — puncak kendali Atjeh atas jaringan "
+            "dagang pantai barat sebelum retak."
+        ),
+    },
+    {
+        "slug": "perang-damai",
+        "label": "Perang & Perdamaian",
+        "range": "1655–1659",
+        "headline": "Ratu memerintahkan penangkapan setiap orang VOC di pantai barat. Tiga tahun kemudian, ia mengirim surat perdamaian dengan upacara penuh.",
+        "summary": (
+            "Dimulai dari damai Perak 1655 (ganti rugi 50.000 real, jadwal tol timah paling rinci di "
+            "korpus ini), perang terbuka VOC-Atjeh 1656–57 meninggalkan kerugian terbesar dalam catatan "
+            "ini — personel Belanda ditangkap dan disiksa, sebagian tak pernah kembali. Perdamaian 1659 "
+            "menutup babak ini, tapi luka yang ditinggalkan tidak."
+        ),
+    },
+    {
+        "slug": "retak-painan",
+        "label": "Retak & Pemberontakan Painan",
+        "range": "1660–1663",
+        "headline": "Panglima yang dulu dipaksa menyerang VOC atas nama Atjeh, kini memilih memberontak dari Atjeh sendiri.",
+        "summary": (
+            "Dalam tiga tahun, kesetiaan pantai barat runtuh: Ticco dan Indrapoura melepaskan diri, dan "
+            "pada 27 Juli 1663 konfederasi Songypagouers (Indrapoura, Painan, Padang, Tico) menandatangani "
+            "Traktat Painan dengan VOC — “kuk tak tertahankan” dari kekuasaan Atjeh dibuang, titik resmi "
+            "berakhirnya kekuasaan Atjeh atas wilayah ini."
+        ),
+    },
+    {
+        "slug": "pengusiran-penataan",
+        "label": "Pengusiran & Penataan Ulang",
+        "range": "1664–1775",
+        "headline": "Satu demi satu, pelabuhan pantai barat membuang kuk kekuasaan Atjeh — sampai ancaman berganti wajah dari Atjeh menjadi Inggris, dan VOC sendiri mulai mundur.",
+        "summary": (
+            "Kampanye militer & diplomasi menuntaskan apa yang dimulai Traktat Painan: Sillida & Pulau "
+            "Cingkuak diserahkan ke VOC (1667), Barus resmi lepas dari Atjeh (1668), dan pada 29 Agustus "
+            "1680 seluruh penguasa pantai barat — Indrapoura, Padang, Kottatenga, Sillida — bersatu dalam "
+            "satu aliansi umum dari Seblat sampai Air Bangis. Tapi kesetiaan tak pernah final: Priaman dan "
+            "Tiku memberontak lagi (1678, 1684), Barus baru benar-benar tuntas lepas Atjeh 1 Januari 1681 "
+            "(radja Ilir menyerahkan senjata terakhir bermahkota Atjeh), dan Inggris — diusir dari Bantam — "
+            "sempat mencoba pijakan di westkust yang sama. Penataan berlanjut jauh melampaui 1690: ekspedisi "
+            "vaandrig Johannes Sas (1693) memburu penyelundup Atjeh sampai menyerbu benteng mereka di pulau "
+            "Nias, Baros direstrukturisasi total pasca-pembunuhan pegawai VOC (1694), Padang & Sillida "
+            "melepas hak pungut kuno mereka sendiri demi harga peper (1698), dan Priaman kembali sempat "
+            "berpaling ke Atjeh selama hampir dua dekade sebelum ditundukkan ulang (1712) — sampai Indrapoera, "
+            "yang sempat berpihak ke Inggris, akhirnya kembali meminta perlindungan VOC sendiri (1716). Ancaman "
+            "berganti wajah menjelang pertengahan abad ke-18: pemberontakan besar 1740 menyatukan Paoeh, "
+            "Kotta-Tengah, dan Priaman di bawah pemimpin pedalaman Abdul Jalil — bukan lagi faksi pro-Atjeh, "
+            "tapi cukup kuat memaksa VOC melepas benteng Priaman — sementara sekutu lama Tigablas & "
+            "Doeapoeloeh-Kotta membuktikan kesetiaan mereka dengan memperbarui aliansi di tengah krisis itu (1741). "
+            "Dari 1755, ancaman berubah wajah lagi: kekhawatiran atas Inggris memicu VOC merenovasi aliansi dengan "
+            "hampir seluruh pantai barat dalam waktu kurang dari setahun, dan Perang Tujuh Tahun Eropa (1756–1763) "
+            "ikut merembet — benteng Natal berpindah tangan dari Inggris ke Prancis lalu ke VOC. Tapi keunggulan "
+            "itu tak bertahan: menjelang 1775 VOC sendiri terpaksa menutup logenya yang berusia satu abad di "
+            "Barus, kalah bersaing dagang dengan Inggris dari Bengkulu — tanda awal kemunduran VOC di pantai "
+            "barat menjelang akhir abad ke-18."
+        ),
+    },
+]
 
 
 def index(request):
@@ -44,6 +133,49 @@ def riset_atjeh(request):
     proxy). noindex + tidak di navbar publik (konsisten /riset/tema, /riset/jaringan).
     Identitas visual salido.my.id (EB Garamond + Space Grotesk)."""
     return render(request, "map_app/riset_atjeh.html")
+
+
+def linimasa(request):
+    """Linimasa suksesi kekuasaan Atjeh, Iskandar Muda -> Ratu -> Traktat
+    Painan 1663 (thesis-only, top-level /linimasa). Fase 1 (docs/prd-linimasa-
+    kronik-pantai-barat.md): SSR penuh -- event di-render server-side dari
+    httpx.get() sinkron ke /api/research/linimasa (pola sama port_detail di
+    bawah), BUKAN client-side fetch() spt riset_tema/riset_jaringan/riset_atjeh.
+    Konten utama (judul, kutipan, sumber) harus terbaca tanpa JavaScript;
+    JS cuma progressive enhancement (filter jenis, SVG timeline). noindex +
+    tidak di navbar publik. Identitas visual salido.my.id, palet arsip
+    tersendiri (beda dari 3 halaman riset lain yg putih-polos)."""
+    items = []
+    meta = {}
+    backend_error = False
+    try:
+        r = httpx.get(f"{API_BASE}/api/research/linimasa", timeout=8.0)
+        r.raise_for_status()
+        payload = r.json()
+        items = payload.get("items", [])
+        meta = payload.get("meta", {})
+    except Exception:
+        backend_error = True
+
+    eras_with_events = []
+    for era in LINIMASA_ERAS:
+        era_events = [it for it in items if it.get("era_slug") == era["slug"]]
+        if not era_events:
+            continue
+        eras_with_events.append({**era, "events": era_events})
+
+    context = {
+        "eras": eras_with_events,
+        "meta": meta,
+        "n_items": len(items),
+        "backend_error": backend_error,
+        "items_json": json.dumps(items),
+        "eras_meta_json": json.dumps([
+            {k: e[k] for k in ("slug", "label", "range", "headline", "summary")}
+            for e in eras_with_events
+        ]),
+    }
+    return render(request, "map_app/linimasa.html", context)
 
 
 def port_detail(request, slug):
