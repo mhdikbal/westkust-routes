@@ -705,9 +705,27 @@
     @media (max-width: 768px) {
       #fort-panel { width: 100%; }
       .nav-center { display: none; }
-      #welcome-panel { width: calc(100vw - 2.5rem); }
+
+      /* Navbar kanan: brand + 2 tombol + search tak muat sbg teks penuh di
+         layar sempit (dulu "Unduh CSV" kepotong di tepi) -- jadi icon-only,
+         label tetap ada via aria-label utk screen reader. */
+      .nav-brand-sub { display: none; }
+      .nav-btn-grafik { padding: 0 .55rem; gap: 0; }
+      .btn-label { display: none; }
+      #ship-search { width: 108px; }
+
+      /* Welcome panel dulu tinggi mengikuti isi (12 kartu pelabuhan) tanpa
+         batas -- di layar 390px lebar penuh itu menutupi ~85% viewport,
+         peta cuma tersisa selebar ~150px padahal hint di panel ini sendiri
+         menyuruh "klik ikon benteng DI PETA". Dibatasi max-height + scroll
+         internal spy peta tetap terlihat & bisa dipakai di baliknya. */
+      #welcome-panel {
+        width: calc(100vw - 2.5rem);
+        max-height: 40vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
       .port-grid { grid-template-columns: repeat(3, 1fr); }
-      #ship-search { width: 140px; }
       /* #welcome-panel jadi full-width di mobile & akan tumpang tindih dgn
          legenda bottom-right -- sembunyikan legenda spt .nav-center, bukan
          perang layout sempit. */
@@ -781,12 +799,12 @@
     <button class="nav-btn-grafik" id="btn-export-csv" onclick="downloadCSV()"
             aria-label="Unduh data voyage sebagai CSV">
       <i class="ti ti-download" aria-hidden="true"></i>
-      Unduh CSV
+      <span class="btn-label">Unduh CSV</span>
     </button>
     <button class="nav-btn-grafik" id="btn-grafik" onclick="toggleGrafikPanel()"
             aria-label="Buka panel analitik" aria-expanded="false">
       <i class="ti ti-chart-bar" aria-hidden="true"></i>
-      Grafik
+      <span class="btn-label">Grafik</span>
     </button>
     <div class="ship-search-wrap" role="search">
       <i class="ti ti-search ship-search-icon" aria-hidden="true"></i>
