@@ -311,6 +311,11 @@ const API = '/api/research/atjeh-trade';
 const esc = s => String(s ?? '').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const fmt = n => Number(n).toLocaleString('id-ID');
 const DIR_LABEL = {naar_atjeh:'masuk', van_atjeh:'keluar', in_atjeh:'di dalam', politik:'politik'};
+// source_document="CD1".."CD6" (kode file scan internal) -> judul buku asli.
+// Baris Dagh-register pakai source_document spt "1624-1629" -- bukan kode CD,
+// dibiarkan apa adanya (bukan nama file, sudah label yang benar).
+const CD_JILID = {CD1:'I', CD2:'II', CD3:'III', CD4:'IV', CD5:'V', CD6:'VI'};
+const sourceLabel = doc => CD_JILID[doc] ? `Corpus Diplomaticum Neerlando-Indicum, Jilid ${CD_JILID[doc]}` : doc;
 
 let ALL = [];
 
@@ -342,7 +347,7 @@ function rowHtml(r){
   const commodity = r.commodity_raw ? esc(r.commodity_raw) : '<span class="empty-note">(kosong/ledigh)</span>';
   return `
     <tr class="rowmain" data-id="${r.id}">
-      <td data-label="Volume" class="mono">${esc(r.source_document)}</td>
+      <td data-label="Volume" class="mono">${esc(sourceLabel(r.source_document))}</td>
       <td data-label="Hlm.">${r.source_page}${r.book_page ? ` <span class="mono" style="color:var(--muted)">(${esc(r.book_page)})</span>` : ''}</td>
       <td data-label="Tanggal">${esc(r.entry_date_raw || '—')}</td>
       <td data-label="Arah"><span class="dir-badge dir-${r.direction}">${DIR_LABEL[r.direction]||r.direction}</span></td>

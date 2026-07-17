@@ -6,6 +6,18 @@ from django.http import Http404
 
 API_BASE = os.getenv("API_BASE_URL", "http://voc_backend:8000")
 
+# source_document="CD1".."CD6" (kode file scan internal) -> judul buku asli.
+# Baris Dagh-register pakai source_document spt "1624-1629" -- bukan kode CD,
+# dibiarkan apa adanya (bukan nama file, sudah label yang benar).
+CD_JILID = {"CD1": "I", "CD2": "II", "CD3": "III", "CD4": "IV", "CD5": "V", "CD6": "VI"}
+
+
+def cd_source_label(source_document):
+    jilid = CD_JILID.get(source_document)
+    if jilid is None:
+        return source_document
+    return f"Corpus Diplomaticum Neerlando-Indicum, Jilid {jilid}"
+
 # Babak naratif /linimasa Fase 1 (docs/prd-linimasa-kronik-pantai-barat.md).
 # Copy editorial (label/headline/summary) SENGAJA dipisah dari data event
 # bersumber (linimasa_events.era_slug, backend/models.py) -- interpretasi vs
@@ -156,6 +168,9 @@ def linimasa(request):
         meta = payload.get("meta", {})
     except Exception:
         backend_error = True
+
+    for it in items:
+        it["source_label"] = cd_source_label(it.get("source_document"))
 
     eras_with_events = []
     for era in LINIMASA_ERAS:

@@ -804,7 +804,7 @@ footer p{margin:0 0 10px;line-height:1.55}
           <p class="treaty-highlight-year mono">{{ r.year|default:"—" }}</p>
           <h3 class="treaty-highlight-title">{{ r.title }}</h3>
           <p class="treaty-highlight-meta">{{ r.event_date_raw|default:"—" }} &middot; {{ r.ruler_actor|default:"—" }} &middot;
-            vol. {{ r.source_document }}, hlm. {{ r.source_page }}{% if r.book_page %} ({{ r.book_page }}){% endif %}</p>
+            vol. {{ r.source_label }}, hlm. {{ r.source_page }}{% if r.book_page %} ({{ r.book_page }}){% endif %}</p>
           <div class="treaty-highlight-quote">&ldquo;{{ r.text_asli }}&rdquo;</div>
           {% if r.notes %}<div class="notes" style="color:#d8cdb8;font-size:.84rem;margin:0 0 4px">{{ r.notes }}</div>{% endif %}
           <span class="unconf" style="color:#c9bda0">confidence_flag: {{ r.confidence_flag }}</span>
@@ -825,7 +825,7 @@ footer p{margin:0 0 10px;line-height:1.55}
               {% endif %}{{ r.event_type }}</span>
           </div>
           <p class="card-meta">{{ r.event_date_raw|default:"—" }} &middot; {{ r.ruler_actor|default:"—" }} &middot;
-            <span class="mono">vol. {{ r.source_document }}, hlm. {{ r.source_page }}{% if r.book_page %} ({{ r.book_page }}){% endif %}</span></p>
+            <span class="mono">vol. {{ r.source_label }}, hlm. {{ r.source_page }}{% if r.book_page %} ({{ r.book_page }}){% endif %}</span></p>
         </summary>
         <div class="card-detail">
           <div class="quote">&ldquo;{{ r.text_asli }}&rdquo;</div>
@@ -871,7 +871,7 @@ footer p{margin:0 0 10px;line-height:1.55}
       <!-- Kolom kanan: Corpus & Cakupan -->
       <div class="sources-col">
         <h3>Corpus Diplomaticum &amp; Cakupan</h3>
-        <p><i>Corpus Diplomaticum Neerlando-Indicum</i> (ed. J.E. Heeres, G.K. Niemeijer, dkk.) —
+        <p><i>Corpus Diplomaticum Neerlando-Indicum</i> (ed. J.E. Heeres, dkk.) —
           kompilasi traktat/kontrak VOC dengan penguasa lokal di Nusantara. Enam volume yang disisir:</p>
         <ul class="source-list">
           <li><b>Jilid I</b> (~1600–1650): Kontrak dagang lada pertama VOC-Atjeh (Des 1600),
@@ -1244,7 +1244,7 @@ if (chrStage && ALL.length && ERAS_META.length) {
       <div class="chr-quote">&ldquo;${esc(ev.text_asli)}&rdquo;</div>
       <details class="chr-source-details">
         <summary class="chr-source-header">Sumber Primer</summary>
-        <p class="chr-source-name">Arsip ${esc(ev.source_document || '—')}</p>
+        <p class="chr-source-name">Arsip ${esc(ev.source_label || ev.source_document || '—')}</p>
         <p class="chr-source-page">Halaman ${esc(ev.source_page || '—')}${ev.book_page ? `, baris ${esc(ev.book_page)}` : ''}</p>
         ${statusHTML}
       </details>

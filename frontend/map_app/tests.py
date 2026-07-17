@@ -1137,6 +1137,14 @@ class RisetAtjehViewTest(SimpleTestCase):
         html = self.client.get(reverse("riset_atjeh")).content.decode()
         self.assertIn("../petunjuk-arsip/", html)
 
+    def test_cd_source_document_mapped_to_book_title_in_js(self):
+        """Kolom 'Volume' HARUS tampilkan judul buku asli (Corpus Diplomaticum
+        Neerlando-Indicum, Jilid N) utk baris CD1-CD6, bukan kode file mentah 'CD1'
+        -- fungsi mapping sourceLabel() wajib ada & dipakai di rowHtml()."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn("Corpus Diplomaticum Neerlando-Indicum, Jilid", html)
+        self.assertIn("sourceLabel(r.source_document)", html)
+
 
 # ─── Linimasa Suksesi Atjeh (top-level /linimasa) ────────────────────────────
 class LinimasaViewTest(SimpleTestCase):
@@ -1327,3 +1335,28 @@ class LinimasaSsrTest(SimpleTestCase):
         self.assertEqual(response.status_code, 200)
         content = response.content.decode("utf-8")
         self.assertIn("Backend tidak terjangkau", content)
+
+    @patch("map_app.views.httpx.get")
+    def test_cd_source_document_shows_book_title_not_raw_code(self, mock_get):
+        """source_document='CD1' HARUS tampil sbg judul buku asli (Corpus
+        Diplomaticum Neerlando-Indicum, Jilid I), bukan kode file mentah 'CD1' --
+        lihat docs/prd-split-tema-globalise-daghregister.md tidak relevan, ini
+        temuan terpisah: kode internal CD1-CD6 bocor ke tampilan publik."""
+        items = MOCK_LINIMASA_ITEMS + [{
+            **MOCK_LINIMASA_ITEMS[0],
+            "id": 99, "source_document": "CD1", "era_slug": "klaim-awal",
+        }]
+        mock_get.return_value = _make_httpx_response({"items": items, "meta": MOCK_LINIMASA_META})
+        response = self.client.get(reverse("linimasa"))
+        content = response.content.decode("utf-8")
+        self.assertIn("Corpus Diplomaticum Neerlando-Indicum, Jilid I", content)
+        self.assertNotIn("vol. CD1,", content)
+
+    @patch("map_app.views.httpx.get")
+    def test_no_pdf_filename_leaks_to_page(self, mock_get):
+        """Kode internal '.pdf' (nama file scan) tidak boleh pernah muncul di HTML
+        yang dikirim ke browser -- ini regression guard thd bug yg baru diperbaiki."""
+        mock_get.return_value = _make_httpx_response({"items": MOCK_LINIMASA_ITEMS, "meta": MOCK_LINIMASA_META})
+        response = self.client.get(reverse("linimasa"))
+        content = response.content.decode("utf-8")
+        self.assertNotIn(".pdf", content)
