@@ -19,6 +19,13 @@ Pola sync_engine diadopsi dari test_atm_p0_us06.py.
 
 Jalankan:
     docker compose exec -T backend pytest tests/test_research_qa_granular.py -v
+
+BASELINE DIPERBARUI (2026-07-17, docs/prd-pembersihan-korpus-daghregister.md):
+angka lama (1005/470/535/27/481) adalah sblm pembersihan kebocoran scan
+(nomor halaman/header tanggal/entri katalog arsip yg bocor ke kolom `text`,
+sempat tampil di /riset/tema). 101+2 baris `non_narrative` (bukan narasi
+peristiwa) dikeluarkan scr sengaja dari research_theme_rows -- baseline di
+bawah SUDAH mencerminkan state pasca-cleaning yg benar, bukan regresi.
 """
 import os
 import sys
@@ -58,46 +65,50 @@ def _scalar(sync_engine, sql, **params):
 
 # ─── 1. total ────────────────────────────────────────────────────────────────
 def test_total_research_theme_rows(sync_engine):
-    """Total baris korpus tema = 1005 (baseline volume gabungan DR + globalise)."""
+    """Total baris korpus tema = 902 (baseline pasca-pembersihan kebocoran scan,
+    2026-07-17 — sebelumnya 1005, 103 baris non_narrative dikeluarkan sengaja)."""
     total = _scalar(sync_engine, "SELECT count(*) FROM research_theme_rows")
-    assert total == 1005, f"total research_theme_rows = {total}, harusnya 1005 (re-seed menggeser volume?)"
+    assert total == 902, f"total research_theme_rows = {total}, harusnya 902 (re-seed menggeser volume?)"
 
 
-# ─── 2. count daghregister == 470 (assert 470 eksplisit yg diminta DoD) ───────
-def test_count_daghregister_470(sync_engine):
-    """DoD QA-SNK-1: baris corpus_asal='daghregister' TEPAT 470 — angka 470 di-hardcode
-    eksplisit di sini karena `grep -rn '470' backend/tests/` sebelumnya nihil."""
+# ─── 2. count daghregister == 437 (baseline diperbarui pasca-cleaning) ───────
+def test_count_daghregister_437(sync_engine):
+    """DoD QA-SNK-1: baris corpus_asal='daghregister' TEPAT 437 (sebelumnya 470 —
+    33 baris non_narrative/indeks-nama dikeluarkan saat pembersihan kebocoran scan)."""
     dagh = _scalar(
         sync_engine,
         "SELECT count(*) FROM research_theme_rows WHERE corpus_asal='daghregister'",
     )
-    assert dagh == 470, f"daghregister = {dagh}, harusnya 470 (komposisi per-korpus bergeser diam-diam?)"
+    assert dagh == 437, f"daghregister = {dagh}, harusnya 437 (komposisi per-korpus bergeser diam-diam?)"
 
 
-# ─── 3. count globalise == 535 ───────────────────────────────────────────────
-def test_count_globalise_535(sync_engine):
-    """Baris corpus_asal='globalise' TEPAT 535 (470 + 535 = 1005, konsisten)."""
+# ─── 3. count globalise == 465 ───────────────────────────────────────────────
+def test_count_globalise_465(sync_engine):
+    """Baris corpus_asal='globalise' TEPAT 465 (437 + 465 = 902, konsisten).
+    Sebelumnya 535 -- 70 baris katalog/inventaris arsip (non_narrative)
+    dikeluarkan saat pembersihan kebocoran scan."""
     glob = _scalar(
         sync_engine,
         "SELECT count(*) FROM research_theme_rows WHERE corpus_asal='globalise'",
     )
-    assert glob == 535, f"globalise = {glob}, harusnya 535"
+    assert glob == 465, f"globalise = {glob}, harusnya 465"
 
 
-# ─── 4. count dekade IS NULL == 27 ───────────────────────────────────────────
-def test_count_dekade_null_27(sync_engine):
-    """27 baris tanpa dekade -> jatuh ke bucket 'Tak bertahun'. Angka dikunci agar
-    pergeseran bucket null (mis. gagal parse tanggal) langsung ketahuan."""
+# ─── 4. count dekade IS NULL == 26 ───────────────────────────────────────────
+def test_count_dekade_null_26(sync_engine):
+    """26 baris tanpa dekade -> jatuh ke bucket 'Tak bertahun' (sebelumnya 27 --
+    satu baris null-dekade termasuk yg dikeluarkan saat pembersihan). Angka
+    dikunci agar pergeseran bucket null (mis. gagal parse tanggal) ketahuan."""
     null_dek = _scalar(
         sync_engine,
         "SELECT count(*) FROM research_theme_rows WHERE dekade IS NULL",
     )
-    assert null_dek == 27, f"dekade IS NULL = {null_dek}, harusnya 27"
+    assert null_dek == 26, f"dekade IS NULL = {null_dek}, harusnya 26"
 
 
-# ─── 5. daghregister 470/470 punya dekade (fix#1 backfill tuntas) ────────────
-def test_daghregister_470_all_have_dekade(sync_engine):
-    """INTI QA-SNK-1: seluruh 470 DR punya dekade NOT NULL (fix#1 backfill terbukti
+# ─── 5. daghregister 437/437 punya dekade (fix#1 backfill tuntas) ────────────
+def test_daghregister_437_all_have_dekade(sync_engine):
+    """INTI QA-SNK-1: seluruh 437 DR punya dekade NOT NULL (fix#1 backfill terbukti
     tuntas). Jika ada DR ber-dekade NULL, ia jatuh senyap ke bucket 'Tak bertahun'
     dan hilang dari alur dekade nyata di Sankey — regresi yang harus gagal keras."""
     dagh_with_dek = _scalar(
@@ -110,12 +121,12 @@ def test_daghregister_470_all_have_dekade(sync_engine):
         "SELECT count(*) FROM research_theme_rows "
         "WHERE corpus_asal='daghregister' AND dekade IS NULL",
     )
-    assert dagh_with_dek == 470, (
-        f"{470 - dagh_with_dek}/470 DR tidak punya dekade -> jatuh ke bucket "
+    assert dagh_with_dek == 437, (
+        f"{437 - dagh_with_dek}/437 DR tidak punya dekade -> jatuh ke bucket "
         f"'Tak bertahun', drop senyap dari Sankey (dagh_with_dekade={dagh_with_dek})"
     )
     assert dagh_null_dek == 0, (
-        f"{dagh_null_dek} DR ber-dekade NULL — 27 bucket null harusnya MURNI globalise"
+        f"{dagh_null_dek} DR ber-dekade NULL — 26 bucket null harusnya MURNI globalise"
     )
 
 
@@ -130,8 +141,9 @@ def test_multiport_rows_present(sync_engine):
     assert multiport >= 1, (
         f"tidak ada baris multi-port (LIKE '%;%') = {multiport}; explode tak teruji data nyata"
     )
-    assert multiport == 481, (
-        f"baris multi-port = {multiport}, baseline 481 (dagh=139 + glob=342) bergeser?"
+    assert multiport == 436, (
+        f"baris multi-port = {multiport}, baseline 436 (dagh=135 + glob=301, "
+        f"sebelumnya 481 sblm pembersihan kebocoran scan) bergeser?"
     )
 
 
@@ -154,15 +166,15 @@ def test_split_ports_membership_real_row(sync_engine):
     assert "Painan" not in ports, "false-match: 'Painan' tak boleh cocok (bukan substring)"
 
 
-# ─── 8. corpus_id unik dalam DR (tak ada duplikat menggelembungkan 470) ───────
+# ─── 8. corpus_id unik dalam DR (tak ada duplikat menggelembungkan 437) ───────
 def test_daghregister_corpus_id_unique(sync_engine):
-    """count(DISTINCT corpus_id) DR == 470 == jumlah baris DR: corpus_id unik, tak ada
-    duplikat yang diam-diam menggelembungkan hitungan 470."""
+    """count(DISTINCT corpus_id) DR == 437 == jumlah baris DR: corpus_id unik, tak ada
+    duplikat yang diam-diam menggelembungkan hitungan 437."""
     distinct_id = _scalar(
         sync_engine,
         "SELECT count(DISTINCT corpus_id) FROM research_theme_rows "
         "WHERE corpus_asal='daghregister'",
     )
-    assert distinct_id == 470, (
-        f"distinct corpus_id DR = {distinct_id}, harusnya 470 (duplikat corpus_id?)"
+    assert distinct_id == 437, (
+        f"distinct corpus_id DR = {distinct_id}, harusnya 437 (duplikat corpus_id?)"
     )
