@@ -961,6 +961,59 @@ class RisetTemaViewTest(SimpleTestCase):
         self.assertIn("EB Garamond", html)
         self.assertIn("Space Grotesk", html)
 
+    def test_filters_to_daghregister_only(self):
+        """SPLIT-1: halaman ini HARUS memisahkan ke corpus_asal=daghregister,
+        bukan lagi menggabung GLOBALISE (diganti /riset/petunjuk-arsip)."""
+        html = self.client.get(reverse("riset_tema")).content.decode()
+        self.assertIn("corpus_asal=daghregister", html)
+
+    def test_links_to_petunjuk_arsip(self):
+        """Nav resiprokal ke halaman GLOBALISE baru (sibling relatif di bawah /riset/)."""
+        html = self.client.get(reverse("riset_tema")).content.decode()
+        self.assertIn("../petunjuk-arsip/", html)
+
+
+# ─── SPLIT-1: halaman Petunjuk Arsip GLOBALISE (/riset/petunjuk-arsip) ────────
+class RisetPetunjukArsipViewTest(SimpleTestCase):
+    """Halaman /riset/petunjuk-arsip render statis; data ditarik client-side dari
+    /api/research?corpus_asal=globalise. Dipisah dari /riset/tema karena GLOBALISE
+    adalah metadata katalog/finding-aid arsip, bukan narasi peristiwa -- lihat
+    docs/prd-split-tema-globalise-daghregister.md."""
+
+    def test_returns_200(self):
+        resp = self.client.get(reverse("riset_petunjuk_arsip"))
+        self.assertEqual(resp.status_code, 200)
+
+    def test_noindex_present(self):
+        html = self.client.get(reverse("riset_petunjuk_arsip")).content.decode()
+        self.assertIn("noindex", html)
+        self.assertIn('name="robots"', html)
+
+    def test_uses_research_endpoint_not_hardcoded_data(self):
+        html = self.client.get(reverse("riset_petunjuk_arsip")).content.decode()
+        self.assertIn("/api/research/sankey-tema", html)
+        self.assertIn("/triples", html)
+
+    def test_filters_to_globalise_only(self):
+        html = self.client.get(reverse("riset_petunjuk_arsip")).content.decode()
+        self.assertIn("corpus_asal=globalise", html)
+
+    def test_uses_salido_fonts(self):
+        html = self.client.get(reverse("riset_petunjuk_arsip")).content.decode()
+        self.assertIn("EB Garamond", html)
+        self.assertIn("Space Grotesk", html)
+
+    def test_does_not_claim_ocr_narrative(self):
+        """Framing HARUS jujur: ini indeks katalog, bukan kutipan narasi mata-saksi
+        seperti Dagh-register -- inti keputusan strategis pemisahan ini."""
+        html = self.client.get(reverse("riset_petunjuk_arsip")).content.decode()
+        self.assertIn("bukan narasi peristiwa", html)
+
+    def test_links_back_to_riset_tema(self):
+        """Nav resiprokal ke halaman Dagh-register (sibling relatif di bawah /riset/)."""
+        html = self.client.get(reverse("riset_petunjuk_arsip")).content.decode()
+        self.assertIn("../tema/", html)
+
 
 # ─── Network Graph Fase 1: halaman jaringan pelabuhan (/riset/jaringan) ────────
 class RisetJaringanViewTest(SimpleTestCase):
@@ -988,6 +1041,11 @@ class RisetJaringanViewTest(SimpleTestCase):
         html = self.client.get(reverse("riset_jaringan")).content.decode()
         self.assertIn("EB Garamond", html)
         self.assertIn("Space Grotesk", html)
+
+    def test_links_to_petunjuk_arsip(self):
+        """SPLIT-1: nav harus menautkan ke halaman GLOBALISE baru juga (sibling relatif)."""
+        html = self.client.get(reverse("riset_jaringan")).content.decode()
+        self.assertIn("../petunjuk-arsip/", html)
 
 
 # ─── Dagang Atjeh 1643-1644 + 1631-1634: laporan dagang (/riset/atjeh-dagang) ──
@@ -1073,6 +1131,11 @@ class RisetAtjehViewTest(SimpleTestCase):
         Atjeh bukan lagi bercampur dgn transaksi dagang di dalam Atjeh)."""
         html = self.client.get(reverse("riset_atjeh")).content.decode()
         self.assertIn('value="politik"', html)
+
+    def test_links_to_petunjuk_arsip(self):
+        """SPLIT-1: nav harus menautkan ke halaman GLOBALISE baru juga (sibling relatif)."""
+        html = self.client.get(reverse("riset_atjeh")).content.decode()
+        self.assertIn("../petunjuk-arsip/", html)
 
 
 # ─── Linimasa Suksesi Atjeh (top-level /linimasa) ────────────────────────────

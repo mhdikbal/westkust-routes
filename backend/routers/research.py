@@ -160,6 +160,7 @@ async def get_sankey_tema_rows(
     response: Response,
     tema: Optional[str] = None,
     pelabuhan: Optional[str] = None,
+    corpus_asal: Optional[Literal["daghregister", "globalise"]] = None,
     year_from: Optional[int] = None,
     year_to: Optional[int] = None,
     skip: int = Query(0, ge=0),
@@ -168,10 +169,13 @@ async def get_sankey_tema_rows(
 ):
     """Baris penyusun satu alur Sankey (klik link -> daftar teks asli). Filter
     pelabuhan mencocokkan KEANGGOTAAN token pada baris multi-port (FIX #2), bukan
-    substring. Filter tahun NULL-inclusive (konsisten SNK-2). Cache-aside Redis."""
+    substring. Filter tahun NULL-inclusive (konsisten SNK-2). corpus_asal (SPLIT-1)
+    memisahkan drill-down /riset/tema (daghregister) dari /riset/petunjuk-arsip
+    (globalise) -- filter di Python bersama pelabuhan, sebelum pagination slice.
+    Cache-aside Redis."""
     cache_key = make_key("research_rows", {
-        "tema": tema, "pelabuhan": pelabuhan, "year_from": year_from,
-        "year_to": year_to, "skip": skip, "limit": limit,
+        "tema": tema, "pelabuhan": pelabuhan, "corpus_asal": corpus_asal,
+        "year_from": year_from, "year_to": year_to, "skip": skip, "limit": limit,
     })
     cached = await cache_get(cache_key)
     if cached is not None:
@@ -196,6 +200,8 @@ async def get_sankey_tema_rows(
     # filter pelabuhan by keanggotaan token (bukan LIKE substring) di Python
     if pelabuhan is not None:
         rows = [r for r in rows if pelabuhan in _split_ports(r.pelabuhan_disebut)]
+    if corpus_asal is not None:
+        rows = [r for r in rows if r.corpus_asal == corpus_asal]
 
     # paginasi setelah filter port agar hitungan konsisten
     page = rows[skip: skip + limit]
@@ -216,8 +222,15 @@ class SankeyTriplesResponse(BaseModel):
 
 
 @router.get("/sankey-tema/triples", response_model=SankeyTriplesResponse)
-async def get_sankey_tema_triples(response: Response, db: AsyncSession = Depends(get_db)):
-    cache_key = make_key("research_triples", None)
+async def get_sankey_tema_triples(
+    response: Response,
+    corpus_asal: Optional[Literal["daghregister", "globalise"]] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """SPLIT-1: corpus_asal opsional memisahkan Sankey /riset/tema (daghregister)
+    dari /riset/petunjuk-arsip (globalise) -- filter di Python (bukan SQL WHERE)
+    karena endpoint ini fetch seluruh tabel tanpa filter server-side lain."""
+    cache_key = make_key("research_triples", {"corpus_asal": corpus_asal})
     cached = await cache_get(cache_key)
     if cached is not None:
         response.headers["X-Cache"] = "HIT"
@@ -235,6 +248,8 @@ async def get_sankey_tema_triples(response: Response, db: AsyncSession = Depends
     temas, decs, ports = set(), set(), set()
     total = n_dagh = n_glob = n_low = 0
     for r in rows:
+        if corpus_asal is not None and r.corpus_asal != corpus_asal:
+            continue
         total += 1
         if r.corpus_asal == "daghregister":
             n_dagh += 1

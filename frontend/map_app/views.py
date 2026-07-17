@@ -19,6 +19,17 @@ def riset_tema(request):
     return render(request, "map_app/riset_tema.html")
 
 
+def riset_petunjuk_arsip(request):
+    """SPLIT-1 — Indeks katalog GLOBALISE (thesis-only, /riset/petunjuk-arsip).
+    Dipisah dari /riset/tema (Dagh-register) karena GLOBALISE adalah metadata
+    katalog/finding-aid arsip, bukan narasi peristiwa -- menyajikannya sebagai
+    'baris' yang sama dgn kutipan Dagh-register menyesatkan pembaca.
+    Halaman statis: diagram & drill-down ditarik client-side dari
+    /api/research/sankey-tema?corpus_asal=globalise (nginx proxy). noindex +
+    tidak di navbar publik. Identitas visual salido.my.id."""
+    return render(request, "map_app/riset_petunjuk_arsip.html")
+
+
 def riset_jaringan(request):
     """Network Graph Fase 1 — graf co-occurrence pelabuhan (thesis-only, /riset/jaringan).
     Halaman statis: graf force-directed & drill-down ditarik client-side dari

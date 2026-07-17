@@ -84,6 +84,45 @@ async def test_triples_meta_counts():
 
 
 @pytest.mark.asyncio
+async def test_triples_corpus_asal_filter_excludes_other_corpus():
+    """SPLIT-1: ?corpus_asal=daghregister harus MENGECUALIKAN baris globalise
+    dari triples & meta -- dasar pemisahan /riset/tema vs /riset/petunjuk-arsip."""
+    rows = [
+        make_row(1660, "syahbandar", "Padang", asal="daghregister"),
+        make_row(1670, "pelayaran", "Barus", asal="globalise"),
+        make_row(1670, "pelayaran", "Barus", asal="globalise"),
+    ]
+    app.dependency_overrides[get_db] = db_returning(rows)
+    try:
+        resp = await _get("/api/research/sankey-tema/triples?corpus_asal=daghregister")
+    finally:
+        app.dependency_overrides.clear()
+    d = resp.json()
+    assert d["meta"]["total"] == 1
+    assert d["meta"]["n_dagh"] == 1
+    assert d["meta"]["n_glob"] == 0
+    trip_keys = {(t[0], t[1], t[2]) for t in d["triples"]}
+    assert trip_keys == {(1660, "syahbandar", "Padang")}
+
+
+@pytest.mark.asyncio
+async def test_triples_corpus_asal_filter_globalise_only():
+    rows = [
+        make_row(1660, "syahbandar", "Padang", asal="daghregister"),
+        make_row(1670, "pelayaran", "Barus", asal="globalise"),
+    ]
+    app.dependency_overrides[get_db] = db_returning(rows)
+    try:
+        resp = await _get("/api/research/sankey-tema/triples?corpus_asal=globalise")
+    finally:
+        app.dependency_overrides.clear()
+    d = resp.json()
+    assert d["meta"]["total"] == 1
+    assert d["meta"]["n_dagh"] == 0
+    assert d["meta"]["n_glob"] == 1
+
+
+@pytest.mark.asyncio
 async def test_triples_null_dekade_preserved():
     """Baris dekade NULL tetap jadi triple (dek=None), tidak di-drop."""
     rows = [make_row(None, "syahbandar", "Padang")]

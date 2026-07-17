@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<title>Tema Korpus Dagh-register — Pesisir Barat Sumatra (VOC)</title>
+<title>Petunjuk Arsip — Indeks Katalog GLOBALISE (Pesisir Barat Sumatra, VOC)</title>
 <style>
 /* ============================ TOKENS ============================ */
 :root{
@@ -70,6 +70,9 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:26p
 .prov{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:14px;letter-spacing:.01em}
 .prov span{white-space:nowrap}
 .prov .sep{opacity:.4;margin:0 .55em}
+.notice{margin-top:16px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;
+  padding:12px 16px;font-size:.86rem;color:var(--muted-dark);max-width:70ch;line-height:1.55}
+.notice b{color:var(--ink)}
 
 /* stat tiles */
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;
@@ -218,7 +221,7 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 19l-7-7 7-7"/><path d="M3 12h18"/></svg>
         Peta VOC
       </a>
-      <a class="sib" href="../petunjuk-arsip/">Petunjuk arsip</a>
+      <a class="sib" href="../tema/">Tema Dagh-register</a>
       <a class="sib" href="../jaringan/">Jaringan pelabuhan</a>
       <a class="sib" href="../atjeh-dagang/">Dagang Atjeh</a>
       <a class="sib" href="../../linimasa/">Linimasa suksesi</a>
@@ -226,12 +229,16 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
     <span class="brand">Salido</span>
   </nav>
   <header>
-    <h1 class="title">Tema Korpus Dagh-register di <em>Pesisir Barat Sumatra</em></h1>
-    <p class="lede">Klasifikasi zero-shot atas korpus narasi Dagh-register Batavia abad ke-17–18, dibaca sebagai aliran:
-      kapan sebuah tema muncul, tentang apa, dan di pelabuhan mana ia terkonsentrasi. Untuk indeks katalog
-      arsip GLOBALISE (bukan narasi peristiwa), lihat <a href="../petunjuk-arsip/">Petunjuk Arsip</a>.</p>
+    <h1 class="title">Petunjuk Arsip — Indeks Katalog <em>GLOBALISE</em></h1>
+    <p class="lede">Klasifikasi zero-shot atas deskripsi katalog/finding-aid arsip VOC (GLOBALISE/Huygens ING),
+      dibaca sebagai aliran: kapan sebuah tema muncul, tentang apa, dan di pelabuhan mana ia terkonsentrasi.</p>
     <p class="reading">Alur dibaca kiri&nbsp;→&nbsp;kanan &nbsp;·&nbsp;
       <b>Waktu</b> (dekade) &nbsp;▸&nbsp; <b>Tema</b> (7 kategori) &nbsp;▸&nbsp; <b>Pelabuhan</b> (yang disebut di teks).</p>
+    <div class="notice"><b>Ini bukan narasi peristiwa.</b> Setiap baris di halaman ini adalah entri
+      katalog/inventaris arsip Belanda (metadata finding-aid), bukan kutipan mata-saksi seperti Dagh-register.
+      "Teks" yang diklasifikasi = deskripsi ringkas katalog; tak ada kutipan Belanda asli yang disimpan —
+      hanya sitasi nomor inventaris untuk ditelusuri ke arsip aslinya. Untuk narasi peristiwa harian,
+      lihat <a href="../tema/">Tema Dagh-register</a>.</p>
     <div class="prov" id="prov"></div>
     <div class="tiles" id="tiles"></div>
   </header>
@@ -275,27 +282,29 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
 
   <section class="audit" id="audit">
     <div class="audit-head">
-      <h2>Audit — baris penyusun</h2>
+      <h2>Audit — entri katalog</h2>
       <span class="ctx" id="auditCtx"></span>
     </div>
-    <p class="audit-sub" id="auditSub">Klik satu alur atau simpul untuk membuka teks asli penyusunnya — transparansi “kenapa baris ini diberi skor segini”.</p>
+    <p class="audit-sub" id="auditSub">Klik satu alur atau simpul untuk membuka entri katalog penyusunnya — transparansi “kenapa entri ini diberi skor segini”.</p>
     <div id="panel"></div>
   </section>
 
   <footer>
     <h3>Metode &amp; batas</h3>
-    <p>Setiap baris korpus diklasifikasi ke 7 kategori tema (skor 0–1 independen, <span class="mono">multi_label</span>)
-      dengan model zero-shot <span class="mono">mDeBERTa-v3</span>; tema dominan = skor tertinggi per baris.
-      Pelabuhan dideteksi lewat pola ejaan historis; satu baris bisa menyebut beberapa pelabuhan dan
-      menyumbang ke tiap-tiapnya (link di-<em>explode</em>). Baris dengan skor dominan &lt; 0,5 ditandai
+    <p>Setiap entri katalog diklasifikasi ke 7 kategori tema (skor 0–1 independen, <span class="mono">multi_label</span>)
+      dengan model zero-shot <span class="mono">mDeBERTa-v3</span>; tema dominan = skor tertinggi per entri.
+      Pelabuhan dideteksi lewat pola ejaan historis; satu entri bisa menyebut beberapa pelabuhan dan
+      menyumbang ke tiap-tiapnya (link di-<em>explode</em>). Entri dengan skor dominan &lt; 0,5 ditandai
       <b>low-confidence</b> — tidak dibuang, tapi diarsir agar ketidakpastian tidak tersamar.</p>
-    <p>Bucket <span class="mono">“Tak bertahun”</span> menampung baris tanpa tahun (tetap ikut, tidak disenyapkan).
-      Angka pada tautan = jumlah kontribusi baris, bukan jumlah baris unik.</p>
+    <p>Bucket <span class="mono">“Tak bertahun”</span> menampung entri tanpa tahun (tetap ikut, tidak disenyapkan).
+      Angka pada tautan = jumlah kontribusi entri, bukan jumlah entri unik. OCR penuh arsip GLOBALISE
+      TIDAK disimpan di DB (terlalu besar, bukan narasi) — hanya sitasi nomor inventaris
+      (<span class="mono">NL-HaNA_1.04.02_...</span>) untuk ditelusuri ke sumber aslinya.</p>
     <p>
       <span class="tag">thesis-only · noindex</span>
-      <span class="tag">route: /riset/tema (tidak di navbar publik)</span>
-      <span class="tag">sumber: Dagh-register Batavia</span>
-      <span class="tag">endpoint: /api/research/sankey-tema?corpus_asal=daghregister</span>
+      <span class="tag">route: /riset/petunjuk-arsip (tidak di navbar publik)</span>
+      <span class="tag">sumber: GLOBALISE (Huygens ING)</span>
+      <span class="tag">endpoint: /api/research/sankey-tema?corpus_asal=globalise</span>
       <span class="tag">design: salido.my.id (EB Garamond · Space Grotesk)</span>
     </p>
   </footer>
@@ -306,7 +315,7 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
 <script type="module">
 "use strict";
 const API='/api/research/sankey-tema';
-const CORPUS_ASAL='daghregister';
+const CORPUS_ASAL='globalise';
 const DATA = await fetch(API+'/triples?corpus_asal='+CORPUS_ASAL).then(r=>r.json());
 const M = DATA.meta;
 
@@ -330,15 +339,15 @@ let state = { from:decades[0], to:decades[decades.length-1], hatch:true, hide:fa
 
 /* ---------- header fill ---------- */
 document.getElementById('prov').innerHTML =
-  `<span>korpus: Dagh-register Batavia</span><span class="sep">·</span>` +
+  `<span>korpus: GLOBALISE (Huygens ING)</span><span class="sep">·</span>` +
   `<span>klasifikasi zero-shot mDeBERTa</span><span class="sep">·</span>` +
-  `<span>N=${fmt(M.total)} baris</span>`;
+  `<span>N=${fmt(M.total)} entri</span>`;
 const tiles = [
-  {k:fmt(M.total), l:"baris korpus terklasifikasi"},
+  {k:fmt(M.total), l:"entri katalog terklasifikasi"},
   {k:`${decades[0]}–${decades[decades.length-1]}`, l:"rentang dekade"},
   {k:M.temas.length, l:"kategori tema"},
   {k:M.n_ports, l:"pelabuhan (+ tak diketahui)"},
-  {k:`${Math.round(100*M.n_lowconf/M.total)}%`, l:`<b>${fmt(M.n_lowconf)}</b> baris low-confidence`},
+  {k:`${Math.round(100*M.n_lowconf/M.total)}%`, l:`<b>${fmt(M.n_lowconf)}</b> entri low-confidence`},
 ];
 document.getElementById('tiles').innerHTML = tiles.map(t=>
   `<div class="tile"><div class="k">${t.k}</div><div class="l">${t.l}</div></div>`).join('');
@@ -537,7 +546,7 @@ function ribbon(sx,sy,tx,ty,th,mx){
   return `M${sx},${sy} C${mx},${sy} ${mx},${ty} ${tx},${ty} L${tx},${ty+th} C${mx},${ty+th} ${mx},${sy+th} ${sx},${sy+th} Z`;
 }
 function drawEmpty(){ svg.setAttribute('viewBox',`0 0 ${W} 200`); svg.style.height='200px';
-  svg.appendChild(text(W/2,100,'Tidak ada baris pada rentang/filter ini.','empty-msg',{'text-anchor':'middle'})); }
+  svg.appendChild(text(W/2,100,'Tidak ada entri pada rentang/filter ini.','empty-msg',{'text-anchor':'middle'})); }
 
 /* ---------- interaction ---------- */
 const gLinksSel=()=>svg.querySelector('.links');
@@ -580,7 +589,7 @@ async function openDrill(l){
   }
   auditCtx.textContent=ctxParts.join(' ');
   document.documentElement.style.setProperty('--drill-c',color);
-  auditSub.textContent='Memuat baris…';
+  auditSub.textContent='Memuat entri…';
   panel.innerHTML='';
 
   const qs=new URLSearchParams({limit:'500', corpus_asal:CORPUS_ASAL});
@@ -591,14 +600,14 @@ async function openDrill(l){
 
   let rows=[];
   try{ rows=await fetch(API+'/rows?'+qs).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); }); }
-  catch(e){ panel.innerHTML=`<div class="empty-panel">Gagal memuat baris (<b>${esc(String(e))}</b>).</div>`; return; }
+  catch(e){ panel.innerHTML=`<div class="empty-panel">Gagal memuat entri (<b>${esc(String(e))}</b>).</div>`; return; }
 
   auditSub.innerHTML = tema
-    ? `Baris ber-tema dominan <b>${temaLabel(tema)}</b>${pelabuhan?` yang menyebut <b>${esc(pelabuhan)}</b>`:''}. Teks lengkap langsung dari <span class="mono">/api/research/sankey-tema/rows</span>.`
+    ? `Entri ber-tema dominan <b>${temaLabel(tema)}</b>${pelabuhan?` yang menyebut <b>${esc(pelabuhan)}</b>`:''}. Data lengkap langsung dari <span class="mono">/api/research/sankey-tema/rows</span>.`
     : `Semua tema yang menyebut <b>${esc(pelabuhan)}</b>.`;
 
-  if(!rows.length){ panel.innerHTML=`<div class="empty-panel">Tidak ada baris untuk seleksi ini.</div>`; return; }
-  auditCtx.textContent=ctxParts.join(' ')+`  ·  ${rows.length} baris`;
+  if(!rows.length){ panel.innerHTML=`<div class="empty-panel">Tidak ada entri untuk seleksi ini.</div>`; return; }
+  auditCtx.textContent=ctxParts.join(' ')+`  ·  ${rows.length} entri`;
   panel.innerHTML=`<div class="rows">`+rows.map(r=>card(r,pelabuhan)).join('')+`</div>`;
   document.getElementById('audit').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'nearest'});
 }
@@ -611,7 +620,7 @@ function card(r, selPort){
   const pct = Math.round(skor*100);
   const low = r.low_confidence ? `<span class="lowchip">low-conf</span>` : '';
   const ref = r.inventaris_ref || r.source || '—';
-  const asli = r.text_asli ? `<details class="asli"><summary>teks asli (Belanda / OCR arsip)</summary><p>${esc(r.text_asli)}</p></details>` : '';
+  const asli = r.text_asli ? `<details class="asli"><summary>sitasi arsip (GLOBALISE/Huygens)</summary><p>${esc(r.text_asli)}</p></details>` : '';
   return `<article class="card" style="--tema:${c}">
     <div class="card-top">
       <span class="cid">#${r.corpus_id}</span>

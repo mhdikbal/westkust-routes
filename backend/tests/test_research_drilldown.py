@@ -122,6 +122,39 @@ async def test_drilldown_exposes_low_confidence():
     assert flags == {1: True, 2: False}
 
 
+# ─── SPLIT-1: filter corpus_asal (dasar pemisahan Dagh-register/GLOBALISE) ───
+
+@pytest.mark.asyncio
+async def test_drilldown_corpus_asal_filter():
+    """?corpus_asal=globalise harus MENGECUALIKAN baris daghregister dari hasil."""
+    rows = [
+        make_row(1, "syahbandar", "Padang", corpus_asal="daghregister"),
+        make_row(2, "syahbandar", "Padang", corpus_asal="globalise"),
+    ]
+    app.dependency_overrides[get_db] = db_returning(rows)
+    try:
+        data = (await _get("/api/research/sankey-tema/rows?corpus_asal=globalise")).json()
+    finally:
+        app.dependency_overrides.clear()
+    ids = sorted(r["corpus_id"] for r in data)
+    assert ids == [2]
+
+
+@pytest.mark.asyncio
+async def test_drilldown_corpus_asal_filter_daghregister():
+    rows = [
+        make_row(1, "syahbandar", "Padang", corpus_asal="daghregister"),
+        make_row(2, "syahbandar", "Padang", corpus_asal="globalise"),
+    ]
+    app.dependency_overrides[get_db] = db_returning(rows)
+    try:
+        data = (await _get("/api/research/sankey-tema/rows?corpus_asal=daghregister")).json()
+    finally:
+        app.dependency_overrides.clear()
+    ids = sorted(r["corpus_id"] for r in data)
+    assert ids == [1]
+
+
 # ─── Edge: kosong & validasi limit negatif (SEC) ─────────────────────────────
 
 @pytest.mark.asyncio
