@@ -17,7 +17,7 @@
 | DB | `research_theme_rows` | 1.005 | **167 baris (16.6%) bocor** — lihat §1.2 |
 | DB | `staging_extractions` | 119 | Mentah (`confidence_flag='unverified'`), tapi **tidak tampil di halaman publik manapun** — murni staging API internal, prioritas rendah |
 | CSV (produksi) | `data/research/korpus_tema_slim.csv` | 1.005 | Sumber kanonik `research_theme_rows` (via `backend/seed_research_tema.py`, idempotent by `corpus_id`) — **ini yang diperbaiki** |
-| CSV (riset mentah) | `docs/thesis/dr/daghregister_corpus*.csv` (raw/classified/sanitychecked/deduped) | 76.312 tiap tahap | Kebocoran ada di **semua tahap** termasuk "sanitychecked" (itu cuma cek kuantitas kargo, bukan cleaning teks). **Belum di-ingest ke DB** — di luar scope sprint ini, lihat §6 |
+| CSV (pipeline tahap awal, SUDAH DIBERSIHKAN §8) | `docs/thesis/dr/daghregister_corpus*.csv` (raw/update/classified/sanitychecked/deduped/directioned — 6 file paralel) | **511 record/file** (koreksi: "76.312" sebelumnya salah hitung — itu jumlah baris fisik `wc -l`, bukan record, krn teks punya newline di dalam field CSV) | Ini **bukan** data terpisah tak tersentuh — ini tahapan AWAL pipeline yang SAMA yang menghasilkan `korpus_tema_slim.csv` (lewat `slim_corpus_for_db.py`). Kebocoran sekarang sudah dipropagasi-bersih juga di sini (§8), supaya re-run/perluasan pipeline nanti mewarisi teks bersih dari sumbernya |
 | JSON | — | 0 | Tidak ada ekspor JSON utk korpus Daghregister/Corpus Diplomaticum. `scrawling/*.json` = dataset pelayaran BGB, berbeda sama sekali |
 
 ### 1.2 Pola kebocoran (dari sampel nyata `corpus_asal='daghregister'`)
@@ -161,7 +161,7 @@ Baris kategori `non_narrative` (spt contoh "DAFTAR NAMA ORANG DAN TEMPAT") tidak
 
 ## 6. Di Luar Scope Sprint Ini
 
-- **76.312 baris di `docs/thesis/dr/daghregister_corpus*.csv`** — korpus mentah lengkap, belum di-ingest ke DB, tidak tampil publik. Kebocoran ada di situ juga tapi karena belum ada di production, ini keputusan terpisah (mau di-ingest sebagian besar-besaran suatu saat, atau tetap jadi arsip riset internal?) — bukan bug yang perlu buru-buru diperbaiki sekarang.
+- ~~76.312 baris di `docs/thesis/dr/daghregister_corpus*.csv` belum disentuh~~ — **KOREKSI (2026-07-17):** ini salah karakterisasi. User mengklarifikasi folder `dr/` adalah pipeline yg SUDAH pernah diolah (`dedup_daghregister.py` → `classify_direction.py`/`classify_record_type.py` → `cargo_sanity_check.py` → `slim_corpus_for_db.py` → `korpus_tema_slim.csv`, yg SUDAH masuk produksi). Kebocoran sudah dipropagasi-bersih ke 6 file tahap awal ini juga — lihat §8. Yang MASIH di luar scope: pertanyaan apakah pipeline ini mau diperluas cakupannya (ambil lebih banyak dari sumber arsip asli) — itu keputusan riset terpisah, bukan soal bersih/kotor teks.
 - **`staging_extractions` (119 baris)** — tidak tampil di halaman publik manapun, jadi tidak mendesak. Kalau nanti ada rencana menampilkannya, cleaning perlu dilakukan sblm exposure, bukan sebelum sekarang.
 - **Hitung ulang skor klasifikasi (`skor_*`/`tema_dominan`) dari teks yang sudah bersih** — di luar scope; sprint ini hanya membersihkan tampilan teks, bukan re-run model klasifikasi.
 
@@ -182,3 +182,27 @@ Baris kategori `non_narrative` (spt contoh "DAFTAR NAMA ORANG DAN TEMPAT") tidak
 8. ~~P1.3~~ — Tidak perlu migrasi kolom backup baru — git history `data/research/korpus_tema_slim.csv` (sudah tracked sblm sprint ini) sudah cukup sbg jejak audit. `seed_research_tema.py` idempotent-upsert dijalankan ulang 3× (tiap putaran perluasan); `DELETE ... WHERE corpus_id = ANY(...)` eksplisit dijalankan tiap putaran krn seed script tidak menghapus baris yg hilang dari CSV
 9. ~~P1.4~~ — Diverifikasi: query SQL langsung (0 baris leak generik tersisa), 3 contoh spesifik yg dilaporkan user (id 808/877/1022) dikonfirmasi bersih satu-satu, halaman `/riset/tema` dimuat normal (200, stat "902 baris" muncul benar di UI)
 10. **Verifikasi akhir:** semua kriteria §5 terpenuhi — lihat checklist di atas
+
+### Sprint 3: Propagasi ke Pipeline Tahap Awal (2026-07-17) — ✅ SELESAI
+
+User mengklarifikasi `docs/thesis/dr/` bukan data tak tersentuh, melainkan tahap AWAL pipeline yg sama yg menghasilkan `korpus_tema_slim.csv`. Kebocoran dipropagasi ke sumbernya supaya re-run/perluasan pipeline nanti mewarisi teks bersih.
+
+**Beda kebijakan dari Sprint 2** (disengaja, bukan lupa): file-file ini 511 record/masing-masing, BELUM direview manusia satu-satu setingkat 1.005 baris `korpus_tema_slim.csv`. Jadi:
+- `header_leak` → text di-strip mekanis (pola sama yg sudah terbukti aman)
+- `non_narrative` → **TIDAK dihapus barisnya** (beda dari Sprint 2) — cuma ditandai kolom baru `corpus_cleaning_flag` (`header_leak_stripped` / `non_narrative` / kosong utk clean), supaya proses hilir (`slim_corpus_for_db.py` versi berikutnya) yg memutuskan filter, bukan penghapusan langsung tanpa review setara di 76-ribu-baris-fisik/511-record ini.
+- Backup manual dibuat (`*.pre_cleaning_backup.csv`) sblm menimpa — file-file ini TIDAK di-git-track (`docs/thesis/` gitignored), jadi tidak ada jejak git otomatis spt Sprint 2.
+
+**Hasil** (skrip `docs/thesis/dr/propagate_cleaning_upstream.py`, identik utk 6 file — masuk akal krn semuanya snapshot paralel dari 511 record dasar yg sama dgn kolom tambahan beda tiap tahap):
+
+| File | Total | clean | header_leak | non_narrative |
+|---|---|---|---|---|
+| `daghregister_corpus.csv` | 511 | 144 | 333 | 34 |
+| `daghregister_corpus-update.csv` | 511 | 144 | 333 | 34 |
+| `daghregister_corpus_classified.csv` | 511 | 144 | 333 | 34 |
+| `daghregister_corpus_sanitychecked.csv` | 511 | 144 | 333 | 34 |
+| `daghregister_corpus_deduped.csv` | 511 | 144 | 333 | 34 |
+| `daghregister_corpus_directioned.csv` | 511 | 144 | 333 | 34 |
+
+Diverifikasi: sampel strip manual benar (narasi bersih tersisa), backup ke-6 file terkonfirmasi ada.
+
+**File:** `docs/thesis/dr/propagate_cleaning_upstream.py` (baru, tidak di-commit ke git krn `docs/thesis/` gitignored — kode-nya cuma reuse `backend/corpus_cleaning.py` yg sudah ter-commit)
