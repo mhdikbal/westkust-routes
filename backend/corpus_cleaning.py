@@ -37,7 +37,12 @@ _HEADER_ISH_RE = re.compile(
     rf"^\d{{1,5}}\b.{{0,45}}?\b(?:{_MONTHS})\b.{{0,15}}$", re.IGNORECASE
 )
 
-_DAGHREGISTER_INDEX_MARKERS = ("DAFTAR NAMA", "DAFTAR ISI", "REGISTER NAMA")
+# Penanda halaman indeks/TOC -- berlaku lintas corpus_asal (bukan cuma
+# daghregister), krn ini indikator generik "ini indeks, bukan narasi",
+# terlepas dari sumbernya.
+_INDEX_MARKERS = (
+    "DAFTAR NAMA", "DAFTAR ISI", "REGISTER NAMA", "REGISTER DARI NAMA", "REGISTER VON",
+)
 
 _GLOBALISE_CATALOG_RE = re.compile(
     r"^register\b"
@@ -56,21 +61,19 @@ def detect_leak(text: str, corpus_asal: str) -> str:
     """Klasifikasi kebocoran scan. Return 'clean' | 'header_leak' | 'non_narrative'."""
     text = text or ""
 
-    if corpus_asal == "globalise":
-        first_line = text.split("\n", 1)[0].strip()
-        if _GLOBALISE_CATALOG_RE.match(first_line) or _GLOBALISE_BARE_FOLIO_RE.match(text):
-            return "non_narrative"
-        return "clean"
-
-    # daghregister (dan default lainnya)
     lines = text.split("\n")
     line0 = lines[0].strip() if lines else ""
     line1 = lines[1].strip() if len(lines) > 1 else ""
 
-    if any(l.upper().startswith(marker) for l in (line0, line1)
-           for marker in _DAGHREGISTER_INDEX_MARKERS):
+    if any(l.upper().startswith(marker) for l in (line0, line1) for marker in _INDEX_MARKERS):
         return "non_narrative"
 
+    if corpus_asal == "globalise":
+        if _GLOBALISE_CATALOG_RE.match(line0) or _GLOBALISE_BARE_FOLIO_RE.match(text):
+            return "non_narrative"
+        return "clean"
+
+    # daghregister (dan default lainnya)
     if _HEADER_ISH_RE.match(line0):
         return "header_leak"
     if line0.isdigit() and _HEADER_ISH_RE.match(line1):

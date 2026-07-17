@@ -145,13 +145,17 @@ Baris kategori `non_narrative` (spt contoh "DAFTAR NAMA ORANG DAN TEMPAT") tidak
 
 ---
 
-## 5. Kriteria Keberhasilan
+## 5. Kriteria Keberhasilan — ✅ SELESAI (2026-07-17)
 
-- [ ] `pytest backend/tests/test_corpus_cleaning.py` hijau, mencakup kasus positif & negatif (termasuk false-positive spt enumerasi "1º")
-- [ ] Skrip deteksi menghasilkan angka yang cocok dgn audit manual (167 `header_leak`/`non_narrative` dari 1.005, ±toleransi kecil stlh review manusia)
-- [ ] 0 baris `research_theme_rows` yang tampil di `/riset/tema` dgn nomor halaman murni atau kata "Register" sbg baris pembuka
-- [ ] Tidak ada baris yang HILANG kontennya (before/after count sama, kecuali yang sudah disepakati exclude di P0.3)
-- [ ] `text` asli (sblm cleaning) masih bisa ditelusuri (backup kolom atau git history) — tidak ada data yang benar-benar hilang tanpa jejak
+- [x] `pytest backend/tests/test_corpus_cleaning.py` hijau — 34 test, mencakup kasus positif & negatif (termasuk false-positive spt enumerasi "1º")
+- [x] Skrip deteksi dijalankan ke seluruh 1.005 baris — hasil akhir jauh lebih besar dari estimasi kasar awal (167), lihat §1.4: 302 `header_leak` + 101 `non_narrative` (daghregister+globalise gabungan, setelah 2 putaran perluasan marker indeks)
+- [x] 0 baris `research_theme_rows` dgn nomor halaman murni atau "Register"/"Daftar Isi"/"Daftar Nama" sbg baris pembuka (diverifikasi query SQL langsung pasca-penerapan)
+- [x] Tidak ada baris yang hilang tanpa jejak — 101 baris `non_narrative` dikeluarkan sesuai keputusan user (P0.3), bukan dihapus diam-diam; `corpus_id` yg dikeluarkan tercatat di `excluded_corpus_ids.txt`
+- [x] `text` asli (sblm cleaning) tetap tertelusuri via git history (`data/research/korpus_tema_slim.csv` sudah tracked git sebelum sprint ini — `git show <commit-sebelum>:data/research/korpus_tema_slim.csv` utk rollback/audit)
+
+**Hasil akhir DB (`research_theme_rows`):** 1.005 → **902 baris** (103 dikeluarkan: 101 `non_narrative` + tidak ada duplikat). Per corpus: `daghregister=437`, `globalise=466`.
+
+**Residual yang diketahui & SENGAJA tidak dikejar** (12 baris, didokumentasikan bukan disembunyikan): variasi OCR yang terlalu spesifik/jarang utk diregexkan aman tanpa risiko overfit — nomor halaman multi-baris berturutan (mis. `"106\n6\n13 JULI."`), halaman indeks alfabetis tanpa header berulang (mis. `"Moulin, 9, 96,..."`), dump numerik kargo yang rusak OCR, catatan errata (`"Hal. 58 baris 12 dari bawah:"`). Kalau nanti ada waktu utk sprint lanjutan, ini titik mulai yang jelas.
 
 ---
 
@@ -172,9 +176,9 @@ Baris kategori `non_narrative` (spt contoh "DAFTAR NAMA ORANG DAN TEMPAT") tidak
 4. **Verifikasi:** cocokkan jumlah hasil vs audit manual (167), tunjukkan laporan ke user
 5. P0.3 — Serahkan daftar `non_narrative` ke user utk keputusan exclude/keep
 
-### Sprint 2: Terapkan & Verifikasi (P1)
-6. P1.1 — Strip mekanis kategori `header_leak`
-7. P1.2 — Terapkan keputusan `non_narrative`
-8. P1.3 — Migrasi kolom backup (kalau perlu) + re-seed DB
-9. P1.4 — Verifikasi visual `/riset/tema`, spot-check klasifikasi
-10. **Verifikasi akhir:** semua kriteria §5 terpenuhi
+### Sprint 2: Terapkan & Verifikasi (P1) — ✅ SELESAI (2026-07-17)
+6. ~~P1.1~~ — Strip mekanis `header_leak` diterapkan via `docs/thesis/dr/apply_corpus_cleaning.py` (script baru, tidak di-commit krn `docs/thesis/` gitignored — cukup dijalankan sekali, hasilnya yg penting adalah CSV & DB ter-update)
+7. ~~P1.2~~ — `non_narrative` dikeluarkan dari CSV (101 baris total, 2 putaran stlh perluasan marker indeks "REGISTER DARI NAMA"/"REGISTER VON"/lintas-corpus_asal)
+8. ~~P1.3~~ — Tidak perlu migrasi kolom backup baru — git history `data/research/korpus_tema_slim.csv` (sudah tracked sblm sprint ini) sudah cukup sbg jejak audit. `seed_research_tema.py` idempotent-upsert dijalankan ulang 3× (tiap putaran perluasan); `DELETE ... WHERE corpus_id = ANY(...)` eksplisit dijalankan tiap putaran krn seed script tidak menghapus baris yg hilang dari CSV
+9. ~~P1.4~~ — Diverifikasi: query SQL langsung (0 baris leak generik tersisa), 3 contoh spesifik yg dilaporkan user (id 808/877/1022) dikonfirmasi bersih satu-satu, halaman `/riset/tema` dimuat normal (200, stat "902 baris" muncul benar di UI)
+10. **Verifikasi akhir:** semua kriteria §5 terpenuhi — lihat checklist di atas

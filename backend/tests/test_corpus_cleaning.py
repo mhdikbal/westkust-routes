@@ -54,6 +54,16 @@ class TestDetectLeakDaghregister:
         text = "552\nDAFTAR NAMA ORANG DAN TEMPAT.\nSia-ko, 1.\nSiakol, 598.\nSiam, 25, 52, 55."
         assert detect_leak(text, corpus_asal="daghregister") == "non_narrative"
 
+    def test_index_page_register_dari_nama_variant(self):
+        # Ditemukan susulan (verifikasi DB pasca-P1): variasi lain "REGISTER
+        # DARI NAMA..." dan "REGISTER VON PERSONEN..." (campuran Belanda).
+        text = "REGISTER DARI NAMA ORANG DAN TEMPAT.\nSoekadana, 427, 441, 495.\nSoe-Ko, 229."
+        assert detect_leak(text, corpus_asal="daghregister") == "non_narrative"
+
+    def test_index_page_register_von_personen_variant(self):
+        text = "REGISTER VON PERSONEN DAN NAMA-NAMA TEMPAT.\nOntong Java, 3, 11, 88, 181."
+        assert detect_leak(text, corpus_asal="daghregister") == "non_narrative"
+
     def test_index_page_register_nama_no_leading_digit(self):
         # Ditemukan susulan: variasi "Register nama..." tanpa nomor halaman
         # di depan sama sekali (beda dari "DAFTAR NAMA" yg biasa didahului nomor).
@@ -133,6 +143,13 @@ class TestDetectLeakGlobalise:
     def test_inventaris_page_range_dot(self):
         text = ("760 s.d. 765- 782.. . Salinan laporan oleh pemungut cukai Jacob bean "
                 "tentang penangkapan fluit Montfoort di teluk Nielwelle")
+        assert detect_leak(text, corpus_asal="globalise") == "non_narrative"
+
+    def test_index_marker_applies_to_globalise_too(self):
+        # Ditemukan susulan (verifikasi DB pasca-P1): penanda indeks generik
+        # ("Daftar isi...") juga muncul di globalise, bukan cuma daghregister --
+        # aturan indeks harus lintas corpus_asal, bukan cuma di cabang daghregister.
+        text = "Daftar isi resolusi\nyang diambil dalam rapat Politie, di kantor utama Belanda"
         assert detect_leak(text, corpus_asal="globalise") == "non_narrative"
 
     def test_globalise_clean_case_no_catalog_marker(self):
