@@ -497,7 +497,17 @@ async function loadFortsAndRoutes() {
   // (mis. Aceh, jauh di utara) permanen di luar layar meski markernya SUDAH
   // digambar dgn benar. Regresi 2026-07-13: user berulang kali lapor "rute Aceh
   // tak ada" padahal datanya benar -- ternyata cuma di luar viewport default.
-  const fortLatLngs = forts.map(f => FORT_COORDS[f.name]).filter(Boolean);
+  //
+  // Batavia (Jawa, -6.1/106.8) DIKECUALIKAN dari perhitungan bounds ini --
+  // itu cuma hub administratif VOC yg jauh di luar "Pesisir Barat Sumatera"
+  // (subjek atlas ini), bukan pelabuhan westkust. Ikut dihitung bikin default
+  // view zoom keluar sampai mencakup seluruh Selat Malaka+daratan Asia
+  // Tenggara (Thailand/Kamboja/Vietnam ikut kelihatan) -- regresi ditemukan
+  // 2026-07-17 lewat audit mobile. Marker/rute Batavia TETAP digambar &
+  // klik-able, cuma tak ikut menentukan default zoom.
+  const fortLatLngs = forts
+    .filter(f => f.name !== "Batavia")
+    .map(f => FORT_COORDS[f.name]).filter(Boolean);
   if (fortLatLngs.length) {
     map.fitBounds(fortLatLngs, { padding: [40, 40] });
   }
@@ -988,6 +998,19 @@ function closeSearchDropdown() {
    ───────────────────────────────────────────────────────────────────────────── */
 function toggleLoader(show) {
   document.getElementById("loader").classList.toggle("active", show);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Welcome panel ciutkan/buka -- diminta krn di mobile panel menutupi peta;
+   dgn ini pengguna bisa ciutkan jadi cuma header (lihat #welcome-panel.collapsed
+   di CSS) tanpa kehilangan akses ke peta di baliknya.
+   ───────────────────────────────────────────────────────────────────────────── */
+function toggleWelcomePanel() {
+  const panel = document.getElementById("welcome-panel");
+  const btn = document.getElementById("welcome-toggle");
+  const collapsed = panel.classList.toggle("collapsed");
+  btn.setAttribute("aria-expanded", String(!collapsed));
+  btn.setAttribute("aria-label", collapsed ? "Buka panel" : "Ciutkan panel");
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
