@@ -206,3 +206,31 @@ User mengklarifikasi `docs/thesis/dr/` bukan data tak tersentuh, melainkan tahap
 Diverifikasi: sampel strip manual benar (narasi bersih tersisa), backup ke-6 file terkonfirmasi ada.
 
 **File:** `docs/thesis/dr/propagate_cleaning_upstream.py` (baru, tidak di-commit ke git krn `docs/thesis/` gitignored — kode-nya cuma reuse `backend/corpus_cleaning.py` yg sudah ter-commit)
+
+---
+
+## 9. Sprint 4: Workflow Pencegahan Regresi (2026-07-17) — ✅ SELESAI
+
+Tiga item "langkah selanjutnya" dieksekusi supaya pembersihan ini tidak jadi one-off yang bisa balik kotor lagi diam-diam:
+
+### 9.1 Sambungkan ke `slim_corpus_for_db.py`
+
+Skrip yg menghasilkan `korpus_tema_slim.csv` dari sumber mentah (`korpus_tema_globalise_daghregister.csv`, 552MB, tidak ada di lokal — biasanya jalan di Colab) sekarang memanggil `corpus_cleaning.detect_leak()`/`strip_header_leak()` per baris SEBELUM menulis output. `non_narrative` dikeluarkan dari output, `header_leak` di-strip otomatis. Diverifikasi dgn CSV sintetis 3-baris (1 header_leak, 1 non_narrative, 1 clean) → hasil persis 1 di-strip, 1 dikeluarkan, 2 ditulis.
+
+**Insiden kecil saat verifikasi:** sempat menjalankan skrip ini langsung di direktori asli (`docs/thesis/dr/`), menimpa `docs/thesis/dr/korpus_tema_slim.csv` (file lokal, BUKAN `data/research/korpus_tema_slim.csv` yg jadi sumber produksi — itu tidak tersentuh, terverifikasi via `git status` bersih) tanpa backup dulu. Dipulihkan dgn `cp data/research/korpus_tema_slim.csv docs/thesis/dr/korpus_tema_slim.csv` (diverifikasi `diff` identik). Pelajaran: jalankan skrip pipeline ber-efek-samping di direktori terisolasi (scratchpad), bukan lokasi kerja asli, meski "cuma testing".
+
+### 9.2 Regression guard permanen (git-tracked)
+
+`backend/tests/test_corpus_no_leaks.py` (baru) — baca `data/research/korpus_tema_slim.csv` langsung (tanpa DB, cepat, jalan di CI), assert 0 baris kena `detect_leak() != 'clean'`, plus assert row-count==902 sbg alarm perubahan volume tak disengaja. Ini pencegahan permanen: kalau CSV di-regenerate dari pipeline mentah tanpa lewat cleaning, test ini gagal keras.
+
+**Efek samping ditemukan:** 7 test lama di `test_research_qa_granular.py` (QA-SNK-1) gagal krn hardcode baseline sebelum-cleaning (1005/470/535/27/481). Ini BUKAN bug baru — test itu memang didesain sbg "canary" anti-drift, dan mereka benar mendeteksi data berubah (krn sengaja saya ubah). Baseline diperbarui ke angka pasca-cleaning yg diverifikasi via SQL (902/437/465/26/436) — 403 test lolos total sesudahnya.
+
+### 9.3 Bersihkan `staging_extractions`
+
+119 baris (`source='daghregister_batavia'`) dicek: 97 `header_leak`, 22 `clean`, 0 `non_narrative`. Beda kebijakan dari `research_theme_rows` — tabel ini sudah punya alur review manusia built-in (`confidence_flag`, `reviewed_by`, `reviewed_at`), jadi:
+- `header_leak` → `text_indonesia` di-strip, `confidence_flag` TETAP `'unverified'` (bersihkan artefak OCR ≠ memverifikasi konten)
+- (0 `non_narrative` di batch ini, tapi kebijakannya: `confidence_flag` → `'rejected'`, nilai yg memang sudah ada di skema, bukan hapus baris)
+
+Diverifikasi: 0 baris tersisa cocok pola bocor, `metadata_json` tiap baris yg diubah mencatat jejak cleaning (`{"kategori": "header_leak_stripped", "at": "<timestamp>"}`) utk audit.
+
+**File:** `docs/thesis/dr/slim_corpus_for_db.py` (dimodifikasi, gitignored), `docs/thesis/dr/clean_staging_extractions.py` (baru, gitignored), `backend/tests/test_corpus_no_leaks.py` (baru, **committed**), `backend/tests/test_research_qa_granular.py` (baseline diperbarui, **committed**)
