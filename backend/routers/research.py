@@ -3,7 +3,7 @@ Namespace `research` — endpoint thesis-only (BUKAN peta publik /atlas).
 SNK-2: Sankey tema-korpus 3-tingkat (dekade -> tema_dominan -> pelabuhan).
 
 Sumber: tabel research_theme_rows (hasil klasifikasi zero-shot GLOBALISE +
-Dagh-register, dimuat via seed_research_tema.py). Lihat docs/prd-sankey-tema-korpus.md.
+Dagh-register, dimuat via seed_research_tema.py). Lihat docs/prd/prd-sankey-tema-korpus.md.
 """
 from collections import defaultdict
 from itertools import combinations
@@ -280,7 +280,7 @@ async def get_sankey_tema_triples(
 
 
 # ─── Network Graph Fase 1 (MVP): graf co-occurrence pelabuhan ────────────────
-# docs/prd-network-graph-aktor-tema.md §4 Fase 1. 0 GPU/ML: agregasi SQL murni
+# docs/prd/prd-network-graph-aktor-tema.md §4 Fase 1. 0 GPU/ML: agregasi SQL murni
 # dari kolom pelabuhan_disebut (SUDAH ada) + warna edge dari tema_dominan. Layer
 # aktor eksternal (VOC/Aceh/China/EIC) via keyword-tag = increment TERPISAH di
 # belakang gerbang spot-check 25 baris ([[feedback_verify_entity_extraction_before_trusting]]).

@@ -49,7 +49,7 @@ CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
-# Babak naratif Fase 1 /linimasa (docs/prd-linimasa-kronik-pantai-barat.md) --
+# Babak naratif Fase 1 /linimasa (docs/prd/prd-linimasa-kronik-pantai-barat.md) --
 # label/headline tiap era ada di frontend/map_app/views.py ERAS dict, BUKAN di sini
 # (data event vs copy editorial sengaja dipisah). Rentang tahun berbasis data
 # yg BENAR2 ada, bukan skema 1600-1690 design spec sumber.

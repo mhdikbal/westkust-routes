@@ -27,7 +27,7 @@
 | 5 | **Dashboard topik-dari-waktu** (tema pelayaran/kargo/pajak/konflik sbg tren 1607-1834) | GLOBALISE (tema sudah ditag kasar via keyword) | Klasifikasi lebih rapi (opsional GPU utk zero-shot skala besar) | Thesis SAJA (bukan diusulkan utk peta publik) |
 | 6 | **Tidak masukkan GLOBALISE ke app sama sekali** — murni materi riset thesis, `voyages` tetap bersih tanpa data 98%-noise | — | — | Opsi eksplisit, bukan default |
 
-**Insting sesi ini:** #2 (insiden/sengketa) paling kuat utk publik, #4 (bibliografi) paling kuat utk thesis. Keduanya TIDAK butuh menyelesaikan masalah `single_voyage` vs `port_tally_aggregate` dari `docs/prd-cleaning-daghregister-1660-1669.md` — masalah itu cuma muncul karena kita berasumsi "pelayaran" adalah satu-satunya bentuk target.
+**Insting sesi ini:** #2 (insiden/sengketa) paling kuat utk publik, #4 (bibliografi) paling kuat utk thesis. Keduanya TIDAK butuh menyelesaikan masalah `single_voyage` vs `port_tally_aggregate` dari `docs/prd/prd-cleaning-daghregister-1660-1669.md` — masalah itu cuma muncul karena kita berasumsi "pelayaran" adalah satu-satunya bentuk target.
 
 ---
 
@@ -50,7 +50,7 @@ Permintaan MLOps: infografis/Sankey, dijalankan di Colab, "kalau memungkinkan" p
 1. **(User)** Pemodelan ini utamanya utk pengunjung publik salido.my.id atau utk thesis Bab 3/4/5? Menentukan mana dari 6 ide di atas yang diprioritaskan.
 2. **(User)** Dari 3 ide Sankey — mau yang cepat-jalan-sekarang (opsi 1/2, data sudah ada, tanpa GPU), atau yang butuh investasi NLP dulu (opsi 3, GPU relevan)?
 3. **(User, keras)** Apakah opsi #6 (jangan masukkan GLOBALISE ke app sama sekali) justru jawaban yang benar? Belum ditolak eksplisit — masih opsi hidup.
-4. Kalau opsi 2 (Sankey Era-Kategori) yang paling relevan ke thesis — apakah ini menggeser prioritas dari "bersihkan Dagh-register dulu" (`docs/prd-cleaning-daghregister-1660-1669.md`) ke "bangun Sankey era-kategori duluan"? Belum diputuskan.
+4. Kalau opsi 2 (Sankey Era-Kategori) yang paling relevan ke thesis — apakah ini menggeser prioritas dari "bersihkan Dagh-register dulu" (`docs/prd/prd-cleaning-daghregister-1660-1669.md`) ke "bangun Sankey era-kategori duluan"? Belum diputuskan.
 
 ## Yang disisihkan (bukan sekarang, bukan dibuang)
 

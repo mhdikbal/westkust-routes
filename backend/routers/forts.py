@@ -83,7 +83,7 @@ class FortEnrichmentResponse(BaseModel):
     inbound_count: int = 0
     total_value_out: float = 0.0
     total_value_in: float = 0.0
-    # P1.2 (docs/prd-port-tally-aggregate.md) -- dari port_arrival_tallies, data
+    # P1.2 (docs/prd/prd-port-tally-aggregate.md) -- dari port_arrival_tallies, data
     # Dagh-register confidence_flag=unverified, TIDAK dijamin sudah direview manual.
     tally_ship_count: int = 0
     tally_person_count: int = 0

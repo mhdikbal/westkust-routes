@@ -1,5 +1,5 @@
 """
-seed_research_tema.py — SNK-1 (docs/sprint-sankey-tema-korpus.md)
+seed_research_tema.py — SNK-1 (docs/sprint/sprint-sankey-tema-korpus.md)
 
 Muat data/research/korpus_tema_slim.csv (1.005 baris klasifikasi tema-korpus)
 ke tabel research_theme_rows. Idempotent by corpus_id (ON CONFLICT DO UPDATE) —

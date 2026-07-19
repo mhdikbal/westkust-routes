@@ -1,7 +1,7 @@
 # Sprint Board — Sankey Tema-Korpus (GLOBALISE + Dagh-register)
 
 **Sprint Goal:** Sankey tema-korpus (jilid/tahun → tema → pelabuhan) hidup end-to-end sebagai *exhibit* Bab 3 thesis — dari CSV klasifikasi GPU yang sudah jadi, sampai endpoint + drill-down yang bisa diaudit reviewer.
-**Scrum Master:** Muhammad Ikbal · **Disusun:** 2026-07-08 · **PRD:** `docs/prd-sankey-tema-korpus.md`
+**Scrum Master:** Muhammad Ikbal · **Disusun:** 2026-07-08 · **PRD:** `docs/prd/prd-sankey-tema-korpus.md`
 **Konteks kunci:** GPU T4 **sudah boleh dimatikan** — semua sisa pekerjaan CPU-side/backend.
 
 ---

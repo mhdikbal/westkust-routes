@@ -1,6 +1,6 @@
 """
 Unit tests for /api/glossary endpoints.
-Fokus: source_citation field (technical debt dari docs/prd-port-tally-aggregate.md
+Fokus: source_citation field (technical debt dari docs/prd/prd-port-tally-aggregate.md
 -- commodity_glossary sebelumnya tidak punya cara melacak asal definisi).
 Pola mock sama dgn test_voyages.py/test_forts.py.
 """

@@ -326,7 +326,7 @@ class DirectionToggleTest(SimpleTestCase):
 
 
 # ---------------------------------------------------------------------------
-# P0.3b — Source/Provenance Toggle (docs/prd-cleaning-daghregister-1660-1669.md)
+# P0.3b — Source/Provenance Toggle (docs/prd/prd-cleaning-daghregister-1660-1669.md)
 # ---------------------------------------------------------------------------
 
 class SourceToggleTest(SimpleTestCase):
@@ -681,7 +681,7 @@ class PortDetailPageTest(SimpleTestCase):
         self.assertNotIn("atlasofmutualheritage.nl", content)
 
     # ------------------------------------------------------------------
-    # P1.2 — Stat kedatangan Dagh-register (docs/prd-port-tally-aggregate.md)
+    # P1.2 — Stat kedatangan Dagh-register (docs/prd/prd-port-tally-aggregate.md)
     # ------------------------------------------------------------------
 
     @patch("map_app.views.httpx.get")
@@ -978,7 +978,7 @@ class RisetPetunjukArsipViewTest(SimpleTestCase):
     """Halaman /riset/petunjuk-arsip render statis; data ditarik client-side dari
     /api/research?corpus_asal=globalise. Dipisah dari /riset/tema karena GLOBALISE
     adalah metadata katalog/finding-aid arsip, bukan narasi peristiwa -- lihat
-    docs/prd-split-tema-globalise-daghregister.md."""
+    docs/prd/prd-split-tema-globalise-daghregister.md."""
 
     def test_returns_200(self):
         resp = self.client.get(reverse("riset_petunjuk_arsip"))
@@ -1221,7 +1221,7 @@ class LinimasaViewTest(SimpleTestCase):
         self.assertIn("/linimasa/", html)
 
 
-# ─── Linimasa Fase 1: SSR fallback + narasi berbab (docs/prd-linimasa-kronik-pantai-barat.md) ──
+# ─── Linimasa Fase 1: SSR fallback + narasi berbab (docs/prd/prd-linimasa-kronik-pantai-barat.md) ──
 
 MOCK_LINIMASA_ITEMS = [
     {
@@ -1274,7 +1274,7 @@ MOCK_LINIMASA_META = {
 
 
 class LinimasaSsrTest(SimpleTestCase):
-    """Fase 1 (docs/prd-linimasa-kronik-pantai-barat.md): konten utama harus
+    """Fase 1 (docs/prd/prd-linimasa-kronik-pantai-barat.md): konten utama harus
     terbaca tanpa JavaScript -- view SSR penuh dari httpx.get() sinkron
     (bukan fetch() client-side seperti riset_tema/riset_jaringan/riset_atjeh)."""
 
@@ -1340,7 +1340,7 @@ class LinimasaSsrTest(SimpleTestCase):
     def test_cd_source_document_shows_book_title_not_raw_code(self, mock_get):
         """source_document='CD1' HARUS tampil sbg judul buku asli (Corpus
         Diplomaticum Neerlando-Indicum, Jilid I), bukan kode file mentah 'CD1' --
-        lihat docs/prd-split-tema-globalise-daghregister.md tidak relevan, ini
+        lihat docs/prd/prd-split-tema-globalise-daghregister.md tidak relevan, ini
         temuan terpisah: kode internal CD1-CD6 bocor ke tampilan publik."""
         items = MOCK_LINIMASA_ITEMS + [{
             **MOCK_LINIMASA_ITEMS[0],

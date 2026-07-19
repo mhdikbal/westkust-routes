@@ -5,7 +5,7 @@ data/research/korpus_tema_slim.csv (tabel research_theme_rows).
 
 Pure function tests (no DB) — mirrors backend/tests/test_linimasa_events.py
 pattern. Fixture di bawah adalah sampel NYATA dari korpus (bukan data
-karangan) -- lihat docs/prd-pembersihan-korpus-daghregister.md §1.2/§1.3.
+karangan) -- lihat docs/prd/prd-pembersihan-korpus-daghregister.md §1.2/§1.3.
 Pelajaran dari insiden lama: regex korpus HARUS diuji dgn sampel nyata dulu
 sebelum diterapkan, jangan asumsi satu pola lalu langsung jalan.
 """

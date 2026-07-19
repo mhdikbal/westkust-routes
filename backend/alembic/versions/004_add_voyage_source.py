@@ -4,7 +4,7 @@ Revision ID: 004
 Revises: 003
 Create Date: 2026-07-07
 
-P0.3b (docs/prd-cleaning-daghregister-1660-1669.md) -- Voyage sebelumnya tidak
+P0.3b (docs/prd/prd-cleaning-daghregister-1660-1669.md) -- Voyage sebelumnya tidak
 punya kolom yang menandai provenance (source_url cuma link eksternal, bukan
 label). Kolom baru ini membedakan data BGB Huygens (default, existing) dari
 hasil promosi staging Dagh-register/GLOBALISE, dipakai frontend utk toggle +

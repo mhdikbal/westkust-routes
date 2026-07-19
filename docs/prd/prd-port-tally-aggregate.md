@@ -3,7 +3,7 @@
 **Status:** P0 + P1.2 SELESAI (2026-07-07) — 98 baris `port_arrival_tallies` live, stat tampil di halaman Fort
 **Disusun:** 2026-07-07
 **Tim:** DBA (skema) + Tim Data (parsing) — Scrum Master: Muhammad Ikbal
-**Melengkapi:** `docs/prd-cleaning-daghregister-1660-1669.md` (P0.3 — keputusan "staging dulu" sudah dikunci di sana; PRD ini menjawab pertanyaan yang sengaja ditunda: **bentuk tabel promosi akhirnya apa**)
+**Melengkapi:** `docs/prd/prd-cleaning-daghregister-1660-1669.md` (P0.3 — keputusan "staging dulu" sudah dikunci di sana; PRD ini menjawab pertanyaan yang sengaja ditunda: **bentuk tabel promosi akhirnya apa**)
 
 ---
 
@@ -54,7 +54,7 @@ class PortArrivalTally(Base):
 
 - **BUKAN** ditampilkan sbg rute di peta (garis asal→tujuan) — tidak ada "kapal" individual utk digambar sbg polyline. Bentuk visualisasi (kalau ada) adalah pertanyaan terpisah (lihat §6 Open Questions, kaitkan ke `docs/brainstorm-globalise-data-modeling.md` ide #3 "heatmap densitas-sebutan").
 - **BUKAN** menjanjikan cargo_items_json 100% ter-parse — pola regex yang sama dgn `extract_data_perdagangan.py`/`cargo_sanity_check.py`, keterbatasan yang sama (bahasa prosa bervariasi).
-- **TIDAK** mengubah `docs/prd-cleaning-daghregister-1660-1669.md` P0.3 — keputusan "staging dulu" tetap, PRD ini cuma menjawab "lalu apa setelah staging".
+- **TIDAK** mengubah `docs/prd/prd-cleaning-daghregister-1660-1669.md` P0.3 — keputusan "staging dulu" tetap, PRD ini cuma menjawab "lalu apa setelah staging".
 
 ## 4. Requirements
 
@@ -115,4 +115,4 @@ class PortArrivalTally(Base):
 
 ## 8. Timeline
 
-Tidak ada deadline eksternal. Dependency: tidak ada — 11 baris sumber sudah di staging (P0 selesai per `docs/prd-cleaning-daghregister-1660-1669.md`), PRD ini bisa dieksekusi kapan saja begitu Open Question #1/#2 dijawab user.
+Tidak ada deadline eksternal. Dependency: tidak ada — 11 baris sumber sudah di staging (P0 selesai per `docs/prd/prd-cleaning-daghregister-1660-1669.md`), PRD ini bisa dieksekusi kapan saja begitu Open Question #1/#2 dijawab user.

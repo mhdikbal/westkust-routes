@@ -1,7 +1,7 @@
 # PRD: Redesign Kronik Pantai Barat — Anti AI Slop
 
 **Status:** Sprint 1, 2, 3 selesai (Sprint 1&2 di-commit `1d52078`..`f8ec1e0`; Sprint 3 P3.1-P3.4 selesai 2026-07-16, siap commit). Fase P1 lama dibubarkan (selesai/superseded, lihat §5). Sprint 4 (P3.5 footer 5-kolom + motion P2) menanti -- lihat §8.
-**Sumber:** `docs/audit-ux-ui-ai-slop-salido.md` (audit UX/UI senior manager) + temuan susulan dari `docs/audit-redesign-ruang-kosong-django-tailwind.md` (lihat §2b).
+**Sumber:** `docs/audit/audit-ux-ui-ai-slop-salido.md` (audit UX/UI senior manager) + temuan susulan dari `docs/audit/audit-redesign-ruang-kosong-django-tailwind.md` (lihat §2b).
 **Target:** `/linimasa` di repo ini (Django template + vanilla JS + SVG)
 **Scope:** P0 + P1 + P2 (full scope sesuai audit §16) + item susulan §2b
 

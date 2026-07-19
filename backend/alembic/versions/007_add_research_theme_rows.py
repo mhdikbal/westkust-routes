@@ -4,7 +4,7 @@ Revision ID: 007
 Revises: 006
 Create Date: 2026-07-08
 
-docs/prd-sankey-tema-korpus.md + docs/sprint-sankey-tema-korpus.md (SNK-1) --
+docs/prd/prd-sankey-tema-korpus.md + docs/sprint/sprint-sankey-tema-korpus.md (SNK-1) --
 hasil klasifikasi zero-shot tema-korpus (GLOBALISE + Dagh-register, 1.005 baris),
 sumber Sankey tema-korpus namespace `research`. Idempotent by corpus_id.
 """

@@ -74,7 +74,7 @@ class Voyage(Base):
     duration_days = Column(Integer, nullable=True)
     direction = Column(String(20), nullable=True, index=True)  # "outbound" or "inbound"
     source_url = Column(Text, nullable=True)
-    # Provenance (P0.3b, docs/prd-cleaning-daghregister-1660-1669.md): "bgb_huygens" (default,
+    # Provenance (P0.3b, docs/prd/prd-cleaning-daghregister-1660-1669.md): "bgb_huygens" (default,
     # data terstruktur existing) | "daghregister_batavia" | "globalise_obp" (hasil promosi staging)
     source = Column(String(50), nullable=False, server_default="bgb_huygens", index=True)
 
@@ -157,7 +157,7 @@ class PortArrivalTally(Base):
     """Rekap kedatangan bulanan multi-kapal-tak-bernama dari daghregister_corpus.csv
     (record_type=port_tally_aggregate). Satu baris staging_extractions di-expand jadi
     banyak baris di sini -- satu per kelompok-pelabuhan-asal.
-    Lihat docs/prd-port-tally-aggregate.md."""
+    Lihat docs/prd/prd-port-tally-aggregate.md."""
     __tablename__ = "port_arrival_tallies"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -185,7 +185,7 @@ class ResearchThemeRow(Base):
     """Satu baris hasil klasifikasi zero-shot tema-korpus (GLOBALISE + Dagh-register),
     sumber Sankey tema-korpus (namespace `research`, thesis-only — BUKAN peta publik).
     Muat dari data/research/korpus_tema_slim.csv via seed_research_tema.py.
-    Lihat docs/prd-sankey-tema-korpus.md + docs/sprint-sankey-tema-korpus.md (SNK-1).
+    Lihat docs/prd/prd-sankey-tema-korpus.md + docs/sprint/sprint-sankey-tema-korpus.md (SNK-1).
 
     Teks yang diklasifikasi model = kolom `text` (Indonesia). `text_asli` daghregister
     berisi cuplikan Belanda; utk GLOBALISE berisi POINTER inventaris (OCR penuh tak
@@ -310,7 +310,7 @@ class LinimasaEvent(Base):
     17 Jan 1607). Traktat Feb-Mar 1641 (firman Ratu Atjeh soal Ticou/Priaman/
     Indrapoura/Padang) jadi sumber PRIMER pertama utk identitas "Iskander Tsani"
     (Iskandar Thani) sbg pendahulu/suami Ratu, wafat 15 Feb 1641 -- sebelumnya
-    EKSPLISIT ditolak masuk data krn tak tersitasi (lihat docs/prd-linimasa-
+    EKSPLISIT ditolak masuk data krn tak tersitasi (lihat docs/prd/prd-linimasa-
     kronik-pantai-barat.md §2). Baris CD1 yg sumbernya cuma catatan kaki editor
     (bukan kutipan traktat periode VOC langsung) ditandai eksplisit di notes.
 

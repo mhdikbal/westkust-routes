@@ -1,6 +1,6 @@
 """
 SNK-2 — Unit tests untuk GET /api/research/sankey-tema.
-TDD: ditulis SEBELUM implementasi (docs/sprint-sankey-tema-korpus.md).
+TDD: ditulis SEBELUM implementasi (docs/sprint/sprint-sankey-tema-korpus.md).
 
 Sankey 3-tingkat: dekade -> tema_dominan -> pelabuhan (multi-port di-explode).
 Reuse SankeyResponse ({nodes:[{name}], links:[{source,target,value}]}).

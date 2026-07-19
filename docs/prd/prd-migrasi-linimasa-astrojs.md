@@ -3,7 +3,7 @@
 **Status:** Draft untuk review — Stack dikonfirmasi
 **Tanggal:** 2026-07-15
 **Author:** opencode (otomatis)
-**Depends on:** `prd-linimasa-kronik-pantai-barat.md`, `prd-redesign-kronik-anti-slop.md`, `design-kronik-pantai-barat-1600-1690.md`
+**Depends on:** `prd/prd-linimasa-kronik-pantai-barat.md`, `prd/prd-redesign-kronik-anti-slop.md`, `design-kronik-pantai-barat-1600-1690.md`
 
 **Stack dikonfirmasi (2026-07-15):**
 - **Astro.js** — SSG, zero-JS by default

@@ -226,7 +226,7 @@ NAME_MAPPING = {
     "Airhadji":        "Air Haji",
     "Pulau Tjinkuk":   "Pulau Cingkuak",
     "Poeloe Tjinkuk":  "Pulau Cingkuak",
-    # Dagh-register / GLOBALISE spelling variants (docs/prd-cleaning-daghregister-1660-1669.md P1.1)
+    # Dagh-register / GLOBALISE spelling variants (docs/prd/prd-cleaning-daghregister-1660-1669.md P1.1)
     "Tico":            "Tiku",
     "Ticco":           "Tiku",
     "Priaman":         "Pariaman",

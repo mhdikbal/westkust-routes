@@ -211,7 +211,7 @@ async def test_enrichment_amh_url_null_not_omitted():
     assert data["amh_url"] is None
 
 
-# ─── Tests: P1.2 — tally stats (docs/prd-port-tally-aggregate.md) ───────────
+# ─── Tests: P1.2 — tally stats (docs/prd/prd-port-tally-aggregate.md) ───────────
 
 @pytest.mark.asyncio
 async def test_enrichment_returns_tally_ship_count():

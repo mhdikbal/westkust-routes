@@ -3,7 +3,7 @@
 classify_diplomasi_llm.py — LLM-judge label `diplomasi` (CASCADE).
 
 Zero-shot mDeBERTa GAGAL gerbang validasi utk `diplomasi` (over-fire: bentuk
-surat resmi dikira diplomasi). Lihat docs/prd-diplomasi-llm-judge.md.
+surat resmi dikira diplomasi). Lihat docs/prd/prd-diplomasi-llm-judge.md.
 
 Pola CASCADE (retrieve-then-rerank):
   Tier-0 RECALL : zero-shot skor_diplomasi >= AMBANG  -> kandidat (~630)

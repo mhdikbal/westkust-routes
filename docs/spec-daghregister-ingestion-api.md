@@ -2,7 +2,7 @@
 
 **Status:** Draft spec — belum diimplementasikan
 **Disusun:** 2026-07-06
-**Melengkapi:** `docs/prd-daghregister-voyage-data.md`
+**Melengkapi:** `docs/prd/prd-daghregister-voyage-data.md`
 **Constraint kunci:** server production (`salido.my.id`, 2GB RAM / 32GB disk) HANYA menjalankan API ringan (terima+simpan hasil) — semua pemrosesan berat (OCR, keyword-scan skala besar, panggilan LLM) tetap di Colab.
 
 ---

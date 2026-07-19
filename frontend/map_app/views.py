@@ -18,7 +18,7 @@ def cd_source_label(source_document):
         return source_document
     return f"Corpus Diplomaticum Neerlando-Indicum, Jilid {jilid}"
 
-# Babak naratif /linimasa Fase 1 (docs/prd-linimasa-kronik-pantai-barat.md).
+# Babak naratif /linimasa Fase 1 (docs/prd/prd-linimasa-kronik-pantai-barat.md).
 # Copy editorial (label/headline/summary) SENGAJA dipisah dari data event
 # bersumber (linimasa_events.era_slug, backend/models.py) -- interpretasi vs
 # fakta tersitasi tak boleh campur di satu tempat. Urutan list = urutan babak
@@ -149,7 +149,7 @@ def riset_atjeh(request):
 
 def linimasa(request):
     """Linimasa suksesi kekuasaan Atjeh, Iskandar Muda -> Ratu -> Traktat
-    Painan 1663 (thesis-only, top-level /linimasa). Fase 1 (docs/prd-linimasa-
+    Painan 1663 (thesis-only, top-level /linimasa). Fase 1 (docs/prd/prd-linimasa-
     kronik-pantai-barat.md): SSR penuh -- event di-render server-side dari
     httpx.get() sinkron ke /api/research/linimasa (pola sama port_detail di
     bawah), BUKAN client-side fetch() spt riset_tema/riset_jaringan/riset_atjeh.

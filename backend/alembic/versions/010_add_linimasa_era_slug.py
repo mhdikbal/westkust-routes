@@ -4,7 +4,7 @@ Revision ID: 010
 Revises: 009
 Create Date: 2026-07-14
 
-Fase 1 "/linimasa" (docs/prd-linimasa-kronik-pantai-barat.md): kelompokkan 30
+Fase 1 "/linimasa" (docs/prd/prd-linimasa-kronik-pantai-barat.md): kelompokkan 30
 event yang sudah ada jadi 5 babak naratif (era_slug) berbasis rentang tahun yg
 benar-benar punya event bersitasi (1625-1681) -- bukan skema 1600-1690 penuh
 dari design spec sumber. Label/headline per era disimpan di frontend

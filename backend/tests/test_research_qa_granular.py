@@ -20,7 +20,7 @@ Pola sync_engine diadopsi dari test_atm_p0_us06.py.
 Jalankan:
     docker compose exec -T backend pytest tests/test_research_qa_granular.py -v
 
-BASELINE DIPERBARUI (2026-07-17, docs/prd-pembersihan-korpus-daghregister.md):
+BASELINE DIPERBARUI (2026-07-17, docs/prd/prd-pembersihan-korpus-daghregister.md):
 angka lama (1005/470/535/27/481) adalah sblm pembersihan kebocoran scan
 (nomor halaman/header tanggal/entri katalog arsip yg bocor ke kolom `text`,
 sempat tampil di /riset/tema). 101+2 baris `non_narrative` (bukan narasi

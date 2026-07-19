@@ -1,6 +1,6 @@
 """
 Network Graph Fase 1 (MVP) — Unit tests untuk GET /api/research/network-pelabuhan.
-TDD: ditulis SEBELUM implementasi (docs/prd-network-graph-aktor-tema.md §4 Fase 1).
+TDD: ditulis SEBELUM implementasi (docs/prd/prd-network-graph-aktor-tema.md §4 Fase 1).
 
 Graf pelabuhan-pelabuhan: node = pelabuhan, edge = dua pelabuhan disebut di baris
 yang sama (co-occurrence), bobot edge = jumlah baris, warna/tema edge = tema_dominan

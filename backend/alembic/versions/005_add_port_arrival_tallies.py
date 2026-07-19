@@ -4,7 +4,7 @@ Revision ID: 005
 Revises: 004
 Create Date: 2026-07-07
 
-docs/prd-port-tally-aggregate.md -- rekap kedatangan bulanan multi-kapal-tak-bernama
+docs/prd/prd-port-tally-aggregate.md -- rekap kedatangan bulanan multi-kapal-tak-bernama
 dari Dagh-register (record_type=port_tally_aggregate), tidak cocok skema Voyage
 (ship_name nullable=False). Satu staging_extraction -> banyak baris di sini
 (satu per kelompok-pelabuhan-asal per bulan).

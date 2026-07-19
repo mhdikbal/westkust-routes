@@ -6,7 +6,7 @@ Source: data/research/linimasa_events.csv (101 peristiwa suksesi/politik Atjeh,
 1600-1775 -- distilasi atjeh_trade_records + docs/thesis/dr/korpus_tema_slim.csv
 + docs/CD1.pdf + docs/CD2.pdf + docs/CD3.pdf + docs/CD4.pdf + docs/CD5.pdf +
 docs/CD6.pdf/Corpus Diplomaticum). Sejak Fase 1
-(docs/prd-linimasa-kronik-pantai-barat.md) tiap baris juga punya era_slug
+(docs/prd/prd-linimasa-kronik-pantai-barat.md) tiap baris juga punya era_slug
 (babak naratif) -- lihat ALLOWED_ERAS.
 """
 import csv
@@ -201,7 +201,7 @@ class TestCsvIntegrity:
         assert peace[0]["year"] == 1659
 
     def test_all_rows_have_valid_era(self, rows):
-        """Fase 1 /linimasa (docs/prd-linimasa-kronik-pantai-barat.md): tiap event
+        """Fase 1 /linimasa (docs/prd/prd-linimasa-kronik-pantai-barat.md): tiap event
         wajib punya babak (era_slug), tak boleh NULL/di luar 5 babak yg didefinisikan."""
         for r in rows:
             assert r["era_slug"] in ALLOWED_ERAS, \
@@ -249,7 +249,7 @@ class TestCsvIntegrity:
         """Traktat CD1 Feb-Mar 1641 adalah SUMBER PRIMER PERTAMA di seluruh
         korpus riset utk identitas 'Iskander Tsani' (Iskandar Thani) sbg
         pendahulu/suami Ratu Atjeh -- sebelumnya EKSPLISIT ditolak masuk data
-        krn tak tersitasi (docs/prd-linimasa-kronik-pantai-barat.md §2). Baris
+        krn tak tersitasi (docs/prd/prd-linimasa-kronik-pantai-barat.md §2). Baris
         yg sumbernya cuma catatan kaki editor (bukan kutipan traktat periode
         VOC langsung) wajib ditandai eksplisit di notes, bukan didiamkan
         seolah setara kutipan primer lain."""

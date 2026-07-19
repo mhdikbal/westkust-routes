@@ -4,7 +4,7 @@ data/research/korpus_tema_slim.csv (sumber research_theme_rows) tidak
 pernah lagi kemasukan kebocoran scan (nomor halaman/header tanggal/
 entri katalog arsip) di kolom `text`.
 
-Lihat docs/prd-pembersihan-korpus-daghregister.md -- data ini pernah
+Lihat docs/prd/prd-pembersihan-korpus-daghregister.md -- data ini pernah
 bocor & sudah dibersihkan (Sprint 2, 2026-07-17). Test ini mencegah
 kebocoran itu balik lagi diam-diam kalau CSV di-regenerate dari pipeline
 docs/thesis/dr/ tanpa melewati corpus_cleaning.py lagi.

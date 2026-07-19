@@ -2,7 +2,7 @@
 
 **Status:** Planning (MLOps) — 2026-07-09 · **Menggantikan** pendekatan zero-shot untuk label `diplomasi`
 **Tim (role framing):** MLOps, DBA — Muhammad Ikbal
-**Konteks:** lanjutan network-graph (`docs/prd-network-graph-aktor-tema.md`). Zero-shot untuk `diplomasi` **GAGAL gerbang validasi** (over-fire 63% baris ≥0.5; presisi top-20 ≈10-20%: daftar kargo/register/laporan perang skor 1.00). Akar: mDeBERTa tak bisa bedakan **BENTUK** surat resmi dari **ISI** diplomatik. Keputusan: **Opsi 2 — LLM-judge**.
+**Konteks:** lanjutan network-graph (`docs/prd/prd-network-graph-aktor-tema.md`). Zero-shot untuk `diplomasi` **GAGAL gerbang validasi** (over-fire 63% baris ≥0.5; presisi top-20 ≈10-20%: daftar kargo/register/laporan perang skor 1.00). Akar: mDeBERTa tak bisa bedakan **BENTUK** surat resmi dari **ISI** diplomatik. Keputusan: **Opsi 2 — LLM-judge**.
 
 ---
 

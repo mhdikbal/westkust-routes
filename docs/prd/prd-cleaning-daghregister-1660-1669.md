@@ -3,7 +3,7 @@
 **Status:** P0.1-P0.5 SELESAI (2026-07-07) — lihat §8 Workflow & Board
 **Disusun:** 2026-07-07
 **Tim:** Tim Data (ekstraksi/pembersihan) + DBA (skema/keputusan model data) — Scrum Master: Muhammad Ikbal
-**Melengkapi:** `docs/prd-daghregister-voyage-data.md` (keputusan staging-first sudah dikunci di sana — PRD ini tidak mengubahnya)
+**Melengkapi:** `docs/prd/prd-daghregister-voyage-data.md` (keputusan staging-first sudah dikunci di sana — PRD ini tidak mengubahnya)
 
 ---
 
@@ -57,7 +57,7 @@ Semua 10 kini ada di `KEYWORDS_WESTKUST` (`daghregister_extraction.ipynb` cell s
 
 ## 3. Keputusan Desain
 
-Tetap staging-first (lihat `docs/prd-daghregister-voyage-data.md` §3) — PRD ini menambahkan **lapisan pembersihan** di antara "hasil scan Colab" dan "masuk `staging_extractions`", bukan mengubah tabel staging itu sendiri.
+Tetap staging-first (lihat `docs/prd/prd-daghregister-voyage-data.md` §3) — PRD ini menambahkan **lapisan pembersihan** di antara "hasil scan Colab" dan "masuk `staging_extractions`", bukan mengubah tabel staging itu sendiri.
 
 ## 4. Requirements
 
@@ -82,7 +82,7 @@ Tetap staging-first (lihat `docs/prd-daghregister-voyage-data.md` §3) — PRD i
 - Acceptance terpenuhi: 100% dari 511 baris punya `record_type` terisi, tidak ada yang di-skip diam-diam. `daghregister_corpus.csv` resmi sekarang punya kolom ini.
 
 **P0.3b — Pembeda provenance di peta publik**
-- Sebelum data staging window 1660-1699 manapun (Dagh-register, GLOBALISE, atau hasil promosi lain di luar BGB Huygens) di-*promote* dan tampil di peta publik `salido.my.id`, frontend WAJIB punya pembeda visual (warna pin / legend terpisah) yang menunjukkan pin itu bersumber dari Dagh-register/GLOBALISE — beda dari pin BGB Huygens yang sudah ada (`voyages.source_url` saat ini semua mengarah ke BGB). Ini resolusi dari open question #4 di `docs/prd-daghregister-voyage-data.md` §6 — sekarang jadi requirement P0, bukan pertanyaan terbuka.
+- Sebelum data staging window 1660-1699 manapun (Dagh-register, GLOBALISE, atau hasil promosi lain di luar BGB Huygens) di-*promote* dan tampil di peta publik `salido.my.id`, frontend WAJIB punya pembeda visual (warna pin / legend terpisah) yang menunjukkan pin itu bersumber dari Dagh-register/GLOBALISE — beda dari pin BGB Huygens yang sudah ada (`voyages.source_url` saat ini semua mengarah ke BGB). Ini resolusi dari open question #4 di `docs/prd/prd-daghregister-voyage-data.md` §6 — sekarang jadi requirement P0, bukan pertanyaan terbuka.
 - Acceptance: tidak ada pin hasil promosi Dagh-register/GLOBALISE yang tampil identik (warna/legend) dengan pin BGB Huygens di peta; user (pengunjung publik) bisa membedakan tingkat kepastian data hanya dari tampilan peta, tanpa buka modal detail.
 
 **P0.4 — Klasifikasi arah (dua arah, bukan cuma satu)** ✅ **SELESAI (2026-07-07)**
@@ -179,7 +179,7 @@ Output: `daghregister_corpus.csv` resmi sekarang punya 3 kolom baru (`cargo_sani
 
 ## 8. Workflow & Board
 
-Proyek solo — "tim" adalah topi peran dengan tanggung jawab dan gerbang keputusan berbeda (pola sama dgn `docs/sprint-board-salido-live.md`). Satu orang boleh pindah topi, **tapi item tidak boleh ke Done tanpa tanda tangan topi QA**.
+Proyek solo — "tim" adalah topi peran dengan tanggung jawab dan gerbang keputusan berbeda (pola sama dgn `docs/sprint/sprint-board-salido-live.md`). Satu orang boleh pindah topi, **tapi item tidak boleh ke Done tanpa tanda tangan topi QA**.
 
 ### Tim DBA — skema & keputusan model data
 **Scope:** kolom baru di `daghregister_corpus.csv` (`duplicate_of`, `record_type`, `direction`, `cargo_sanity_checked`, `cargo_qty_flagged_ocr_error`, `cargo_value_source_recommended`), keputusan penempatan `port_tally_aggregate` di staging, lookup varian ejaan pelabuhan (`NAME_MAPPING` di `backend/seed_data.py`).

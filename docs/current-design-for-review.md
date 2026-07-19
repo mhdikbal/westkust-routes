@@ -294,7 +294,7 @@ Borders:        #d4c8b5
 
 ## 11. Known Issues / AI Slop Audit
 
-**Source:** `docs/audit-ux-ui-ai-slop-salido.md`
+**Source:** `docs/audit/audit-ux-ui-ai-slop-salido.md`
 
 **Addressed:**
 - ✅ P0.2: Ship opacity reduced
@@ -324,8 +324,8 @@ Borders:        #d4c8b5
 | `frontend/map_app/static/map_app/img/linimasa-hero.jpg` | Hero background |
 | `frontend/map_app/static/map_app/img/treaty-panel.jpg` | Treaty highlight |
 | `docs/ui-ux-mockup-kronik-pantai-barat.md` | Original design spec |
-| `docs/audit-ux-ui-ai-slop-salido.md` | AI slop audit |
-| `docs/prd-redesign-kronik-anti-slop.md` | Redesign PRD |
+| `docs/audit/audit-ux-ui-ai-slop-salido.md` | AI slop audit |
+| `docs/prd/prd-redesign-kronik-anti-slop.md` | Redesign PRD |
 
 ---
 

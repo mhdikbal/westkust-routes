@@ -4,7 +4,7 @@ Revision ID: 006
 Revises: 005
 Create Date: 2026-07-07
 
-Technical debt dari docs/prd-port-tally-aggregate.md: commodity_glossary tidak
+Technical debt dari docs/prd/prd-port-tally-aggregate.md: commodity_glossary tidak
 punya cara melacak "definisi ini dari mana". NULL utk 201 entri existing (asal
 tak tercatat) -- BUKAN ditebak. Entri satuan baru (pikol/kati/bahar/last/taël/pon)
 diisi eksplisit rujuk VOC-Glossarium.

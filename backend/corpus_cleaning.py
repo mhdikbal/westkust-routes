@@ -2,7 +2,7 @@
 corpus_cleaning.py — deteksi & bersihkan kebocoran scan pada kolom `text` di
 data/research/korpus_tema_slim.csv (sumber tabel research_theme_rows).
 
-Lihat docs/prd-pembersihan-korpus-daghregister.md untuk konteks lengkap.
+Lihat docs/prd/prd-pembersihan-korpus-daghregister.md untuk konteks lengkap.
 Dua sub-korpus punya pola kebocoran BERBEDA -- jangan pakai logika yang sama:
 
 - corpus_asal='daghregister': nomor halaman + header tanggal fisik buku scan

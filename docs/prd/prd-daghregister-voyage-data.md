@@ -1,6 +1,6 @@
 # PRD: Integrasi Data Pelayaran Abad 17 dari Daghregister Batavia
 
-**Status:** Staging SELESAI (via `staging_extractions` generik, §3.1 di bawah SUDAH DIGANTI — lihat §7). **Promosi 12 baris `single_voyage` DIBATALKAN/ROLLBACK (2026-07-07)** — verifikasi manual thd teks asli menemukan 0/12 valid (lihat §7.1). Jalur promosi `single_voyage` → `voyages` ditutup sampai ada metode ekstraksi nama-kapal+arah yang lebih andal; `port_arrival_tallies` (jalur terpisah, docs/prd-port-tally-aggregate.md) TIDAK terdampak.
+**Status:** Staging SELESAI (via `staging_extractions` generik, §3.1 di bawah SUDAH DIGANTI — lihat §7). **Promosi 12 baris `single_voyage` DIBATALKAN/ROLLBACK (2026-07-07)** — verifikasi manual thd teks asli menemukan 0/12 valid (lihat §7.1). Jalur promosi `single_voyage` → `voyages` ditutup sampai ada metode ekstraksi nama-kapal+arah yang lebih andal; `port_arrival_tallies` (jalur terpisah, docs/prd/prd-port-tally-aggregate.md) TIDAK terdampak.
 **Disusun:** 2026-07-06
 **Konteks:** turunan riset thesis (`docs/thesis/chapter-plan-sia-kualitatif-kritis.md`), tapi ini spec level aplikasi westkust-routes, bukan dokumen akademik
 
@@ -104,7 +104,7 @@ Sebelum implementasi:
 1. Apakah endpoint API baru (`/api/daghregister-voyages`) perlu dibuat sekarang, atau cukup tabel + skrip import dulu (tanpa expose ke frontend) sampai ada record yang `promoted`?
 2. Siapa yang melakukan review manual (`confidence_flag` unverified→reviewed) — user sendiri, atau dibuatkan tool bantu (mis. skrip CLI interaktif)?
 3. Prioritas: selesaikan dulu OCR 7 jilid yang kosong sebelum bangun pipeline ini, atau jalan paralel dengan data yang sudah ada (6 jilid, 282 entri)?
-4. ~~Perlu ditandai di peta publik...~~ **RESOLVED (2026-07-07):** ya, wajib — sekarang requirement P0.3b di `docs/prd-cleaning-daghregister-1660-1669.md`. Bentuk konkret pembeda (warna/ikon/layer) masih open question di sana.
+4. ~~Perlu ditandai di peta publik...~~ **RESOLVED (2026-07-07):** ya, wajib — sekarang requirement P0.3b di `docs/prd/prd-cleaning-daghregister-1660-1669.md`. Bentuk konkret pembeda (warna/ikon/layer) masih open question di sana.
 
 ---
 
