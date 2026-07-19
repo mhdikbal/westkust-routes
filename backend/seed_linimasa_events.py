@@ -49,6 +49,14 @@ CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
+# Model 2 rantai Markov `dominion_status` (docs/prd/prd-atlas-power-model.md §3.2,
+# docs/prd/prd-pemodelan-kekuasaan-dagang.md §6) -- kolom OPSIONAL per baris (banyak
+# event teknis/multi-lokasi/fort-di-luar-roster sengaja NULL, bukan wajib diisi).
+# Backfill CSV dikerjakan BERTAHAP di sesi terpisah (PRD §6), bukan skrip ini.
+ALLOWED_DOMINION_STATUS = {
+    "aceh_dominion", "voc_alliance", "independence", "relapse_aceh",
+    "foreign_orbit", "voc_withdrawal", "internal_conflict",
+}
 # Babak naratif Fase 1 /linimasa (docs/prd/prd-linimasa-kronik-pantai-barat.md) --
 # label/headline tiap era ada di frontend/map_app/views.py ERAS dict, BUKAN di sini
 # (data event vs copy editorial sengaja dipisah). Rentang tahun berbasis data
@@ -168,6 +176,13 @@ def parse_row(row):
     if era_slug not in ALLOWED_ERAS:
         raise ValueError(f"era_slug '{era_slug}' tidak valid, harus salah satu dari {ALLOWED_ERAS}")
 
+    dominion_status = _clean(row.get("dominion_status"))
+    if dominion_status is not None and dominion_status not in ALLOWED_DOMINION_STATUS:
+        raise ValueError(f"dominion_status '{dominion_status}' tidak valid, harus salah satu dari {ALLOWED_DOMINION_STATUS} atau kosong")
+
+    tags_raw = _clean(row.get("tags"))  # pipe-separated di CSV, mis. "tol|hadiah" (PRD §3.3)
+    tags = [t.strip() for t in tags_raw.split("|") if t.strip()] if tags_raw else None
+
     return {
         "source_document": source_document,
         "source_page": int(source_page),
@@ -178,6 +193,9 @@ def parse_row(row):
         "ruler_actor": _clean(row.get("ruler_actor")),
         "title": title,
         "era_slug": era_slug,
+        "fort_name": _clean(row.get("fort_name")),  # resolve ke fort_id di main() -- butuh query DB, bukan hardcode
+        "dominion_status": dominion_status,
+        "tags": tags,
         "text_asli": text_asli,
         "notes": _clean(row.get("notes")),
         "confidence_flag": "unverified",
@@ -200,9 +218,23 @@ def main():
         r["created_at"] = now
 
     engine = create_engine(DATABASE_SYNC_URL, future=True)
-    from models import LinimasaEvent  # tabel dibuat via migration 009
+    from models import LinimasaEvent, Fort  # tabel dibuat via migration 009 / 011
 
     with Session(engine) as session:
+        # resolve fort_name -> fort_id via query Fort by name (bukan hardcode, PRD §6) --
+        # fort_id TETAP NULL kalau fort_name kosong (event teknis/multi-lokasi/di luar
+        # roster 13, §3.1), tapi ERROR kalau fort_name diisi tapi tak match satu pun
+        # nama di roster -- data integrity, bukan silently NULL-kan typo nama fort.
+        fort_name_to_id = dict(session.execute(text("SELECT name, id FROM forts")).all())
+        for r in records:
+            fort_name = r.pop("fort_name")
+            if fort_name is None:
+                r["fort_id"] = None
+            elif fort_name in fort_name_to_id:
+                r["fort_id"] = fort_name_to_id[fort_name]
+            else:
+                raise ValueError(f"fort_name '{fort_name}' tidak ditemukan di tabel forts -- cek ejaan atau roster 13 fort")
+
         session.execute(text("TRUNCATE TABLE linimasa_events RESTART IDENTITY"))
         session.execute(LinimasaEvent.__table__.insert(), records)
         session.commit()
@@ -217,12 +249,20 @@ def main():
         by_era = session.execute(text(
             "SELECT era_slug, COUNT(*) FROM linimasa_events GROUP BY era_slug ORDER BY MIN(year)"
         )).all()
+        n_dominion_status = session.execute(text(
+            "SELECT COUNT(*) FROM linimasa_events WHERE dominion_status IS NOT NULL"
+        )).scalar()
+        n_fort_id = session.execute(text(
+            "SELECT COUNT(*) FROM linimasa_events WHERE fort_id IS NOT NULL"
+        )).scalar()
 
     print("=" * 60)
     print(f"linimasa_events: {after} baris")
     print(f"per tipe: {dict(by_type)}")
     print(f"per volume: {dict(by_document)}")
     print(f"per era: {dict(by_era)}")
+    print(f"dominion_status terisi: {n_dominion_status}/{after}  |  fort_id terisi: {n_fort_id}/{after}  "
+          f"(backfill BERTAHAP per docs/prd/prd-pemodelan-kekuasaan-dagang.md §6, 0 itu normal sblm backfill jalan)")
     print("=" * 60)
 
     try:

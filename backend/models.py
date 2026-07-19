@@ -404,6 +404,17 @@ class LinimasaEvent(Base):
     # Label/headline per era SENGAJA tak disimpan di sini -- lihat ERAS dict di frontend
     # map_app/views.py (copy editorial dipisah dari data event bersumber, PRD §5).
 
+    # Model 2 rantai Markov `dominion_status` (docs/prd/prd-atlas-power-model.md §3,
+    # docs/prd/prd-pemodelan-kekuasaan-dagang.md §3/§6) -- diisi HANYA kalau event jelas
+    # tentang satu fort di roster 13 & merepresentasikan transisi status kekuasaan;
+    # NULL = event teknis/multi-lokasi/fort di luar roster (lihat §3.1 PRD utk aturan
+    # pemilihan fort saat event menyebut byk lokasi sekaligus). Vokabular dominion_status
+    # divalidasi di seed_linimasa_events.py (ALLOWED_DOMINION_STATUS), bukan enum DB --
+    # pola sama persis ALLOWED_EVENT_TYPES/ALLOWED_ERAS yg sudah berjalan.
+    fort_id = Column(Integer, ForeignKey("forts.id"), nullable=True, index=True)
+    dominion_status = Column(String(30), nullable=True, index=True)  # lihat §3.2 PRD utk 7 nilai terkendali
+    tags = Column(ARRAY(Text), nullable=True)  # independen dari dominion_status, mis. "tol"|"hadiah"|"suksesi" (§3.3 PRD)
+
     text_asli = Column(Text, nullable=False)               # kutipan verbatim wajib
     notes = Column(Text, nullable=True)
 
