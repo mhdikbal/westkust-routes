@@ -358,14 +358,23 @@ async function drawRoutes(yFrom, yTo) {
 // SENGAJA beda dari POWER_ROUTE_COLOR lama (#6B4C8A) -- status ini bukan
 // kelanjutan konsep garis lama yg dihapus, jangan sampai warnanya menyiratkan
 // itu masih hal yang sama.
+// Palet 2026-07-20 divalidasi lulus skill dataviz (node scripts/validate_palette.js)
+// -- palet lama (#A6303B dst, reuse token CSS existing) GAGAL: beberapa warna
+// di bawah chroma floor (kebauran, kebaca abu-abu), independence vs voc_alliance
+// ΔE cuma 12.3 utk mata normal (di bawah batas keras 15 -- nyaris tak terbedakan
+// bahkan tanpa buta warna). Nilai baru dibangun langsung di OKLCH (bukan tebak
+// hex) supaya lulus enam cek: lightness band, chroma floor, pemisahan CVD,
+// normal-vision floor, kontras. 1 WARN (foreign_orbit<->independence, ΔE 7.4
+// protanopia, dlm pita 6-8) sah krn sudah ada label teks di popup/legend
+// (secondary encoding), bukan identitas warna semata.
 const DOMINION_STATUS_COLORS = {
-  aceh_dominion:     "#A6303B", // merah-Aceh gelap -- kekuasaan penuh
-  relapse_aceh:      "#D97B85", // merah-Aceh pudar -- siklus kembali, bukan awal
-  voc_alliance:      "#027B8C",
-  independence:      "#2C5364",
-  foreign_orbit:     "#7A4FA3",
-  voc_withdrawal:    "#5C6A66",
-  internal_conflict: "#8B9E97",
+  aceh_dominion:     "#a02830", // merah-Aceh gelap -- kekuasaan penuh
+  relapse_aceh:      "#d26060", // merah-Aceh pudar -- siklus kembali, bukan awal
+  voc_alliance:      "#009880",
+  independence:      "#1254ac",
+  foreign_orbit:     "#ab3782",
+  voc_withdrawal:    "#9c640d",
+  internal_conflict: "#569859",
 };
 
 // Label manusiawi utk tooltip/legend -- JANGAN tampilkan dominion_status
