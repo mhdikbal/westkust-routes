@@ -214,16 +214,17 @@ class LayoutBMapTest(SimpleTestCase):
 
     def test_map_legend_present(self):
         """User 2026-07-13: setelah semua tooltip hover dihapus, tak ada cara lagi
-        utk tahu arti warna garis (keluar/masuk/transit/jalur kekuasaan) tanpa
-        hover -- legenda statis di peta wajib ada sbg gantinya. Termasuk entri
-        jalur kekuasaan Atjeh yg sempat tak masuk legenda lama (yg sebenarnya
-        belum pernah dibuat sama sekali)."""
+        utk tahu arti warna garis (keluar/masuk/transit) tanpa hover -- legenda
+        statis di peta wajib ada sbg gantinya.
+        (2026-07-20: entri "Jalur kekuasaan Atjeh" garis statis lama diganti
+        grup "Status kekuasaan" -- 7 kategori dominion_status per fort, lihat
+        drawPowerStatus() di atlas.js.)"""
         self.assertIn('id="map-legend"', self.content)
         self.assertIn("Keluar", self.content)
         self.assertIn("Masuk", self.content)
         self.assertIn("Transit", self.content)
-        self.assertIn("Jalur kekuasaan", self.content)
-        self.assertIn("Atjeh", self.content)
+        self.assertIn('id="dominion-legend-group"', self.content)
+        self.assertIn("Kekuasaan Aceh", self.content)
 
 
 class LayoutBSecurityTest(SimpleTestCase):
@@ -408,66 +409,38 @@ class SourceToggleTest(SimpleTestCase):
         """User 2026-07-13: hapus SEMUA tooltip hover (pelabuhan, catatan politik,
         rute) -- info politik & rincian kapal cukup ada di /riset/atjeh-dagang,
         peta sendiri tak perlu tooltip. Regresi kalau ada yg nambah bindTooltip()
-        balik ke marker/garis tanpa sepengetahuan user."""
+        balik ke marker/garis tanpa sepengetahuan user.
+        (2026-07-20: layer status kekuasaan pakai bindPopup() -- KLIK, bukan
+        hover -- utk kutipan sumber tiap fort; itu pola beda, bukan pelanggaran
+        aturan ini, lihat test_power_status_uses_click_popup_not_hover.)"""
         self.assertNotIn("marker.bindTooltip(", ATLAS_JS)
         self.assertNotIn("ant.bindTooltip(", ATLAS_JS)
         self.assertNotIn("line.bindTooltip(", ATLAS_JS)
+
+    def test_power_status_uses_click_popup_not_hover(self):
+        """Layer status kekuasaan (drawPowerStatus) HARUS pakai bindPopup (klik),
+        BUKAN bindTooltip (hover) -- konsisten test_no_hover_tooltips_on_map_layers
+        di atas. Popup jg harus punya tombol tutup (closeButton) krn ini klik-buka,
+        bukan hover-sekilas."""
+        self.assertIn("marker.bindPopup(", ATLAS_JS)
+        self.assertIn("closeButton: true", ATLAS_JS)
         self.assertNotIn("function fortTooltipHtml(", ATLAS_JS)
 
-    def test_political_data_still_loaded_for_power_routes(self):
-        """Tooltip dihapus, tapi loadPoliticalNotes()/politicalNotesForFort() tetap
-        wajib ada -- itu yg menentukan kapal jalur kekuasaan mana yg digambar,
-        bukan cuma buat isi tooltip yg sekarang sudah tak ada."""
-        self.assertIn("function loadPoliticalNotes(", ATLAS_JS)
-        self.assertIn("function politicalNotesForFort(", ATLAS_JS)
-        self.assertIn("PORT_TEXT_ALIASES", ATLAS_JS)
-        self.assertIn("direction=politik", ATLAS_JS)
-
-    def test_power_routes_drawn_for_political_evidence_without_voyage(self):
-        """User: hubungan Aceh<->Pariaman/Inderapura (cuma bukti politik, tak ada
-        voyage tercatat) harus tetap kelihatan sbg GARIS di peta. Garis ini "jalur
-        kekuasaan", HARUS beda gaya dari garis pelayaran asli (bukan antPath
-        animasi, warna beda) supaya tak menyesatkan pembaca peta."""
-        self.assertIn("function drawPowerRoutes(", ATLAS_JS)
-        self.assertIn("drawPowerRoutes(politicalRows, forts)", ATLAS_JS)
-        self.assertIn("POWER_ROUTE_COLOR", ATLAS_JS)
-        self.assertIn("jalur kekuasaan", ATLAS_JS)
-
-    def test_power_routes_drawn_on_top_and_stay_visible(self):
-        """Bug 2026-07-13: jalur kekuasaan Aceh->Tiku ketutup garis pelayaran
-        Aceh->Tiku yg jalurnya nyaris sama, krn drawPowerRoutes() dipanggil SEBELUM
-        drawRoutes() (Leaflet render layer belakangan di atas) -- diam-diam tak
-        kelihatan walau datanya benar. Fix: drawPowerRoutes() dipanggil SETELAH
-        drawRoutes(), plus bringToFront() dipanggil ULANG tiap drawRoutes() jalan
-        (dipicu geser slider tahun) supaya tak ketutup lagi stlh redraw."""
-        self.assertIn("l.bringToFront()", ATLAS_JS)
+    def test_power_status_drawn_after_routes(self):
+        """drawPowerStatus() (layer status kekuasaan, gantikan drawPowerRoutes()
+        lama sepenuhnya 2026-07-20 -- lihat docs/prd/prd-atlas-power-model.md)
+        dipanggil SETELAH drawRoutes() di loadFortsAndRoutes(). Beda dari
+        drawPowerRoutes() lama: sekarang L.marker (markerPane) bukan L.polyline
+        (overlayPane), jadi urutan pane Leaflet SUDAH menjamin layer ini di atas
+        rute tanpa perlu bringToFront() manual -- urutan panggilan tetap dijaga
+        krn drawPowerStatus() query FORT_COORDS yg baru lengkap stlh forts dimuat,
+        bukan lagi soal z-order."""
         idx_draw = ATLAS_JS.find("await drawRoutes(yearFrom, yearTo);")
-        idx_power = ATLAS_JS.find("drawPowerRoutes(politicalRows, forts);")
+        idx_power = ATLAS_JS.find("await drawPowerStatus(yearTo);")
         self.assertNotEqual(idx_draw, -1, "await drawRoutes(...) di loadFortsAndRoutes tidak ditemukan")
+        self.assertNotEqual(idx_power, -1, "await drawPowerStatus(...) di loadFortsAndRoutes tidak ditemukan")
         self.assertLess(idx_draw, idx_power,
-            "drawPowerRoutes() harus dipanggil SETELAH drawRoutes() di loadFortsAndRoutes")
-
-    def test_power_routes_visually_prominent(self):
-        """Weight/opacity/dash jalur kekuasaan dinaikkan 2026-07-13 -- versi awal
-        (weight 1.5, opacity .55, dash [2,8]) terlalu tipis, hampir tak kelihatan
-        di peta walau sudah di atas & datanya benar. Regresi kalau nilainya
-        diturunkan lagi tanpa sengaja."""
-        self.assertIn("weight: 3.5,", ATLAS_JS)
-        self.assertIn("opacity: 0.9,", ATLAS_JS)
-
-    def test_power_routes_skip_batavia_false_positive(self):
-        """Batavia (VOC HQ, tempat semua laporan politik dicatat) trivial cocok di
-        hampir semua baris politik lewat PORT_TEXT_ALIASES fallback -- HARUS
-        dilewati eksplisit, bukan digambar sbg 'jalur kekuasaan Aceh->Batavia'
-        yg tak berarti. Ketahuan via verifikasi Playwright 2026-07-13."""
-        self.assertIn('f.name === "Aceh" || f.name === "Batavia"', ATLAS_JS)
-
-    def test_power_routes_have_waypoints_for_pariaman_and_inderapura(self):
-        """Aceh->Pariaman & Aceh->Inderapura butuh waypoint eksplisit spt Aceh->Tiku
-        sebelumnya -- tanpa ini jatuh ke fallback bezier yg bisa salah arah (pola
-        bug berulang, lihat feedback_sisir_semua_titik_pemakaian)."""
-        for key in ("Aceh→Pariaman", "Aceh→Inderapura"):
-            self.assertIn(f'"{key}"', ATLAS_JS, f"SEA_WAYPOINTS harus punya entri {key}")
+            "drawPowerStatus() harus dipanggil SETELAH drawRoutes() di loadFortsAndRoutes")
 
     def test_map_fits_bounds_to_all_forts(self):
         """Bug besar 2026-07-13: center/zoom awal peta di-hardcode ke [-2.5,103.0]/7,
@@ -482,12 +455,13 @@ class SourceToggleTest(SimpleTestCase):
     def test_waypoint_routes_use_smooth_curve_not_straight_segments(self):
         """User: rute yg pakai SEA_WAYPOINTS kelihatan "kaku, garis lurus tegas"
         krn cuma disambung garis lurus antar titik -- beda dgn rute fallback yg
-        bezier halus. smoothPath() (Catmull-Rom spline) HARUS dipakai di kedua
-        drawRoutes() & drawPowerRoutes(), bukan array waypoint mentah langsung,
-        supaya seluruh peta konsisten melengkung."""
+        bezier halus. smoothPath() (Catmull-Rom spline) HARUS dipakai di
+        drawRoutes(), bukan array waypoint mentah langsung, supaya peta
+        konsisten melengkung. (drawPowerRoutes() -- pengguna smoothPath lain yg
+        dulu diuji di sini -- sudah dihapus total, digantikan layer status
+        kekuasaan berbasis marker/flag, bukan garis; lihat drawPowerStatus())."""
         self.assertIn("function smoothPath(", ATLAS_JS)
         self.assertIn("smoothPath([s, ...vias, e])", ATLAS_JS)
-        self.assertIn("smoothPath([acehCoords, ...vias, coords])", ATLAS_JS)
 
     def test_modal_shows_full_dates_when_present(self):
         """Penanggalan (rev.10): modal harus menampilkan departure/arrival date penuh,

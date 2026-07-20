@@ -352,16 +352,28 @@
        rute pelayaran. Grup disembunyikan default, ditoggle bareng #btn-power-status
        (togglePowerStatus() di atlas.js) -- konsisten alasan layer default OFF:
        jangan bikin legend ramai sebelum user opt-in. */
-    #dominion-legend-group { display: none; }
-    .legend-item.legend-subhead { margin-top: .55rem; font-weight: 700; font-size: .65rem; color: var(--text-muted); }
-    .legend-swatch.dominion { width: 12px; height: 12px; border-radius: 50%; border: 2px solid; border-top-width: 2px; }
-    .legend-swatch.aceh-dominion     { border-color: #A6303B; background: #A6303B; }
-    .legend-swatch.relapse-aceh      { border-color: #D97B85; background: #D97B85; }
-    .legend-swatch.voc-alliance      { border-color: #027B8C; background: #027B8C; }
-    .legend-swatch.independence      { border-color: #2C5364; background: #2C5364; }
-    .legend-swatch.foreign-orbit     { border-color: #7A4FA3; background: #7A4FA3; }
-    .legend-swatch.voc-withdrawal    { border-color: #5C6A66; background: #5C6A66; }
-    .legend-swatch.internal-conflict { border-color: #8B9E97; background: #8B9E97; }
+    #dominion-legend-group { display: none; margin-top: .3rem; padding-top: .4rem; border-top: 1px dashed var(--border); }
+    .legend-axis-label {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .62rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+      color: var(--text-muted); margin-top: .5rem;
+    }
+    .legend-axis-label:first-child { margin-top: 0; }
+    /* Swatch segitiga -- SAMA motif dgn bendera di peta (createFlagSVG),
+       supaya legenda & marker terasa satu sistem, bukan 2 bahasa visual. */
+    .legend-swatch.dominion {
+      width: 0; height: 0; flex-shrink: 0;
+      border-top: 6px solid transparent; border-bottom: 6px solid transparent;
+      border-left: 10px solid var(--swatch-color);
+      margin-left: 2px;
+    }
+    .legend-swatch.aceh-dominion     { --swatch-color: #A6303B; }
+    .legend-swatch.relapse-aceh      { --swatch-color: #D97B85; }
+    .legend-swatch.voc-alliance      { --swatch-color: #027B8C; }
+    .legend-swatch.independence      { --swatch-color: #2C5364; }
+    .legend-swatch.foreign-orbit     { --swatch-color: #7A4FA3; }
+    .legend-swatch.voc-withdrawal    { --swatch-color: #5C6A66; }
+    .legend-swatch.internal-conflict { --swatch-color: #8B9E97; }
 
     /* ── Slide-over Fort Panel (right) ──────────────────────────────────── */
     #fort-panel {
@@ -674,6 +686,50 @@
       box-shadow: var(--shadow-sm) !important;
     }
 
+    /* Popup layer status kekuasaan -- KLIK, bukan hover (proyek ini sengaja
+       hapus semua tooltip hover di peta, lihat test_no_hover_tooltips_on_map_
+       layers). Badan teks IBM Plex Sans (bukan serif leaflet-tooltip default)
+       supaya konten 4-baris tetap terbaca, aksen warna kiri = dominion_status
+       baris itu (var --dominion-color, diset inline per marker). */
+    .leaflet-popup.dominion-popup .leaflet-popup-content-wrapper {
+      padding: 0; border-radius: var(--radius-sm);
+      box-shadow: 0 6px 18px rgba(26,36,33,.22);
+    }
+    .leaflet-popup.dominion-popup .leaflet-popup-content { margin: 0; width: auto !important; }
+    .leaflet-popup.dominion-popup .leaflet-popup-tip { box-shadow: 0 3px 8px rgba(26,36,33,.18); }
+    .dominion-popup-card {
+      border-left: 4px solid var(--dominion-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-panel);
+      padding: .55rem 1.4rem .55rem .7rem;
+      max-width: 280px;
+      min-width: 200px;
+    }
+    .dominion-popup-fort {
+      font-family: 'Playfair Display', serif;
+      font-size: .92rem; font-weight: 700; color: var(--text-primary);
+      margin-bottom: .2rem;
+    }
+    .dominion-popup-status {
+      display: inline-block;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .64rem; font-weight: 700; letter-spacing: .02em;
+      color: #fff; background: var(--dominion-color);
+      border-radius: 4px; padding: .1rem .4rem;
+      margin-bottom: .35rem;
+    }
+    .dominion-popup-event {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .74rem; font-weight: 600; line-height: 1.4;
+      color: var(--text-primary);
+    }
+    .dominion-popup-meta {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .66rem; font-weight: 500; color: var(--text-muted);
+      margin-top: .3rem;
+    }
+    .dominion-flag-icon { background: none; border: none; }
+
     /* ── Grafik button in navbar ────────────────────────────────────────── */
     .nav-btn-grafik {
       display: flex; align-items: center; gap: .4rem;
@@ -896,11 +952,13 @@
   <div class="legend-item"><span class="legend-swatch in" aria-hidden="true"></span>Masuk (inbound)</div>
   <div class="legend-item"><span class="legend-swatch transit" aria-hidden="true"></span>Transit</div>
   <div id="dominion-legend-group">
-    <div class="legend-item legend-subhead">Status kekuasaan (opt-in)</div>
+    <div class="legend-axis-label">Poros Aceh</div>
     <div class="legend-item"><span class="legend-swatch dominion aceh-dominion" aria-hidden="true"></span>Kekuasaan Aceh</div>
     <div class="legend-item"><span class="legend-swatch dominion relapse-aceh" aria-hidden="true"></span>Relaps ke Aceh</div>
+    <div class="legend-axis-label">Poros VOC</div>
     <div class="legend-item"><span class="legend-swatch dominion voc-alliance" aria-hidden="true"></span>Aliansi VOC</div>
     <div class="legend-item"><span class="legend-swatch dominion independence" aria-hidden="true"></span>Merdeka</div>
+    <div class="legend-axis-label">Poros lain</div>
     <div class="legend-item"><span class="legend-swatch dominion foreign-orbit" aria-hidden="true"></span>Orbit Eropa lain</div>
     <div class="legend-item"><span class="legend-swatch dominion voc-withdrawal" aria-hidden="true"></span>VOC mundur</div>
     <div class="legend-item"><span class="legend-swatch dominion internal-conflict" aria-hidden="true"></span>Konflik internal</div>
@@ -1082,6 +1140,6 @@
         integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
         crossorigin="anonymous"></script>
 
-<script src="{% static 'map_app/js/atlas.js' %}?v=3"></script>
+<script src="{% static 'map_app/js/atlas.js' %}?v=4"></script>
 </body>
 </html>

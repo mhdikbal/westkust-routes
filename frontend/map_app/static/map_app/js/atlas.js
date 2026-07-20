@@ -342,12 +342,11 @@ async function drawRoutes(yFrom, yTo) {
     routeLines.push(ant);
   });
 
-  // drawRoutes dipanggil ulang tiap slider tahun berubah, nambah layer BARU yg
-  // otomatis render di atas layer status kekuasaan (Leaflet: layer belakangan
-  // di atas). Tegaskan lagi layer kekuasaan tetap di atas tiap kali, bukan
-  // cuma sekali di load awal -- tanpa ini markernya ketutup diam-diam stlh
-  // slider digeser.
-  powerStatusLayers.forEach(l => l.bringToFront());
+  // Layer status kekuasaan pakai L.marker (markerPane) bukan L.circleMarker
+  // (overlayPane, sama pane dgn antPath rute) -- markerPane defaultnya SUDAH
+  // di atas overlayPane di urutan pane Leaflet, jadi tak perlu bringToFront()
+  // manual lagi spt versi circleMarker sebelumnya (L.Marker tak punya method
+  // itu, motongnya bakal error).
 }
 
 // DOMINION_STATUS_COLORS -- palet dua-sumbu Aceh-tone/VOC-tone/Eropa-lain-tone
@@ -368,6 +367,43 @@ const DOMINION_STATUS_COLORS = {
   voc_withdrawal:    "#5C6A66",
   internal_conflict: "#8B9E97",
 };
+
+// Label manusiawi utk tooltip/legend -- JANGAN tampilkan dominion_status
+// mentah (snake_case) ke pembaca, itu nama kolom database bukan bahasa peta.
+const DOMINION_STATUS_LABELS = {
+  aceh_dominion:     "Kekuasaan Aceh",
+  relapse_aceh:      "Relaps ke Aceh",
+  voc_alliance:      "Aliansi VOC",
+  independence:      "Merdeka",
+  foreign_orbit:     "Orbit Eropa lain",
+  voc_withdrawal:    "VOC mundur",
+  internal_conflict: "Konflik internal",
+};
+
+// Ikon bendera-di-tiang -- motif kartografi VOC-era sesungguhnya (menancapkan
+// bendera = klaim wilayah), BUKAN circleMarker polos. Selaras dgn createFortSVG/
+// createAnchorSVG yg sudah dipakai fort roster (SVG custom, bukan Leaflet
+// default), supaya layer ini kelihatan dirancang, bukan ditempel belakangan.
+function createFlagSVG(color) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="34" viewBox="0 0 24 34" aria-hidden="true">
+    <line x1="4" y1="33" x2="4" y2="3" stroke="#5C4A32" stroke-width="2" stroke-linecap="round"/>
+    <path d="M4 4 L22 9.5 L4 15 Z" fill="${color}" stroke="#FFFFFF" stroke-width="1.2" stroke-linejoin="round"/>
+    <circle cx="4" cy="33" r="2.4" fill="${color}" stroke="#FFFFFF" stroke-width="1"/>
+  </svg>`;
+}
+
+function dominionFlagIcon(color) {
+  return L.divIcon({
+    html: createFlagSVG(color),
+    className: "dominion-flag-icon",
+    iconSize: [24, 34],
+    // anchor X negatif -- geser seluruh ikon ke KANAN titik geografis fort,
+    // supaya tiang bendera tak numpuk persis di titik yg sama dgn pin fort
+    // (fortIcon()) yg sudah menempati titik itu. Baca sbg "bendera ditancapkan
+    // DI SAMPING benteng", bukan dua marker rebutan satu piksel.
+    iconAnchor: [-6, 33],
+  });
+}
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Layer status kekuasaan (dominion_status) -- GANTI drawPowerRoutes lama.
@@ -399,25 +435,26 @@ async function drawPowerStatus(year) {
     const coords = FORT_COORDS[item.fort_name];
     if (!coords) return;
     const color = DOMINION_STATUS_COLORS[item.dominion_status] || "#999999";
+    const label = DOMINION_STATUS_LABELS[item.dominion_status] || item.dominion_status;
 
-    const marker = L.circleMarker(coords, {
-      radius: 11,
-      color: "#FFFFFF",
-      weight: 2,
-      fillColor: color,
-      fillOpacity: 0.85,
-    }).addTo(map);
+    const marker = L.marker(coords, { icon: dominionFlagIcon(color), zIndexOffset: 500 }).addTo(map);
 
-    marker.bindTooltip(
-      `<strong>${esc(item.fort_name)}</strong><br>${esc(item.dominion_status)}<br>` +
-      `<em>${esc(item.as_of_event.title)}</em> (${item.as_of_event.year ?? "?"})`,
-      { direction: "top", offset: [0, -10] }
+    // bindPopup (klik), BUKAN bindTooltip (hover) -- proyek ini sengaja hapus
+    // semua tooltip hover di layer peta (test_no_hover_tooltips_on_map_layers,
+    // keputusan user 2026-07-13). Popup klik konsisten dgn cara marker fort
+    // lain sudah bekerja (klik -> panel), bukan pola baru.
+    marker.bindPopup(
+      `<div class="dominion-popup-card" style="--dominion-color:${color}">
+         <div class="dominion-popup-fort">${esc(item.fort_name)}</div>
+         <div class="dominion-popup-status">${esc(label)}</div>
+         <div class="dominion-popup-event">${esc(item.as_of_event.title)}</div>
+         <div class="dominion-popup-meta">${item.as_of_event.year ?? "?"} &middot; ${esc(item.as_of_event.source_document)}</div>
+       </div>`,
+      { className: "dominion-popup", closeButton: true, minWidth: 200, maxWidth: 280 }
     );
 
     powerStatusLayers.push(marker);
   });
-
-  powerStatusLayers.forEach(l => l.bringToFront());
 }
 
 function togglePowerStatus() {
