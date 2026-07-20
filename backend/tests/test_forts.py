@@ -389,3 +389,88 @@ async def test_list_fort_voyages_filter_year():
     assert len(data) == 1
     assert data[0]["ship_name"] == "Theeboom"
     assert data[0]["year"]      == 1700
+
+
+# ─── /power-status (docs/prd/prd-atlas-power-model.md §5) ────────────────────
+
+def make_power_row(fort_id, fort_name, dominion_status, event_id, year,
+                    event_date_raw, title, text_asli, source_document):
+    return SimpleNamespace(
+        fort_id=fort_id, fort_name=fort_name, dominion_status=dominion_status,
+        event_id=event_id, year=year, event_date_raw=event_date_raw,
+        title=title, text_asli=text_asli, source_document=source_document,
+    )
+
+
+def make_rows_result(rows):
+    mock = MagicMock()
+    mock.all.return_value = rows
+    return mock
+
+
+@pytest.mark.asyncio
+async def test_power_status_missing_year_422():
+    """GET /api/forts/power-status tanpa ?year= wajib 422, bukan 404/500."""
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/power-status")
+
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_power_status_returns_latest_event_per_fort():
+    """GET /api/forts/power-status?year=X — satu baris per fort, status event
+    TERBARU (year<=X), termasuk as_of_event bersarang lengkap."""
+    rows = [
+        make_power_row(5, "Barus", "voc_withdrawal", 187, 1775,
+                        "23 Januari 1775", "VOC tarik mundur dari loge Barus, kalah saing Inggris Bengkulu",
+                        "Sedert een eeuw had de Compagnie een loge op Baros gehad...", "CD6"),
+        make_power_row(1, "Pariaman", "relapse_aceh", 88, 1712,
+                        "1712", "Priaman dkk kembali ke pangkuan Aceh, lalu ditundukkan ulang",
+                        "In de eerste jaren van de 18de eeuw weigerden die van Priaman...", "CD4"),
+    ]
+
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.side_effect = [make_rows_result(rows)]
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/power-status?year=1780")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 2
+    barus = next(d for d in data if d["fort_name"] == "Barus")
+    assert barus["fort_id"] == 5
+    assert barus["dominion_status"] == "voc_withdrawal"
+    assert barus["as_of_event"]["id"] == 187
+    assert barus["as_of_event"]["year"] == 1775
+    assert barus["as_of_event"]["source_document"] == "CD6"
+    assert "loge Barus" in barus["as_of_event"]["title"]
+
+
+@pytest.mark.asyncio
+async def test_power_status_empty_before_any_event():
+    """GET /api/forts/power-status?year=1600 — sebelum event manapun, list kosong
+    (bukan fort dgn status netral/default -- PRD §5)."""
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.side_effect = [make_rows_result([])]
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/power-status?year=1600")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert response.json() == []

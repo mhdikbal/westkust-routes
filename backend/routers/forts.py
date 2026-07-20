@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 from cache import make_key, cache_get, cache_set
 from database import get_db
-from models import Fort, Voyage, PortArrivalTally
+from models import Fort, Voyage, PortArrivalTally, LinimasaEvent
 from routers.voyages import _year_gte, _year_lte
 
 router = APIRouter()
@@ -269,6 +269,85 @@ async def list_all_routes(response: Response, db: AsyncSession = Depends(get_db)
             "total_value": float(r.total_value)
         }
         for r in routes
+    ]
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
+
+
+class PowerStatusEvent(BaseModel):
+    id: int
+    year: Optional[int] = None
+    event_date_raw: Optional[str] = None
+    title: str
+    text_asli: str
+    source_document: str
+
+
+class PowerStatusItem(BaseModel):
+    fort_id: int
+    fort_name: str
+    dominion_status: str
+    as_of_event: PowerStatusEvent
+
+
+@router.get("/power-status", response_model=List[PowerStatusItem], tags=["Map"])
+async def get_power_status(
+    response: Response,
+    year: int = Query(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """Status kekuasaan tiap fort pada tahun `year` (docs/prd/prd-atlas-power-model.md §5):
+    untuk tiap fort_id, ambil LinimasaEvent ber-dominion_status TERBARU dgn
+    year <= `year`. Fort tanpa event kualifikasi TIDAK muncul di response --
+    bukan dikirim dgn status netral/default (PRD §5). Cache-aside Redis, pola
+    sama /routes/all."""
+    cache_key = make_key("forts-power-status", {"year": year})
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
+    query = (
+        select(
+            LinimasaEvent.fort_id,
+            Fort.name.label("fort_name"),
+            LinimasaEvent.dominion_status,
+            LinimasaEvent.id.label("event_id"),
+            LinimasaEvent.year,
+            LinimasaEvent.event_date_raw,
+            LinimasaEvent.title,
+            LinimasaEvent.text_asli,
+            LinimasaEvent.source_document,
+        )
+        .join(Fort, Fort.id == LinimasaEvent.fort_id)
+        .where(LinimasaEvent.fort_id.isnot(None))
+        .where(LinimasaEvent.dominion_status.isnot(None))
+        # JANGAN pakai _linimasa_year_lte (NULL-safe) di sini -- Postgres DESC
+        # default NULLS FIRST bikin event ber-year=NULL menang "terbaru" di
+        # DISTINCT ON apapun tahun yg diminta. Filter NULL eksplisit dulu.
+        .where(LinimasaEvent.year.isnot(None))
+        .where(LinimasaEvent.year <= year)
+        .distinct(LinimasaEvent.fort_id)
+        .order_by(LinimasaEvent.fort_id, LinimasaEvent.year.desc(), LinimasaEvent.id.desc())
+    )
+    rows = (await db.execute(query)).all()
+
+    payload = [
+        PowerStatusItem(
+            fort_id=r.fort_id,
+            fort_name=r.fort_name,
+            dominion_status=r.dominion_status,
+            as_of_event=PowerStatusEvent(
+                id=r.event_id,
+                year=r.year,
+                event_date_raw=r.event_date_raw,
+                title=r.title,
+                text_asli=r.text_asli,
+                source_document=r.source_document,
+            ),
+        ).model_dump()
+        for r in rows
     ]
     await cache_set(cache_key, payload)
     response.headers["X-Cache"] = "MISS"

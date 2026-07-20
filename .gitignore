@@ -80,3 +80,8 @@ Designer404.png
 
 # Artefak Windows lighthouse nyasar (batas WSL/Windows)
 C:*
+
+# data/export/ -- output kerja Colab (cache LLM besar, CSV kandidat review manual)
+# diunduh manual dari Drive, bukan sumber kebenaran repo (itu data/research/) --
+# jangan commit, cek data/research/linimasa_events.csv setelah merge manual selesai
+data/export/

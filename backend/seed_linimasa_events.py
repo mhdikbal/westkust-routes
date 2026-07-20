@@ -268,7 +268,8 @@ def main():
     try:
         from cache import invalidate_prefix_sync
         flushed = invalidate_prefix_sync("voc:research_linimasa")
-        print(f"cache linimasa di-invalidate: {flushed} key")
+        flushed_power = invalidate_prefix_sync("voc:forts-power-status")
+        print(f"cache linimasa di-invalidate: {flushed} key | power-status: {flushed_power} key")
     except Exception as e:
         print(f"(cache invalidate dilewati: {e})")
 

@@ -62,28 +62,12 @@ const SEA_WAYPOINTS = {
   "Batavia→Aceh":  [[-5.9, 105.4], [-5.2, 100.8], [-1.0, 96.5], [3.5, 95.0]],
   "Aceh→Tiku":     [[3.5, 95.0], [-1.0, 96.5], [-0.72, 99.72]],
   "Tiku→Aceh":     [[-0.72, 99.72], [-1.0, 96.5], [3.5, 95.0]],
-  // Pariaman & Inderapura -- dipakai jalur kekuasaan (drawPowerRoutes), bukan rute
-  // pelayaran (tak ada voyage tercatat utk pasangan ini, cuma bukti politik/
-  // administratif: panglima berkedudukan, pejabat pungut-tol, dst). Koridor sama
-  // spt Aceh->Tiku, titik akhir digeser ke posisi masing2 pelabuhan.
-  "Aceh→Pariaman": [[3.5, 95.0], [-1.0, 96.5], [-0.85, 99.9]],
-  "Aceh→Inderapura": [[3.5, 95.0], [-1.0, 96.5], [-1.5, 100.5]],
   // Inderapura -- sama koridor Air Haji (garis lintang berdekatan), jatuh ke fallback
   // bezier tanpa ini (pola bug yg sama, lihat komentar Aceh di atas).
   "Inderapura→Batavia": [[-3.7, 99.6], [-5.6, 101.9], [-5.9, 105.4]],
   "Batavia→Inderapura": [[-5.9, 105.4], [-5.6, 101.9], [-3.7, 99.6]],
   "Padang→Inderapura":  [[-1.5, 100.5]],
   "Inderapura→Padang":  [[-1.5, 100.5]],
-};
-
-// Ejaan alternatif nama pelabuhan yg dipakai sumber Dagh-register (VOC-Belanda) --
-// dipakai utk mencocokkan atjeh_trade_records (teks bebas) ke fort tertentu di tooltip.
-const PORT_TEXT_ALIASES = {
-  "Aceh":       ["atjeh", "atchijn", "atchin", "atchien", "aetchijn", "aetchin", "aceh"],
-  "Inderapura": ["indrapura", "indrapoura", "inderapura"],
-  "Tiku":       ["tiku", "ticouw", "tiecko"],
-  "Pariaman":   ["pariaman", "priaman"],
-  "Barus":      ["barus", "baros"],
 };
 
 // Icon class per port type for welcome grid
@@ -104,7 +88,8 @@ const PAGE_SIZE = 20;
 /* ─────────────────────────────────────────────────────────────────────────────
    State
    ───────────────────────────────────────────────────────────────────────────── */
-let map, routeLines = [], powerLines = [];
+let map, routeLines = [], powerStatusLayers = [];
+let powerStatusEnabled = false;  // layer status kekuasaan -- opt-in, default OFF
 let activeMarker = null, allFortsData = [];
 let activeTab = "outbound";
 let currentData = { outbound: [], inbound: [], info: "" };
@@ -358,54 +343,93 @@ async function drawRoutes(yFrom, yTo) {
   });
 
   // drawRoutes dipanggil ulang tiap slider tahun berubah, nambah layer BARU yg
-  // otomatis render di atas jalur kekuasaan (Leaflet: layer belakangan di atas).
-  // Tegaskan lagi jalur kekuasaan tetap di atas tiap kali, bukan cuma sekali di
-  // load awal -- tanpa ini garisnya ketutup diam-diam stlh slider digeser.
-  powerLines.forEach(l => l.bringToFront());
+  // otomatis render di atas layer status kekuasaan (Leaflet: layer belakangan
+  // di atas). Tegaskan lagi layer kekuasaan tetap di atas tiap kali, bukan
+  // cuma sekali di load awal -- tanpa ini markernya ketutup diam-diam stlh
+  // slider digeser.
+  powerStatusLayers.forEach(l => l.bringToFront());
 }
 
-const POWER_ROUTE_COLOR = "#6B4C8A"; // sama dgn warna badge "politik" di riset_atjeh.html
+// DOMINION_STATUS_COLORS -- palet dua-sumbu Aceh-tone/VOC-tone/Eropa-lain-tone
+// (docs/prd/prd-atlas-power-model.md §7.1), BUKAN 7 warna lepas tak berkaitan.
+// Sengaja REUSE token warna existing biar tak nabrak: voc_alliance = SAMA dgn
+// .legend-swatch.in (teal, keluarga warna VOC/dagang); internal_conflict =
+// SAMA dgn .legend-swatch.transit (abu netral, bukan transisi kekuasaan luar);
+// independence = --ocean (CSS token, biru "merdeka" tenang). foreign_orbit
+// SENGAJA beda dari POWER_ROUTE_COLOR lama (#6B4C8A) -- status ini bukan
+// kelanjutan konsep garis lama yg dihapus, jangan sampai warnanya menyiratkan
+// itu masih hal yang sama.
+const DOMINION_STATUS_COLORS = {
+  aceh_dominion:     "#A6303B", // merah-Aceh gelap -- kekuasaan penuh
+  relapse_aceh:      "#D97B85", // merah-Aceh pudar -- siklus kembali, bukan awal
+  voc_alliance:      "#027B8C",
+  independence:      "#2C5364",
+  foreign_orbit:     "#7A4FA3",
+  voc_withdrawal:    "#5C6A66",
+  internal_conflict: "#8B9E97",
+};
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Jalur kekuasaan Aceh (drawPowerRoutes) -- BUKAN rute pelayaran kapal. User
-   minta hubungan Aceh<->pantai-barat (Pariaman, Inderapura, dst) tetap kelihatan
-   di peta sbg garis, walau tak ada voyage tercatat utk pasangan itu -- cuma
-   bukti politik/administratif (atjeh_trade_records direction=politik: pejabat
-   pungut-tol, panglima berkedudukan, dst). Digambar statis (bukan antPath
-   animasi) + warna/gaya beda dari garis pelayaran, supaya pembaca peta tak
-   salah kira ini rute kapal terverifikasi.
+   Layer status kekuasaan (dominion_status) -- GANTI drawPowerRoutes lama.
+   Beda dari garis Aceh->fort statis sebelumnya: status baru (voc_withdrawal,
+   foreign_orbit, dst) tak selalu melibatkan Aceh sbg "titik asal", jadi
+   direpresentasikan sbg lingkaran warna di titik fort itu sendiri, bukan
+   garis. Fetch fresh dari /api/forts/power-status tiap dipanggil (pola sama
+   drawRoutes, BUKAN fetch-sekali spt loadPoliticalNotes lama) supaya ikut
+   berubah tiap slider tahun digeser. Opt-in -- cuma gambar kalau
+   powerStatusEnabled true (docs/prd/prd-atlas-power-model.md §7.1: data jauh
+   lebih padat drpd sebelumnya, default ON berisiko peta ramai).
    ───────────────────────────────────────────────────────────────────────────── */
-function drawPowerRoutes(politicalRows, forts) {
-  powerLines.forEach(l => map.removeLayer(l));
-  powerLines = [];
+async function drawPowerStatus(year) {
+  powerStatusLayers.forEach(l => map.removeLayer(l));
+  powerStatusLayers = [];
+  if (!powerStatusEnabled) return;
 
-  const acehCoords = FORT_COORDS["Aceh"];
-  if (!acehCoords || !politicalRows.length) return;
+  let data;
+  try {
+    const res = await fetch(`${API}/forts/power-status?year=${year}`);
+    if (!res.ok) throw new Error("power-status fetch failed");
+    data = await res.json();
+  } catch (e) {
+    console.warn("drawPowerStatus error:", e);
+    return;
+  }
 
-  forts.forEach(f => {
-    // Aceh sendiri bukan target garis; Batavia dilewati krn semua baris politik
-    // dilaporkan/dicatat DI Batavia (VOC HQ) -- cocok trivial, bukan hubungan
-    // kekuasaan Aceh->Batavia yg berarti.
-    if (f.name === "Aceh" || f.name === "Batavia") return;
-    const matches = politicalNotesForFort(f.name, politicalRows);
-    if (matches.length === 0) return;
-
-    const coords = FORT_COORDS[f.name];
+  data.forEach(item => {
+    const coords = FORT_COORDS[item.fort_name];
     if (!coords) return;
+    const color = DOMINION_STATUS_COLORS[item.dominion_status] || "#999999";
 
-    const routeKey = `Aceh→${f.name}`;
-    const vias = SEA_WAYPOINTS[routeKey];
-    const pts = vias ? smoothPath([acehCoords, ...vias, coords]) : getBezierCurve(acehCoords, coords, 0.25);
-
-    const line = L.polyline(pts, {
-      color: POWER_ROUTE_COLOR,
-      weight: 3.5,
-      opacity: 0.9,
-      dashArray: [10, 8],
+    const marker = L.circleMarker(coords, {
+      radius: 11,
+      color: "#FFFFFF",
+      weight: 2,
+      fillColor: color,
+      fillOpacity: 0.85,
     }).addTo(map);
 
-    powerLines.push(line);
+    marker.bindTooltip(
+      `<strong>${esc(item.fort_name)}</strong><br>${esc(item.dominion_status)}<br>` +
+      `<em>${esc(item.as_of_event.title)}</em> (${item.as_of_event.year ?? "?"})`,
+      { direction: "top", offset: [0, -10] }
+    );
+
+    powerStatusLayers.push(marker);
   });
+
+  powerStatusLayers.forEach(l => l.bringToFront());
+}
+
+function togglePowerStatus() {
+  powerStatusEnabled = !powerStatusEnabled;
+  const btn = document.getElementById("btn-power-status");
+  if (btn) {
+    btn.classList.toggle("active", powerStatusEnabled);
+    btn.setAttribute("aria-pressed", powerStatusEnabled ? "true" : "false");
+  }
+  const legend = document.getElementById("dominion-legend-group");
+  if (legend) legend.style.display = powerStatusEnabled ? "block" : "none";
+  drawPowerStatus(yearTo);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -442,40 +466,17 @@ function setSource(src) {
 /* ─────────────────────────────────────────────────────────────────────────────
    Fakta politik/administratif Atjeh (atjeh_trade_records, direction=politik --
    kategori terpisah dari in_atjeh sejak 2026-07-13, lihat feedback_sisir_semua_
-   titik_pemakaian) -- ditautkan ke marker pelabuhan via PORT_TEXT_ALIASES,
-   tampil di tooltip hover (bukan garis rute baru).
+   titik_pemakaian) -- kini digantikan layer status kekuasaan (drawPowerStatus,
+   dominion_status per fort/tahun) yg jauh lebih presisi, lihat PRD terkait.
    ───────────────────────────────────────────────────────────────────────────── */
-async function loadPoliticalNotes() {
-  try {
-    const res = await fetch(`${API}/research/atjeh-trade?direction=politik`);
-    const data = await res.json();
-    return data.items || [];
-  } catch (e) {
-    console.warn("loadPoliticalNotes error:", e);
-    return [];
-  }
-}
-
-function politicalNotesForFort(fortName, politicalRows) {
-  const aliases = PORT_TEXT_ALIASES[fortName] || [fortName.toLowerCase()];
-  return politicalRows.filter(row => {
-    const haystack = `${row.actor_raw || ""} ${row.notes || ""} ${row.text_asli || ""}`.toLowerCase();
-    return aliases.some(alias => haystack.includes(alias));
-  });
-}
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Load forts + routes, populate welcome grid
    ───────────────────────────────────────────────────────────────────────────── */
 async function loadFortsAndRoutes() {
-  let forts, politicalRows;
+  let forts;
   try {
-    const [fortsRes, political] = await Promise.all([
-      fetch(`${API}/forts/`).then(r => r.json()),
-      loadPoliticalNotes(),
-    ]);
-    forts = fortsRes;
-    politicalRows = political;
+    forts = await fetch(`${API}/forts/`).then(r => r.json());
   } catch (e) {
     console.warn("loadForts error:", e);
     return;
@@ -546,14 +547,11 @@ async function loadFortsAndRoutes() {
   // Draw routes for default year range
   await drawRoutes(yearFrom, yearTo);
 
-  // Jalur kekuasaan Aceh (bukan rute pelayaran) -- digambar SETELAH drawRoutes
-  // supaya selalu di ATAS garis pelayaran (Leaflet: layer belakangan render di
-  // atas). Aceh->Tiku power route & Aceh->Tiku trade route pakai jalur nyaris
-  // sama -- kalau power route digambar duluan, ketutup garis pelayaran di
-  // atasnya, jadi diam-diam tak kelihatan. Statis, tak terikat filter tahun
-  // (data politik/administratif terlalu sedikit & tak berstruktur cukup utk
-  // difilter per-dekade spt voyage; ditampilkan penuh sepanjang waktu).
-  drawPowerRoutes(politicalRows, forts);
+  // Layer status kekuasaan -- digambar SETELAH drawRoutes supaya selalu di
+  // ATAS garis pelayaran (Leaflet: layer belakangan render di atas). Opt-in
+  // (powerStatusEnabled default false), jadi no-op di load awal kecuali user
+  // sudah aktifkan toggle sebelumnya di sesi ini.
+  await drawPowerStatus(yearTo);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -916,6 +914,7 @@ function setupYearFilter() {
       yearFrom = yf;
       yearTo   = yt;
       await drawRoutes(yearFrom, yearTo);
+      await drawPowerStatus(yearTo);
       loadGrafikData();
     }, 500);
   }

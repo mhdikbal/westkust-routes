@@ -93,6 +93,12 @@ class LayoutBNavbarTest(SimpleTestCase):
         self.assertIn('value="1620"', self.content)
         self.assertIn('value="1790"', self.content)
 
+    def test_power_status_toggle_button_present(self):
+        """Toggle layer status kekuasaan (#btn-power-status) harus ada di navbar --
+        opt-in, default OFF (docs/prd/prd-atlas-power-model.md §7.1), gantikan
+        garis Aceh->fort statis lama (drawPowerRoutes, sudah dihapus)."""
+        self.assertIn('id="btn-power-status"', self.content)
+
 
 class LayoutBWelcomePanelTest(SimpleTestCase):
     """Verify the floating welcome panel with port grid is rendered."""

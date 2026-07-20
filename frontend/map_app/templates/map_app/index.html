@@ -150,8 +150,17 @@
     .btn-dir.active[data-dir="all"]      { background: var(--ocean);  color: #fff; }
     .btn-dir.active[data-dir="outbound"] { background: var(--ocean);  color: #fff; }
     .btn-dir.active[data-dir="inbound"]  { background: var(--sunset); color: #fff; }
+    .btn-dir.active[data-power="status"] { background: var(--accent); color: #fff; }
     .btn-dir:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     .btn-dir i { font-size: .9rem; }
+
+    /* Layer status kekuasaan (dominion_status) -- opt-in, taruh dekat toggle arah */
+    .power-toggle-group {
+      display: flex; align-items: center; gap: 2px;
+      background: rgba(26,36,33,0.05); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 2px;
+      flex-shrink: 0;
+    }
 
     /* Source/provenance dropdown (P0.3b, dijadikan <select> 2026-07-07 supaya
        gampang diperluas kalau sumber baru muncul -- mis. GLOBALISE OBP -- tanpa
@@ -337,7 +346,22 @@
     .legend-swatch.out     { border-color: #31384C; }
     .legend-swatch.in      { border-color: #027B8C; }
     .legend-swatch.transit { border-color: #8B9E97; }
-    .legend-swatch.power   { border-color: #6B4C8A; border-top-style: dashed; }
+
+    /* Legenda status kekuasaan (dominion_status) -- lingkaran, BEDA bentuk dari
+       swatch garis di atas (out/in/transit), supaya jelas ini titik-status, bukan
+       rute pelayaran. Grup disembunyikan default, ditoggle bareng #btn-power-status
+       (togglePowerStatus() di atlas.js) -- konsisten alasan layer default OFF:
+       jangan bikin legend ramai sebelum user opt-in. */
+    #dominion-legend-group { display: none; }
+    .legend-item.legend-subhead { margin-top: .55rem; font-weight: 700; font-size: .65rem; color: var(--text-muted); }
+    .legend-swatch.dominion { width: 12px; height: 12px; border-radius: 50%; border: 2px solid; border-top-width: 2px; }
+    .legend-swatch.aceh-dominion     { border-color: #A6303B; background: #A6303B; }
+    .legend-swatch.relapse-aceh      { border-color: #D97B85; background: #D97B85; }
+    .legend-swatch.voc-alliance      { border-color: #027B8C; background: #027B8C; }
+    .legend-swatch.independence      { border-color: #2C5364; background: #2C5364; }
+    .legend-swatch.foreign-orbit     { border-color: #7A4FA3; background: #7A4FA3; }
+    .legend-swatch.voc-withdrawal    { border-color: #5C6A66; background: #5C6A66; }
+    .legend-swatch.internal-conflict { border-color: #8B9E97; background: #8B9E97; }
 
     /* ── Slide-over Fort Panel (right) ──────────────────────────────────── */
     #fort-panel {
@@ -824,6 +848,13 @@
         <i class="ti ti-arrow-down-left" aria-hidden="true"></i> Masuk
       </button>
     </div>
+    <div class="power-toggle-group" role="group" aria-label="Layer status kekuasaan">
+      <button class="btn-dir" id="btn-power-status" data-power="status"
+              onclick="togglePowerStatus()" aria-pressed="false"
+              title="Tampilkan status kekuasaan per benteng (opt-in)">
+        <i class="ti ti-flag" aria-hidden="true"></i> Kekuasaan
+      </button>
+    </div>
     <div class="source-select-wrap" title="Filter sumber data pelayaran">
       <i class="ti ti-database" aria-hidden="true"></i>
       <select id="source-select" aria-label="Filter sumber data pelayaran" onchange="setSource(this.value)">
@@ -864,7 +895,16 @@
   <div class="legend-item"><span class="legend-swatch out" aria-hidden="true"></span>Keluar (outbound)</div>
   <div class="legend-item"><span class="legend-swatch in" aria-hidden="true"></span>Masuk (inbound)</div>
   <div class="legend-item"><span class="legend-swatch transit" aria-hidden="true"></span>Transit</div>
-  <div class="legend-item"><span class="legend-swatch power" aria-hidden="true"></span>Jalur kekuasaan Atjeh (bukan pelayaran)</div>
+  <div id="dominion-legend-group">
+    <div class="legend-item legend-subhead">Status kekuasaan (opt-in)</div>
+    <div class="legend-item"><span class="legend-swatch dominion aceh-dominion" aria-hidden="true"></span>Kekuasaan Aceh</div>
+    <div class="legend-item"><span class="legend-swatch dominion relapse-aceh" aria-hidden="true"></span>Relaps ke Aceh</div>
+    <div class="legend-item"><span class="legend-swatch dominion voc-alliance" aria-hidden="true"></span>Aliansi VOC</div>
+    <div class="legend-item"><span class="legend-swatch dominion independence" aria-hidden="true"></span>Merdeka</div>
+    <div class="legend-item"><span class="legend-swatch dominion foreign-orbit" aria-hidden="true"></span>Orbit Eropa lain</div>
+    <div class="legend-item"><span class="legend-swatch dominion voc-withdrawal" aria-hidden="true"></span>VOC mundur</div>
+    <div class="legend-item"><span class="legend-swatch dominion internal-conflict" aria-hidden="true"></span>Konflik internal</div>
+  </div>
 </aside>
 
 <!-- ── Welcome Floating Panel ─────────────────────────────────────────────── -->
