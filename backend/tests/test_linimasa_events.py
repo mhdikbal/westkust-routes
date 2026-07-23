@@ -497,8 +497,11 @@ class TestCsvIntegrity:
         beri 7 event Koto Tangah tambahan (1660-1755) di luar 2 event CD3 yg
         sudah ada -- sumber sekunder-akademik, bukan korpus arsip primer CD/
         Daghregister, jadi source_document terpisah agar tak dikira OCR CD
-        kami sendiri."""
-        book_rows = [r for r in rows if r["source_document"] == "buku-padang-1718"]
+        kami sendiri. Difilter exclude tag 'monopoli-garam' -- baris itu
+        JUGA source_document='buku-padang-1718' tapi thread narasi beda
+        (perang garam 1727-1760), ditambahkan sesi terpisah."""
+        book_rows = [r for r in rows if r["source_document"] == "buku-padang-1718"
+                     and "monopoli-garam" not in (r["tags"] or [])]
         assert len(book_rows) == 7
         assert all(r["fort_name"] == "Koto Tangah" for r in book_rows)
         years = sorted(r["year"] for r in book_rows)
@@ -589,3 +592,51 @@ class TestCsvIntegrity:
         fase2_fort_names = {"Nias", "Natal", "Singkil", "Sorkam", "Koto Tangah", "Pauh"}
         matched = [r for r in rows if r["fort_name"] in fase2_fort_names]
         assert len(matched) >= 17  # 15 PRD asli + 7 tambahan buku - 5 double count aman (>=)
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # Perang monopoli garam VOC (1727-1760): buku "Padang Abad XVII-XVIII"
+    # hlm 91-95 (narasi lengkap, tanggal presisi) + GM-New (AutoRecovered).docx
+    # (cross-validasi "Deel 9/10, GS 205/250"). Kandidat Loop 3 (kejut-
+    # eksternal) Model 5 System Dynamics -- lihat memory
+    # project_padang_hinterland_gaps.
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_garam_1738_ulakan_kotatengah_refineries_destroyed(self, rows):
+        """~1737/38: pabrik garam Ulakan & Koto Tangah dihancurkan 26 tentara
+        Eropa + 27 Bugis -- cocok GM-New 'Deel 10, 1737-1743, GS 250'. Bukan
+        konflik Aceh (ekonomi VOC vs rakyat) -- internal_conflict, konsisten
+        pola Koto Tangah 1670."""
+        r = next(r for r in rows if r["source_document"] == "buku-padang-1718"
+                  and "Ulakan" in r["title"] and "garam" in r["title"].lower())
+        assert r["fort_name"] == "Koto Tangah"
+        assert r["dominion_status"] == "internal_conflict"
+        assert r["year"] == 1738
+
+    def test_garam_1740_raja_ibrahim_tiku_killed(self, rows):
+        """Akhir 1740: Raja Ibrahim (penghulu kepala Tiku, dalang penyulingan
+        garam ilegal Antokan/Labuan/Masang) dibunuh di Nagari Durian Gadang
+        oleh suruhan Raja Kinali -- akhiri gelombang pertama perang garam."""
+        r = next(r for r in rows if r["source_document"] == "buku-padang-1718"
+                  and "Raja Ibrahim" in r["title"] and "Tiku" not in r["title"])
+        assert r["fort_name"] == "Tiku"
+        assert r["dominion_status"] == "internal_conflict"
+        assert r["year"] == 1740
+        assert "Durian Gadang" in r["text_asli"]
+
+    def test_garam_voc_policy_events_no_single_fort(self, rows):
+        """3 keputusan kebijakan VOC lintas-westkust (longgarkan monopoli
+        1751, tutup pelayaran bebas 4 Des 1759, tegaskan monopoli 25 Mar
+        1760) -- BUKAN peristiwa 1 fort, fort_name=None konsisten pola
+        'klaim Aceh umum' (PRD §5 Non-Goals), tapi confidence_flag tetap
+        unverified & text_asli tetap wajib ada."""
+        garam_policy = [r for r in rows if r["source_document"] == "buku-padang-1718"
+                        and r["year"] in (1751, 1759, 1760)]
+        assert len(garam_policy) == 3
+        assert all(r["fort_name"] is None for r in garam_policy)
+        assert all(r["text_asli"] for r in garam_policy)
+
+    def test_garam_1760_monopoly_confirmed_date_precise(self, rows):
+        """25 Maret 1760: Batavia tegaskan monopoli garam penuh -- tanggal
+        presisi (bukan cuma tahun), harus tercermin di event_date_raw."""
+        r = next(r for r in rows if r["source_document"] == "buku-padang-1718" and r["year"] == 1760)
+        assert "25 Maret 1760" in r["event_date_raw"] or "25 maart 1760" in r["event_date_raw"].lower()
