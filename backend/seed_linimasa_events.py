@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Model 2 rantai Markov `dominion_status` (docs/prd/prd-atlas-power-model.md §3.2,
@@ -134,6 +134,22 @@ ALLOWED_DOMINION_STATUS = {
 # tarik mundur dari loge Baros (1775) krn kalah saing Inggris Bengkulu.
 # MAJUKAN titik akhir linimasa dari 1741 ke 1775 (era "pengusiran-penataan"
 # diperluas 1664-1741 -> 1664-1775).
+#
+# source_document="buku-padang-1718" (2026-07-24, docs/prd/prd-atlas-
+# power-model-fase2-roster.md, Fase 2): Padang Abad XVII-XVIII (Yusri &
+# Deddy Arsya, 2024, review Prof. Gusti Asnan), docs/thesis/Padang Abad
+# XVII-XVIII FINISH.pdf hlm 237-238 -- SUMBER SEKUNDER-AKADEMIK, BUKAN
+# korpus arsip primer CD/Daghregister kami sendiri, jadi source_document
+# terpisah (jangan dikira OCR CD). 7 event Koto Tangah (1660-1755) MELENGKAPI
+# 2 event CD3 yg sudah ada (1680/1682, source_document="CD3") -- sebelum
+# 1660 Koto Tangah justru musuh terberat Panglima Aceh (tak ada wakil Aceh
+# ditempatkan di sana, beda dari Pariaman yg sepenuhnya dikuasai Aceh).
+# 1670 (dominion_status="internal_conflict", BUKAN "relapse_aceh" -- sumber
+# tak sebut Aceh di episode ini, beda dari insiden 1665 yg eksplisit
+# dihasut Aceh) Koto Tangah memberontak, nagari dibakar VOC. Traktat 8 Sep
+# 1671 kemungkinan cocok Corpus Diplomaticum CCCXXXI "Sumatra's Westkust,
+# 8-10 September 1671" (dicek dari bibliografi buku hlm 355, BELUM
+# diverifikasi teks traktat lengkap).
 
 
 def _clean(v):

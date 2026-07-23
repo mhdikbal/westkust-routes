@@ -457,3 +457,135 @@ class TestCsvIntegrity:
         y1755 = [r for r in rows if r["source_document"] == "CD6" and r["year"] == 1755]
         assert len(y1755) >= 3
         assert any("RENOVASI BESAR" in (r["notes"] or "") for r in y1755)
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # Fase 2 roster (docs/prd/prd-atlas-power-model-fase2-roster.md): Koto
+    # Tangah & Pauh masuk roster fort SEBAGAI 2 FORT TERPISAH (bukan digabung
+    # "Paoeh/Kotta-tengah"), lihat memory project_padang_hinterland_gaps.
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_fase2_kotatengah_1680_liberated_from_aceh(self, rows):
+        """CD3 traktat CDXXXVIII (1680): ekspedisi Laurens Pit bebaskan Paoeh
+        & Kotta-tengah dari 'kekerasan Atjeh' -- fort_name=Koto Tangah (bukan
+        Pauh, krn Koto Tangah = titik pesisir/portal yg jadi representasi
+        gabungan event ini per buku Padang Abad XVII-XVIII hlm 237)."""
+        r = next(r for r in rows if r["source_document"] == "CD3" and r["year"] == 1680
+                  and "Kotta-tengah" in r["title"])
+        assert r["fort_name"] == "Koto Tangah"
+        assert r["dominion_status"] == "voc_alliance"
+
+    def test_fase2_kotatengah_1682_pardoned(self, rows):
+        """CD3 traktat CDLXIII (1682): Kotta-tengah minta ampun & diterima
+        kembali -- siklus pemberontakan-pengampunan, status kembali
+        voc_alliance."""
+        r = next(r for r in rows if r["source_document"] == "CD3" and r["year"] == 1682
+                  and "Kotta-tengah" in r["title"])
+        assert r["fort_name"] == "Koto Tangah"
+        assert r["dominion_status"] == "voc_alliance"
+
+    def test_fase2_pauh_1716_non_aceh_conflict(self, rows):
+        """CD4 traktat DCCXV (1716): Paoeh ditundukkan krn dukung Sultan
+        Minangkabau (radja Gagar Alam) -- BUKAN konflik Aceh, jadi
+        dominion_status='internal_conflict' bukan 'relapse_aceh'. fort_name
+        Pauh (bukan Koto Tangah -- nagari berbeda per buku hlm 237)."""
+        r = next(r for r in rows if r["source_document"] == "CD4" and r["year"] == 1716)
+        assert r["fort_name"] == "Pauh"
+        assert r["dominion_status"] == "internal_conflict"
+
+    def test_fase2_kotatengah_book_timeline_present(self, rows):
+        """Buku 'Padang Abad XVII-XVIII' (Yusri/Deddy Arsya, 2024) hlm 237-238
+        beri 7 event Koto Tangah tambahan (1660-1755) di luar 2 event CD3 yg
+        sudah ada -- sumber sekunder-akademik, bukan korpus arsip primer CD/
+        Daghregister, jadi source_document terpisah agar tak dikira OCR CD
+        kami sendiri."""
+        book_rows = [r for r in rows if r["source_document"] == "buku-padang-1718"]
+        assert len(book_rows) == 7
+        assert all(r["fort_name"] == "Koto Tangah" for r in book_rows)
+        years = sorted(r["year"] for r in book_rows)
+        assert years == [1660, 1665, 1670, 1671, 1705, 1712, 1755]
+
+    def test_fase2_kotatengah_1670_rebellion_not_aceh(self, rows):
+        """Maret 1670: Koto Tangah 'melepaskan beban ketaatan' -- pemberontakan
+        umum thd VOC, TIDAK disebut terkait Aceh di sumber (beda dari relaps
+        1665 yg eksplisit dihasut Aceh) -- dominion_status='internal_conflict',
+        bukan 'relapse_aceh', konsisten pola id CD4/1716 Pauh."""
+        r = next(r for r in rows if r["source_document"] == "buku-padang-1718" and r["year"] == 1670)
+        assert r["dominion_status"] == "internal_conflict"
+        assert r["event_type"] == "konflik"
+
+    def test_fase2_kotatengah_1660_in_retak_painan_era(self, rows):
+        """1660 sudah dipakai 4 baris existing dgn era_slug='retak-painan' --
+        baris baru thn sama WAJIB era sama, jangan sampai satu tahun
+        terpecah ke 2 era (lihat test_era_year_ranges_non_overlapping)."""
+        r = next(r for r in rows if r["source_document"] == "buku-padang-1718" and r["year"] == 1660)
+        assert r["era_slug"] == "retak-painan"
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # Fase 2 roster, sisa 4 entitas: Nias (1 titik agregat per rekomendasi PRD
+    # -- 7 negeri beda tapi 1 fort_id), Natal, Singkil, Sorkam.
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_fase2_nias_seven_negeri_one_aggregate_fort(self, rows):
+        """PRD Fase 2 §3 Opsi A: Nias 1 titik agregat (bukan 7 titik per
+        negeri) -- ke-7 baris CD4 ekspedisi Sas 1693 semua fort_name='Nias',
+        tapi title tiap baris TETAP granular per negeri (Sillibo, Nay &
+        Lambara, dst) -- resolusi geografis tak hilang, cuma dominion pin
+        digabung 1 titik."""
+        nias_rows = [r for r in rows if r["source_document"] == "CD4" and r["year"] == 1693
+                     and r["event_type"] in ("konflik", "perjanjian")
+                     and any(k in r["title"] for k in
+                             ("Sillibo", "Nay & Lambara", "Malakerre", "Hinako-Maros",
+                              "Lahomi & Laoesa", "Gunung Jarroe", "Gomboe"))]
+        assert len(nias_rows) == 7
+        assert all(r["fort_name"] == "Nias" for r in nias_rows)
+        assert all(r["dominion_status"] == "voc_alliance" for r in nias_rows)
+        # granularitas negeri tetap ada di title, bukan diseragamkan
+        titles = {r["title"] for r in nias_rows}
+        assert len(titles) == 7
+
+    def test_fase2_singkil_1672_and_1681(self, rows):
+        """CD2/CD3: Singkil lepas dari Aceh (1672), lalu relaps & diusir lagi
+        (1681) -- pola pelepasan-berantai, dominion_status voc_alliance di
+        keduanya (event MENCATAT hasil pelepasan, bukan momen relapsnya)."""
+        r1672 = next(r for r in rows if r["source_document"] == "CD2" and r["year"] == 1672)
+        assert r1672["fort_name"] == "Singkil"
+        assert r1672["dominion_status"] == "voc_alliance"
+
+        r1681 = next(r for r in rows if r["source_document"] == "CD3" and r["year"] == 1681
+                      and "Singkil" in r["title"])
+        assert r1681["fort_name"] == "Singkil"
+        assert r1681["dominion_status"] == "voc_alliance"
+
+    def test_fase2_sorkam_1693_non_aceh_mediation(self, rows):
+        """CD4 (1693): VOC+Barus menengahi sengketa internal Kolang-Sorkam
+        (radja Goenong/Mainiatai vs Gadon/Mantoga) -- notes eksplisit 'BUKAN
+        konflik Aceh' -- dominion_status='internal_conflict', konsisten pola
+        Pauh 1716."""
+        r = next(r for r in rows if r["source_document"] == "CD4" and r["year"] == 1693
+                  and "Sorkam" in r["title"])
+        assert r["fort_name"] == "Sorkam"
+        assert r["dominion_status"] == "internal_conflict"
+
+    def test_fase2_natal_1760_two_stage_transition(self, rows):
+        """CD6 1760: 2 event berurutan sama tahun -- id97 (Prancis rebut dari
+        Inggris, transisi ke penguasa lokal) MASIH 'foreign_orbit' (belum
+        resmi VOC), id98 (resmi kembali ke VOC) baru 'voc_alliance'. Jangan
+        samakan keduanya jadi voc_alliance -- kehilangan nuansa 2-tahap."""
+        r97 = next(r for r in rows if r["source_document"] == "CD6" and r["year"] == 1760
+                    and "Prancis rebut" in r["title"])
+        assert r97["fort_name"] == "Natal"
+        assert r97["dominion_status"] == "foreign_orbit"
+
+        r98 = next(r for r in rows if r["source_document"] == "CD6" and r["year"] == 1760
+                    and "resmi kembali ke VOC" in r["title"])
+        assert r98["fort_name"] == "Natal"
+        assert r98["dominion_status"] == "voc_alliance"
+
+    def test_fase2_all_15_events_now_have_fort_id_ready(self, rows):
+        """Sanity check keseluruhan Fase 2 (docs/prd/prd-atlas-power-model-
+        fase2-roster.md §2): 15 event asli PRD (Nias 7 + Natal 2 + Singkil 2
+        + Paoeh/Kotta-tengah 3 + Sorkam 1) semua HARUS py fort_name terisi
+        sekarang -- tak ada satu pun tersisa fort_name=None dari daftar itu."""
+        fase2_fort_names = {"Nias", "Natal", "Singkil", "Sorkam", "Koto Tangah", "Pauh"}
+        matched = [r for r in rows if r["fort_name"] in fase2_fort_names]
+        assert len(matched) >= 17  # 15 PRD asli + 7 tambahan buku - 5 double count aman (>=)

@@ -9,7 +9,65 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
-from seed_data import clean_name, classify_direction
+from seed_data import clean_name, classify_direction, FORTS_META
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Tests: FORTS_META -- Fase 2 roster (docs/prd/prd-atlas-power-model-fase2-roster.md)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class TestFase2RosterForts:
+    """Koto Tangah & Pauh ditambahkan sbg 2 fort terpisah (bukan digabung
+    'Paoeh/Kotta-tengah') utk isi 15 linimasa_events yg selama ini
+    fort_id=NULL -- lihat memory project_padang_hinterland_gaps &
+    project_nias_1693_gap_evidence."""
+
+    def test_koto_tangah_present(self):
+        koto_tangah = next((f for f in FORTS_META if f["name"] == "Koto Tangah"), None)
+        assert koto_tangah is not None
+        assert koto_tangah["port_type"] == "departure"
+        assert isinstance(koto_tangah["latitude"], float)
+        assert isinstance(koto_tangah["longitude"], float)
+
+    def test_pauh_present(self):
+        pauh = next((f for f in FORTS_META if f["name"] == "Pauh"), None)
+        assert pauh is not None
+        assert pauh["port_type"] == "departure"
+        assert isinstance(pauh["latitude"], float)
+        assert isinstance(pauh["longitude"], float)
+
+    def test_koto_tangah_pauh_distinct_coordinates(self):
+        """Dua nagari berbeda (buku 'Padang Abad XVII-XVIII' hlm 237: Koto
+        Tangah = portal pesisir, Pauh = lebih jauh ke timur/pedalaman) --
+        koordinat harus beda, bukan titik yg sama disalin 2x."""
+        koto_tangah = next(f for f in FORTS_META if f["name"] == "Koto Tangah")
+        pauh = next(f for f in FORTS_META if f["name"] == "Pauh")
+        assert (koto_tangah["latitude"], koto_tangah["longitude"]) != (pauh["latitude"], pauh["longitude"])
+
+    def test_koto_tangah_pauh_names_unique_in_roster(self):
+        names = [f["name"] for f in FORTS_META]
+        assert names.count("Koto Tangah") == 1
+        assert names.count("Pauh") == 1
+
+    @pytest.mark.parametrize("name", ["Nias", "Natal", "Singkil", "Sorkam"])
+    def test_sisa_fase2_fort_present(self, name):
+        """Sisa 4 entitas Fase 2 (PRD §2): Nias (1 titik agregat per §3 Opsi
+        A), Natal, Singkil, Sorkam -- semua entitas geografis riil/modern,
+        beda dari Koto Tangah/Pauh yg butuh estimasi toponimi VOC-era."""
+        fort = next((f for f in FORTS_META if f["name"] == name), None)
+        assert fort is not None
+        assert fort["port_type"] == "departure"
+        assert isinstance(fort["latitude"], float)
+        assert isinstance(fort["longitude"], float)
+
+    def test_all_fase2_forts_have_unique_coordinates(self):
+        """6 fort Fase 2 (Koto Tangah, Pauh, Nias, Natal, Singkil, Sorkam)
+        harus py 6 koordinat berbeda -- tak ada yg tersalin dari fort lain."""
+        names = ["Koto Tangah", "Pauh", "Nias", "Natal", "Singkil", "Sorkam"]
+        coords = [(f["latitude"], f["longitude"])
+                  for n in names for f in FORTS_META if f["name"] == n]
+        assert len(coords) == 6
+        assert len(set(coords)) == 6
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

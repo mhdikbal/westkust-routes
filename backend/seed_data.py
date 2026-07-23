@@ -181,6 +181,68 @@ FORTS_META = [
         "port_type": "both",
         "description": "Kerajaan/pelabuhan lada di selatan Air Haji. Dagh-register 1661: 'Indrapoura levert alleen meer peper uyt als Sillida, Priaman en Ticco te zamen'. Pos residen VOC (Pieter Ketting, 1661)."
     },
+    # ── Fase 2 roster (docs/prd/prd-atlas-power-model-fase2-roster.md) ────
+    # Koordinat INDIKATIF (belum diverifikasi peta historis/gazetteer VOC-era) --
+    # dipakai proxy lokasi kecamatan modern Koto Tangah & Pauh, Kota Padang.
+    # 2 fort TERPISAH (bukan digabung "Paoeh/Kotta-tengah") krn buku "Padang
+    # Abad XVII-XVIII" hlm 237 sebut keduanya nagari berbeda -- Koto Tangah
+    # portal pesisir, Pauh lebih jauh ke timur/pedalaman & lebih kaya.
+    {
+        "name": "Koto Tangah",
+        "latitude": -0.83,
+        "longitude": 100.35,
+        "color": "#6c5b7b",
+        "port_type": "departure",
+        "description": "Koto Tangah, nagari pesisir sebelah utara Padang -- musuh terberat Panglima Aceh sebelum 1660 (tak ada wakil Aceh ditempatkan di sana), kemudian jadi sekutu VOC (kantor dibuka 1660), lewat siklus tunduk-berontak-tunduk berulang (1670 dibakar VOC usai memberontak, 1671/1705/1755 traktat diperbarui). Koordinat indikatif, belum diverifikasi peta historis VOC-era."
+    },
+    {
+        "name": "Pauh",
+        "latitude": -0.92,
+        "longitude": 100.43,
+        "color": "#c06c84",
+        "port_type": "departure",
+        "description": "Pauh, nagari pedalaman di sebelah timur Koto Tangah, lebih besar & lebih kaya (jalur emas dari pusat Minangkabau lewat Bukit Barisan). 1716: ditundukkan VOC usai memberontak dukung Sultan Minangkabau (radja Gagar Alam) -- desa dihapus, penduduk dipaksa pindah ke wilayah Padang, dilarang kembali selamanya. Koordinat indikatif, belum diverifikasi peta historis VOC-era."
+    },
+    # Nias -- 1 TITIK AGREGAT (PRD §3 Opsi A) mewakili 7 negeri traktat
+    # terpisah dari ekspedisi Sas Jan-Mei 1693 (Sillibo/Gido, Nay & Lambara,
+    # Malakerre & Telok Dalam, Hinako-Maros, Lahomi & Laoesa, Gunung Jarroe,
+    # Gomboe) -- granularitas negeri tetap di title tiap linimasa_events,
+    # cuma pin peta digabung 1 titik krn sebagian negeri tak py padanan
+    # toponimi modern yg pasti. Titik dipilih di Gido (kecamatan modern,
+    # Nias tengah) -- lokasi salah satu negeri yg paling terdokumentasi
+    # (Sillibo, benteng Aceh yg diserbu Sas 15 Maret 1693).
+    {
+        "name": "Nias",
+        "latitude": 1.14,
+        "longitude": 97.53,
+        "color": "#2e8b7c",
+        "port_type": "departure",
+        "description": "Pulau Nias -- 7 negeri ikat aliansi anti-Aceh terpisah dgn VOC lewat ekspedisi vaandrig Joannes Sas (Jan-Mei 1693), termasuk serbuan benteng Aceh di Gido (15 Maret). Titik peta agregat (Gido, Nias tengah) mewakili seluruh pulau -- resolusi per-negeri tetap ada di teks tiap peristiwa. Koordinat indikatif, belum diverifikasi peta historis VOC-era."
+    },
+    {
+        "name": "Natal",
+        "latitude": 0.57,
+        "longitude": 99.11,
+        "color": "#a67c52",
+        "port_type": "departure",
+        "description": "Natal, pos dagang VOC di utara Air Bangis, traktat sejak 1693 & diperbarui 1755. Sempat menyimpang ke pengaruh Inggris, direbut Prancis dari Inggris (7 Feb 1760) di tengah Perang Tujuh Tahun, lalu diserahkan lewat penguasa lokal kembali ke VOC -- contoh nyata yg memicu penulisan PRD Fase 2. Koordinat indikatif, belum diverifikasi peta historis VOC-era."
+    },
+    {
+        "name": "Singkil",
+        "latitude": 2.28,
+        "longitude": 97.79,
+        "color": "#3d5a80",
+        "port_type": "departure",
+        "description": "Singkil (Cinkel), nagari di utara Barus, lepas dari kekuasaan Aceh 1672 mengikuti jejak Barus, sempat relaps ke faksi pro-Aceh (radja Lilla Sittia diusir 1681). Koordinat indikatif, belum diverifikasi peta historis VOC-era."
+    },
+    {
+        "name": "Sorkam",
+        "latitude": 1.75,
+        "longitude": 98.60,
+        "color": "#7a6c5d",
+        "port_type": "departure",
+        "description": "Sorkam (& Kolang), nagari pesisir dekat Barus. 1693: VOC & radja d'Ilir Baros menengahi sengketa internal antar-kepala suku (Goenong/Mainiatai vs Gadon/Mantoga) -- bukan konflik Aceh. Koordinat indikatif, belum diverifikasi peta historis VOC-era."
+    },
     # ── Arrival ports ────────────────────────────────────────────────────
     {
         "name": "Batavia",
