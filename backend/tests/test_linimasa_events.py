@@ -640,3 +640,40 @@ class TestCsvIntegrity:
         presisi (bukan cuma tahun), harus tercermin di event_date_raw."""
         r = next(r for r in rows if r["source_document"] == "buku-padang-1718" and r["year"] == 1760)
         assert "25 Maret 1760" in r["event_date_raw"] or "25 maart 1760" in r["event_date_raw"].lower()
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # Memoar Vogel (~1690, docs/bsb10468472.txt): Sultan Mametchia Inderapoura
+    # membelot VOC ke Inggris 1686 -- isi celah 1664-1716 Inderapura.
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_vogel_inderapura_1686_defection_present(self, rows):
+        """1686: Sultan Mametchia Inderapoura membelot VOC ke perlindungan
+        Inggris (Komandan Joan van Leene otoriter/tak bantu) -- fort_name
+        Inderapura (sudah di roster), dominion_status='foreign_orbit' (BUKAN
+        relapse_aceh -- ini soal Inggris, bukan Aceh)."""
+        r = next(r for r in rows if r["source_document"] == "buku-vogel-1690" and r["year"] == 1686)
+        assert r["fort_name"] == "Inderapura"
+        assert r["dominion_status"] == "foreign_orbit"
+        assert "Mametchia" in r["title"] or "Mametchia" in r["text_asli"]
+
+    def test_vogel_inderapura_1686_fills_gap_before_1716(self, rows):
+        """1686 mengisi celah 1664-1716 Inderapura -- bukan duplikat event
+        1716 (CD4) yg sudah ada, yg soal KEMBALI ke VOC, bukan momen
+        membelotnya. Kedua event harus co-exist, BUKAN saling menggantikan."""
+        inderapura = sorted([r for r in rows if r["fort_name"] == "Inderapura"], key=lambda r: r["year"])
+        years = [r["year"] for r in inderapura]
+        assert 1686 in years
+        assert 1716 in years
+        r1716 = next(r for r in inderapura if r["year"] == 1716)
+        assert r1716["source_document"] == "CD4"
+        assert r1716["dominion_status"] == "voc_alliance"
+
+    def test_painan_1687_dominion_status_now_filled(self, rows):
+        """Baris Painan 1687 (CD3, SUDAH ADA sblm sesi ini) py dominion_status
+        kosong -- diisi voc_alliance (Pangeran Minangkabau batalkan konsesi
+        tanah Inggris di Painan, cross-referenced tanggal dekat dgn 'April
+        1687' versi Vogel soal Tello-Pongassan, TAPI sumber utama tetap CD3
+        yg sudah ada, bukan diganti jadi buku-vogel-1690)."""
+        r = next(r for r in rows if r["fort_name"] == "Painan" and r["year"] == 1687)
+        assert r["source_document"] == "CD3"
+        assert r["dominion_status"] == "voc_alliance"

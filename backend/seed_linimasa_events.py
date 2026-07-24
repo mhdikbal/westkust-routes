@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Model 2 rantai Markov `dominion_status` (docs/prd/prd-atlas-power-model.md §3.2,
@@ -150,6 +150,20 @@ ALLOWED_DOMINION_STATUS = {
 # 1671 kemungkinan cocok Corpus Diplomaticum CCCXXXI "Sumatra's Westkust,
 # 8-10 September 1671" (dicek dari bibliografi buku hlm 355, BELUM
 # diverifikasi teks traktat lengkap).
+#
+# source_document="buku-vogel-1690" (2026-07-24): Johann Wilhelm Vogel,
+# Ost-Indianische Reise-Beschreibung (~1690), docs/bsb10468472.txt (scan OCR
+# Fraktur, Bayerische Staatsbibliothek, 828 hlm) -- memoar PRIBADI mantan
+# Fähnrich & Berg-Hauptmann (kepala tambang) VOC di Sillida (Salido), BUKAN
+# arsip resmi VOC maupun historiografi akademik modern -- tier sumber
+# terpisah lagi dari CD/buku-padang-1718. Mengisi celah 1664-1716 Inderapura:
+# Sultan Mametchia (nama sama muncul CD4/1662 & CD4/1716 existing) membelot
+# VOC ke perlindungan Inggris th 1686 krn Komandan Joan van Leene (nama sama
+# muncul CD3/1682 Kotta-tengah) otoriter & tak beri bantuan lawan bangsawan
+# pemberontak -- CD4/1716 (event existing) sendiri sebut "sejak 1684" tanpa
+# tahun presisi, Vogel MELENGKAPI dgn tahun eksak. Cross-corroborasi
+# independen ganda: (a) identitas Sultan Mametchia, (b) watak kontroversial
+# Van Leene -- 2 sumber tak berkaitan (arsip vs memoar pribadi) sepakat.
 
 
 def _clean(v):
