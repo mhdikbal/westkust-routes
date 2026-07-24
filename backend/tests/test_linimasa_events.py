@@ -849,3 +849,32 @@ class TestCsvIntegrity:
                  and r["source_document"] == "gm-vol04-05")
         assert r["dominion_status"] == "internal_conflict"
         assert "Sas" in r["text_asli"] or "Sas" in r["title"]
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # Kampanye reconquest 1687 (Vogel) yg SEMPAT ditunda krn tak py fort match
+    # -- lihat project_vogel_full_survey_sillida_mine. Batoe Bannaw pakai
+    # pola fort_name=None (sama spt event kebijakan garam VOC-wide existing);
+    # Tello-Pongassan/Moero Lagan diarahkan ke Painan (anchor Sapoelo
+    # Boabandaars, sama pola dgn row Painan/1685/CD3 existing).
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_batoe_bannaw_no_single_fort(self, rows):
+        """26-27 Feb 1687: VOC usir 'sarang perompak' Batoe Bannaw yg
+        ganggu jalur emas Songy Abou->Padang -- bukan soal status 1 fort,
+        fort_name=None (pola sama garam_voc_policy_events)."""
+        r = next(r for r in rows if r["source_document"] == "buku-vogel-1690"
+                 and r["year"] == 1687 and "Bannaw" in r["title"])
+        assert r["fort_name"] is None
+        assert r["dominion_status"] is None
+
+    def test_painan_1687_tello_pongassan_moero_lagan(self, rows):
+        """April-Mei 1687: kampanye penindasan Sapoelo Boabandaars (Tello
+        s.d. Pongassan) & rebut kembali Moero Lagan dari Inggris -- fort_name
+        Painan (anchor Sapoelo Boabandaars, konsisten row 1685/CD3 existing).
+        Baris ke-3 Painan/1687 (co-exist dgn CD3/23-Jan & buku-vogel-1690/
+        26-27-Jan Radja doa Selas)."""
+        r = next(r for r in rows if r["fort_name"] == "Painan"
+                 and r["source_document"] == "buku-vogel-1690"
+                 and "Pongassan" in r["title"])
+        assert r["dominion_status"] == "voc_alliance"
+        assert r["year"] == 1687
