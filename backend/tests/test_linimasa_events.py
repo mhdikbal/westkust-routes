@@ -673,7 +673,81 @@ class TestCsvIntegrity:
         kosong -- diisi voc_alliance (Pangeran Minangkabau batalkan konsesi
         tanah Inggris di Painan, cross-referenced tanggal dekat dgn 'April
         1687' versi Vogel soal Tello-Pongassan, TAPI sumber utama tetap CD3
-        yg sudah ada, bukan diganti jadi buku-vogel-1690)."""
-        r = next(r for r in rows if r["fort_name"] == "Painan" and r["year"] == 1687)
-        assert r["source_document"] == "CD3"
+        yg sudah ada, bukan diganti jadi buku-vogel-1690).
+
+        Filter source_document eksplisit krn Painan/1687 SEKARANG py >1 baris
+        (CD3 23 Jan + buku-vogel-1690 26-27 Jan Radja doa Selas) -- next() tanpa
+        filter ini akan matching baris yg salah (pola bug yg sudah berulang,
+        lihat feedback_sisir_semua_titik_pemakaian)."""
+        r = next(r for r in rows if r["fort_name"] == "Painan" and r["year"] == 1687
+                 and r["source_document"] == "CD3")
         assert r["dominion_status"] == "voc_alliance"
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # Sisir penuh buku Vogel (2026-07-24): rangkaian reconquest 1686-87 pasca
+    # defeksi Mametchia, siklus hancur-ampun Koto Tangah, preseden monopoli
+    # garam Bayang 1687 -- lihat memory project_vogel_full_survey_sillida_mine.
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_koto_tangah_1678_destroyed_new_datapoint(self, rows):
+        """Vogel (Anhang, baris ~23486) sebut Cotatenga (=Koto Tangah, cocok
+        nama dgn CD3/1682 'Kotta-tengah') diratakan VOC pada 1670,1678,1682,
+        1686 krn 'vielfältigen Meineydes' (ingkar traktat berulang). Data
+        existing cuma py 1670 & 1682 -- 1678 titik data BARU, isi celah."""
+        r = next(r for r in rows if r["fort_name"] == "Koto Tangah"
+                 and r["source_document"] == "buku-vogel-1690" and r["year"] == 1678)
+        assert r["dominion_status"] == "internal_conflict"
+        assert r["text_asli"]
+
+    def test_koto_tangah_1686_destroyed_new_datapoint(self, rows):
+        """Titik ke-2 dari daftar siklus Vogel yg sama (1670,1678,1682,1686)
+        -- 1686 mengisi celah dokumenter besar Koto Tangah 1682->1705."""
+        r = next(r for r in rows if r["fort_name"] == "Koto Tangah"
+                 and r["source_document"] == "buku-vogel-1690" and r["year"] == 1686)
+        assert r["dominion_status"] == "internal_conflict"
+
+    def test_koto_tangah_siklus_has_four_destruction_years(self, rows):
+        """Sanity check gabungan: setelah tambahan Vogel, siklus hancur Koto
+        Tangah harus mencakup ke-4 tahun yg Vogel sebut eksplisit."""
+        kt_years = {r["year"] for r in rows if r["fort_name"] == "Koto Tangah"}
+        assert {1670, 1678, 1682, 1686}.issubset(kt_years)
+
+    def test_koto_tangah_1682_note_references_pouti_execution(self, rows):
+        """Vogel tambahkan detail dramatis ke tahun 1682 yg SUDAH ada di CD3
+        (10 utusan minta ampun): Gubernur Pouti ditangkap-tipu & dipenggal di
+        Padang th 1682 krn pengkhianatan. Dicatat sbg CATATAN TAMBAHAN di baris
+        CD3 existing (bukan baris terpisah, bukan mengganti framing existing)."""
+        r = next(r for r in rows if r["fort_name"] == "Koto Tangah"
+                 and r["source_document"] == "CD3" and r["year"] == 1682)
+        assert "Pouti" in r["notes"]
+
+    def test_painan_1686_batang_capas_retaken_from_english(self, rows):
+        """1 September 1686: VOC serbu & rebut kembali benteng Inggris di
+        Batang Capas (sudah teratribusi ke fort Painan di roster existing,
+        cross-ref sesi Fase 2). Peristiwa TERPISAH dari defeksi Inderapura
+        1686 -- fort_name beda (Painan, bukan Inderapura)."""
+        r = next(r for r in rows if r["fort_name"] == "Painan"
+                 and r["source_document"] == "buku-vogel-1690" and r["year"] == 1686)
+        assert r["dominion_status"] == "voc_alliance"
+        assert "Capas" in r["title"] or "Capas" in r["text_asli"]
+
+    def test_painan_1687_radja_doa_selas_captured(self, rows):
+        """26-27 Januari 1687: Radja doa Selas (pemimpin Sapoelo Boabandaers
+        yg 'aufs neue abtrünnig') ditangkap di sekitar Painan/Sillida.
+        Peristiwa TERPISAH dari CD3/23-Jan-1687 (pembatalan konsesi Inggris
+        oleh Pangeran Minangkabau) -- 2 baris Painan/1687 co-exist."""
+        r = next(r for r in rows if r["fort_name"] == "Painan"
+                 and r["source_document"] == "buku-vogel-1690" and r["year"] == 1687)
+        assert r["dominion_status"] == "voc_alliance"
+        assert "Selas" in r["title"] or "Selas" in r["text_asli"]
+
+    def test_bayang_1687_salt_monopoly_precedent(self, rows):
+        """~Juli 1687: VOC hancurkan SEMUA penyulingan garam pesisir Provinsi
+        Bayangh, paksa beli garam dari Comptoir Padang -- PRESEDEN 51 tahun
+        sblm event monopoli-garam 1738 yg sudah ada (Koto Tangah/Ulakan).
+        Mengisi celah dokumenter Bayang 1679->1755."""
+        r = next(r for r in rows if r["fort_name"] == "Bayang"
+                 and r["source_document"] == "buku-vogel-1690" and r["year"] == 1687)
+        assert r["dominion_status"] == "voc_alliance"
+        assert "monopoli-garam" in (r["tags"] or [])
+        assert "Sals" in r["text_asli"] or "garam" in r["title"].lower()
