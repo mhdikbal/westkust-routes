@@ -377,6 +377,14 @@
     .legend-swatch.voc-withdrawal    { --swatch-color: #9c640d; }
     .legend-swatch.internal-conflict { --swatch-color: #569859; }
 
+    /* Rute historis non-VOC (mis. armada EIC/Lancaster) -- garis putus-putus
+       abu-abu, BEDA dari swatch garis out/in/transit (yg berwarna, data
+       voyages agregat) supaya jelas ini 1 kunjungan tunggal, bukan rute dagang
+       rutin. Grup disembunyikan default, ditoggle bareng #btn-historical-routes
+       (toggleHistoricalRoutes() di atlas.js), sama pola dgn dominion-legend-group. */
+    #historical-legend-group { display: none; margin-top: .3rem; padding-top: .4rem; border-top: 1px dashed var(--border); }
+    .legend-swatch.historical-eic { border-color: #8A857A; border-top-style: dashed; }
+
     /* ── Slide-over Fort Panel (right) ──────────────────────────────────── */
     #fort-panel {
       position: fixed;
@@ -934,6 +942,11 @@
               title="Tampilkan status kekuasaan per benteng (opt-in)">
         <i class="ti ti-flag" aria-hidden="true"></i> Kekuasaan
       </button>
+      <button class="btn-dir" id="btn-historical-routes" data-historical="routes"
+              onclick="toggleHistoricalRoutes()" aria-pressed="false"
+              title="Tampilkan rute pelayaran historis non-VOC (opt-in)">
+        <i class="ti ti-route" aria-hidden="true"></i> Rute Historis
+      </button>
     </div>
     <div class="source-select-wrap" title="Filter sumber data pelayaran">
       <i class="ti ti-database" aria-hidden="true"></i>
@@ -986,6 +999,10 @@
     <div class="legend-item"><span class="legend-swatch dominion foreign-orbit" aria-hidden="true"></span>Orbit Eropa lain</div>
     <div class="legend-item"><span class="legend-swatch dominion voc-withdrawal" aria-hidden="true"></span>VOC mundur</div>
     <div class="legend-item"><span class="legend-swatch dominion internal-conflict" aria-hidden="true"></span>Konflik internal</div>
+  </div>
+  <div id="historical-legend-group">
+    <div class="legend-axis-label">Rute historis lain</div>
+    <div class="legend-item"><span class="legend-swatch historical-eic" aria-hidden="true"></span>Armada EIC (Lancaster 1602)</div>
   </div>
 </aside>
 

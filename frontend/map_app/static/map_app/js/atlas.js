@@ -68,7 +68,70 @@ const SEA_WAYPOINTS = {
   "Batavia→Inderapura": [[-5.9, 105.4], [-5.6, 101.9], [-3.7, 99.6]],
   "Padang→Inderapura":  [[-1.5, 100.5]],
   "Inderapura→Padang":  [[-1.5, 100.5]],
+  // Aceh→Pariaman -- rute historis Lancaster 1602 (bukan data voyages), koridor
+  // sama dgn Aceh→Tiku di atas (garis lintang berdekatan), cuma titik akhir beda.
+  "Aceh→Pariaman": [[3.5, 95.0], [-1.0, 96.5], [-0.72, 99.9]],
 };
+
+// Rute historis SATU-KALI (bukan agregat voyages) -- narasi non-VOC yg tak
+// masuk tabel voyages, jadi digambar terpisah dari drawRoutes(). Abu-abu
+// (bukan navy/teal/hijau existing) supaya visual jelas beda kategori: bukan
+// dagang VOC rutin, tapi kunjungan tunggal armada bangsa lain.
+const HISTORICAL_ROUTES = [
+  {
+    id: "lancaster-1602",
+    label: "Armada Lancaster (EIC pertama)",
+    year: 1602,
+    color: "#8A857A",
+    segments: [
+      { from: "Aceh", to: "Pariaman", note: "Nov 1602 -- singgah dlm perjalanan pulang dari Aceh, temukan kapal Susan sudah muat lada+cengkeh" },
+    ],
+  },
+];
+
+function drawHistoricalRoutes() {
+  eicRouteLayers.forEach(l => map.removeLayer(l));
+  eicRouteLayers = [];
+  if (!eicRoutesEnabled) return;
+
+  HISTORICAL_ROUTES.forEach(route => {
+    route.segments.forEach(seg => {
+      const s = FORT_COORDS[seg.from], e = FORT_COORDS[seg.to];
+      if (!s || !e) return;
+      const routeKey = `${seg.from}→${seg.to}`;
+      const vias = SEA_WAYPOINTS[routeKey];
+      const pts = vias ? smoothPath([s, ...vias, e]) : getBezierCurve(s, e, 0.25);
+
+      const line = L.polyline(pts, {
+        color: route.color,
+        weight: 2,
+        opacity: 0.7,
+        dashArray: "3,9",
+      }).addTo(map);
+      line.bindPopup(
+        `<div class="dominion-popup-card" style="--dominion-color:${route.color}">
+           <div class="dominion-popup-fort">${esc(route.label)}</div>
+           <div class="dominion-popup-event">${esc(seg.from)} &rarr; ${esc(seg.to)}</div>
+           <div class="dominion-popup-meta">${route.year} &middot; ${esc(seg.note)}</div>
+         </div>`,
+        { className: "dominion-popup", closeButton: true, minWidth: 200, maxWidth: 280 }
+      );
+      eicRouteLayers.push(line);
+    });
+  });
+}
+
+function toggleHistoricalRoutes() {
+  eicRoutesEnabled = !eicRoutesEnabled;
+  const btn = document.getElementById("btn-historical-routes");
+  if (btn) {
+    btn.classList.toggle("active", eicRoutesEnabled);
+    btn.setAttribute("aria-pressed", eicRoutesEnabled ? "true" : "false");
+  }
+  const legend = document.getElementById("historical-legend-group");
+  if (legend) legend.style.display = eicRoutesEnabled ? "block" : "none";
+  drawHistoricalRoutes();
+}
 
 // Icon class per port type for welcome grid
 const PORT_ICONS = {
@@ -88,8 +151,9 @@ const PAGE_SIZE = 20;
 /* ─────────────────────────────────────────────────────────────────────────────
    State
    ───────────────────────────────────────────────────────────────────────────── */
-let map, routeLines = [], powerStatusLayers = [];
+let map, routeLines = [], powerStatusLayers = [], eicRouteLayers = [];
 let powerStatusEnabled = false;  // layer status kekuasaan -- opt-in, default OFF
+let eicRoutesEnabled = false;    // layer rute historis EIC/Inggris -- opt-in, default OFF
 let activeMarker = null, allFortsData = [];
 let activeTab = "outbound";
 let currentData = { outbound: [], inbound: [], info: "" };
