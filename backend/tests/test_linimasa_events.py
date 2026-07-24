@@ -867,6 +867,26 @@ class TestCsvIntegrity:
         assert r["fort_name"] is None
         assert r["dominion_status"] is None
 
+    # ═══════════════════════════════════════════════════════════════════════
+    # Lancaster (1602, docs/The voyages of Sir James Lancaster.docx, ed.
+    # William Foster/Hakluyt Society 1940): akun Inggris paling awal soal
+    # Priaman, 55 th sblm event Pariaman tertua yg sudah ada (1657).
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_pariaman_1602_lancaster_earliest_account(self, rows):
+        """Nov 1602: armada Lancaster (pelayaran EIC pertama) singgah di
+        Priaman, temukan kapal Susan sudah lebih dulu muat lada+cengkeh --
+        akun tertua Pariaman di seluruh korpus (55 th sblm 1657 existing)."""
+        r = next(r for r in rows if r["fort_name"] == "Pariaman"
+                 and r["source_document"] == "lancaster-1601-1603")
+        assert r["year"] == 1602
+        assert "Manangcabo" in r["text_asli"] or "Susan" in r["text_asli"]
+
+    def test_pariaman_1602_predates_1657_existing(self, rows):
+        pariaman_years = sorted(r["year"] for r in rows if r["fort_name"] == "Pariaman")
+        assert pariaman_years[0] == 1602
+        assert 1657 in pariaman_years
+
     def test_painan_1687_tello_pongassan_moero_lagan(self, rows):
         """April-Mei 1687: kampanye penindasan Sapoelo Boabandaars (Tello
         s.d. Pongassan) & rebut kembali Moero Lagan dari Inggris -- fort_name

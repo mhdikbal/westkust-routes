@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35", "gm-vol04-05"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35", "gm-vol04-05", "lancaster-1601-1603"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Model 2 rantai Markov `dominion_status` (docs/prd/prd-atlas-power-model.md §3.2,
@@ -212,6 +212,24 @@ ALLOWED_DOMINION_STATUS = {
 #       rakyatnya, diganti Radja Boedjang yg tak dikenal VOC; ATAU Mametchia
 #       & Majutte "berdamai" krn tak aman baginya tinggal. Dicatat sbg
 #       ketidakpastian eksplisit, BUKAN salah satu rumor dipilih jadi fakta.
+#
+# source_document="lancaster-1601-1603" (2026-07-24): James Lancaster,
+# "The Voyages of Sir James Lancaster to Brazil and the East Indies,
+# 1591-1603", ed. Sir William Foster, Hakluyt Society 1940 (docs/The
+# voyages of Sir James Lancaster.docx). Akun pelayaran EIC PERTAMA (armada
+# 4 kapal, 1601-1603) -- tier sumber TERPISAH lagi: Inggris, PRA-VOC (VOC
+# baru berdiri 1602, saat armada ini sedang berlayar), jauh lebih tua dari
+# semua sumber lain di korpus (CD1 mulai 1600 tp itu klaim yurisdiksi
+# retrospektif, bukan akun mata-kaki langsung). November 1602: armada
+# singgah di Priaman dlm perjalanan pulang dari Aceh, temukan kapal Susan
+# (dikirim jenderal lebih dulu dari Aceh) sudah muat ~600 bahar lada + 66
+# bahar cengkeh. Priaman digambarkan TANPA komoditas lain selain emas
+# (debu/butiran dicuci dari pasir sungai pasca hujan) & lada yg didatangkan
+# dari "Manangcabo" (Minangkabau) 8-10 liga pedalaman -- konfirmasi paling
+# awal di korpus soal jalur dagang emas+lada Priaman-Minangkabau, 55 tahun
+# sblm event Pariaman tertua existing (1657). TIDAK ada penguasa politik
+# Priaman disebut eksplisit dlm akun ini (murni deskripsi dagang) --
+# dominion_status SENGAJA dikosongkan, bukan diasumsikan.
 
 
 def _clean(v):
