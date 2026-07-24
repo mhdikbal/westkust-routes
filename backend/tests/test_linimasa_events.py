@@ -824,3 +824,28 @@ class TestCsvIntegrity:
         assert 1686 in inderapura_years
         assert 1688 in inderapura_years
         assert 1716 in inderapura_years
+
+    def test_pauh_1683_nankajo_boekit_unrest(self, rows):
+        """1683: Radja Nankajo wafat & Radja Boekit dibunuh (keduanya
+        'gevlughte onrustige instrumenten en stokebranders') -- Pauwers
+        (penduduk Pauh) terpecah dari boschloopers (pemberontak hutan).
+        Titik ke-2 sejarah Pauh, 33 tahun sblm satu2nya event existing (1716)."""
+        r = next(r for r in rows if r["fort_name"] == "Pauh"
+                 and r["source_document"] == "gm-vol04-05" and r["year"] == 1683)
+        assert r["dominion_status"] == "internal_conflict"
+        assert "Nankajo" in r["text_asli"] or "Boekit" in r["text_asli"]
+
+    def test_pauh_1683_predates_1716_event(self, rows):
+        pauh_years = sorted(r["year"] for r in rows if r["fort_name"] == "Pauh")
+        assert 1683 in pauh_years
+        assert 1716 in pauh_years
+
+    def test_tiku_joannes_sas_murdered(self, rows):
+        """Vaandrig Joannes Sas -- tokoh ekspedisi Nias Jan-Mei 1693 (sudah
+        py 7 traktat di data proyek, project_nias_1693_gap_evidence) --
+        jadi resident Priaman lalu dibunuh di Tiku, tak lama kemudian
+        (catatan editorial RGP, tahun tak presisi)."""
+        r = next(r for r in rows if r["fort_name"] == "Tiku"
+                 and r["source_document"] == "gm-vol04-05")
+        assert r["dominion_status"] == "internal_conflict"
+        assert "Sas" in r["text_asli"] or "Sas" in r["title"]
