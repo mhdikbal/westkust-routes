@@ -243,6 +243,22 @@ FORTS_META = [
         "port_type": "departure",
         "description": "Sorkam (& Kolang), nagari pesisir dekat Barus. 1693: VOC & radja d'Ilir Baros menengahi sengketa internal antar-kepala suku (Goenong/Mainiatai vs Gadon/Mantoga) -- bukan konflik Aceh. Koordinat indikatif, belum diverifikasi peta historis VOC-era."
     },
+    # York Fort (Bengkulu/Bencoolen) -- pos EIC (Inggris), BUKAN VOC, di luar
+    # cakupan geografis inti "westkust" (selatan Silebar). Ditambahkan krn
+    # arsip British Library IOR G/35 f.198 (via AmDigital) -- surat dari York
+    # Fort 18/22 Sept 1686 soal konsesi "Raja Manacabo (Minangkabau)" Barus-
+    # Silebar ke Inggris & kehilangan pos Batang Capas, cross-validasi
+    # independen thd row Painan/1686/buku-vogel-1690 yg sudah ada (VOC serbu
+    # Batang Capas 1 Sept 1686, versi Vogel/Jerman). Koordinat presis dari
+    # user (bukan estimasi), beda dari fort lain yg masih "indikatif".
+    {
+        "name": "Fort York",
+        "latitude": -3.7766925254615944,
+        "longitude": 102.26424897116361,
+        "color": "#8b2f2f",
+        "port_type": "departure",
+        "description": "York Fort, pos dagang East India Company (Inggris) di Bengkulu (Bencoolen), didirikan usai EIC diusir dari Banten oleh VOC (1682). Bukan bagian jaringan pos VOC -- dimasukkan roster krn arsip BL_IOR_G_35_198 (British Library India Office Records, via AmDigital) berisi korespondensi dari sini soal konsesi dagang Barus-Silebar & kehilangan Batang Capas, 1686. Koordinat presis (bukan indikatif)."
+    },
     # ── Arrival ports ────────────────────────────────────────────────────
     {
         "name": "Batavia",

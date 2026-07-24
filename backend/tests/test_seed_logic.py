@@ -70,6 +70,32 @@ class TestFase2RosterForts:
         assert len(set(coords)) == 6
 
 
+class TestFortYork:
+    """Fort York (Bengkulu/Bencoolen) -- pos EIC (Inggris), BUKAN pos VOC,
+    di luar cakupan geografis inti 'westkust' (selatan Silebar). Ditambahkan
+    krn arsip BL_IOR_G_35_198 (British Library IOR, via AmDigital) -- surat
+    dari York Fort 18/22 Sept 1686 soal konsesi 'Raja Manacabo (Minangkabau)'
+    Barus-Silebar ke Inggris & kehilangan pos Batang Capas -- cross-validasi
+    independen thd row Painan/1686/buku-vogel-1690 yg sudah ada. Lihat
+    project_vogel_full_survey_sillida_mine / user request 2026-07-24."""
+
+    def test_fort_york_present(self):
+        fort = next((f for f in FORTS_META if f["name"] == "Fort York"), None)
+        assert fort is not None
+        assert isinstance(fort["latitude"], float)
+        assert isinstance(fort["longitude"], float)
+
+    def test_fort_york_coordinates_match_user_supplied_point(self):
+        """Koordinat persis yg diberikan user (Bengkulu), bukan estimasi."""
+        fort = next(f for f in FORTS_META if f["name"] == "Fort York")
+        assert round(fort["latitude"], 6) == round(-3.7766925254615944, 6)
+        assert round(fort["longitude"], 6) == round(102.26424897116361, 6)
+
+    def test_fort_york_name_unique_in_roster(self):
+        names = [f["name"] for f in FORTS_META]
+        assert names.count("Fort York") == 1
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Tests: clean_name()
 # ═══════════════════════════════════════════════════════════════════════════════

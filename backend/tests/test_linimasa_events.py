@@ -751,3 +751,26 @@ class TestCsvIntegrity:
         assert r["dominion_status"] == "voc_alliance"
         assert "monopoli-garam" in (r["tags"] or [])
         assert "Sals" in r["text_asli"] or "garam" in r["title"].lower()
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # Arsip EIC (2026-07-24): BL_IOR_G_35_198, surat York Fort 18/22 Sept
+    # 1686 -- cross-validasi independen thd Painan/1686/buku-vogel-1690.
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_eic_letter_batang_capas_english_perspective(self, rows):
+        """Surat York Fort (EIC/Inggris) 18-22 Sept 1686 -- sisi Inggris dari
+        peristiwa yg sama yg direkam Vogel (VOC serbu Batang Capas 1 Sept
+        1686). Ditulis PERSIS beberapa minggu sesudahnya, dari sisi kalah."""
+        r = next(r for r in rows if r["fort_name"] == "Painan"
+                 and r["source_document"] == "eic-bl-ior-g35" and r["year"] == 1686)
+        assert r["dominion_status"] == "voc_alliance"
+        assert "Capas" in r["title"] or "Capas" in r["text_asli"]
+        assert "Manacabo" in r["text_asli"] or "Manacabo" in r["title"]
+
+    def test_eic_letter_coexists_with_vogel_batang_capas_row(self, rows):
+        """2 baris Painan/1686 soal Batang Capas HARUS co-exist -- Vogel
+        (Jerman, sisi VOC) vs EIC (Inggris, sisi Inggris), bukan saling
+        menggantikan. Beda dari row Painan/1687/CD3 (23 Jan, event lain)."""
+        painan_1686 = [r for r in rows if r["fort_name"] == "Painan" and r["year"] == 1686]
+        sources = {r["source_document"] for r in painan_1686}
+        assert {"buku-vogel-1690", "eic-bl-ior-g35"}.issubset(sources)

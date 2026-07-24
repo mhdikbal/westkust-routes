@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Model 2 rantai Markov `dominion_status` (docs/prd/prd-atlas-power-model.md §3.2,
@@ -164,6 +164,28 @@ ALLOWED_DOMINION_STATUS = {
 # tahun presisi, Vogel MELENGKAPI dgn tahun eksak. Cross-corroborasi
 # independen ganda: (a) identitas Sultan Mametchia, (b) watak kontroversial
 # Van Leene -- 2 sumber tak berkaitan (arsip vs memoar pribadi) sepakat.
+#
+# source_document="eic-bl-ior-g35" (2026-07-24): British Library, India
+# Office Records, seri G/35 f.198 (via platform AmDigital,
+# eastindiacompany.amdigital.co.uk) -- surat dari York Fort (Bengkulu/
+# Bencoolen, pos EIC), tertanggal 18/22 Sept 1686, docs/BL_IOR_G_35_198.txt
+# (transkripsi Inggris modern, disediakan user). Tier sumber KE-4 yg
+# terpisah dari CD/buku-padang-1718/buku-vogel-1690 -- arsip Inggris (EIC),
+# bukan Belanda maupun memoar Jerman. Isinya laporan bahwa seseorang
+# mengaku "Raja Manacabo (Minangkabau)" memberi konsesi dagang Barus-Silebar
+# ke Inggris, dipakai Mr. Potts membenarkan pendirian pos EIC di Batang
+# Capas -- lalu direbut VOC. CROSS-VALIDASI independen thd row
+# Painan/1686/buku-vogel-1690 yg SUDAH ADA (VOC serbu Batang Capas 1 Sept
+# 1686, versi Jerman/Vogel) -- surat Inggris ini ditulis 18-22 Sept 1686,
+# PERSIS beberapa minggu SESUDAH peristiwa yg sama, dari sisi yg kalah.
+# "Raja Manacabo" kemungkinan besar tokoh yg sama dgn "Jang de Pertuan
+# (pangeran Minangkabau)" di CD3/23-Jan-1687 (Painan) yg membatalkan
+# SEMUA konsesi tanah ke Inggris 4 bulan kemudian -- ejaan beda tapi
+# gelar & konteks (raja Minangkabau, urusan konsesi Inggris) cocok;
+# BELUM dipastikan identik, dicatat sbg hipotesis kuat bukan fakta.
+# Fort York sendiri BUKAN bagian jaringan VOC/roster "westkust" inti,
+# ditambahkan krn permintaan eksplisit user (di luar cakupan geografis
+# normal proyek, selatan Silebar).
 
 
 def _clean(v):
