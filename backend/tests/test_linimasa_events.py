@@ -774,3 +774,53 @@ class TestCsvIntegrity:
         painan_1686 = [r for r in rows if r["fort_name"] == "Painan" and r["year"] == 1686]
         sources = {r["source_document"] for r in painan_1686}
         assert {"buku-vogel-1690", "eic-bl-ior-g35"}.issubset(sources)
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # GM volume 04/05 (2026-07-24): sisir gm_corpus_filtered_1660_1789.csv,
+    # cross-corroborasi Vogel + temuan baru Koto Tangah 1676, Bayang 1687,
+    # Inderapura ~1688 (rumor simpang siur, dicatat sbg ketidakpastian).
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_koto_tangah_1676_attack_on_padang(self, rows):
+        """Juni 1676: Koto Tangah + Pauh serang Padang; Sire Narra (Gubernur
+        Sillida) dituduh korespondensi rahasia dukung 'Nachoda Poety' --
+        kemungkinan besar = Gouverneur Pouti yg dieksekusi 1682 (CD3)."""
+        r = next(r for r in rows if r["fort_name"] == "Koto Tangah"
+                 and r["source_document"] == "gm-vol04-05" and r["year"] == 1676)
+        assert r["dominion_status"] == "internal_conflict"
+        assert "Poety" in r["text_asli"] or "Poety" in r["notes"]
+
+    def test_koto_tangah_1676_fills_gap_before_1678(self, rows):
+        """1676 mengisi celah baru di siklus Koto Tangah (1671->1678),
+        beda dari 4 tahun perusakan yg sudah dikonfirmasi Vogel (1670,1678,
+        1682,1686) -- 1676 muncul dari sumber GM independen, bukan Vogel."""
+        kt_years = {r["year"] for r in rows if r["fort_name"] == "Koto Tangah"}
+        assert 1676 in kt_years
+
+    def test_bayang_1687_radja_itam_contract(self, rows):
+        """22 Desember 1687: traktat Radja Itam/Hitam + 12 penghulu Bayang
+        dgn komisaris Lobs -- co-exist dgn row Bayang/1687/buku-vogel-1690
+        (monopoli garam, ~10 Juli) krn source & substansi beda."""
+        r = next(r for r in rows if r["fort_name"] == "Bayang"
+                 and r["source_document"] == "gm-vol04-05" and r["year"] == 1687)
+        assert r["dominion_status"] == "voc_alliance"
+        assert "Itam" in r["title"] or "Itam" in r["text_asli"] or "Hitam" in r["text_asli"]
+
+    def test_inderapura_1688_uncertain_mametchia_fate(self, rows):
+        """~1688: rumor simpang siur soal nasib Mametchia (lari ke gunung
+        diganti Radja Boedjang, ATAU berdamai dgn Majutte) -- HARUS dicatat
+        sbg ketidakpastian eksplisit, bukan salah satu versi dipilih jadi
+        fakta tunggal."""
+        r = next(r for r in rows if r["fort_name"] == "Inderapura"
+                 and r["source_document"] == "gm-vol04-05" and r["year"] == 1688)
+        assert r["dominion_status"] == "internal_conflict"
+        assert "Boedjang" in r["text_asli"] or "Boedjang" in r["notes"]
+        assert "rumor" in r["notes"].lower() or "gerugten" in r["text_asli"].lower()
+
+    def test_inderapura_1688_fills_gap_between_1686_and_1716(self, rows):
+        """Mengisi celah antara defeksi 1686 (buku-vogel-1690) & kembali ke
+        VOC 1716 (CD4) -- selama ini dianggap 1 lompatan lurus."""
+        inderapura_years = sorted(r["year"] for r in rows if r["fort_name"] == "Inderapura")
+        assert 1686 in inderapura_years
+        assert 1688 in inderapura_years
+        assert 1716 in inderapura_years

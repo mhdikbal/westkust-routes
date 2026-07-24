@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35", "gm-vol04-05"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Model 2 rantai Markov `dominion_status` (docs/prd/prd-atlas-power-model.md §3.2,
@@ -186,6 +186,32 @@ ALLOWED_DOMINION_STATUS = {
 # Fort York sendiri BUKAN bagian jaringan VOC/roster "westkust" inti,
 # ditambahkan krn permintaan eksplisit user (di luar cakupan geografis
 # normal proyek, selatan Silebar).
+#
+# source_document="gm-vol04-05" (2026-07-24): Generale Missiven volume 04
+# (1675-1684) & 05 (1686-1694), docs/thesis/GM/gm_corpus_filtered_1660_1789.csv
+# -- edisi RGP resmi (Belanda asli + terjemahan Indonesia + catatan editorial
+# ilmiah), BUKAN OCR mentah/memoar pribadi -- tier setara CD1-CD6 (arsip
+# resmi VOC), terpisah dari buku-vogel-1690 (memoar) & eic-bl-ior-g35 (EIC).
+# Ditemukan via riset dataverse.nl (GLOBALISE index Generale Missiven
+# 1618-1793) yg mengarah balik ke corpus GM yg SUDAH ada di proyek ini,
+# blm pernah disisir utk 1675-1694. Cross-corroborasi kuat dgn buku-vogel-1690:
+# Bilandre/Achterbergh (tanggal pulang persis sama, April/Nov 1681), Olits
+# (lemah 1681, wafat 1682), Sire Narra (Gubernur Sillida, sama nama).
+# 3 event baru:
+#   (a) Koto Tangah 1676: serangan Koto Tangah+Pauh ke Padang (Juni), Sire
+#       Narra dituduh korespondensi rahasia mendukung "Nachoda Poety" --
+#       kemungkinan BESAR org yg sama dgn "Gouverneur Pouti" yg dieksekusi
+#       1682 (CD3, sudah di data) krn muncul dlm konteks Cottetenge yg sama
+#       persis di paragraf ini -- BELUM 100% pasti (gelar "Nachoda"=nakhoda
+#       kapal/pedagang, beda dari "Gouverneur"), dicatat sbg hipotesis kuat.
+#   (b) Bayang 22 Des 1687: traktat Radja Itam/Hitam + 12 penghulu dgn
+#       komisaris Lobs (Corpus III referensi editorial, blm diverifikasi
+#       teks traktat lengkap) -- pasca Radja Bayang sempat lari ke gunung.
+#   (c) Inderapura ~1688: rumor SIMPANG SIUR (dicatat VOC sendiri sbg 2
+#       versi bertentangan) -- Sultan Mametchia lari ke gunung ditinggal
+#       rakyatnya, diganti Radja Boedjang yg tak dikenal VOC; ATAU Mametchia
+#       & Majutte "berdamai" krn tak aman baginya tinggal. Dicatat sbg
+#       ketidakpastian eksplisit, BUKAN salah satu rumor dipilih jadi fakta.
 
 
 def _clean(v):
