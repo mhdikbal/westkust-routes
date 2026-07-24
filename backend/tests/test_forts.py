@@ -394,11 +394,14 @@ async def test_list_fort_voyages_filter_year():
 # ─── /power-status (docs/prd/prd-atlas-power-model.md §5) ────────────────────
 
 def make_power_row(fort_id, fort_name, dominion_status, event_id, year,
-                    event_date_raw, title, text_asli, source_document):
+                    event_date_raw, title, text_asli, source_document,
+                    cluster=None, p_self_current_status=None, dynamics_series=None, rmse=None):
     return SimpleNamespace(
         fort_id=fort_id, fort_name=fort_name, dominion_status=dominion_status,
         event_id=event_id, year=year, event_date_raw=event_date_raw,
         title=title, text_asli=text_asli, source_document=source_document,
+        cluster=cluster, p_self_current_status=p_self_current_status,
+        dynamics_series=dynamics_series, rmse=rmse,
     )
 
 
@@ -474,3 +477,49 @@ async def test_power_status_empty_before_any_event():
 
     assert response.status_code == 200
     assert response.json() == []
+
+
+@pytest.mark.asyncio
+async def test_power_status_includes_model_metrics(monkeypatch):
+    """GET /api/forts/power-status -- fort dgn baris fort_model_metrics (LEFT
+    JOIN) py cluster/p_self_current_status/dynamics_series/rmse terisi;
+    fort TANPA baris (mis. blm di-seed_fort_model_metrics.py) py semuanya
+    None -- endpoint tak boleh 500 gara2 metrik model opsional."""
+    rows = [
+        make_power_row(18, "Koto Tangah", "voc_alliance", 187, 1755,
+                        "1755", "Koto Tangah kontrak lama diperbarui",
+                        "Pada tahun 1755...", "buku-padang-1718",
+                        cluster="Siklus", p_self_current_status=0.777,
+                        dynamics_series=[{"year": 1660, "sim_I": 1.0, "actual_I": 1.0}],
+                        rmse=0.634),
+        make_power_row(19, "Pauh", "internal_conflict", 88, 1716,
+                        "1716", "Paoeh ditundukkan usai berontak dukung Sultan Minangkabau",
+                        "In 1713 was de Compagnie...", "CD4"),
+    ]
+
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.side_effect = [make_rows_result(rows)]
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/power-status?year=1780")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    koto = next(d for d in data if d["fort_name"] == "Koto Tangah")
+    assert koto["cluster"] == "Siklus"
+    assert koto["p_self_current_status"] == pytest.approx(0.777)
+    assert koto["dynamics_series"] == [{"year": 1660, "sim_I": 1.0, "actual_I": 1.0}]
+    assert koto["rmse"] == pytest.approx(0.634)
+
+    pauh = next(d for d in data if d["fort_name"] == "Pauh")
+    assert pauh["cluster"] is None
+    assert pauh["p_self_current_status"] is None
+    assert pauh["dynamics_series"] is None
+    assert pauh["rmse"] is None

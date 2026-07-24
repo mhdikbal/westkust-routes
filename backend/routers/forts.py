@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 
 from cache import make_key, cache_get, cache_set
 from database import get_db
-from models import Fort, Voyage, PortArrivalTally, LinimasaEvent
+from models import Fort, Voyage, PortArrivalTally, LinimasaEvent, FortModelMetric
 from routers.voyages import _year_gte, _year_lte
 
 router = APIRouter()
@@ -289,6 +289,14 @@ class PowerStatusItem(BaseModel):
     fort_name: str
     dominion_status: str
     as_of_event: PowerStatusEvent
+    # Model 2/5/6 (Markov/System Dynamics/Game Theory) -- opsional, None kalau
+    # fort blm py baris fort_model_metrics (mis. blm di-seed ulang pasca Fase 2
+    # roster) ATAU n<2 event (model5 skip simulate_fort). Lihat memory
+    # project_padang_hinterland_gaps arahan MLOPS+DBA.
+    cluster: Optional[str] = None
+    p_self_current_status: Optional[float] = None
+    dynamics_series: Optional[list] = None
+    rmse: Optional[float] = None
 
 
 @router.get("/power-status", response_model=List[PowerStatusItem], tags=["Map"])
@@ -319,8 +327,15 @@ async def get_power_status(
             LinimasaEvent.title,
             LinimasaEvent.text_asli,
             LinimasaEvent.source_document,
+            FortModelMetric.cluster,
+            FortModelMetric.p_self_current_status,
+            FortModelMetric.dynamics_series,
+            FortModelMetric.rmse,
         )
         .join(Fort, Fort.id == LinimasaEvent.fort_id)
+        # LEFT JOIN -- fort_model_metrics OPSIONAL, kolom model harus None
+        # (bukan 500/fort hilang) kalau blm pernah di-seed_fort_model_metrics.py
+        .outerjoin(FortModelMetric, FortModelMetric.fort_id == LinimasaEvent.fort_id)
         .where(LinimasaEvent.fort_id.isnot(None))
         .where(LinimasaEvent.dominion_status.isnot(None))
         # JANGAN pakai _linimasa_year_lte (NULL-safe) di sini -- Postgres DESC
@@ -346,6 +361,10 @@ async def get_power_status(
                 text_asli=r.text_asli,
                 source_document=r.source_document,
             ),
+            cluster=r.cluster,
+            p_self_current_status=r.p_self_current_status,
+            dynamics_series=r.dynamics_series,
+            rmse=r.rmse,
         ).model_dump()
         for r in rows
     ]

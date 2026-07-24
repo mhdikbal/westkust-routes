@@ -425,6 +425,39 @@ class LinimasaEvent(Base):
         return f"<LinimasaEvent(type='{self.event_type}', year={self.year}, title='{self.title}')>"
 
 
+class FortModelMetric(Base):
+    """Ringkasan output Model 2 (Markov)/5 (System Dynamics)/6 (Game Theory)
+    per fort -- dihitung offline (docs/thesis/colab/model{2,5,6}_*.py, CPU
+    biasa) dari data/export/*.json, diisi ke sini via
+    seed_fort_model_metrics.py. Read-only utk tampilan /atlas (pennant
+    klaster + cincin kestabilan + sparkline simulasi-vs-aktual) -- BUKAN
+    tabel yg di-query granular per titik data, karena itu dynamics_series
+    JSONB bukan tabel ternormalisasi. Snapshot TERBARU per fort (1 baris per
+    fort_id, di-TRUNCATE+reload tiap re-run Model 5/6, sama pola
+    seed_linimasa_events.py) -- bukan histori tiap versi model.
+    """
+    __tablename__ = "fort_model_metrics"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    fort_id = Column(Integer, ForeignKey("forts.id"), nullable=False, unique=True, index=True)
+
+    # Taksonomi CLD project_causal_loop_diagram: Siklus/Stabil/Busur/
+    # Konfederasi/Tipis/Nol -- lihat data/export/fort_archetype_clusters.json
+    cluster = Column(String(20), nullable=False)
+    p_self_current_status = Column(Float, nullable=True)  # None kalau beta_source="unverified-default"/fort n<2 (belum disimulasikan)
+
+    # [{"year": int, "sim_I": float, "actual_I": float|null}, ...] -- actual_I
+    # cuma terisi persis di titik event asli, None di titik antara (sim_years
+    # jauh lebih rapat dari actual_years, lihat model5_system_dynamics_1d.py).
+    dynamics_series = Column(JSONB, nullable=True)
+    rmse = Column(Float, nullable=True)
+
+    computed_at = Column(String(30), nullable=False)  # ISO8601, sama format LinimasaEvent.created_at
+
+    def __repr__(self):
+        return f"<FortModelMetric(fort_id={self.fort_id}, cluster='{self.cluster}')>"
+
+
 class CommodityGlossary(Base):
     __tablename__ = "commodity_glossary"
 
