@@ -389,28 +389,69 @@ const DOMINION_STATUS_LABELS = {
   internal_conflict: "Konflik internal",
 };
 
+// Klaster arketipe (taksonomi CLD, data/export/fort_archetype_clusters.json)
+// -- INDEPENDEN dari kanal warna dominion_status di atas, jangan tabrakan.
+// Siklus/Stabil ambil dari token app existing (--gold/--ocean di index.html,
+// diperdalam dikit spy beda kanal), Sisa reuse --sunset yg sebelumnya tak
+// dipakai di peta, Tipis abu netral -- jujur bilang "data <5 event, blm bisa
+// dipastikan", bukan warna yg menyaru seolah terklasifikasi.
+const CLUSTER_COLORS = {
+  Siklus: "#B8901E",
+  Stabil: "#2C5364",
+  Sisa:   "#D48166",
+  Tipis:  "#9AA39E",
+};
+const CLUSTER_LABELS = {
+  Siklus: "Klaster Siklus",
+  Stabil: "Klaster Stabil",
+  Sisa:   "Klaster Sisa",
+  Tipis:  "Data belum cukup",
+};
+
 // Ikon bendera-di-tiang -- motif kartografi VOC-era sesungguhnya (menancapkan
 // bendera = klaim wilayah), BUKAN circleMarker polos. Selaras dgn createFortSVG/
 // createAnchorSVG yg sudah dipakai fort roster (SVG custom, bukan Leaflet
 // default), supaya layer ini kelihatan dirancang, bukan ditempel belakangan.
-function createFlagSVG(color) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="34" viewBox="0 0 24 34" aria-hidden="true">
-    <line x1="4" y1="33" x2="4" y2="3" stroke="#5C4A32" stroke-width="2" stroke-linecap="round"/>
-    <path d="M4 4 L22 9.5 L4 15 Z" fill="${color}" stroke="#FFFFFF" stroke-width="1.2" stroke-linejoin="round"/>
-    <circle cx="4" cy="33" r="2.4" fill="${color}" stroke="#FFFFFF" stroke-width="1"/>
+// clusterColor/pSelf OPSIONAL -- fort blm py fort_model_metrics (atau blm
+// di-seed_fort_model_metrics.py sama sekali) tetap dapat bendera dominion_status
+// polos spt sebelumnya, 2 layer tambahan ini cuma nempel kalau datanya ada.
+function createFlagSVG(color, clusterColor, pSelf) {
+  const ringRadius = 9;
+  const ringCx = 10, ringCy = 41;
+  const circumference = 2 * Math.PI * ringRadius;
+  const subPennant = clusterColor
+    ? `<path d="M22 16 L34 20 L22 24 Z" fill="${clusterColor}" stroke="#FFFFFF" stroke-width="1" stroke-linejoin="round"/>`
+    : "";
+  // Cincin kestabilan (Model 2 Markov, P(self) status terkini) -- busur
+  // penuh = status ini "lengket" (jarang berpindah), busur tipis = fort
+  // secara statistik "jatuh tempo" utk berubah. p_self null (fort n<2 event
+  // atau status terkini tanpa transisi keluar teramati) -> ring TAK digambar
+  // sama sekali, bukan digambar kosong/nol (beda dari "P(self)=0 teramati").
+  const dwellRing = (clusterColor && typeof pSelf === "number")
+    ? `<circle cx="${ringCx}" cy="${ringCy}" r="${ringRadius}" fill="none" stroke="#E6E2D6" stroke-width="2.4"/>
+       <circle cx="${ringCx}" cy="${ringCy}" r="${ringRadius}" fill="none" stroke="${clusterColor}" stroke-width="2.4"
+               stroke-linecap="round" stroke-dasharray="${circumference}"
+               stroke-dashoffset="${circumference * (1 - pSelf)}"
+               transform="rotate(-90 ${ringCx} ${ringCy})"/>`
+    : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="50" viewBox="0 0 44 50" aria-hidden="true">
+    <line x1="22" y1="41" x2="22" y2="8" stroke="#5C4A32" stroke-width="2" stroke-linecap="round"/>
+    <path d="M22 8 L40 13.5 L22 19 Z" fill="${color}" stroke="#FFFFFF" stroke-width="1.2" stroke-linejoin="round"/>
+    ${subPennant}
+    ${dwellRing}
+    <circle cx="22" cy="41" r="2.4" fill="${color}" stroke="#FFFFFF" stroke-width="1"/>
   </svg>`;
 }
 
-function dominionFlagIcon(color) {
+function dominionFlagIcon(color, clusterColor, pSelf) {
   return L.divIcon({
-    html: createFlagSVG(color),
+    html: createFlagSVG(color, clusterColor, pSelf),
     className: "dominion-flag-icon",
-    iconSize: [24, 34],
-    // anchor X negatif -- geser seluruh ikon ke KANAN titik geografis fort,
-    // supaya tiang bendera tak numpuk persis di titik yg sama dgn pin fort
-    // (fortIcon()) yg sudah menempati titik itu. Baca sbg "bendera ditancapkan
-    // DI SAMPING benteng", bukan dua marker rebutan satu piksel.
-    iconAnchor: [-6, 33],
+    iconSize: [44, 50],
+    // Pole base lokal (22,41) digeser -10 di x supaya tetap +10px di kanan
+    // titik geografis fort (perilaku sama persis versi lama, cuma kanvas
+    // lebih lebar sekarang utk muat pennant klaster + cincin kestabilan).
+    iconAnchor: [12, 41],
   });
 }
 
@@ -425,6 +466,45 @@ function dominionFlagIcon(color) {
    powerStatusEnabled true (docs/prd/prd-atlas-power-model.md §7.1: data jauh
    lebih padat drpd sebelumnya, default ON berisiko peta ramai).
    ───────────────────────────────────────────────────────────────────────────── */
+// Sparkline simulasi-vs-aktual (Model 5 System Dynamics) di dalam popup --
+// dynamics_series: [{year, sim_I, actual_I|null}], actual_I cuma terisi
+// PERSIS di titik event asli (lihat seed_fort_model_metrics.py), None di
+// titik sim antara -- garis aktual digambar putus-putus dari titik terisi
+// ke titik terisi berikutnya, BUKAN interpolasi diam-diam yg menyaru presisi
+// yg tak ada.
+function buildSparklineSVG(series, currentYear) {
+  if (!series || series.length < 2) return "";
+  const W = 220, H = 40, PAD = 3;
+  const years = series.map(p => p.year);
+  const yMin = Math.min(...years), yMax = Math.max(...years);
+  const xScale = y => yMin === yMax ? PAD : PAD + ((y - yMin) / (yMax - yMin)) * (W - 2 * PAD);
+  // skala I tetap -1..+1 (docs/prd/prd-pemodelan-system-dynamics-game-theory.md §2.2 TARGET),
+  // bukan auto-fit ke data -- supaya "seberapa dekat ke +1/-1" tetap bisa dibandingkan antar-fort.
+  const yScale = i => H - PAD - ((i + 1) / 2) * (H - 2 * PAD);
+
+  const simPts = series.map(p => `${xScale(p.year).toFixed(1)},${yScale(p.sim_I).toFixed(1)}`).join(" ");
+  const actualPts = series.filter(p => p.actual_I !== null && p.actual_I !== undefined);
+  const actualPolyline = actualPts.length >= 2
+    ? `<polyline points="${actualPts.map(p => `${xScale(p.year).toFixed(1)},${yScale(p.actual_I).toFixed(1)}`).join(" ")}"
+                 fill="none" stroke="#009880" stroke-width="1.4" opacity=".55" stroke-dasharray="3,2"/>`
+    : "";
+  const lastPt = series[series.length - 1];
+  // titik "sekarang" (tahun slider aktif) ditebalkan -- bukan cuma titik terakhir data
+  const nearestToCurrent = series.reduce((best, p) =>
+    Math.abs(p.year - currentYear) < Math.abs(best.year - currentYear) ? p : best, series[0]);
+
+  return `
+    <div class="dwell-spark-label">
+      <span>Simulasi vs aktual (Model 5)</span><span>${yMin}&ndash;${yMax}</span>
+    </div>
+    <svg class="dwell-spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img"
+         aria-label="Kurva simulasi pengaruh VOC dibanding data aktual, ${yMin} sampai ${yMax}">
+      ${actualPolyline}
+      <polyline points="${simPts}" fill="none" stroke="#B8901E" stroke-width="1.8"/>
+      <circle cx="${xScale(nearestToCurrent.year).toFixed(1)}" cy="${yScale(nearestToCurrent.sim_I).toFixed(1)}" r="2.6" fill="#B8901E"/>
+    </svg>`;
+}
+
 async function drawPowerStatus(year) {
   powerStatusLayers.forEach(l => map.removeLayer(l));
   powerStatusLayers = [];
@@ -445,8 +525,25 @@ async function drawPowerStatus(year) {
     if (!coords) return;
     const color = DOMINION_STATUS_COLORS[item.dominion_status] || "#999999";
     const label = DOMINION_STATUS_LABELS[item.dominion_status] || item.dominion_status;
+    // 3 sinyal Model 2/5/6 -- SEMUA opsional (item.cluster null kalau fort
+    // blm py baris fort_model_metrics sama sekali, mis. blm di-seed ulang
+    // pasca roster baru). null berarti "belum digambar", bukan "Tipis" --
+    // Tipis sendiri adalah nilai cluster yg VALID (data <5 event, taksonomi
+    // CLD), beda dari null (tak ada baris metrik sama sekali).
+    const clusterColor = item.cluster ? (CLUSTER_COLORS[item.cluster] || null) : null;
+    const clusterLabel = item.cluster ? (CLUSTER_LABELS[item.cluster] || item.cluster) : null;
 
-    const marker = L.marker(coords, { icon: dominionFlagIcon(color), zIndexOffset: 500 }).addTo(map);
+    const marker = L.marker(coords, {
+      icon: dominionFlagIcon(color, clusterColor, item.p_self_current_status),
+      zIndexOffset: 500,
+    }).addTo(map);
+
+    const clusterChip = clusterColor
+      ? `<div class="cluster-chip" style="--cluster-color:${clusterColor}">
+           <span class="cluster-chip-dot"></span>${esc(clusterLabel)}
+         </div>`
+      : "";
+    const sparkline = clusterColor ? buildSparklineSVG(item.dynamics_series, year) : "";
 
     // bindPopup (klik), BUKAN bindTooltip (hover) -- proyek ini sengaja hapus
     // semua tooltip hover di layer peta (test_no_hover_tooltips_on_map_layers,
@@ -456,8 +553,10 @@ async function drawPowerStatus(year) {
       `<div class="dominion-popup-card" style="--dominion-color:${color}">
          <div class="dominion-popup-fort">${esc(item.fort_name)}</div>
          <div class="dominion-popup-status">${esc(label)}</div>
+         ${clusterChip}
          <div class="dominion-popup-event">${esc(item.as_of_event.title)}</div>
          <div class="dominion-popup-meta">${item.as_of_event.year ?? "?"} &middot; ${esc(item.as_of_event.source_document)}</div>
+         ${sparkline ? `<div class="dwell-spark-wrap">${sparkline}</div>` : ""}
        </div>`,
       { className: "dominion-popup", closeButton: true, minWidth: 200, maxWidth: 280 }
     );
