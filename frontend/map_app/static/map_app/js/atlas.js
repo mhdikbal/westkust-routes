@@ -71,6 +71,12 @@ const SEA_WAYPOINTS = {
   // Aceh→Pariaman -- rute historis Lancaster 1602 (bukan data voyages), koridor
   // sama dgn Aceh→Tiku di atas (garis lintang berdekatan), cuma titik akhir beda.
   "Aceh→Pariaman": [[3.5, 95.0], [-1.0, 96.5], [-0.72, 99.9]],
+  // Ekspedisi Botham 1781 -- Fort Marlborough (Bengkulu) ke Pulau Cingkuak/Padang,
+  // lepas pantai Samudra Hindia (armada tak berlayar lewat darat Sumatra).
+  "Fort Marlborough→Pulau Cingkuak": [[-3.6, 101.9], [-2.4, 101.1], [-1.6, 100.7]],
+  "Pulau Cingkuak→Padang":           [[-1.15, 100.42]],
+  "Padang→Air Haji":                 [[-1.4, 100.5], [-1.8, 100.75]],
+  "Padang→Fort Marlborough":         [[-1.6, 100.7], [-2.4, 101.1], [-3.6, 101.9]],
 };
 
 // Rute historis SATU-KALI (bukan agregat voyages) -- narasi non-VOC yg tak
@@ -85,6 +91,45 @@ const HISTORICAL_ROUTES = [
     color: "#8A857A",
     segments: [
       { from: "Aceh", to: "Pariaman", note: "Nov 1602 -- singgah dlm perjalanan pulang dari Aceh, temukan kapal Susan sudah muat lada+cengkeh" },
+    ],
+  },
+  // Ekspedisi Henry Botham 1781 -- perluasan Perang Inggris-Belanda IV (1780-84)
+  // ke koloni: Belanda dukung kemerdekaan Amerika, Inggris balas dgn merebut
+  // pos dagang VOC di seluruh dunia. Armada berangkat dari Fort Marlborough,
+  // singgah Pulau Cingkuak (16 Agst, tgl terkoreksi -- lihat surat Harries &
+  // laporan van Kempen) lalu Padang (17 Agst) menyerah tanpa perlawanan
+  // berarti. Sumber: botham-letter-1781, harries-letter-1781, kempen-report-1782.
+  {
+    id: "eic-invasion-1781",
+    label: "Ekspedisi Botham -- perebutan Padang (EIC)",
+    year: 1781,
+    color: "#8b2f2f",
+    segments: [
+      { from: "Fort Marlborough", to: "Pulau Cingkuak", note: "16 Agst 1781 -- bendera gencatan senjata, Residen VOC (van Kempen) menyerah tanpa lawan" },
+      { from: "Pulau Cingkuak", to: "Padang", note: "17 Agst 1781 -- Padang menyerah sehari kemudian, Gubernur VOC Heerskerch tunduk" },
+    ],
+  },
+  // Perluasan kontrol EIC ke pos-pos bawahan Padang stlh penyerahan --
+  // bukan invasi militer terpisah, tapi pengambilalihan administratif.
+  {
+    id: "eic-subordinate-takeover-1781",
+    label: "EIC ambil-alih pos bawahan Padang",
+    year: 1781,
+    color: "#b06a55",
+    segments: [
+      { from: "Padang", to: "Pariaman", note: "1781 -- Pariaman ('Priamang') ikut jatuh sbg bawahan Padang" },
+      { from: "Padang", to: "Air Haji", note: "1781 -- 'Ayer Adjee' (dugaan Air Haji) ikut diklaim, identitas belum pasti" },
+    ],
+  },
+  // VOC merebut kembali Padang 1784/85 stlh Traktat Paris (perdamaian
+  // Inggris-Belanda) -- arah balik dari rute invasi di atas.
+  {
+    id: "voc-retake-1784",
+    label: "VOC rebut kembali Padang",
+    year: 1784,
+    color: "#31384C",
+    segments: [
+      { from: "Padang", to: "Fort Marlborough", note: "1784/85 -- EIC mundur ke Bengkulu psca traktat damai Inggris-Belanda" },
     ],
   },
 ];

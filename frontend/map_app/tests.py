@@ -838,20 +838,26 @@ class TimelineSliderTest(SimpleTestCase):
         self.content = self.client.get("/").content.decode("utf-8")
 
     def test_year_from_input_is_range_slider(self):
-        """#year-from harus type='range' dengan step='10' — bukan type='number'."""
+        """#year-from harus type='range' dengan step='1' — bukan type='number'.
+
+        step diperkecil dari 10 ke 1 (2026-07-25): dgn step=10 jendela
+        pendudukan EIC 1781-1784 (antara tick dekade 1780/1790) tak pernah
+        bisa ditampilkan sama sekali lewat slider -- lihat dominion_status
+        Padang/foreign_orbit yg baru dibackfill.
+        """
         self.assertIn('id="year-from"', self.content)
         self.assertIn('type="range"', self.content)
-        # Pastikan step=10 ada dalam proximity year-from
+        # Pastikan step=1 ada dalam proximity year-from
         idx = self.content.find('id="year-from"')
         block = self.content[max(0, idx - 50): idx + 200]
-        self.assertIn('step="10"', block)
+        self.assertIn('step="1"', block)
 
     def test_year_to_input_is_range_slider(self):
-        """#year-to harus type='range' dengan step='10' — bukan type='number'."""
+        """#year-to harus type='range' dengan step='1' — bukan type='number'."""
         self.assertIn('id="year-to"', self.content)
         idx = self.content.find('id="year-to"')
         block = self.content[max(0, idx - 50): idx + 200]
-        self.assertIn('step="10"', block)
+        self.assertIn('step="1"', block)
 
     def test_slider_min_covers_aceh_voyages_1620s(self):
         """min='1620' (diperlebar lagi 2026-07-13) -- voyage schip Wapen van Hoorn
