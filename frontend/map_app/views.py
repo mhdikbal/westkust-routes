@@ -147,6 +147,26 @@ def riset_atjeh(request):
     return render(request, "map_app/riset_atjeh.html")
 
 
+def riset_pemodelan(request):
+    """Dashboard Bokeh interaktif Model 2/5/6 (thesis-only, /riset/pemodelan).
+    Beda dari riset_tema/riset_jaringan/riset_atjeh (client-side fetch JSON):
+    SSR httpx.get() sinkron ke /api/research/pemodelan-dashboard (pola sama
+    linimasa()), krn payloadnya berupa fragmen HTML/JS Bokeh siap-embed
+    (script+div), bukan data mentah yg dirender ulang di JS. noindex + tidak
+    di navbar publik (konsisten semua /riset/*). Identitas visual salido.my.id."""
+    dashboard = {"markov": None, "dynamics": None, "game_theory": None}
+    backend_error = False
+    try:
+        r = httpx.get(f"{API_BASE}/api/research/pemodelan-dashboard", timeout=15.0)
+        r.raise_for_status()
+        dashboard = r.json()
+    except Exception:
+        backend_error = True
+
+    context = {"dashboard": dashboard, "backend_error": backend_error}
+    return render(request, "map_app/riset_pemodelan.html", context)
+
+
 def linimasa(request):
     """Linimasa suksesi kekuasaan Atjeh, Iskandar Muda -> Ratu -> Traktat
     Painan 1663 (thesis-only, top-level /linimasa). Fase 1 (docs/prd/prd-linimasa-

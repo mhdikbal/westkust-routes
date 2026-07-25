@@ -9,10 +9,11 @@ from collections import defaultdict
 from itertools import combinations
 from typing import List, Literal, Optional
 
-from fastapi import APIRouter, Depends, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Dict, Optional as _Optional
 
 from database import get_db
 from models import ResearchThemeRow, AtjehTradeRecord, LinimasaEvent
@@ -20,6 +21,10 @@ from models import ResearchThemeRow, AtjehTradeRecord, LinimasaEvent
 from routers.voyages import SankeyResponse, SankeyNode, SankeyLink
 # cache-aside Redis (ADR-001) — degradasi anggun bila Redis mati (cache_get -> None)
 from cache import make_key, cache_get, cache_set
+# dashboard Bokeh /riset/pemodelan -- lihat build_bokeh_dashboard.py modul-level
+# docstring. Import langsung fungsinya (bukan modul) supaya gampang di-patch
+# di test (patch("routers.research.build_dashboard", ...)).
+from build_bokeh_dashboard import build_dashboard
 
 router = APIRouter()
 
@@ -528,6 +533,43 @@ async def get_linimasa(
         "year_max": max(years) if years else None,
     }
     payload = LinimasaResponse(items=items, meta=meta).model_dump()
+    await cache_set(cache_key, payload)
+    response.headers["X-Cache"] = "MISS"
+    return payload
+
+
+class BokehChart(BaseModel):
+    script: str
+    div: str
+
+
+class PemodelanDashboardResponse(BaseModel):
+    markov: _Optional[BokehChart] = None
+    dynamics: _Optional[BokehChart] = None
+    game_theory: _Optional[BokehChart] = None
+
+
+@router.get("/pemodelan-dashboard", response_model=PemodelanDashboardResponse)
+async def get_pemodelan_dashboard(response: Response):
+    """Dashboard Bokeh interaktif /riset/pemodelan -- 3 figur dari output
+    Model 2/5/6 (data/export/), TIDAK menghitung ulang model apa pun (murni
+    visualisasi lebih kaya, lihat build_bokeh_dashboard.py). Cache-aside Redis
+    sama pola endpoint lain di modul ini -- build_dashboard() baca file lokal
+    + render Bokeh, cukup mahal utk di-cache 24 jam (TTL default cache_set).
+    Key bernilai None kalau sumber data/export/* itu blm ada ('data belum
+    cukup', bukan error) -- konsisten frontend popup /atlas."""
+    cache_key = make_key("research_pemodelan_dashboard")
+    cached = await cache_get(cache_key)
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        return cached
+
+    try:
+        payload = build_dashboard()
+    except Exception:
+        # Jangan expose stack trace ke client (security checklist CLAUDE.md).
+        raise HTTPException(status_code=503, detail="Dashboard pemodelan sedang tak tersedia.")
+
     await cache_set(cache_key, payload)
     response.headers["X-Cache"] = "MISS"
     return payload

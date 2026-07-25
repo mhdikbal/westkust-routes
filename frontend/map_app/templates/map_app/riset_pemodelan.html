@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Pemodelan Dinamika Kekuasaan — Pesisir Barat Sumatra (VOC)</title>
+<script src="{% static 'map_app/vendor/bokeh-3.9.1.min.js' %}"></script>
+<script src="{% static 'map_app/vendor/bokeh-widgets-3.9.1.min.js' %}"></script>
+<style>
+:root{
+  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
+  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4;
+  --accent:#000000; --gold-ink:#6F5407;
+  --serif:"EB Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"Space Grotesk",ui-monospace,Menlo,Consolas,monospace;
+}
+/* map_app = LIGHT-ONLY, konsisten riset_tema/riset_jaringan/riset_atjeh -- exhibit
+   dikunci krem/putih apa pun mode viewer, data-theme dari viewer diabaikan. */
+:root[data-theme]{
+  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
+  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4; --accent:#000000;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:1200px;margin:0 auto;padding:clamp(20px,4vw,52px) clamp(16px,4vw,44px) 80px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+a{color:inherit}
+.topnav{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.topnav .nav-l{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.topnav .home,.topnav .sib{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
+  font-size:.9rem;font-weight:600;color:var(--ink);text-decoration:none;
+  padding:8px 14px 8px 11px;border:1px solid var(--line);border-radius:999px;transition:.16s}
+.topnav .home:hover,.topnav .sib:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+.topnav .home:focus-visible,.topnav .sib:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.topnav .home svg{width:16px;height:16px}
+.topnav .brand{font-family:var(--serif);font-size:1.1rem;font-weight:600;letter-spacing:.02em;color:var(--muted-dark)}
+header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:26px}
+.title{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.4vw,2.7rem);
+  line-height:1.06;letter-spacing:-.01em;margin:.5rem 0 .35rem}
+.title em{font-style:italic;color:var(--accent)}
+.lede{max-width:70ch;color:var(--ink);font-size:1.12rem;line-height:1.5;margin:0 0 4px}
+.section{margin-bottom:44px}
+.section-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.section-head h2{font-family:var(--serif);font-size:1.35rem;font-weight:600}
+.caption{font-size:.86rem;color:var(--muted);margin:0 0 16px;max-width:74ch}
+.plate{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:16px;overflow-x:auto}
+.empty-panel{border:1px dashed var(--line);border-radius:10px;padding:34px 20px;
+  text-align:center;color:var(--muted)}
+.empty-panel b{color:var(--ink);font-weight:600}
+footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:.82rem;color:var(--muted);max-width:80ch}
+footer h3{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px}
+footer p{margin:0 0 10px}
+footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:1px solid var(--line);
+  border-radius:5px;padding:2px 7px;margin:2px 4px 2px 0;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="topnav">
+    <div class="nav-l">
+      <a class="home" href="../../">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 19l-7-7 7-7"/><path d="M3 12h18"/></svg>
+        Peta VOC
+      </a>
+      <a class="sib" href="../tema/">Tema korpus</a>
+      <a class="sib" href="../jaringan/">Jaringan pelabuhan</a>
+      <a class="sib" href="../../linimasa/">Linimasa suksesi</a>
+    </div>
+    <span class="brand">Salido</span>
+  </nav>
+
+  <header>
+    <h1 class="title">Pemodelan Dinamika <em>Kekuasaan</em> Pesisir Barat</h1>
+    <p class="lede">Tiga model matematis atas data <span class="mono">dominion_status</span> (siapa berkuasa atas
+      tiap pos dagang, dari tahun ke tahun) — Rantai Markov, System Dynamics, dan Game Theory. Halaman ini
+      TIDAK menghitung ulang model apa pun; ia cuma memvisualisasikan lebih kaya angka yang sudah dihasilkan
+      Model 2/5/6 (bandingkan bendera+popup ringkas di layer "Kekuasaan" pada peta utama).</p>
+  </header>
+
+  {% if backend_error %}
+  <div class="empty-panel"><b>Dashboard sedang tak tersedia.</b><br>Backend tidak merespons — coba muat ulang halaman beberapa saat lagi.</div>
+  {% else %}
+
+  <section class="section">
+    <div class="section-head"><h2>Model 2 — Transisi Rantai Markov</h2></div>
+    <p class="caption">Probabilitas berpindah dari satu <span class="mono">dominion_status</span> ke status lain,
+      dihitung dari seluruh event linimasa. Sel kosong (bukan 0%) berarti belum ada observasi transisi sama
+      sekali dari status itu — bukan "diamati tak pernah pindah". Arahkan kursor ke sel untuk lihat probabilitas
+      dan jumlah observasi persis.</p>
+    {% if dashboard.markov %}
+      <div class="plate">{{ dashboard.markov.div|safe }}</div>
+    {% else %}
+      <div class="empty-panel">Data belum cukup — Model 2 belum pernah dijalankan.</div>
+    {% endif %}
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Model 5 — Simulasi vs Aktual per Fort</h2></div>
+    <p class="caption">Simulasi System Dynamics (garis) dibandingkan status aktual yang tercatat (titik, HANYA di
+      tahun ada event nyata — tidak diinterpolasi di antaranya). Pilih fort dari menu turun untuk membandingkan
+      seberapa dekat model menebak dinamika kekuasaannya.</p>
+    {% if dashboard.dynamics %}
+      <div class="plate">{{ dashboard.dynamics.div|safe }}</div>
+    {% else %}
+      <div class="empty-panel">Data belum cukup — Model 5 belum pernah dijalankan.</div>
+    {% endif %}
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Model 6 — Tingkat Re-afirmasi per Klaster Arketipe</h2></div>
+    <p class="caption">Seberapa sering sebuah fort "mengulang" traktat aliansi VOC (re-afirmasi) per tahun,
+      dikelompokkan per klaster arketipe (Siklus/Stabil/Sisa/Tipis). Arahkan kursor ke batang untuk rincian per fort.</p>
+    {% if dashboard.game_theory %}
+      <div class="plate">{{ dashboard.game_theory.div|safe }}</div>
+    {% else %}
+      <div class="empty-panel">Data belum cukup — Model 6 belum pernah dijalankan.</div>
+    {% endif %}
+  </section>
+
+  {% endif %}
+
+  <footer>
+    <h3>Metode &amp; batas</h3>
+    <p>Ketiga model dibangun dari <span class="mono">dominion_status</span> per event linimasa (backfill
+      bertahap, belum menjangkau semua pos dagang). Fort dengan &lt;2 event tercatat ("data belum cukup")
+      sengaja TIDAK dipaksa masuk simulasi — lihat klaster "Tipis" di legenda peta utama.</p>
+    <p>
+      <span class="tag">thesis-only · noindex</span>
+      <span class="tag">route: /riset/pemodelan (tidak di navbar publik)</span>
+      <span class="tag">endpoint: /api/research/pemodelan-dashboard</span>
+      <span class="tag">render: Bokeh {{ bokeh_version|default:"3.9.1" }} (statis, bukan Bokeh server)</span>
+      <span class="tag">design: salido.my.id (EB Garamond · Space Grotesk)</span>
+    </p>
+  </footer>
+</div>
+
+{{ dashboard.markov.script|safe }}
+{{ dashboard.dynamics.script|safe }}
+{{ dashboard.game_theory.script|safe }}
+</body>
+</html>

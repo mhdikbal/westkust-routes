@@ -1346,3 +1346,100 @@ class LinimasaSsrTest(SimpleTestCase):
         response = self.client.get(reverse("linimasa"))
         content = response.content.decode("utf-8")
         self.assertNotIn(".pdf", content)
+
+
+# ─── Dashboard Bokeh pemodelan (/riset/pemodelan) ──────────────────────────
+class RisetPemodelanViewTest(SimpleTestCase):
+    """Halaman /riset/pemodelan -- SSR httpx.get() sinkron ke
+    /api/research/pemodelan-dashboard (pola sama LinimasaViewTest, BUKAN
+    client-side fetch spt riset_tema/riset_jaringan/riset_atjeh), krn payload
+    berupa fragmen HTML/JS Bokeh siap-embed."""
+
+    FAKE_DASHBOARD = {
+        "markov": {"script": "<script>MARKOV_SCRIPT</script>", "div": "<div id='markov-div'></div>"},
+        "dynamics": {"script": "<script>DYNAMICS_SCRIPT</script>", "div": "<div id='dynamics-div'></div>"},
+        "game_theory": {"script": "<script>GT_SCRIPT</script>", "div": "<div id='gt-div'></div>"},
+    }
+
+    @patch("map_app.views.httpx.get")
+    def test_returns_200(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        resp = self.client.get(reverse("riset_pemodelan"))
+        self.assertEqual(resp.status_code, 200)
+
+    @patch("map_app.views.httpx.get")
+    def test_noindex_present(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan")).content.decode()
+        self.assertIn("noindex", html)
+        self.assertIn('name="robots"', html)
+
+    @patch("map_app.views.httpx.get")
+    def test_fetches_from_pemodelan_dashboard_endpoint(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        self.client.get(reverse("riset_pemodelan"))
+        mock_get.assert_called_once()
+        called_url = mock_get.call_args[0][0]
+        self.assertIn("/api/research/pemodelan-dashboard", called_url)
+
+    @patch("map_app.views.httpx.get")
+    def test_renders_all_three_chart_divs_and_scripts(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan")).content.decode()
+        self.assertIn("markov-div", html)
+        self.assertIn("dynamics-div", html)
+        self.assertIn("gt-div", html)
+        self.assertIn("MARKOV_SCRIPT", html)
+        self.assertIn("DYNAMICS_SCRIPT", html)
+        self.assertIn("GT_SCRIPT", html)
+
+    @patch("map_app.views.httpx.get")
+    def test_graceful_when_a_chart_source_missing(self, mock_get):
+        """Salah satu key None ('data belum cukup') -- render empty-panel per
+        section, BUKAN crash (konsisten pola popup /atlas fort n<2 event)."""
+        partial = {**self.FAKE_DASHBOARD, "dynamics": None}
+        mock_get.return_value = _make_httpx_response(partial)
+        html = self.client.get(reverse("riset_pemodelan")).content.decode()
+        self.assertIn("Data belum cukup", html)
+
+    def test_graceful_when_backend_unreachable(self):
+        """httpx.get melempar exception (backend down) -- halaman tetap 200
+        dgn pesan jujur, bukan 500."""
+        with patch("map_app.views.httpx.get", side_effect=Exception("connection refused")):
+            resp = self.client.get(reverse("riset_pemodelan"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("tak tersedia", resp.content.decode().lower())
+
+    @patch("map_app.views.httpx.get")
+    def test_loads_local_bokehjs_not_cdn(self, mock_get):
+        """CSP script-src tak diberi host baru -- BokehJS HARUS dari static
+        lokal (self), bukan cdn.bokeh.org."""
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan")).content.decode()
+        # Whitenoise ManifestStaticFilesStorage nambah hash ke nama file
+        # (mis. bokeh-3.9.1.min.064dfa07e9ef.js) -- cek prefix, bukan exact.
+        self.assertIn("vendor/bokeh-3.9.1.min", html)
+        self.assertIn("vendor/bokeh-widgets-3.9.1.min", html)
+        self.assertNotIn("cdn.bokeh.org", html)
+
+    @patch("map_app.views.httpx.get")
+    def test_uses_salido_fonts(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan")).content.decode()
+        self.assertIn("EB Garamond", html)
+        self.assertIn("Space Grotesk", html)
+
+
+class NavbarPemodelanLinkTest(SimpleTestCase):
+    """/atlas navbar & /linimasa further-reading section harus menautkan ke
+    dashboard pemodelan baru (US menu baru, arahan MLOPS+frontend-design)."""
+
+    def test_atlas_navbar_links_to_pemodelan(self):
+        html = self.client.get(reverse("index")).content.decode()
+        self.assertIn("/riset/pemodelan/", html)
+
+    @patch("map_app.views.httpx.get")
+    def test_linimasa_further_reading_links_to_pemodelan(self, mock_get):
+        mock_get.return_value = _make_httpx_response({"items": [], "meta": {}})
+        html = self.client.get(reverse("linimasa")).content.decode()
+        self.assertIn("/riset/pemodelan/", html)
