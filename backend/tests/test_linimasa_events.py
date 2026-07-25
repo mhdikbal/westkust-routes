@@ -975,6 +975,15 @@ class TestCsvIntegrity:
         assert "17" in r["event_date_raw"]
         assert "Harries" in r["notes"]
 
+    def test_pulau_cingkuak_1781_triple_corroborated_by_kempen(self, rows):
+        """Laporan Thomas van Kempen Jansz (Residen VOC yg DITANGKAP) ke
+        Direksi VOC Amsterdam, 13 Juni 1782 -- sumber PRIMER KETIGA (sisi
+        Belanda), konfirmasi 16 Agustus 1781 cocok persis surat Harries."""
+        r = next(r for r in rows if r["fort_name"] == "Pulau Cingkuak"
+                 and r["year"] == 1781)
+        assert "Kempen" in r["notes"]
+        assert "16 Agustus" in r["event_date_raw"]
+
     def test_padang_1781_1784_sandwiches_eic_period(self, rows):
         """Sanity check: Padang skrg py celah EIC 1781-84 di antara rentetan
         voc_alliance -- BUKAN 'selalu voc_alliance' spt asumsi lama."""

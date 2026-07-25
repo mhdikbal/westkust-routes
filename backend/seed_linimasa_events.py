@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35", "gm-vol04-05", "lancaster-1601-1603", "kathirithamby-1965", "botham-letter-1781", "harries-letter-1781"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35", "gm-vol04-05", "lancaster-1601-1603", "kathirithamby-1965", "botham-letter-1781", "harries-letter-1781", "kempen-report-1782"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Model 2 rantai Markov `dominion_status` (docs/prd/prd-atlas-power-model.md §3.2,
@@ -276,6 +276,39 @@ ALLOWED_DOMINION_STATUS = {
 # lengkap anggota Secret Committee/Council 1781: Hew Stewart, Edward Coles,
 # John Crisp, Robert Braham, Henry Botham, Bogle -- cross-ref row
 # Inderapura/1783/kathirithamby-1965 (John Crisp jadi Residen Padang).
+#
+# source_document="kempen-report-1782" (2026-07-25): Thomas van Kempen Jansz
+# (Residen VOC Pulau Cingkuak yg DITANGKAP) kepada Direksi VOC ("Wel Edele
+# Hoog achtbaare Heeren Bewindhebberen"), Kamer Amsterdam, 13 Juni 1782 --
+# "Relaas van het gepasseerde bij het inneemen van het Nederlandsch Comptoir
+# Poulo Chinco op Sumatra's Westkust, door een Engelsch Esquader" (docs/
+# Surat-Berita-Penangkapan-Kempen.rtf, arsip Nationaal Archief no.4860).
+# Sumber PRIMER KETIGA -- BEDA SISI (Belanda, korban), melengkapi Botham &
+# Harries (Inggris, pelaku). TRIPLE-CORROBORATION tanggal: van Kempen SENDIRI
+# konfirmasi 16 Agustus 1781 utk Pulau Cingkuak (cocok persis surat Harries,
+# BUKAN 10 Agustus versi Kathirithamby 1965). Detail dramatis baru: armada
+# Inggris kibarkan BENDERA PRANCIS palsu saat mendekat (van Kempen kira
+# armada Prancis spt d'Estaing 1762, ganti jadi bendera merah Inggris saat
+# kotter mendekat); garnisun VOC HANYA 11 militer Eropa (3 tak layak tugas)
+# + 7 prajurit pribumi (3 bertugas) -- radikal lemah, jelaskan tanpa
+# perlawanan; Henry Botham identifikasi diri sbg "Politiek Raadslid van
+# Bancohoulo" & kepala ekspedisi; van Kempen dipaksa tandatangan kapitulasi
+# di bawah ancaman (Botham ancam tinggalkan tanpa nego kalau tak langsung
+# ttd); Botham SELANJUTNYA ingkar janji lisan (tak izinkan van Kempen tinggal
+# jaga barang), ANCAM ISTRI van Kempen diseret paksa oleh pelaut kalau tak
+# mau naik kapal, cuma diberi 5 menit kemas barang; harta (emas, perak,
+# perhiasan, budak) dijual/dijarah abis pihak Botham. SERANGAN MALAM GAGAL
+# ke Padang (malam 17 Agustus): rencana daratkan ~300 tentara+pelaut di
+# "Brandewinsbaai Aijermanis" (=Air Manis, teluk dekat Padang) atau "baai
+# Jongis", bawa 2 mortir bombardir gudang mesiu benteng dari gunung -- GAGAL
+# krn badai hujan lebat + angin barat laut kencang mencegah pendaratan;
+# dipimpin Kapten Artileri Inggris "Mandeville". Padang akhirnya diserahkan
+# 18 Agustus (versi van Kempen, sedikit beda dari "17" versi Botham/Harries
+# -- van Kempen tak hadir langsung di Padang, laporan kemungkinan tercampur
+# dgn tanggal kedatangan armada utama 19 Agustus; BELUM diselesaikan mana
+# paling presisi, dicatat sbg 2 versi). Van Kempen & istri diusir paksa ke
+# Inggris (berangkat 15 Okt 1781, via Tanjung Harapan & St Helena, tiba
+# Plymouth 9 Maret 1782) sblm lapor ke Direksi Amsterdam Juni 1782.
 
 
 def _clean(v):
