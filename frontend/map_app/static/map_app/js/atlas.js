@@ -331,6 +331,11 @@ function init() {
 
   // Close search dropdown on map click
   map.on("click", () => closeSearchDropdown());
+
+  // Redraw layer status kekuasaan saat zoom berubah -- offset declutter fort
+  // berdekatan (spreadClusteredMarkers()) dihitung dari jarak PIKSEL di zoom
+  // SAAT INI, jadi harus dihitung ulang tiap zoom (no-op kalau layer nonaktif).
+  map.on("zoomend", () => { if (powerStatusEnabled) drawPowerStatus(yearTo); });
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -552,7 +557,8 @@ function createFlagSVG(color, clusterColor, pSelf) {
   </svg>`;
 }
 
-function dominionFlagIcon(color, clusterColor, pSelf) {
+function dominionFlagIcon(color, clusterColor, pSelf, offsetPx) {
+  const [dx, dy] = offsetPx || [0, 0];
   return L.divIcon({
     html: createFlagSVG(color, clusterColor, pSelf),
     className: "dominion-flag-icon",
@@ -560,8 +566,44 @@ function dominionFlagIcon(color, clusterColor, pSelf) {
     // Pole base lokal (22,41) digeser -10 di x supaya tetap +10px di kanan
     // titik geografis fort (perilaku sama persis versi lama, cuma kanvas
     // lebih lebar sekarang utk muat pennant klaster + cincin kestabilan).
-    iconAnchor: [12, 41],
+    // offsetPx (dx,dy dlm PIKSEL layar, BUKAN derajat lat/lng) menggeser
+    // anchor lebih lanjut utk fort berdekatan -- lihat spreadClusteredMarkers().
+    iconAnchor: [12 - dx, 41 - dy],
   });
+}
+
+// Fort berdekatan (mis. Fort York <-> Fort Marlborough, ~1.8km; Painan <->
+// Pulau Cingkuak, ~0.65km) -- flag-nya bisa berimpitan di zoom rendah/menengah
+// shg tak bisa diklik satu-satu. Kelompokkan berdasar JARAK PIKSEL di zoom
+// SAAT INI (bukan jarak geografis tetap -- shg declutter otomatis hilang
+// begitu user zoom in cukup jauh dan flag sudah terpisah alami), lalu susun
+// tiap anggota grup dlm pola rosette (offset piksel, marker.getLatLng() tetap
+// akurat -- cuma ICON yg digeser via iconAnchor, bukan posisi geografisnya).
+function spreadClusteredMarkers(items, mapInstance) {
+  const MIN_PX_GAP = 34; // ~lebar 1 ikon flag, di bawah ini dianggap "berimpitan"
+  const points = items.map(it => mapInstance.latLngToContainerPoint(it.coords));
+  const assigned = new Array(items.length).fill(false);
+  const offsets = new Array(items.length).fill(null).map(() => [0, 0]);
+
+  for (let i = 0; i < items.length; i++) {
+    if (assigned[i]) continue;
+    const group = [i];
+    assigned[i] = true;
+    for (let j = i + 1; j < items.length; j++) {
+      if (assigned[j]) continue;
+      if (points[i].distanceTo(points[j]) < MIN_PX_GAP) {
+        group.push(j);
+        assigned[j] = true;
+      }
+    }
+    if (group.length === 1) continue;
+    const radius = 16;
+    group.forEach((idx, k) => {
+      const angle = (2 * Math.PI * k) / group.length - Math.PI / 2;
+      offsets[idx] = [Math.round(Math.cos(angle) * radius), Math.round(Math.sin(angle) * radius)];
+    });
+  }
+  return offsets;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -629,9 +671,15 @@ async function drawPowerStatus(year) {
     return;
   }
 
-  data.forEach(item => {
-    const coords = FORT_COORDS[item.fort_name];
-    if (!coords) return;
+  // Susun dulu daftar item+koordinat yg valid, baru hitung offset declutter
+  // (butuh SEMUA titik utk deteksi grup berdekatan -- lihat spreadClusteredMarkers()).
+  const validItems = data
+    .map(item => ({ item, coords: FORT_COORDS[item.fort_name] }))
+    .filter(({ coords }) => !!coords);
+  const offsets = spreadClusteredMarkers(validItems, map);
+
+  validItems.forEach(({ item, coords }, i) => {
+    const [dx, dy] = offsets[i];
     const color = DOMINION_STATUS_COLORS[item.dominion_status] || "#999999";
     const label = DOMINION_STATUS_LABELS[item.dominion_status] || item.dominion_status;
     // 3 sinyal Model 2/5/6 -- SEMUA opsional (item.cluster null kalau fort
@@ -643,7 +691,7 @@ async function drawPowerStatus(year) {
     const clusterLabel = item.cluster ? (CLUSTER_LABELS[item.cluster] || item.cluster) : null;
 
     const marker = L.marker(coords, {
-      icon: dominionFlagIcon(color, clusterColor, item.p_self_current_status),
+      icon: dominionFlagIcon(color, clusterColor, item.p_self_current_status, [dx, dy]),
       zIndexOffset: 500,
     }).addTo(map);
 
