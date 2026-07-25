@@ -434,13 +434,22 @@ class TestCsvIntegrity:
             assert "SUMBER BEDA PIPELINE" not in (r["notes"] or ""), \
                 f"baris p{r['source_page']} (CD6) salah ditandai beda pipeline -- CD6 tetap OCR kami sendiri"
 
-    def test_1775_is_new_latest_year(self, rows):
+    def test_1775_was_latest_year_before_eic_1784(self, rows):
         """Penutupan loge Baros (CD6, 23 Jan 1775) memajukan titik AKHIR
-        linimasa dari 1741 ke 1775 -- peristiwa TERBARU di seluruh korpus."""
-        years = [r["year"] for r in rows if r["year"] is not None]
-        assert max(years) == 1775
+        linimasa dari 1741 ke 1775 -- peristiwa TERBARU di korpus SEBELUM
+        rangkaian EIC 1781-84 (kathirithamby-1965) ditemukan sesi 2026-07-25."""
         y1775 = [r for r in rows if r["year"] == 1775]
+        assert y1775
         assert all(r["source_document"] == "CD6" for r in y1775)
+
+    def test_1784_is_new_latest_year(self, rows):
+        """VOC kuasai kembali Padang psca traktat damai Inggris-Belanda
+        (kathirithamby-1965) -- peristiwa TERBARU baru di seluruh korpus,
+        menggantikan 1775."""
+        years = [r["year"] for r in rows if r["year"] is not None]
+        assert max(years) == 1784
+        y1784 = [r for r in rows if r["year"] == 1784]
+        assert all(r["source_document"] == "kathirithamby-1965" for r in y1784)
 
     def test_pengusiran_penataan_era_extended_to_1775(self, rows):
         """Era 'pengusiran-penataan' diperluas lagi dari 1664-1741 ke 1664-1775
@@ -886,6 +895,79 @@ class TestCsvIntegrity:
         pariaman_years = sorted(r["year"] for r in rows if r["fort_name"] == "Pariaman")
         assert pariaman_years[0] == 1602
         assert 1657 in pariaman_years
+
+    # ═══════════════════════════════════════════════════════════════════════
+    # EIC rebut Padang 1781-85 (Kathirithamby 1965 + surat Botham 1781) --
+    # celah besar: Padang selama ini dianggap "selalu voc_alliance" sepanjang
+    # korpus, ternyata ada ~4 tahun kekuasaan EIC penuh.
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_pulau_cingkuak_1781_eic_captured(self, rows):
+        """10 Agustus 1781: EIC (Henry Botham) rebut Pulau Cingkuak dari VOC."""
+        r = next(r for r in rows if r["fort_name"] == "Pulau Cingkuak"
+                 and r["source_document"] == "kathirithamby-1965" and r["year"] == 1781)
+        assert r["dominion_status"] == "foreign_orbit"
+        assert "Botham" in r["text_asli"] or "Chinko" in r["text_asli"]
+
+    def test_padang_1781_eic_captured_no_resistance(self, rows):
+        """19 Agustus 1781: Padang jatuh ke EIC, Residen VOC Heerskerch
+        menyerah tanpa perlawanan -- sumber PRIMER surat Botham sendiri."""
+        r = next(r for r in rows if r["fort_name"] == "Padang"
+                 and r["source_document"] == "botham-letter-1781" and r["year"] == 1781)
+        assert r["dominion_status"] == "foreign_orbit"
+        assert "Botham" in r["ruler_actor"] or "Botham" in r["text_asli"]
+
+    def test_pariaman_1781_taken_as_padang_subordinate(self, rows):
+        """Okt 1781 (surat Botham): Priamang (Pariaman) diambil alih sbg
+        subordinat Padang -- co-exist dgn row Pariaman/1712 existing."""
+        r = next(r for r in rows if r["fort_name"] == "Pariaman"
+                 and r["source_document"] == "botham-letter-1781" and r["year"] == 1781)
+        assert r["dominion_status"] == "foreign_orbit"
+
+    def test_air_haji_1781_taken_ayer_adjee(self, rows):
+        """Okt 1781 (surat Botham): 'Ayer Adjee' diambil alih sbg subordinat
+        Padang -- diduga Air Haji (fort BELUM py event sama sekali sblm ini),
+        identitas ditandai BELUM PASTI di notes."""
+        r = next(r for r in rows if r["fort_name"] == "Air Haji"
+                 and r["source_document"] == "botham-letter-1781" and r["year"] == 1781)
+        assert r["dominion_status"] == "foreign_orbit"
+        assert "belum pasti" in r["notes"].lower() or "diduga" in r["notes"].lower()
+
+    def test_padang_1782_panglima_jelel_deposed(self, rows):
+        """Maret 1782: Panglima Jelel digulingkan penduduk Pauh & Koto Tangah
+        stlh Inggris pergi -- cross-corroborasi pola Siklus Pauh/Koto Tangah
+        yg sudah dikenal (row Padang/1741 existing jg sebut mrk 'di ujung
+        tombak')."""
+        r = next(r for r in rows if r["fort_name"] == "Padang"
+                 and r["source_document"] == "kathirithamby-1965" and r["year"] == 1782)
+        assert r["dominion_status"] == "internal_conflict"
+        assert "Pauh" in r["text_asli"] or "Koto Tangah" in r["text_asli"] or "Kotatengah" in r["text_asli"]
+
+    def test_inderapura_1783_eic_extends_control(self, rows):
+        """Juni 1783: EIC kuasai seluruh pesisir Air Bangis-Inderapura, John
+        Crisp jadi Residen Padang."""
+        r = next(r for r in rows if r["fort_name"] == "Inderapura"
+                 and r["source_document"] == "kathirithamby-1965" and r["year"] == 1783)
+        assert r["dominion_status"] == "foreign_orbit"
+        assert "Crisp" in r["text_asli"] or "Crisp" in r["ruler_actor"]
+
+    def test_padang_1784_voc_retakes(self, rows):
+        """1784-85: traktat damai Inggris-Belanda, Van Erath datang dari
+        Batavia Juli 1784, serah terima 1785 -- SELURUH pesisir kembali VOC."""
+        r = next(r for r in rows if r["fort_name"] == "Padang"
+                 and r["source_document"] == "kathirithamby-1965" and r["year"] == 1784)
+        assert r["dominion_status"] == "voc_alliance"
+
+    def test_padang_1781_1784_sandwiches_eic_period(self, rows):
+        """Sanity check: Padang skrg py celah EIC 1781-84 di antara rentetan
+        voc_alliance -- BUKAN 'selalu voc_alliance' spt asumsi lama."""
+        padang_rows = sorted(
+            [r for r in rows if r["fort_name"] == "Padang" and r["dominion_status"]],
+            key=lambda r: r["year"]
+        )
+        statuses_1780s = [r["dominion_status"] for r in padang_rows if 1780 <= r["year"] <= 1785]
+        assert "foreign_orbit" in statuses_1780s
+        assert "voc_alliance" in statuses_1780s
 
     def test_painan_1687_tello_pongassan_moero_lagan(self, rows):
         """April-Mei 1687: kampanye penindasan Sapoelo Boabandaars (Tello

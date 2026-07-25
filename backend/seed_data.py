@@ -259,6 +259,21 @@ FORTS_META = [
         "port_type": "departure",
         "description": "York Fort, pos dagang East India Company (Inggris) di Bengkulu (Bencoolen), didirikan usai EIC diusir dari Banten oleh VOC (1682). Bukan bagian jaringan pos VOC -- dimasukkan roster krn arsip BL_IOR_G_35_198 (British Library India Office Records, via AmDigital) berisi korespondensi dari sini soal konsesi dagang Barus-Silebar & kehilangan Batang Capas, 1686. Koordinat presis (bukan indikatif)."
     },
+    # Fort Marlborough -- pengganti York Fort di Bengkulu (1714, lokasi lama
+    # tak sehat), naik status Presidency EIC 1761. Sumber: Jeyamalar
+    # Kathirithamby, "British West Sumatra During the Presidency Period,
+    # 1760 to 1785" (PhD thesis, University of London, Feb 1965, docs/
+    # EIC_alternatif.json) + surat asli Henry Botham dari Fort Marlborough
+    # 12 Okt 1781 (docs/HenryBotham, NLA nla.obj-2387557233) soal ekspedisi
+    # rebut Padang. Koordinat presis dari user (bukan estimasi).
+    {
+        "name": "Fort Marlborough",
+        "latitude": -3.7870018339628033,
+        "longitude": 102.25174006960465,
+        "color": "#8b2f2f",
+        "port_type": "departure",
+        "description": "Fort Marlborough, pos utama EIC di Bengkulu (Bencoolen) menggantikan York Fort (1714, lokasi lama tak sehat), naik status Presidency 1761-1785. Bukan bagian jaringan pos VOC. Dari sinilah ekspedisi Henry Botham berangkat Agustus 1781 merebut Padang & Pulau Cingkuak dari VOC. Koordinat presis (bukan indikatif)."
+    },
     # ── Arrival ports ────────────────────────────────────────────────────
     {
         "name": "Batavia",

@@ -96,6 +96,26 @@ class TestFortYork:
         assert names.count("Fort York") == 1
 
 
+class TestFortMarlborough:
+    """Fort Marlborough (Bengkulu) -- pengganti York Fort 1714, Presidency EIC
+    1761-1785. Sumber: Kathirithamby (1965) thesis + surat Henry Botham 1781."""
+
+    def test_fort_marlborough_present(self):
+        fort = next((f for f in FORTS_META if f["name"] == "Fort Marlborough"), None)
+        assert fort is not None
+        assert isinstance(fort["latitude"], float)
+        assert isinstance(fort["longitude"], float)
+
+    def test_fort_marlborough_coordinates_match_user_supplied_point(self):
+        fort = next(f for f in FORTS_META if f["name"] == "Fort Marlborough")
+        assert round(fort["latitude"], 6) == round(-3.7870018339628033, 6)
+        assert round(fort["longitude"], 6) == round(102.25174006960465, 6)
+
+    def test_fort_marlborough_name_unique_in_roster(self):
+        names = [f["name"] for f in FORTS_META]
+        assert names.count("Fort Marlborough") == 1
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Tests: clean_name()
 # ═══════════════════════════════════════════════════════════════════════════════

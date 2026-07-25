@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35", "gm-vol04-05", "lancaster-1601-1603"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35", "gm-vol04-05", "lancaster-1601-1603", "kathirithamby-1965", "botham-letter-1781"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Model 2 rantai Markov `dominion_status` (docs/prd/prd-atlas-power-model.md §3.2,
@@ -230,6 +230,29 @@ ALLOWED_DOMINION_STATUS = {
 # sblm event Pariaman tertua existing (1657). TIDAK ada penguasa politik
 # Priaman disebut eksplisit dlm akun ini (murni deskripsi dagang) --
 # dominion_status SENGAJA dikosongkan, bukan diasumsikan.
+#
+# source_document="kathirithamby-1965" (2026-07-25): Jeyamalar Kathirithamby,
+# "British West Sumatra During the Presidency Period, 1760 to 1785", PhD
+# thesis, University of London, Februari 1965 (docs/EIC_alternatif.json, OCR
+# 378 hlm, judul_file asli "EIC.pdf"). Sisir penuh via 6 subagent paralel --
+# tier sumber akademik SEKUNDER (spt buku-padang-1718) tapi PERSPEKTIF EIC,
+# bukan VOC. Temuan utama: rangkaian EIC merebut Padang & Pulau Cingkuak dari
+# VOC Agustus 1781, kuasai s.d. dikembalikan via traktat damai 1784/85 --
+# celah besar yg blm ada di data (Padang selama ini dianggap "selalu
+# voc_alliance"). Cross-corroborasi dgn source_document="botham-letter-1781"
+# (surat asli pelaku langsung).
+#
+# source_document="botham-letter-1781" (2026-07-25): Henry Botham (Residen
+# EIC) kepada "My Lord" [Direktur/Gubernur Jenderal EIC], Fort Marlborough,
+# 12 Oktober 1781 -- surat asli, docs/HenryBotham (transkripsi user dari
+# National Library of Australia, nla.obj-2387557233). Sumber PRIMER tier
+# tertinggi (pelaku langsung menulis 2 bulan sesudah kejadian) -- BEDA dari
+# Kathirithamby (akademik sekunder) meski cerita sama. Botham sendiri sebut
+# rebut Padang TANPA perlawanan (gubernur VOC serahkan begitu diminta), lalu
+# ambil alih 3 subordinat: "Prols Cinquo" (=Pulau Cingkuak), "Priamang"
+# (=Pariaman), dan "Ayer Adjee" -- identitas "Ayer Adjee" BELUM PASTI, diduga
+# Air Haji (fonetik lebih cocok drpd Air Bangis) tapi dicatat sbg dugaan,
+# bukan fakta pasti.
 
 
 def _clean(v):
