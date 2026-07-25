@@ -995,6 +995,63 @@ class TestCsvIntegrity:
         assert "foreign_orbit" in statuses_1780s
         assert "voc_alliance" in statuses_1780s
 
+    # ═══════════════════════════════════════════════════════════════════════
+    # Overtures Sultan Minangkabau ke EIC (1750-1773) & flag York/Marlborough --
+    # jawab pertanyaan "kenapa Padang dianggap selalu voc_alliance sblm 1780an
+    # padahal penguasa lokal sudah lama mendekati Inggris" + "kenapa 2 fort
+    # Bengkulu tak py flag di power-status layer" (2026-07-25).
+    # ═══════════════════════════════════════════════════════════════════════
+
+    def test_sultan_minangkabau_1750_first_overture_to_eic(self, rows):
+        """1750: Sultan Minangkabau kirim utusan ke Inggris minta menetap di
+        Pariaman -- overture PALING AWAL ke EIC, 3 dekade sblm perang 1781."""
+        r = next(r for r in rows if r["fort_name"] == "Padang"
+                 and r["source_document"] == "kathirithamby-1965" and r["year"] == 1750)
+        assert r["event_type"] == "diplomasi"
+        assert "Pariaman" in r["text_asli"] or "Pariaman" in r["title"]
+        # Overture ditolak/tak terwujud -- BUKAN perubahan kekuasaan riil,
+        # dominion_status sengaja kosong (bukan wajib diisi tiap baris).
+        assert r["dominion_status"] in (None, "")
+
+    def test_sultan_minangkabau_1767_offers_pariaman_natal(self, rows):
+        """1767: Sultan Minangkabau tawarkan wilayah Pariaman-Natal ke EIC
+        sbg imbalan bantuan usir VOC dari Padang, syarat Inggris menetap di
+        Ujong Krang & Mura Jambak."""
+        r = next(r for r in rows if r["fort_name"] == "Padang"
+                 and r["source_document"] == "kathirithamby-1965" and r["year"] == 1767)
+        assert "Natal" in r["text_asli"]
+        assert "Ujong Krang" in r["text_asli"] or "Mura Jambak" in r["text_asli"]
+
+    def test_sultan_minangkabau_1772_petition_repeated(self, rows):
+        """1772: petisi diulang, akhirnya DITOLAK Marlborough Council krn tak
+        mau ganggu wilayah yg sudah diduduki VOC."""
+        r = next(r for r in rows if r["fort_name"] == "Padang"
+                 and r["source_document"] == "kathirithamby-1965" and r["year"] == 1772)
+        assert "reject" in r["text_asli"].lower() or "occupation" in r["text_asli"].lower()
+
+    def test_benkulen_1773_ordered_to_sever_ties(self, rows):
+        """1773: Direksi EIC London perintahkan Benkulen putus SEMUA hubungan
+        dgn Sultan Minangkabau -- penutup rangkaian overture yg gagal."""
+        r = next(r for r in rows if r["fort_name"] == "Padang"
+                 and r["source_document"] == "kathirithamby-1965" and r["year"] == 1773)
+        assert "sever" in r["text_asli"].lower() or "Minang" in r["text_asli"]
+
+    def test_fort_york_flagged_foreign_orbit(self, rows):
+        """York Fort (1685-) -- fort EIC sendiri, BUKAN pos VOC yg direbut,
+        jadi tak pernah py event dominion_status. Tambah 1 baris shg fort ini
+        muncul di layer power-status (bukan blank spot di peta 2 fort
+        Bengkulu)."""
+        r = next(r for r in rows if r["fort_name"] == "Fort York")
+        assert r["dominion_status"] == "foreign_orbit"
+        assert r["year"] == 1685
+
+    def test_fort_marlborough_flagged_foreign_orbit(self, rows):
+        """Fort Marlborough (1714-) -- pengganti York Fort, jadi basis
+        ekspedisi Botham 1781. Sama alasan spt York Fort di atas."""
+        r = next(r for r in rows if r["fort_name"] == "Fort Marlborough")
+        assert r["dominion_status"] == "foreign_orbit"
+        assert r["year"] == 1714
+
     def test_painan_1687_tello_pongassan_moero_lagan(self, rows):
         """April-Mei 1687: kampanye penindasan Sapoelo Boabandaars (Tello
         s.d. Pongassan) & rebut kembali Moero Lagan dari Inggris -- fort_name
