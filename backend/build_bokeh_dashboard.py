@@ -10,10 +10,16 @@ Warna & label dominion_status di-REUSE persis dari
 frontend/map_app/static/map_app/js/atlas.js (DOMINION_STATUS_COLORS/LABELS)
 supaya konsisten lintas peta<->dashboard -- JANGAN drift jadi palet ke-2.
 
-Semua figur statis (bokeh.embed.components(), bukan Bokeh server) -- Model 5
-punya Select widget + CustomJS utk ganti fort tanpa round-trip Python, jadi
-tak butuh proses Bokeh server yg hidup terus (arsitektur ini deliberately
-menghindari proses ke-5 di docker-compose).
+Semua figur statis (bokeh.embed.components(), bukan Bokeh server). Model 5
+pakai Tabs/TabPanel (SATU figure per fort, tab native BokehJS) -- BUKAN
+Select+CustomJS: CustomJS Bokeh selalu di-compile via `new Function(...)` di
+browser (eval), dan CSP proyek ini (nginx/nginx.conf) TIDAK punya
+'unsafe-eval' di script-src. CustomJS diam-diam gagal (exception ketelan,
+<select> DOM tetap keliatan ganti krn itu reactive binding-nya sendiri, tapi
+chart tak pernah update) -- ditemukan via Playwright 2026-07-25 (semua fort
+tampil garis rata krn chart macet di data awal). Tabs murni widget bawaan
+BokehJS (bukan eval kode Python), jadi aman di CSP saat ini tanpa perlu
+longgarkan 'unsafe-eval'.
 
 Jalankan manual: docker compose exec backend python build_bokeh_dashboard.py
 (dipanggil ulang otomatis oleh endpoint /api/research/pemodelan-dashboard via
@@ -24,7 +30,7 @@ import json
 from pathlib import Path
 
 from bokeh.embed import components
-from bokeh.models import ColumnDataSource, HoverTool, CustomJS, Select, Column
+from bokeh.models import ColumnDataSource, HoverTool, TabPanel, Tabs
 from bokeh.plotting import figure
 
 _BASE = Path(__file__).parent.parent
@@ -133,8 +139,8 @@ def build_markov_heatmap():
 def build_dynamics_selector():
     """Model 5: garis simulasi (sim_I) + titik aktual (actual_I, HANYA di tahun
     event nyata -- tak diinterpolasi, sama aturan buildSparklineSVG() atlas.js)
-    per fort, satu chart + dropdown Select+CustomJS gonta-ganti fort tanpa
-    round-trip server (components() statis cukup)."""
+    per fort, SATU tab per fort (Tabs/TabPanel -- lihat catatan modul kenapa
+    BUKAN Select+CustomJS)."""
     with open(SYSTEM_DYNAMICS_FILE, encoding="utf-8") as f:
         sd = json.load(f)
 
@@ -142,58 +148,37 @@ def build_dynamics_selector():
     if not forts:
         return None
 
-    sources = {}
+    panels = []
     for fort in forts:
         d = sd["forts"][fort]
         years = d["sim_years"]
         sim = d["sim_I"]
         actual_by_year = dict(zip(d["actual_years"], d["actual_I"]))
-        actual = [actual_by_year.get(y) for y in years]
-        sources[fort] = dict(year=years, sim=sim, actual=actual)
 
-    default_fort = forts[0]
-    sim_src = ColumnDataSource(dict(year=sources[default_fort]["year"], sim=sources[default_fort]["sim"]))
-    actual_src = ColumnDataSource(dict(
-        year=[y for y, a in zip(sources[default_fort]["year"], sources[default_fort]["actual"]) if a is not None],
-        actual=[a for a in sources[default_fort]["actual"] if a is not None],
-    ))
-    # Lookup per-fort JAGGED (panjang beda-beda per fort) -- BUKAN tabel
-    # rectangular, jadi diteruskan sbg dict Python biasa ke CustomJS (Bokeh
-    # serialize otomatis ke JSON), bukan dipaksa jadi ColumnDataSource (itu
-    # warn "columns must be of the same length" krn memang bukan pasangannya).
+        sim_src = ColumnDataSource(dict(year=years, sim=sim))
+        actual_years = [y for y in years if y in actual_by_year]
+        actual_src = ColumnDataSource(dict(
+            year=actual_years,
+            actual=[actual_by_year[y] for y in actual_years],
+        ))
 
-    p = figure(
-        title="Model 5 — Simulasi vs Aktual per Fort (skala I: -1 relaps .. +1 aliansi VOC)",
-        x_axis_label="Tahun", y_axis_label="I (indeks dominasi)",
-        y_range=(-1.1, 1.1), height=420, width=640,
-        toolbar_location="above", tools="pan,wheel_zoom,box_zoom,reset,save",
-    )
-    p.line("year", "sim", source=sim_src, line_width=2, color="#31384C", legend_label="Simulasi")
-    actual_renderer = p.scatter("year", "actual", source=actual_src, size=8, color="#009880",
-                                 marker="circle", legend_label="Aktual (titik event nyata)")
-    hover = HoverTool(renderers=[actual_renderer], tooltips=[("Tahun", "@year"), ("I aktual", "@actual{0.00}")])
-    p.add_tools(hover)
-    p.legend.location = "bottom_right"
-    p.legend.label_text_font_size = "9px"
+        p = figure(
+            title=f"Model 5 — {fort}: Simulasi vs Aktual (skala I: -1 relaps .. +1 aliansi VOC)",
+            x_axis_label="Tahun", y_axis_label="I (indeks dominasi)",
+            y_range=(-1.1, 1.1), height=380, width=620,
+            toolbar_location="above", tools="pan,wheel_zoom,box_zoom,reset,save",
+        )
+        p.line("year", "sim", source=sim_src, line_width=2, color="#31384C", legend_label="Simulasi")
+        actual_renderer = p.scatter("year", "actual", source=actual_src, size=8, color="#009880",
+                                     marker="circle", legend_label="Aktual (titik event nyata)")
+        hover = HoverTool(renderers=[actual_renderer], tooltips=[("Tahun", "@year"), ("I aktual", "@actual{0.00}")])
+        p.add_tools(hover)
+        p.legend.location = "bottom_right"
+        p.legend.label_text_font_size = "9px"
 
-    select = Select(title="Pilih fort:", value=default_fort, options=forts)
-    callback = CustomJS(args=dict(sim_src=sim_src, actual_src=actual_src, all_data=sources), code="""
-        const fort = cb_obj.value;
-        const d = all_data[fort];
-        const years = d["year"];
-        const sim = d["sim"];
-        const actual = d["actual"];
-        sim_src.data = {year: years, sim: sim};
-        const ay = [], av = [];
-        for (let i = 0; i < actual.length; i++) {
-            if (actual[i] !== null && actual[i] !== undefined) { ay.push(years[i]); av.push(actual[i]); }
-        }
-        actual_src.data = {year: ay, actual: av};
-        sim_src.change.emit();
-        actual_src.change.emit();
-    """)
-    select.js_on_change("value", callback)
-    return Column(select, p)
+        panels.append(TabPanel(child=p, title=fort))
+
+    return Tabs(tabs=panels)
 
 
 def build_reaffirmation_bars():
