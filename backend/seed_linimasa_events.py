@@ -46,7 +46,7 @@ CSV_CANDIDATES = [
 ]
 CSV_FILE = next((c for c in CSV_CANDIDATES if c.exists()), None)
 
-ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35", "gm-vol04-05", "lancaster-1601-1603", "kathirithamby-1965", "botham-letter-1781"}
+ALLOWED_SOURCE_DOCUMENTS = {"1624-1629", "1631-1634", "1636", "1637", "1643-1644", "1647-1648", "1656-1657", "1659", "1661", "1663", "1664", "1665", "1681", "CD1", "CD2", "CD3", "CD4", "CD5", "CD6", "buku-padang-1718", "buku-vogel-1690", "eic-bl-ior-g35", "gm-vol04-05", "lancaster-1601-1603", "kathirithamby-1965", "botham-letter-1781", "harries-letter-1781"}
 ALLOWED_EVENT_TYPES = {"suksesi", "perjanjian", "konflik", "diplomasi", "administratif"}
 ALLOWED_ERAS = {"klaim-awal", "ratu-puncak", "perang-damai", "retak-painan", "pengusiran-penataan"}
 # Model 2 rantai Markov `dominion_status` (docs/prd/prd-atlas-power-model.md §3.2,
@@ -253,6 +253,29 @@ ALLOWED_DOMINION_STATUS = {
 # (=Pariaman), dan "Ayer Adjee" -- identitas "Ayer Adjee" BELUM PASTI, diduga
 # Air Haji (fonetik lebih cocok drpd Air Bangis) tapi dicatat sbg dugaan,
 # bukan fakta pasti.
+#
+# source_document="harries-letter-1781" (2026-07-25): L. Harries (perwira EIC
+# ditinggal jaga Pulau Cingkuak, org yg SAMA disebut Kathirithamby 1965 hlm
+# 314 "Harries, a Benkulen factor") kepada Hew Stewart & Secret Committee,
+# ditulis dari "Poolo Cinquo" (Pulau Cingkuak), 21 Agustus 1781 -- docs/36.txt.
+# Sumber PRIMER KEDUA (beda org, beda lokasi dari Botham) -- KOREKSI TANGGAL
+# PRESISI thd Kathirithamby 1965: Pulau Cingkuak menyerah "16th instant" =
+# 16 Agustus (BUKAN 10 Agustus versi thesis); Padang menyerah "17th" (dikutip
+# dari surat Botham sendiri tgl Padang 18 Agst, BUKAN 19 Agustus versi
+# thesis). 2 sumber primer (Harries + Botham, ditulis dlm hitungan hari stlh
+# kejadian) LEBIH DIPERCAYA drpd rekonstruksi akademik 1965 -- tanggal
+# event_date_raw/notes row existing DIPERBARUI reflect ini, dgn tanggal lama
+# tetap dicatat eksplisit sbg pembanding (bukan dihapus diam-diam). Detail
+# baru: L. Harries ditinggal jaga P.Cingkuak, 14-15 tawanan Eropa dibawa ke
+# armada, Raddeen Tamonggong+2 putra & 2 militer Eropa ditinggal bareng
+# Harries, kapal "snow Elizabeth" dikirim jaga P.Cingkuak, sekoci Belanda
+# hasil rampasan dipakai kirim sepoy bantuan, penduduk sekitar "perfectly
+# quiet", beberapa kepala kirim pesan bersahabat ke EIC.
+# docs/30.txt (11 Okt 1781, Fort Marlborough -> Kapten John Clements): surat
+# administratif (perintah bawa paket ke Direksi London) -- KONFIRMASI nama
+# lengkap anggota Secret Committee/Council 1781: Hew Stewart, Edward Coles,
+# John Crisp, Robert Braham, Henry Botham, Bogle -- cross-ref row
+# Inderapura/1783/kathirithamby-1965 (John Crisp jadi Residen Padang).
 
 
 def _clean(v):

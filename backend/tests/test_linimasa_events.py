@@ -958,6 +958,23 @@ class TestCsvIntegrity:
                  and r["source_document"] == "kathirithamby-1965" and r["year"] == 1784)
         assert r["dominion_status"] == "voc_alliance"
 
+    def test_pulau_cingkuak_1781_date_corrected_by_harries_letter(self, rows):
+        """Surat L. Harries (perwira yg ditinggal jaga Pulau Cingkuak, org yg
+        SAMA disebut Kathirithamby 1965) tgl 21 Agst 1781 koreksi tanggal
+        presisi: 16 Agustus (BUKAN 10 Agustus versi thesis akademik)."""
+        r = next(r for r in rows if r["fort_name"] == "Pulau Cingkuak"
+                 and r["year"] == 1781)
+        assert "16" in r["event_date_raw"]
+        assert "Harries" in r["notes"]
+
+    def test_padang_1781_date_corrected_by_harries_letter(self, rows):
+        """Surat Botham (dikutip Harries) tgl Padang 18 Agst 1781 sebut
+        Padang menyerah tgl 17 (BUKAN 19 Agustus versi thesis akademik)."""
+        r = next(r for r in rows if r["fort_name"] == "Padang"
+                 and r["source_document"] == "botham-letter-1781" and r["year"] == 1781)
+        assert "17" in r["event_date_raw"]
+        assert "Harries" in r["notes"]
+
     def test_padang_1781_1784_sandwiches_eic_period(self, rows):
         """Sanity check: Padang skrg py celah EIC 1781-84 di antara rentetan
         voc_alliance -- BUKAN 'selalu voc_alliance' spt asumsi lama."""
