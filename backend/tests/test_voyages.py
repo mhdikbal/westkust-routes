@@ -285,6 +285,30 @@ async def test_filter_by_source():
     assert data[0]["ship_name"] == "Bunschoten"
 
 
+@pytest.mark.asyncio
+async def test_filter_by_source_dutch_ships_asian_waters():
+    """GET /api/voyages/?source=dutch_ships_asian_waters diterima (bukan 422) --
+    sumber dataverse.nl (Dutch-Asiatic Shipping) yang diaudit+diperbaiki 2026-07-26."""
+    voyage = make_voyage(source="dutch_ships_asian_waters")
+
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.return_value = make_scalar_result([voyage])
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/voyages/?source=dutch_ships_asian_waters")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data[0]["source"] == "dutch_ships_asian_waters"
+
+
 # ─── Tests: Year range filtering ─────────────────────────────────────────────
 
 @pytest.mark.asyncio

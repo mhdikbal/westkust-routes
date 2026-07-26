@@ -361,6 +361,12 @@ class SourceToggleTest(SimpleTestCase):
         """Opsi filter Dagh-register harus ada."""
         self.assertIn('value="daghregister_batavia"', self.content)
 
+    def test_source_select_has_dutch_ships_asian_waters_option(self):
+        """Opsi filter Dutch-Asiatic Shipping (dataverse.nl) harus ada -- ditambahkan
+        2026-07-26 setelah audit menemukan sumber ini sudah punya 695 voyage di DB
+        tapi tak bisa difilter (tak ada di whitelist Pydantic maupun dropdown)."""
+        self.assertIn('value="dutch_ships_asian_waters"', self.content)
+
     def test_set_source_function_defined(self):
         """Fungsi setSource() harus terdefinisi di atlas.js."""
         self.assertIn("function setSource(", ATLAS_JS)

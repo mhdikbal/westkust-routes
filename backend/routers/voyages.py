@@ -13,7 +13,7 @@ from models import Voyage, Fort, CargoItem
 
 router = APIRouter()
 
-SourceParam = Literal["bgb_huygens", "daghregister_batavia", "globalise_obp"]
+SourceParam = Literal["bgb_huygens", "daghregister_batavia", "globalise_obp", "dutch_ships_asian_waters"]
 
 
 def _year_gte(value: int):
