@@ -21,6 +21,9 @@ class FortBase(BaseModel):
     color: str
     description: Optional[str] = None
     port_type: str = "departure"
+    # Benteng VOC/EIC fisik (garnisun) vs negeri/pusat kekuasaan lokal yang
+    # cuma berkorespondensi/traktat dgn VOC -- lihat is_fortified() di bawah.
+    is_fortified: bool = True
 
 
 class FortSummary(FortBase):
@@ -89,6 +92,23 @@ class FortEnrichmentResponse(BaseModel):
     tally_person_count: int = 0
 
 
+# ---------- Helpers ----------
+
+# EIC forts fisik yang namanya sendiri sudah membuktikan status berbenteng,
+# tapi belum di-enrich AMH (designasi_voc kosong) -- lihat
+# docs/prd/prd-atlas-power-model-fase2-roster.md. Hapus entri di sini begitu
+# enrichment AMH utk kedua fort ini selesai (designasi_voc akan terisi sendiri).
+_KNOWN_FORTIFIED_WITHOUT_AMH = {"Fort York", "Fort Marlborough"}
+
+
+def _is_fortified(fort: Fort) -> bool:
+    """True = benteng VOC/EIC fisik (garnisun), False = negeri/pusat kekuasaan
+    lokal yang cuma berkorespondensi/traktat dgn VOC (mis. Bayang, Painan,
+    Salido, Pauh -- lihat linimasa_events dominion_status utk fort2 ini,
+    semuanya traktat/diplomasi/gelar, bukan pembangunan benteng)."""
+    return fort.designasi_voc is not None or fort.name in _KNOWN_FORTIFIED_WITHOUT_AMH
+
+
 # ---------- Endpoints ----------
 
 @router.get("/", response_model=List[FortSummary])
@@ -128,6 +148,7 @@ async def list_forts(response: Response, db: AsyncSession = Depends(get_db)):
             color=fort.color,
             description=fort.description,
             port_type=fort.port_type,
+            is_fortified=_is_fortified(fort),
             outbound_count=out_count,
             inbound_count=in_count,
             total_value_out=float(out_total or 0),

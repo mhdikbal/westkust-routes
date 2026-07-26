@@ -303,13 +303,36 @@ function createAnchorSVG(color, isActive) {
   </svg>`;
 }
 
+// Lingkaran + mahkota tiga-puncak -- motif "kursi kekuasaan lokal" (negeri
+// yg VOC ajak traktat/aliansi/beri gelar, mis. Salido menerima gelar
+// "Siri-nara" 1755), BEDA dari perisai-benteng (createFortSVG, VOC/EIC
+// fisik berbenteng) supaya jelas ini bukan lokasi garnisun. Bentuk dasar
+// lingkaran sama dgn createAnchorSVG (arrival) tapi isi beda (mahkota vs
+// jangkar) -- konsisten dgn bahasa visual "bentuk beda = makna beda".
+function createNegeriSVG(color, isActive) {
+  const glow = isActive ? `filter:drop-shadow(0 0 8px ${color});` : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 40 48" style="${glow}" aria-hidden="true">
+    <circle cx="20" cy="20" r="18" fill="white" stroke="${color}" stroke-width="2"/>
+    <path d="M11 25 L11 16 L15 20.5 L20 12 L25 20.5 L29 16 L29 25 Z" fill="${color}"/>
+    <path d="M11 25 L29 25" stroke="${color}" stroke-width="1.5"/>
+  </svg>`;
+}
+
 function fortIcon(f, active) {
   const isArrival = f.port_type === "arrival";
+  // f.is_fortified === false (bukan cuma falsy) -- default aman ke ikon
+  // benteng kalau field belum ada di response (skema lama/cache basi).
+  const isNegeri = !isArrival && f.is_fortified === false;
+  const html = isArrival
+    ? createAnchorSVG(f.color, active)
+    : isNegeri
+      ? createNegeriSVG(f.color, active)
+      : createFortSVG(f.color, active);
   return L.divIcon({
-    html: isArrival ? createAnchorSVG(f.color, active) : createFortSVG(f.color, active),
+    html,
     className: "fort-marker-icon",
-    iconSize: isArrival ? [26, 26] : [28, 36],
-    iconAnchor: isArrival ? [13, 24] : [14, 34],
+    iconSize: (isArrival || isNegeri) ? [26, 26] : [28, 36],
+    iconAnchor: (isArrival || isNegeri) ? [13, 24] : [14, 34],
   });
 }
 

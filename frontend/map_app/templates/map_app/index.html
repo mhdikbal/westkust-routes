@@ -367,6 +367,20 @@
       border-left: 10px solid var(--swatch-color);
       margin-left: 2px;
     }
+    /* Swatch bentuk-ikon marker dasar (benteng fisik vs negeri/pusat
+       kekuasaan lokal) -- SELALU tampil (bukan grup opsional spt dominion/
+       historical di bawah), krn marker dasar sendiri selalu tampil di peta.
+       Bentuk meniru motif SVG asli: perisai (createFortSVG) vs lingkaran+
+       mahkota (createNegeriSVG), lihat atlas.js fortIcon(). */
+    .legend-swatch.marker-type {
+      width: 14px; height: 14px; flex-shrink: 0; border: 1.5px solid var(--text-secondary);
+      background: transparent;
+    }
+    .legend-swatch.marker-type.fort {
+      border-radius: 3px 3px 50% 50% / 3px 3px 40% 40%;
+    }
+    .legend-swatch.marker-type.negeri { border-radius: 50%; }
+
     /* Palet divalidasi node scripts/validate_palette.js (skill dataviz) 2026-07-20
        -- lihat catatan lengkap di DOMINION_STATUS_COLORS, atlas.js. */
     .legend-swatch.aceh-dominion     { --swatch-color: #a02830; }
@@ -993,6 +1007,8 @@
   <div class="legend-item"><span class="legend-swatch out" aria-hidden="true"></span>Keluar (outbound)</div>
   <div class="legend-item"><span class="legend-swatch in" aria-hidden="true"></span>Masuk (inbound)</div>
   <div class="legend-item"><span class="legend-swatch transit" aria-hidden="true"></span>Transit</div>
+  <div class="legend-item"><span class="legend-swatch marker-type fort" aria-hidden="true"></span>Benteng VOC/EIC</div>
+  <div class="legend-item"><span class="legend-swatch marker-type negeri" aria-hidden="true"></span>Pusat kekuasaan lokal</div>
   <div id="dominion-legend-group">
     <div class="legend-axis-label">Poros Aceh</div>
     <div class="legend-item"><span class="legend-swatch dominion aceh-dominion" aria-hidden="true"></span>Kekuasaan Aceh</div>

@@ -23,11 +23,11 @@ from main import app
 # ─── Fixtures — use SimpleNamespace so Pydantic gets real Python scalars ─────
 
 def make_fort(id, name, latitude, longitude, color, description,
-              port_type="departure"):
+              port_type="departure", designasi_voc=None):
     return SimpleNamespace(
         id=id, name=name, latitude=latitude,
         longitude=longitude, color=color, description=description,
-        port_type=port_type,
+        port_type=port_type, designasi_voc=designasi_voc,
     )
 
 def make_voyage(id, fort_id, ship_name, captain, year, total_gulden,
@@ -176,6 +176,45 @@ async def test_list_forts_departure_ports_present():
     assert "Air Bangis" in names
     assert "Barus"      in names
     assert "Lampung"    in names
+
+
+@pytest.mark.asyncio
+async def test_list_forts_is_fortified_distinguishes_voc_post_vs_negeri():
+    """GET /api/forts/ should expose is_fortified: True for forts with a VOC/EIC
+    designasi_voc (genuine fortified posts), False for local-power negeri
+    (traktat/aliansi partners without a physical VOC fort), and True for the
+    hardcoded EIC forts (Fort York/Marlborough) even though their designasi_voc
+    is still empty pending AMH enrichment."""
+    voc_fort = make_fort(1, "Barus", 2.014457, 98.399320, "#16a085", "Barus desc",
+                          port_type="departure", designasi_voc="Sumatras Westcust (VOC-gebied)")
+    negeri = make_fort(2, "Salido", -1.383333, 100.55, "#c0392b", "Salido desc",
+                        port_type="departure", designasi_voc=None)
+    eic_fort = make_fort(3, "Fort York", -1.35, 100.56, "#8e44ad", "Fort York desc",
+                          port_type="departure", designasi_voc=None)
+    mocks = [voc_fort, negeri, eic_fort]
+
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.side_effect = [
+            make_scalar_result(mocks),
+            *[MagicMock(one=MagicMock(return_value=(0, 0.0)))
+              for _ in range(len(mocks) * 2)],
+        ]
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/")
+
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    fortified = {d["name"]: d["is_fortified"] for d in response.json()}
+    assert fortified["Barus"]     is True
+    assert fortified["Salido"]    is False
+    assert fortified["Fort York"] is True
 
 
 @pytest.mark.asyncio

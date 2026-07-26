@@ -624,10 +624,12 @@ async def test_cargo_item_schema_fields():
 #  5. /api/forts/ — Welcome Panel Port Grid (outbound_count + inbound_count)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def make_fort(id, name, latitude, longitude, color, description, port_type="departure"):
+def make_fort(id, name, latitude, longitude, color, description, port_type="departure",
+              designasi_voc=None):
     return SimpleNamespace(
         id=id, name=name, latitude=latitude, longitude=longitude,
         color=color, description=description, port_type=port_type,
+        designasi_voc=designasi_voc,
     )
 
 
