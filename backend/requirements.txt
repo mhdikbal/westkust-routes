@@ -11,4 +11,9 @@ pytest-asyncio==0.23.6
 anyio==4.4.0
 alembic==1.13.1
 redis==5.0.8
+# Numpy >=2.x manylinux wheel butuh baseline CPU x86-64-v2 (SSE4.2) --
+# production VPS (KVM "Common KVM processor", tanpa SSE4.2 di /proc/cpuinfo)
+# crash saat import (RuntimeError baseline X86_V2). Pin ke numpy<2 yg wheel-nya
+# masih baseline SSE2, kompatibel dgn bokeh 3.9.1 (butuh numpy>=1.16).
+numpy==1.26.4
 bokeh==3.9.1
