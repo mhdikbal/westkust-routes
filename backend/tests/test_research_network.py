@@ -20,11 +20,18 @@ from main import app
 from database import get_db
 
 
-def make_row(pelabuhan, tema, dekade=1700, tahun=None):
+def make_row(pelabuhan, tema, dekade=1700, tahun=None, text=None):
+    """text=None -> default disusun dari `pelabuhan` + 'sumatra barat' (jaminan
+    >=2 istilah pantai-barat unik) supaya SEMUA test lama (co-occurrence dll,
+    tak peduli soal filter relevansi) tetap lolos filter tanpa perlu isi text=
+    eksplisit. Test filter relevansi sendiri isi text= eksplisit."""
     if tahun is None and dekade is not None:
         tahun = dekade
+    if text is None:
+        text = f"{pelabuhan or ''} sumatra barat"
     return SimpleNamespace(
-        pelabuhan_disebut=pelabuhan, tema_dominan=tema, dekade=dekade, tahun=tahun
+        pelabuhan_disebut=pelabuhan, tema_dominan=tema, dekade=dekade, tahun=tahun,
+        text=text,
     )
 
 
@@ -282,5 +289,104 @@ async def test_deterministic_ordering():
         assert node_ids == sorted(node_ids)
         edge_keys = [(e["source"], e["target"]) for e in data["edges"]]
         assert edge_keys == sorted(edge_keys)
+    finally:
+        app.dependency_overrides.clear()
+
+
+# ─── Filter relevansi pantai-barat — [[feedback_register_page_contamination]] ─
+# docs/prd/prd-network-graph-aktor-tema.md §0★★★: pelabuhan_disebut tercemar
+# halaman register/indeks arsip multi-wilayah. Baris hanya lolos kalau `text`
+# SENDIRI memuat >=2 istilah pantai-barat unik, independen dari tag pelabuhan.
+
+@pytest.mark.asyncio
+async def test_offtopic_row_fully_excluded_despite_port_tag():
+    """Simulasi kontaminasi nyata: pelabuhan_disebut='Padang' tp text ttg Makassar
+    (0 istilah pantai-barat) -> tak jadi node, tak dihitung n_rows."""
+    app.dependency_overrides[get_db] = db_returning([
+        make_row(
+            "Padang", "syahbandar",
+            text="Register surat-surat Makassar: missive dari opperhoofd Jan van Oppynen "
+                 "kepada Yang Mulia di Batavia, register dari Bima dan Saleyer.",
+        ),
+    ])
+    try:
+        data = (await _get("/api/research/network-pelabuhan")).json()
+        assert _node(data, "Padang") is None
+        assert data["edges"] == []
+        assert data["meta"]["n_rows"] == 0
+        assert data["meta"]["n_filtered_relevance"] == 1
+    finally:
+        app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_single_westcoast_term_still_excluded():
+    """Cuma 1 istilah pantai-barat (di bawah ambang >=2) -> tetap tersingkir."""
+    app.dependency_overrides[get_db] = db_returning([
+        make_row(
+            "Padang; Barus", "syahbandar",
+            text="Padang disebut sekilas dalam daftar surat umum ini, tanpa rincian lain.",
+        ),
+    ])
+    try:
+        data = (await _get("/api/research/network-pelabuhan")).json()
+        assert data["nodes"] == []
+        assert data["meta"]["n_filtered_relevance"] == 1
+    finally:
+        app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_genuinely_relevant_row_passes_filter():
+    """>=2 istilah unik di text (Padang + Barus disebut eksplisit) -> lolos, edge terbentuk."""
+    app.dependency_overrides[get_db] = db_returning([
+        make_row(
+            "Padang; Barus", "syahbandar",
+            text="Surat dari komandan di Padang kepada dewan mengenai perdagangan "
+                 "kemenyan dari Barus.",
+        ),
+    ])
+    try:
+        data = (await _get("/api/research/network-pelabuhan")).json()
+        assert _edge(data, "Barus", "Padang") is not None
+        assert data["meta"]["n_rows"] == 1
+        assert data["meta"]["n_filtered_relevance"] == 0
+    finally:
+        app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_relevance_filter_applies_regardless_of_tema():
+    """Keputusan scope: filter jalan di SEMUA tema_dominan, bukan cuma
+    sengketa/syahbandar yg jadi basis validasi awal — dicoba dgn tema 'pelayaran'."""
+    app.dependency_overrides[get_db] = db_returning([
+        make_row(
+            "Padang", "pelayaran",
+            text="Daftar kapal-kapal yang berlayar dari Coromandel dan Bengale, "
+                 "tanpa keterangan lain.",
+        ),
+    ])
+    try:
+        data = (await _get("/api/research/network-pelabuhan")).json()
+        assert _node(data, "Padang") is None
+        assert data["meta"]["n_filtered_relevance"] == 1
+    finally:
+        app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_relevance_filter_meta_counts_mixed_batch():
+    """Batch campuran: n_rows + n_filtered_relevance harus konsisten dgn jumlah baris."""
+    app.dependency_overrides[get_db] = db_returning([
+        make_row("Padang; Barus", "syahbandar"),  # default text -> lolos
+        make_row(
+            "Padang", "syahbandar",
+            text="Register Ceylon, surat dari Galle, tanpa keterangan lain.",
+        ),  # off-topic -> tersingkir
+    ])
+    try:
+        data = (await _get("/api/research/network-pelabuhan")).json()
+        assert data["meta"]["n_rows"] == 1
+        assert data["meta"]["n_filtered_relevance"] == 1
     finally:
         app.dependency_overrides.clear()

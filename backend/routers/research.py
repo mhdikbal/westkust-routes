@@ -5,6 +5,7 @@ SNK-2: Sankey tema-korpus 3-tingkat (dekade -> tema_dominan -> pelabuhan).
 Sumber: tabel research_theme_rows (hasil klasifikasi zero-shot GLOBALISE +
 Dagh-register, dimuat via seed_research_tema.py). Lihat docs/prd/prd-sankey-tema-korpus.md.
 """
+import re
 from collections import defaultdict
 from itertools import combinations
 from typing import List, Literal, Optional
@@ -31,6 +32,23 @@ router = APIRouter()
 NO_YEAR_BUCKET = "Tak bertahun"
 UNKNOWN_PORT = "Tidak diketahui"
 
+# [[feedback_register_page_contamination]]: pelabuhan_disebut tercemar ~40% dari
+# halaman register/indeks arsip multi-wilayah (nama pelabuhan pantai-barat "bocor"
+# dari bagian LAIN halaman OCR yang sama, bukan dari baris itu sendiri). Daftar +
+# ambang (>=2 istilah unik) divalidasi di docs/prd/prd-network-graph-aktor-tema.md
+# §0★★★ (0 false-positive / 78% recall pilot 25 baris, 100% re-pilot 15 baris).
+WESTCOAST_TERMS = [
+    "padang", "silida", "sillida", "salido", "pariaman", "bayang",
+    "indrapoura", "inderapura", "indrapoera", "indrapoery", "indrapoury",
+    "tiku", "ticco", "air bangis", "air haji", "cingkuak", "chinco", "chinko",
+    "poeloe chinco", "barus", "sumatra barat", "sumatra's westkust", "westkust",
+    "westcust", "maningcabo", "maninghcabo", "manincabo", "sillebar",
+    "sinckal", "singkil",
+]
+_WESTCOAST_PATTERN = re.compile(
+    "|".join(re.escape(t) for t in WESTCOAST_TERMS), re.IGNORECASE
+)
+
 
 def _year_gte(value: int):
     """tahun >= value TAPI tahun IS NULL tetap ikut (tidak disenyapkan) — konsisten
@@ -46,6 +64,16 @@ def _split_ports(raw: Optional[str]):
     """FIX #2: 'Barus; Padang' -> ['Barus','Padang']; kosong -> ['Tidak diketahui']."""
     parts = [p.strip() for p in (raw or "").split(";") if p.strip()]
     return parts or [UNKNOWN_PORT]
+
+
+def _is_westcoast_relevant(text: Optional[str]) -> bool:
+    """Re-verifikasi relevansi baris LANGSUNG dari teksnya sendiri, independen dari
+    pelabuhan_disebut yang tercemar ([[feedback_register_page_contamination]]).
+    True hanya kalau >=2 istilah pantai-barat BERBEDA muncul di `text`."""
+    if not text:
+        return False
+    hits = {m.lower() for m in _WESTCOAST_PATTERN.findall(text)}
+    return len(hits) >= 2
 
 
 @router.get("/sankey-tema", response_model=SankeyResponse)
@@ -324,7 +352,11 @@ async def get_network_pelabuhan(
     'Tidak diketahui' di-exclude (bukan entitas). Filter tahun NULL-inclusive
     (konsisten SNK-2). Filter tema=exact-match: hanya baris tema itu membentuk graf
     (categorical, bukan NULL-inclusive) — dilakukan in-Python agar unit-testable via
-    mock, biaya diabaikan pada ~1k baris. Cache-aside Redis (degradasi anggun)."""
+    mock, biaya diabaikan pada ~1k baris. Filter relevansi pantai-barat (>=2 istilah
+    unik di `text`, lih. _is_westcoast_relevant) diterapkan ke SEMUA tema — keputusan
+    scope docs/prd/prd-network-graph-aktor-tema.md §0★★★ (mekanisme kontaminasi
+    level-halaman tak spesifik-tema); jumlah baris tersingkir dicatat di meta.n_filtered_relevance
+    utk audit dampak, bukan diasumsikan. Cache-aside Redis (degradasi anggun)."""
     cache_key = make_key("research_network_pelabuhan",
                          {"year_from": year_from, "year_to": year_to, "tema": tema})
     cached = await cache_get(cache_key)
@@ -341,6 +373,7 @@ async def get_network_pelabuhan(
     query = select(
         ResearchThemeRow.pelabuhan_disebut,
         ResearchThemeRow.tema_dominan,
+        ResearchThemeRow.text,
     )
     if filters:
         query = query.where(*filters)
@@ -350,8 +383,12 @@ async def get_network_pelabuhan(
     edge_tema = defaultdict(lambda: defaultdict(int))    # (a,b) -> {tema: n}
     n_rows = 0                                            # baris yang lolos filter tema
     n_multiport = 0
+    n_filtered_relevance = 0                              # baris tersingkir filter relevansi
     for row in rows:
         if tema is not None and row.tema_dominan != tema:
+            continue
+        if not _is_westcoast_relevant(row.text):
+            n_filtered_relevance += 1
             continue
         n_rows += 1
         # dedupe + buang UNKNOWN sebelum pairing; sort utk normalisasi arah edge
@@ -380,6 +417,7 @@ async def get_network_pelabuhan(
         "n_nodes": len(nodes),
         "n_edges": len(edges),
         "n_multiport": n_multiport,
+        "n_filtered_relevance": n_filtered_relevance,
     }
     payload = NetworkResponse(nodes=nodes, edges=edges, meta=meta).model_dump()
     await cache_set(cache_key, payload)
