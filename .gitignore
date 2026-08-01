@@ -13,6 +13,7 @@ build/
 .venv/
 venv/
 env/
+.venv-solver/
 
 # Django
 staticfiles/
@@ -85,3 +86,19 @@ C:*
 # diunduh manual dari Drive, bukan sumber kebenaran repo (itu data/research/) --
 # jangan commit, cek data/research/linimasa_events.csv setelah merge manual selesai
 data/export/
+
+# SALIDO-HDT solver run output -- hasil skenario CP-SAT, bukan input kanonik
+docs/enclave/implementation/solver_runs/
+*.egg-info/
+
+# SALIDO-HDT solver -- generated runtime output, never canonical input
+.env.*
+outputs/salido_hdt/
+tmp/
+temp/
+scenario_*.json
+scenario_*.csv
+validation_summary.json
+run_metadata.json
+docs/enclave/scans/
+~$*.docx
