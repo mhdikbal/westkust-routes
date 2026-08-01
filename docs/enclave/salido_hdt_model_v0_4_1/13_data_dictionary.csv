@@ -1,0 +1,177 @@
+﻿file,column,description,required,notes
+00_source_passages.csv,source_passage_id,,,Schema description to be finalized during review.
+00_source_passages.csv,docx_file,,,Schema description to be finalized during review.
+00_source_passages.csv,paragraph_index,,,Schema description to be finalized during review.
+00_source_passages.csv,style,,,Schema description to be finalized during review.
+00_source_passages.csv,text,,,Schema description to be finalized during review.
+00_source_passages.csv,review_status,,,Schema description to be finalized during review.
+00_source_passages.csv,image_verified,,,Schema description to be finalized during review.
+01_documents.csv,document_id,,,Schema description to be finalized during review.
+01_documents.csv,title,,,Schema description to be finalized during review.
+01_documents.csv,date_original,,,Schema description to be finalized during review.
+01_documents.csv,date_iso,,,Schema description to be finalized during review.
+01_documents.csv,archive_repository,,,Schema description to be finalized during review.
+01_documents.csv,archive_access,,,Schema description to be finalized during review.
+01_documents.csv,inventory_number,,,Schema description to be finalized during review.
+01_documents.csv,source_file,,,Schema description to be finalized during review.
+01_documents.csv,document_type,,,Schema description to be finalized during review.
+01_documents.csv,status,,,Schema description to be finalized during review.
+02_persons.csv,person_id,,,Schema description to be finalized during review.
+02_persons.csv,name_canonical,,,Schema description to be finalized during review.
+02_persons.csv,entity_level,,,Schema description to be finalized during review.
+02_persons.csv,source_status,,,Schema description to be finalized during review.
+02_persons.csv,identity_confidence,,,Schema description to be finalized during review.
+02_persons.csv,notes,,,Schema description to be finalized during review.
+03_roles.csv,role_id,,,Schema description to be finalized during review.
+03_roles.csv,role_original,,,Schema description to be finalized during review.
+03_roles.csv,role_description_id,,,Schema description to be finalized during review.
+03_roles.csv,role_family,,,Schema description to be finalized during review.
+04_person_roles.csv,person_role_id,,,Schema description to be finalized during review.
+04_person_roles.csv,person_id,,,Schema description to be finalized during review.
+04_person_roles.csv,role_id,,,Schema description to be finalized during review.
+04_person_roles.csv,role_original,,,Schema description to be finalized during review.
+04_person_roles.csv,valid_from,,,Schema description to be finalized during review.
+04_person_roles.csv,valid_to,,,Schema description to be finalized during review.
+04_person_roles.csv,evidence_status,,,Schema description to be finalized during review.
+04_person_roles.csv,source_document_id,,,Schema description to be finalized during review.
+04_person_roles.csv,confidence,,,Schema description to be finalized during review.
+05_locations.csv,location_id,,,Schema description to be finalized during review.
+05_locations.csv,name_original,,,Schema description to be finalized during review.
+05_locations.csv,name_normalized_id,,,Schema description to be finalized during review.
+05_locations.csv,location_type,,,Schema description to be finalized during review.
+05_locations.csv,parent_location_id,,,Schema description to be finalized during review.
+05_locations.csv,evidence_status,,,Schema description to be finalized during review.
+06_human_groups.csv,group_id,,,Schema description to be finalized during review.
+06_human_groups.csv,source_category_original,,,Schema description to be finalized during review.
+06_human_groups.csv,count,,,Schema description to be finalized during review.
+06_human_groups.csv,status_category,,,Schema description to be finalized during review.
+06_human_groups.csv,growth_category_original,,,Schema description to be finalized during review.
+06_human_groups.csv,sex_category_original,,,Schema description to be finalized during review.
+06_human_groups.csv,location_id,,,Schema description to be finalized during review.
+06_human_groups.csv,evidence_status,,,Schema description to be finalized during review.
+06_human_groups.csv,source_document_id,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,hrlt_id,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,human_or_group_id,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,entity_type,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,role_id,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,location_id,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,valid_from,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,valid_to,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,assignment_value,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,evidence_status,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,source_quote,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,source_document_id,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,confidence,,,Schema description to be finalized during review.
+07_human_role_location_time.csv,review_status,,,Schema description to be finalized during review.
+08_weekly_operations.csv,operation_id,,,Schema description to be finalized during review.
+08_weekly_operations.csv,period_start,,,Schema description to be finalized during review.
+08_weekly_operations.csv,period_end,,,Schema description to be finalized during review.
+08_weekly_operations.csv,location_id,,,Schema description to be finalized during review.
+08_weekly_operations.csv,schoten,,,Schema description to be finalized during review.
+08_weekly_operations.csv,ore_weight_lb,,,Schema description to be finalized during review.
+08_weekly_operations.csv,notes,,,Schema description to be finalized during review.
+08_weekly_operations.csv,source_document_id,,,Schema description to be finalized during review.
+08_weekly_operations.csv,evidence_status,,,Schema description to be finalized during review.
+08_weekly_operations.csv,review_status,,,Schema description to be finalized during review.
+09_assay_results.csv,assay_id,,,Schema description to be finalized during review.
+09_assay_results.csv,period_or_batch,,,Schema description to be finalized during review.
+09_assay_results.csv,ore_weight_lb,,,Schema description to be finalized during review.
+09_assay_results.csv,assayer,,,Schema description to be finalized during review.
+09_assay_results.csv,mark,,,Schema description to be finalized during review.
+09_assay_results.csv,lood,,,Schema description to be finalized during review.
+09_assay_results.csv,grein,,,Schema description to be finalized during review.
+09_assay_results.csv,gulden,,,Schema description to be finalized during review.
+09_assay_results.csv,stuiver,,,Schema description to be finalized during review.
+09_assay_results.csv,penning,,,Schema description to be finalized during review.
+09_assay_results.csv,assay_type,,,Schema description to be finalized during review.
+09_assay_results.csv,source_document_id,,,Schema description to be finalized during review.
+09_assay_results.csv,review_status,,,Schema description to be finalized during review.
+10_inventory_items.csv,inventory_item_id,,,Schema description to be finalized during review.
+10_inventory_items.csv,inventory_date,,,Schema description to be finalized during review.
+10_inventory_items.csv,location_id,,,Schema description to be finalized during review.
+10_inventory_items.csv,inventory_section,,,Schema description to be finalized during review.
+10_inventory_items.csv,category,,,Schema description to be finalized during review.
+10_inventory_items.csv,row_type,,,Schema description to be finalized during review.
+10_inventory_items.csv,quantity,,,Schema description to be finalized during review.
+10_inventory_items.csv,unit_normalized,,,Schema description to be finalized during review.
+10_inventory_items.csv,item_text_id,,,Schema description to be finalized during review.
+10_inventory_items.csv,source_translation_full,,,Schema description to be finalized during review.
+10_inventory_items.csv,condition_normalized,,,Schema description to be finalized during review.
+10_inventory_items.csv,reading_status,,,Schema description to be finalized during review.
+10_inventory_items.csv,source_document_id,,,Schema description to be finalized during review.
+10_inventory_items.csv,source_paragraph_index,,,Schema description to be finalized during review.
+10_inventory_items.csv,image_verified,,,Schema description to be finalized during review.
+10_inventory_items.csv,notes,,,Schema description to be finalized during review.
+11_claims.csv,claim_id,,,Schema description to be finalized during review.
+11_claims.csv,subject_id,,,Schema description to be finalized during review.
+11_claims.csv,predicate,,,Schema description to be finalized during review.
+11_claims.csv,object_or_value,,,Schema description to be finalized during review.
+11_claims.csv,evidence_status,,,Schema description to be finalized during review.
+11_claims.csv,evidence_quote,,,Schema description to be finalized during review.
+11_claims.csv,source_document_id,,,Schema description to be finalized during review.
+11_claims.csv,review_status,,,Schema description to be finalized during review.
+12_numeric_anomalies.csv,anomaly_id,,,Schema description to be finalized during review.
+12_numeric_anomalies.csv,metric,,,Schema description to be finalized during review.
+12_numeric_anomalies.csv,source_value,,,Schema description to be finalized during review.
+12_numeric_anomalies.csv,validation_result,,,Schema description to be finalized during review.
+12_numeric_anomalies.csv,difference,,,Schema description to be finalized during review.
+12_numeric_anomalies.csv,status,,,Schema description to be finalized during review.
+12_numeric_anomalies.csv,source_file,,,Schema description to be finalized during review.
+14_task_requirements.csv,task_id,,,Schema description to be finalized during review.
+14_task_requirements.csv,task_name,,,Schema description to be finalized during review.
+14_task_requirements.csv,task_family,,,Schema description to be finalized during review.
+14_task_requirements.csv,allowed_location_ids,,,Schema description to be finalized during review.
+14_task_requirements.csv,required_skill_ids,,,Schema description to be finalized during review.
+14_task_requirements.csv,preferred_role_ids,,,Schema description to be finalized during review.
+14_task_requirements.csv,required_tool_keywords,,,Schema description to be finalized during review.
+14_task_requirements.csv,minimum_workers_assumption,,,Schema description to be finalized during review.
+14_task_requirements.csv,constraint_strength,,,Schema description to be finalized during review.
+14_task_requirements.csv,evidence_basis,,,Schema description to be finalized during review.
+14_task_requirements.csv,review_status,,,Schema description to be finalized during review.
+15_role_location_compatibility.csv,compatibility_id,,,Schema description to be finalized during review.
+15_role_location_compatibility.csv,role_id,,,Schema description to be finalized during review.
+15_role_location_compatibility.csv,location_id,,,Schema description to be finalized during review.
+15_role_location_compatibility.csv,compatibility_score,,,Schema description to be finalized during review.
+15_role_location_compatibility.csv,constraint_type,,,Schema description to be finalized during review.
+15_role_location_compatibility.csv,evidence_basis,,,Schema description to be finalized during review.
+15_role_location_compatibility.csv,review_status,,,Schema description to be finalized during review.
+16_location_adjacency.csv,edge_id,,,Schema description to be finalized during review.
+16_location_adjacency.csv,from_location_id,,,Schema description to be finalized during review.
+16_location_adjacency.csv,to_location_id,,,Schema description to be finalized during review.
+16_location_adjacency.csv,relation_type,,,Schema description to be finalized during review.
+16_location_adjacency.csv,bidirectional,,,Schema description to be finalized during review.
+16_location_adjacency.csv,evidence_status,,,Schema description to be finalized during review.
+16_location_adjacency.csv,evidence_basis,,,Schema description to be finalized during review.
+16_location_adjacency.csv,distance_original,,,Schema description to be finalized during review.
+16_location_adjacency.csv,distance_normalized,,,Schema description to be finalized during review.
+16_location_adjacency.csv,review_status,,,Schema description to be finalized during review.
+00_source_passages.csv,source_document_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+02_persons.csv,source_document_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+02_persons.csv,source_passage_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+02_persons.csv,evidence_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+02_persons.csv,review_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+04_person_roles.csv,review_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+04_person_roles.csv,source_passage_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+05_locations.csv,normalization_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+05_locations.csv,normalization_reason,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+05_locations.csv,normalization_confidence,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+05_locations.csv,source_document_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+05_locations.csv,source_passage_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+05_locations.csv,review_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+06_human_groups.csv,source_passage_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+06_human_groups.csv,review_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+07_human_role_location_time.csv,source_passage_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+08_weekly_operations.csv,source_passage_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+09_assay_results.csv,evidence_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+09_assay_results.csv,source_passage_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+10_inventory_items.csv,unit_original,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+10_inventory_items.csv,normalization_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+10_inventory_items.csv,normalization_reason,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+10_inventory_items.csv,normalization_confidence,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+10_inventory_items.csv,condition_original,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+10_inventory_items.csv,evidence_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+10_inventory_items.csv,review_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+11_claims.csv,source_passage_id,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+16_location_adjacency.csv,normalization_status,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+16_location_adjacency.csv,normalization_reason,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."
+16_location_adjacency.csv,normalization_confidence,,,"Added v0.4 (schema requirement, see V0_4_MIGRATION_PLAN.md). Left empty for all pre-v0.4 rows -- not inferred, not invented. Population is a queued human-review task (REVIEW_QUEUE.md)."

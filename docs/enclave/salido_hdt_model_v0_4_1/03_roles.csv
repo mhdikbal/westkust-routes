@@ -1,0 +1,23 @@
+﻿role_id,role_original,role_description_id,role_family
+R-BERGHOOPTMAN,Berghooftman,kepala teknis pertambangan,TechnicalMining
+R-MARKSCHEIDER,Marckscheijder,ahli ukur dan orientasi tambang,TechnicalMining
+R-ASSAIJEUR,Assaijeur,penguji kadar emas dan perak,TechnicalMining
+R-BERGHSCHRIJVER,Berghschrijver,juru tulis tambang,Administration
+R-OPPERSTEIJGER,Oppersteijger,pengawas senior bawah tanah,TechnicalMining
+R-BERGWERKER,Bergwerker,pekerja tambang,Production
+R-BAAS-SMIT,Baas Smit,kepala pandai besi,Craft
+R-SMIT,Smit,pandai besi,Craft
+R-TIMMERMAN,Timmerman,tukang kayu,Craft
+R-WAGENMAKER,Wagenmaker,pembuat kereta,Craft
+R-VOERMAN,Voerman,kusir atau pengangkut,Logistics
+R-RUIJTER,Ruijter,prajurit berkuda,Military
+R-SIECKENVADER,Sieckenvader,pengelola perawatan orang sakit,Medical
+R-OPPERMEESTER,Oppermeester,petugas medis senior,Medical
+R-JONGEN-CHIRURGIJN,Jongen Chirurgijn,asisten ahli bedah,Medical
+R-PACKHUIJSKNEGT,Packhuijsknegt,pembantu gudang,Logistics
+R-MANDOOR,Mandoor,pengawas kelompok kerja paksa,CoercedLabourHierarchy
+R-MANDORESS,Mandores,pengawas perempuan dalam kelompok kerja paksa,CoercedLabourHierarchy
+R-VOORSLAGER,Voorslager,fungsi kerja historis; definisi belum final,CoercedLabourHierarchy
+R-COMMANDEUR,Commandeur,kepala pemerintahan regional VOC,Governance
+R-BOOKKEEPER,Boekhouder,pemegang buku,Administration
+R-COOLBRANDER,Coolbrander,pembuat arang,Craft

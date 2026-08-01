@@ -1,0 +1,7 @@
+﻿claim_id,subject_id,predicate,object_or_value,evidence_status,evidence_quote,source_document_id,source_passage_id,review_status
+CL-001,P-VOGEL,performs_role,R-ASSAIJEUR,explicit,Johan Willem Vogel Assaijeur,DOC-PROTOCOL-1682,,seed_from_docx
+CL-002,P-PLEIJTNER,performs_role,R-MARKSCHEIDER,explicit,Johan Pleijtner Marckscheijder,DOC-PROTOCOL-1682,,seed_from_docx
+CL-003,G-MADA-64,arrived_from,L-MADAGASCAR,explicit_route,met de fluijt Sillida van Madagascar aangekomen slaven,DOC-PROTOCOL-1682,,seed_from_docx
+CL-004,G-HWJ-6,classified_as,halfwasse cleene jongens,explicit,6 halfwasse cleene jongens,DOC-PROTOCOL-1682,,seed_from_docx
+CL-005,L-PRINCESTOLLE,inventory_contains,15 berghlampen,explicit,15 Bergelampen,DOC-PROTOCOL-1682,,seed_from_docx
+CL-006,L-ZUIJDER-SCHACHT,inventory_contains,6 berghlampen,explicit,6 Berghlampen,DOC-PROTOCOL-1682,,seed_from_docx

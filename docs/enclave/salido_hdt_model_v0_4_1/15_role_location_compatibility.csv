@@ -1,0 +1,32 @@
+﻿compatibility_id,role_id,location_id,compatibility_score,constraint_type,evidence_basis,review_status
+RLC-0001,R-OPPERSTEIJGER,L-OUDE-MIJNE,0.95,soft,jabatan bawah tanah; lokasi individu tidak selalu eksplisit,model_input_v0.2
+RLC-0002,R-BERGWERKER,L-OUDE-MIJNE,0.9,soft,pekerja tambang dan inventaris bawah tanah,model_input_v0.2
+RLC-0003,R-OPPERSTEIJGER,L-ZUIJDER-SCHACHT,0.95,soft,jabatan bawah tanah; lokasi individu tidak selalu eksplisit,model_input_v0.2
+RLC-0004,R-BERGWERKER,L-ZUIJDER-SCHACHT,0.9,soft,pekerja tambang dan inventaris bawah tanah,model_input_v0.2
+RLC-0005,R-OPPERSTEIJGER,L-PRINCESTOLLE,0.95,soft,jabatan bawah tanah; lokasi individu tidak selalu eksplisit,model_input_v0.2
+RLC-0006,R-BERGWERKER,L-PRINCESTOLLE,0.9,soft,pekerja tambang dan inventaris bawah tanah,model_input_v0.2
+RLC-0007,R-OPPERSTEIJGER,L-ORTEN,0.95,soft,jabatan bawah tanah; lokasi individu tidak selalu eksplisit,model_input_v0.2
+RLC-0008,R-BERGWERKER,L-ORTEN,0.9,soft,pekerja tambang dan inventaris bawah tanah,model_input_v0.2
+RLC-0009,R-MARKSCHEIDER,L-PRINCESTOLLE,1.0,hard_when_event_specific,Pleitner memeriksa Princestolle dan peta tambang,model_input_v0.2
+RLC-0010,R-MARKSCHEIDER,L-OUDE-MIJNE,1.0,hard_when_event_specific,Pleitner memeriksa Oude Mijne,model_input_v0.2
+RLC-0011,R-MARKSCHEIDER,L-SALIDO,1.0,hard,jabatan dan keberadaan eksplisit,model_input_v0.2
+RLC-0012,R-ASSAIJEUR,L-ASSAY-LAB,1.0,hard_for_assay,fungsi assay dan peralatan,model_input_v0.2
+RLC-0013,R-ASSAIJEUR,L-POULO-CHINCO,1.0,hard_for_roelingh,Willem Roelingh eksplisit di Pulo Chinco,model_input_v0.2
+RLC-0014,R-ASSAIJEUR,L-SALIDO,1.0,hard_for_hoffman_vogel,Hoffman dan Vogel eksplisit,model_input_v0.2
+RLC-0015,R-BERGHSCHRIJVER,L-SALIDO,1.0,hard,Elias Hesse eksplisit,model_input_v0.2
+RLC-0016,R-SMIT,L-SMITSWINCKEL,1.0,hard,bengkel dan daftar pandai besi,model_input_v0.2
+RLC-0017,R-BAAS-SMIT,L-SMITSWINCKEL,1.0,hard,kepala pandai besi,model_input_v0.2
+RLC-0018,R-TIMMERMAN,L-SALIDO,0.95,soft,"tukang kayu eksplisit, lokasi kerja berubah",model_input_v0.2
+RLC-0019,R-WAGENMAKER,L-PAERDESTALL,0.75,soft,kedekatan fungsi dengan kereta dan kandang,model_input_v0.2
+RLC-0020,R-WAGENMAKER,L-SALIDO,0.95,soft,fungsi eksplisit di enklave,model_input_v0.2
+RLC-0021,R-VOERMAN,L-PAERDESTALL,0.8,soft,fungsi transportasi dan kandang,model_input_v0.2
+RLC-0022,R-OPPERMEESTER,L-SIECKENHUIJS,1.0,hard_for_pieter_van_raden,jabatan eksplisit di rumah sakit,model_input_v0.2
+RLC-0023,R-JONGEN-CHIRURGIJN,L-SIECKENHUIJS,0.95,soft,jabatan medis; lokasi sangat kuat,model_input_v0.2
+RLC-0024,R-SIECKENVADER,L-SIECKENHUIJS,1.0,hard,fungsi rumah sakit,model_input_v0.2
+RLC-0025,R-PACKHUIJSKNEGT,L-PACKHUIJS,1.0,hard,jabatan gudang,model_input_v0.2
+RLC-0026,R-MANDOOR,L-BENEDEN-PAGGER,1.0,hard_group_location,kelompok dicatat dalam Beneden-Pagger,model_input_v0.2
+RLC-0027,R-MANDOOR,L-ORTEN,0.55,interpreted,"lampu berada pada budak di Orten, identitas kelompok tidak diketahui",model_input_v0.2
+RLC-0028,R-MANDORESS,L-BENEDEN-PAGGER,1.0,hard_group_location,kelompok dicatat dalam Beneden-Pagger,model_input_v0.2
+RLC-0029,R-MANDORESS,L-ORTEN,0.55,interpreted,"lampu berada pada budak di Orten, identitas kelompok tidak diketahui",model_input_v0.2
+RLC-0030,R-VOORSLAGER,L-BENEDEN-PAGGER,1.0,hard_group_location,kelompok dicatat dalam Beneden-Pagger,model_input_v0.2
+RLC-0031,R-VOORSLAGER,L-ORTEN,0.55,interpreted,"lampu berada pada budak di Orten, identitas kelompok tidak diketahui",model_input_v0.2

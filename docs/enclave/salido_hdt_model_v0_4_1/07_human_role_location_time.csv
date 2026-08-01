@@ -1,0 +1,16 @@
+﻿hrlt_id,human_or_group_id,entity_type,role_id,location_id,valid_from,valid_to,assignment_value,evidence_status,source_quote,source_document_id,source_passage_id,confidence,review_status
+HRLT-0001,P-VOGEL,individual,R-ASSAIJEUR,L-SALIDO,1681-12-29,1682-04-30,1.0,explicit,Johan Willem Vogel Assaijeur,DOC-PROTOCOL-1682,,1.0,seed_from_research_docx
+HRLT-0002,P-PLEIJTNER,individual,R-MARKSCHEIDER,L-SALIDO,1681-12-29,1682-04-30,1.0,explicit,Johan Pleijtner Marckscheijder,DOC-PROTOCOL-1682,,1.0,seed_from_research_docx
+HRLT-0003,P-HESSE,individual,R-BERGHSCHRIJVER,L-SALIDO,1681-12-29,1682-04-30,1.0,explicit,Elias Hesse Berghschrijver,DOC-PERSONNEL-1682-01-09,,1.0,seed_from_research_docx
+HRLT-0004,P-HOFFMAN,individual,R-ASSAIJEUR,L-SALIDO,1682-01-04,1682-04-30,1.0,explicit,Johan Hoffman Assaijeur,DOC-PERSONNEL-1682-01-09,,1.0,seed_from_research_docx
+HRLT-0005,P-ROELINGH,individual,R-ASSAIJEUR,L-POULO-CHINCO,1682-01-04,,1.0,explicit,Op Poulo Chinco onder den Assaijeur Willem Roelingh,DOC-INVENTORY-1682-01-04,,1.0,seed_from_research_docx
+HRLT-0006,G-MS-121,aggregate_group,,L-BENEDEN-PAGGER,1682-01-06,,1.0,explicit,Lijfeijgenen in de mijns Beneden-Pagger,DOC-PERSONNEL-1682-01-09,SP-01236,1.0,seed_from_research_docx
+HRLT-0007,G-HWJ-6,aggregate_group,,L-BENEDEN-PAGGER,1682-01-06,,1.0,explicit,Lijfeijgenen in de mijns Beneden-Pagger,DOC-PERSONNEL-1682-01-09,SP-01236,1.0,seed_from_research_docx
+HRLT-0008,G-KJ-4,aggregate_group,,L-BENEDEN-PAGGER,1682-01-06,,1.0,explicit,Lijfeijgenen in de mijns Beneden-Pagger,DOC-PERSONNEL-1682-01-09,SP-01236,1.0,seed_from_research_docx
+HRLT-0009,G-COND-3,aggregate_group,,L-BENEDEN-PAGGER,1682-01-06,,1.0,explicit,Lijfeijgenen in de mijns Beneden-Pagger,DOC-PERSONNEL-1682-01-09,SP-01236,1.0,seed_from_research_docx
+HRLT-0010,G-MANDOOR-8,aggregate_group,,L-BENEDEN-PAGGER,1682-01-06,,1.0,explicit,Lijfeijgenen in de mijns Beneden-Pagger,DOC-PERSONNEL-1682-01-09,SP-01236,1.0,seed_from_research_docx
+HRLT-0011,G-VOORSLAGER-1,aggregate_group,,L-BENEDEN-PAGGER,1682-01-06,,1.0,explicit,Lijfeijgenen in de mijns Beneden-Pagger,DOC-PERSONNEL-1682-01-09,SP-01236,1.0,seed_from_research_docx
+HRLT-0012,G-SLAVIN-68,aggregate_group,,L-BENEDEN-PAGGER,1682-01-06,,1.0,explicit,Lijfeijgenen in de mijns Beneden-Pagger,DOC-PERSONNEL-1682-01-09,SP-01236,1.0,seed_from_research_docx
+HRLT-0013,G-MANDORESS-3,aggregate_group,,L-BENEDEN-PAGGER,1682-01-06,,1.0,explicit,Lijfeijgenen in de mijns Beneden-Pagger,DOC-PERSONNEL-1682-01-09,SP-01236,1.0,seed_from_research_docx
+HRLT-0014,G-CHILD-KOST-4,aggregate_group,,L-BENEDEN-PAGGER,1682-01-06,,1.0,explicit,Lijfeijgenen in de mijns Beneden-Pagger,DOC-PERSONNEL-1682-01-09,SP-01236,1.0,seed_from_research_docx
+HRLT-0015,G-CHILD-NOKOST-19,aggregate_group,,L-BENEDEN-PAGGER,1682-01-06,,1.0,explicit,Lijfeijgenen in de mijns Beneden-Pagger,DOC-PERSONNEL-1682-01-09,SP-01236,1.0,seed_from_research_docx

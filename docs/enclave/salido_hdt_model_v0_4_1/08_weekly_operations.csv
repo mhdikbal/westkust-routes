@@ -1,0 +1,43 @@
+﻿operation_id,period_start,period_end,location_id,schoten,ore_weight_lb,notes,source_document_id,source_passage_id,evidence_status,review_status
+OP-001,1682-01-04,1682-01-10,L-ZZW-DAGGANG,13,135,source combines weekly ore from works; review location allocation,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-002,1682-01-04,1682-01-10,L-PRINCESTOLLE,24,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-003,1682-01-11,1682-01-17,L-ZZW-DAGGANG,25,318,ore described from Zuijder-schagt,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-004,1682-01-11,1682-01-17,L-PRINCESTOLLE,17,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-005,1682-01-19,1682-01-24,L-ZZW-DAGGANG,27,359,ore described from Zuijderwerck,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-006,1682-01-19,1682-01-24,L-PRINCESTOLLE,27,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-007,1682-01-26,1682-01-31,L-SUIJDERWERCK,19,438,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-008,1682-01-26,1682-01-31,L-PRINCESTOLLE,25,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-009,1682-02-02,1682-02-07,L-SUIJDERWERCK,19,334,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-010,1682-02-02,1682-02-07,L-PRINCESTOLLE,30,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-011,1682-02-09,1682-02-14,L-ZZW-DAGGANG,22,397,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-012,1682-02-09,1682-02-14,L-PRINCESTOLLE,27,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-013,1682-02-18,1682-02-21,L-OUDE-MIJNE,113,103,13 lb first + 90 lb second,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-014,1682-02-18,1682-02-21,L-ZZW-DAGGANG,20,326,Zuijderwerck first class,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-015,1682-02-18,1682-02-21,L-PRINCESTOLLE,24,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-016,1682-02-23,1682-02-28,L-OUDE-MIJNE,162,351,58 + 293,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-017,1682-02-23,1682-02-28,L-SUIJDERWERCK,19,329,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-018,1682-02-23,1682-02-28,L-PRINCESTOLLE,17,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-019,1682-03-02,1682-03-07,L-OUDE-MIJNE,160,460,55 + 405,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-020,1682-03-02,1682-03-07,L-SUIJDERWERCK,36,425,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-021,1682-03-02,1682-03-07,L-PRINCESTOLLE,28,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-022,1682-03-09,1682-03-14,L-OUDE-MIJNE,160,556,69 + 487,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-023,1682-03-09,1682-03-14,L-SUIJDERWERCK,44,531,reported total conflicts with components,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-024,1682-03-09,1682-03-14,L-PRINCESTOLLE,36,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-025,1682-03-15,1682-03-21,L-OUDE-MIJNE,164,638,109 + 529,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-026,1682-03-15,1682-03-21,L-SUIJDERWERCK,48,558,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-027,1682-03-15,1682-03-21,L-PRINCESTOLLE,32,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-028,1682-03-22,1682-03-28,L-OUDE-MIJNE,160,402,34 + 368,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-029,1682-03-22,1682-03-28,L-SUIJDERWERCK,40,533,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-030,1682-03-22,1682-03-28,L-PRINCESTOLLE,28,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-031,1682-03-29,1682-04-04,L-OUDE-MIJNE,162,360,28 + 332,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-032,1682-03-29,1682-04-04,L-SUIJDERWERCK,36,541,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-033,1682-03-29,1682-04-04,L-PRINCESTOLLE,18,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-034,1682-04-05,1682-04-11,L-OUDE-MIJNE,162,351,17 + 334,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-035,1682-04-05,1682-04-11,L-SUIJDERWERCK,40,595,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-036,1682-04-05,1682-04-11,L-PRINCESTOLLE,23,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-037,1682-04-12,1682-04-18,L-OUDE-MIJNE,160,463,39 + 424,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-038,1682-04-12,1682-04-18,L-SUIJDERWERCK,46,519,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-039,1682-04-12,1682-04-18,L-PRINCESTOLLE,26,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-040,1682-04-19,1682-04-25,L-OUDE-MIJNE,162,642,35 + 607,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-041,1682-04-19,1682-04-25,L-SUIJDERWERCK,36,507,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link
+OP-042,1682-04-19,1682-04-25,L-PRINCESTOLLE,24,,,DOC-PROTOCOL-1682,,explicit_or_translated,needs_folio_link

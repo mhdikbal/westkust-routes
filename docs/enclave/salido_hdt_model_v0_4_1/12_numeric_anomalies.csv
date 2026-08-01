@@ -1,0 +1,6 @@
+﻿anomaly_id,metric,source_value,validation_result,difference,status,source_file
+AN-001,schoten cumulative to 25 April,2961,1565+490+406=2461,500,needs_image_review,enklave-salido.docx
+AN-002,9-14 March ore total,1017,556+531=1087,70,needs_image_review,enklave-salido.docx
+AN-003,March Hoffman value early week,905:12:11,appears inconsistent with paired assay and surrounding values,,needs_image_review,enklave-salido.docx
+AN-004,Vogel assay 5-11 April,1 m:r 14 l:t 7 g:r,monetary value suggests missing leading digit,,needs_image_review,enklave-salido.docx
+AN-005,children without kostgelt,9 in one extraction,19 required to reconcile stated total 94 and supported by parallel copy,10,parallel_reading,enklave-salido.docx

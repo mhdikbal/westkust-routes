@@ -1,0 +1,23 @@
+﻿edge_id,from_location_id,to_location_id,relation_type,bidirectional,evidence_status,evidence_basis,distance_original,distance_normalized,normalization_status,normalization_reason,normalization_confidence,review_status
+LE-0001,L-SALIDO,L-BOVEN-PAGGER,contains,false,explicit,Boven-Pagger dalam kompleks tambang,,,,,,model_input_v0.2
+LE-0002,L-SALIDO,L-BENEDEN-PAGGER,contains,false,explicit,Beneden-Pagger dalam kompleks tambang,,,,,,model_input_v0.2
+LE-0003,L-SALIDO,L-OUDE-MIJNE,contains,false,explicit_or_structural,lokasi disebut sebagai bagian enklave,,,,,,model_input_v0.2
+LE-0004,L-SALIDO,L-ZUIJDER-SCHACHT,contains,false,explicit_or_structural,lokasi disebut sebagai bagian enklave,,,,,,model_input_v0.2
+LE-0005,L-SALIDO,L-SUIJDERWERCK,contains,false,explicit_or_structural,lokasi disebut sebagai bagian enklave,,,,,,model_input_v0.2
+LE-0006,L-SALIDO,L-PRINCESTOLLE,contains,false,explicit_or_structural,lokasi disebut sebagai bagian enklave,,,,,,model_input_v0.2
+LE-0007,L-SALIDO,L-SMITSWINCKEL,contains,false,explicit_or_structural,lokasi disebut sebagai bagian enklave,,,,,,model_input_v0.2
+LE-0008,L-SALIDO,L-SIECKENHUIJS,contains,false,explicit_or_structural,lokasi disebut sebagai bagian enklave,,,,,,model_input_v0.2
+LE-0009,L-SALIDO,L-PAERDESTALL,contains,false,explicit_or_structural,lokasi disebut sebagai bagian enklave,,,,,,model_input_v0.2
+LE-0010,L-SALIDO,L-PACKHUIJS,contains,false,explicit_or_structural,lokasi disebut sebagai bagian enklave,,,,,,model_input_v0.2
+LE-0011,L-SALIDO,L-OPPERHOOFTSWONING,contains,false,explicit_or_structural,lokasi disebut sebagai bagian enklave,,,,,,model_input_v0.2
+LE-0012,L-BOVEN-PAGGER,L-ASSAY-LAB,contains,false,explicit,peralatan assay di bagian atas tambang,,,,,,model_input_v0.2
+LE-0013,L-BOVEN-PAGGER,L-SCHEIJDEBANCK,contains,false,explicit,scheijdebanck boven in de mijn,,,,,,model_input_v0.2
+LE-0014,L-BENEDEN-PAGGER,L-STAMPWERK,contains,false,explicit,stampwerk pada pagger bawah,,,,,,model_input_v0.2
+LE-0015,L-OUDE-MIJNE,L-OUDE-STOLLE,contains,false,explicit,Oude Stolle,,,,,,model_input_v0.2
+LE-0016,L-SALIDO,L-ORTEN,contains,false,explicit,Orten dalam tambang,,,,,,model_input_v0.2
+LE-0017,L-PRINCESTOLLE,L-MALEIJTS-ORT,approaches_or_audibly_connected,false,interpreted_from_explicit_report,suara pengeboran terdengar dan jarak diperkirakan,,,,,,model_input_v0.2
+LE-0018,L-PRINCESTOLLE,L-ZUIJDER-SCHACHT,topological_relation_unknown,true,uncertain,"hubungan operasi ada, geometri belum pasti",,,,,,model_input_v0.2
+LE-0019,L-SUIJDERWERCK,L-ZUIJDER-SCHACHT,associated_with,true,strong_interpretation,istilah produksi bergantian dalam protokol,,,,,,model_input_v0.2
+LE-0020,L-SALIDO,L-POULO-CHINCO,regional_route,true,explicit,perjalanan personel dan administrasi,,,,,,model_input_v0.2
+LE-0021,L-POULO-CHINCO,L-BATAVIA,shipping_route,true,explicit,jalur pengiriman dan penerimaan,,,,,,model_input_v0.2
+LE-0022,L-MADAGASCAR,L-SALIDO,coerced_mobility_route,false,explicit_route,kapal Sillida dari Madagaskar; rute antara belum lengkap,,,,,,model_input_v0.2

@@ -1,0 +1,19 @@
+﻿task_id,task_name,task_family,allowed_location_ids,required_skill_ids,preferred_role_ids,required_tool_keywords,minimum_workers_assumption,constraint_strength,evidence_basis,review_status
+T-INSPECT-MINE,Memeriksa tambang,technical_inspection,L-OUDE-MIJNE|L-ZUIJDER-SCHACHT|L-PRINCESTOLLE|L-ORTEN,mine_survey|underground_inspection,R-MARKSCHEIDER|R-OPPERSTEIJGER,berghlampen|compas|passer,1,hard_role_soft_tools,Pleitner secara eksplisit memeriksa tambang,model_input_v0.2
+T-DRILL,Mengebor batuan,production,L-OUDE-MIJNE|L-ZUIJDER-SCHACHT|L-PRINCESTOLLE|L-ORTEN,drilling,R-BERGWERKER,boor|boorens|boorers,1,hard_location_soft_staffing,Jumlah tim simultan dibatasi jumlah bor serviceable,model_input_v0.2
+T-BLAST,Melakukan schoot,production,L-OUDE-MIJNE|L-ZUIJDER-SCHACHT|L-PRINCESTOLLE|L-ORTEN,blasting,R-OPPERSTEIJGER|R-BERGWERKER,boor|moocker|kruijt,1,soft,Jumlah pekerja per schoot tidak eksplisit,model_input_v0.2
+T-TIMBER,Penyanggaan kayu,production,L-OUDE-MIJNE|L-ZUIJDER-SCHACHT|L-PRINCESTOLLE,timbering|carpentry,R-TIMMERMAN|R-BERGWERKER,bijl|hout|hamer,1,soft,Penyanggaan schacht dan tambang lama eksplisit,model_input_v0.2
+T-ORE-REMOVE,Mengeluarkan batuan pecah,production,L-OUDE-MIJNE|L-ZUIJDER-SCHACHT|L-PRINCESTOLLE|L-ORTEN,ore_removal,R-BERGWERKER,kratsen|berghijsers|kruijwagen,1,soft,Rantai kerja diinferensikan dari alat dan produksi,model_input_v0.2
+T-ORE-TRANSPORT,Mengangkut bijih,logistics,L-ORTEN|L-PACKHUIJS|L-SCHEIJDEBANCK|L-STAMPWERK,transport,R-VOERMAN|R-BERGWERKER,kruijwagen|vragtwagen,1,soft,Lokasi memiliki kereta dorong dan kendaraan,model_input_v0.2
+T-SORT,Memilah bijih,processing,L-SCHEIJDEBANCK|L-PACKHUIJS,ore_sorting,R-BERGWERKER,scheijdehamer|scheijdebanck,1,soft,Jenis pertama dan kedua dicatat,model_input_v0.2
+T-CRUSH,Menumbuk bijih,processing,L-STAMPWERK,ore_crushing,R-BERGWERKER,stamper|stampwerk|waterrad,1,hard_location_soft_staffing,Stampwerk berada di Beneden-Pagger,model_input_v0.2
+T-WASH,Mencuci bijih atau schlam,processing,L-SCHEIJDEBANCK,ore_washing,R-BERGWERKER,slamback|waterkit,1,soft,Scheijdebanck dan schlam eksplisit,model_input_v0.2
+T-ASSAY,Menguji kadar bijih,assay,L-ASSAY-LAB|L-POULO-CHINCO,assay|weighing,R-ASSAIJEUR,probeeroven|probeerwagen|assaijgewigt,1,hard,"Hoffman, Vogel, Roelingh disebut Assaijeur",model_input_v0.2
+T-RECORD,Mencatat pekerjaan tambang,administration,L-BOVEN-PAGGER|L-SALIDO,recordkeeping,R-BERGHSCHRIJVER,,1,hard_role,Elias Hesse disebut Berghschrijver,model_input_v0.2
+T-SMITH,Menempa atau memperbaiki alat,craft,L-SMITSWINCKEL,smithing,R-BAAS-SMIT|R-SMIT,hembeeld|blaesbalck|smeetang,1,hard_location,Bengkel pandai besi dan pekerja eksplisit,model_input_v0.2
+T-CARPENTRY,Pekerjaan kayu,craft,L-SALIDO|L-BENEDEN-PAGGER|L-BOVEN-PAGGER,carpentry,R-TIMMERMAN,saegh|bijl|dissel,1,soft,Tukang kayu eksplisit,model_input_v0.2
+T-WAGON,Membuat atau memperbaiki kereta,craft,L-PAERDESTALL|L-SALIDO,wagonmaking,R-WAGENMAKER,avegaer|swijmes|swijbanck,1,soft,Wagenmaker dan alat eksplisit,model_input_v0.2
+T-MEDICAL,Perawatan medis,medical,L-SIECKENHUIJS|L-BOVEN-PAGGER|L-BENEDEN-PAGGER,medical_care,R-OPPERMEESTER|R-JONGEN-CHIRURGIJN|R-SIECKENVADER,lancet|salfpot|clisteersiering|medicament,1,hard_role_soft_location,Personel dan alat medis eksplisit,model_input_v0.2
+T-WAREHOUSE,Mengelola gudang,logistics,L-PACKHUIJS,warehouse,R-PACKHUIJSKNEGT|R-BOOKKEEPER,,1,hard_location,Packhuijsknegt dan gudang eksplisit,model_input_v0.2
+T-CHARCOAL,Membuat arang,craft,L-SALIDO,charcoal_burning,R-COOLBRANDER,trecksaegh|bijl,1,soft,Coolbrander dan alat eksplisit,model_input_v0.2
+T-SUPERVISE,Mengawasi kelompok kerja,supervision,L-SALIDO|L-BENEDEN-PAGGER|L-ORTEN,supervision,R-MANDOOR|R-MANDORESS|R-VOORSLAGER|R-OPPERSTEIJGER,,1,soft,"Kategori pengawas eksplisit, penempatan rinci tidak selalu eksplisit",model_input_v0.2
