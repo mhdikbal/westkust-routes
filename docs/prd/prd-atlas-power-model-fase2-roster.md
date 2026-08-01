@@ -68,6 +68,30 @@ Berbeda dari Fase 1 (yang butuh migrasi skema + kolom baru), Fase 2 **tidak butu
 
 ---
 
+## 5b. Verifikasi Silang Status Tarusan (2026-07-31 — next-step #4 riset Aktor Siri Nara)
+
+**Konteks:** §1 baris 2 PRD ini menganggap Tarusan cuma "sebagian diproxy" ke Bayang lewat **1 event tunggal** (id 94, 1755). Riset paralel `prd-aktor-siri-nara-riset-kronologi.md` §2 menemukan "Radja Troushan" muncul independen di surat DR 1666 (hlm.307, jaringan koalisi 18-negeri) — memicu pertanyaan: apakah 1666 ini titik data independen yg cukup kuat utk menaikkan Tarusan dari proxy jadi entitas roster sendiri?
+
+**Hasil verifikasi silang thd `data/research/linimasa_events.csv`: BUKAN CUMA 1 event — ada 4 rekaman independen membentang 89 tahun, dgn 2 proxy fort yg BEDA-BEDA (inkonsistensi internal):**
+
+| Baris CSV | Tahun | Rekam sbg | Fort proxy skrg | Sumber | Catatan |
+|---|---|---|---|---|---|
+| #44 | 1667 (asli) | "radja van Trousang" — co-signatory SEJAJAR Sultan Bajang & Sultan Indrapoura, menyerahkan Sillida+P.Cingkuak ke VOC | **Pulau Cingkuak** | CD2, traktat CCCXVI | Radja Troushan bukan pihak pasif — penandatangan setara 2 sultan lain. |
+| #43 | 1667 (disalin ulang 1681) | Akta SAMA, tp via pipeline korpus beda — Tarusan disebut **"Sultan Besaar (Trosang)"** | **Salido** | korpus_tema_slim (sumber 1681) | Gelar "Sultan Besaar" (Sultan Agung) LEBIH TINGGI dari sekadar "radja" — duplikat akta yg sama diproxy ke fort BEDA dari baris #44. |
+| — | 1666 (Juni) | "Radja Troushan" dlm daftar koalisi 18-negeri (blm ada di linimasa_events, temuan raw DR) | *(tak ada di DB)* | DR mentah hlm.307 | Temuan riset aktor Siri Nara §2 — independen dari 2 akta 1667 di atas (surat beda, ~1 tahun lebih awal). |
+| #104 | 1755 | "koning Troussang" — raja penuh, traktat langsung atas nama sendiri | **Bayang** | CD6, traktat CMLX | Satu-satunya yg sebelumnya diketahui PRD ini. |
+
+**Kesimpulan: YA, bukti CUKUP KUAT utk menjadikan Tarusan entitas roster sendiri, bukan proxy** — 3 alasan:
+1. **4 titik data independen, 1666-1755 (89 tahun)** — bukan 1 event kebetulan, tp pola berulang lintas generasi penguasa.
+2. **Gelar penguasa Tarusan naik dari "radja" (1666-67) → "Sultan Besaar" (versi 1681) → "koning" (1755)** — pola penguatan status formal seiring waktu, khas negeri berdaulat, bukan sekadar sub-wilayah.
+3. **Inkonsistensi proxy yg sudah ada MEMBUKTIKAN masalahnya**: akta 1667 yg SAMA diproxy ke 2 fort berbeda (Pulau Cingkuak vs Salido) tergantung pipeline sumbernya — tanda proxy geografis sudah tak konsisten & butuh titik sendiri drpd terus dipaksa ke tetangga.
+
+**Implikasi utk §2 (Backlog Roster) & §4 (Perubahan Dibutuhkan):** tambahkan **Tarusan** sbg entitas ke-6 di §2 (bukan cuma proxy Bayang) — akan menyerap kembali baris #43, #44, #104 (3 event, bukan 1) plus event 1666 kalau nanti dipromosikan ke `linimasa_events`. Lokasi historis Tarusan (kecamatan modern ~selatan Painan/Bayang, area Mandeh) kemungkinan besar TIDAK berimpit dgn koordinat 4 fort tetangga yg sudah ada (Pulau Cingkuak -1.353/100.559, Salido -1.337/100.572, Bayang -1.302/100.506, Painan -1.350/100.564 — semua rapat, area Tarusan riil lebih ke selatan) — butuh riset lat/lon historis terpisah, bukan reuse titik yg ada.
+
+**Belum dikerjakan (di luar scope verifikasi ini):** riset lat/lon Tarusan definitif, keputusan apakah re-atribusi baris #43/#44/#104 dari fort proxy ke Tarusan baru itu breaking change utk data existing (perlu migrasi ulang `fort_id`), dan apakah event 1666 (msh raw, blm masuk `linimasa_events`) layak dipromosikan sbg baris baru.
+
+---
+
 ## 6. Pertanyaan Terbuka
 
 1. **Prioritas eksekusi** — riset lat/lon 5 entitas sekaligus, atau bertahap (mis. Natal dulu krn sudah jadi contoh eksplisit di PRD Fase 1, lalu Nias krn densitas tertinggi)?
