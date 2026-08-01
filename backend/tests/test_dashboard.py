@@ -23,6 +23,7 @@ from main import app
 
 FAKE_DASHBOARD = {
     "markov": {"script": "<script>markov</script>", "div": "<div>markov</div>"},
+    "hawkes": {"script": "<script>hawkes</script>", "div": "<div>hawkes</div>"},
     "dynamics": {"script": "<script>dynamics</script>", "div": "<div>dynamics</div>"},
     "game_theory": {"script": "<script>gt</script>", "div": "<div>gt</div>"},
 }
@@ -36,8 +37,8 @@ async def test_pemodelan_dashboard_happy_path():
             res = await client.get("/api/research/pemodelan-dashboard")
     assert res.status_code == 200
     body = res.json()
-    assert set(body.keys()) == {"markov", "dynamics", "game_theory"}
-    for key in ("markov", "dynamics", "game_theory"):
+    assert set(body.keys()) == {"markov", "hawkes", "dynamics", "game_theory"}
+    for key in ("markov", "hawkes", "dynamics", "game_theory"):
         assert body[key]["script"]
         assert body[key]["div"]
 

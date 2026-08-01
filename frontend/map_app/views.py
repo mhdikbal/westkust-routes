@@ -148,13 +148,13 @@ def riset_atjeh(request):
 
 
 def riset_pemodelan(request):
-    """Dashboard Bokeh interaktif Model 2/5/6 (thesis-only, /riset/pemodelan).
+    """Dashboard Bokeh interaktif Model 2/3/5/6 (thesis-only, /riset/pemodelan).
     Beda dari riset_tema/riset_jaringan/riset_atjeh (client-side fetch JSON):
     SSR httpx.get() sinkron ke /api/research/pemodelan-dashboard (pola sama
     linimasa()), krn payloadnya berupa fragmen HTML/JS Bokeh siap-embed
     (script+div), bukan data mentah yg dirender ulang di JS. noindex + tidak
     di navbar publik (konsisten semua /riset/*). Identitas visual salido.my.id."""
-    dashboard = {"markov": None, "dynamics": None, "game_theory": None}
+    dashboard = {"markov": None, "hawkes": None, "dynamics": None, "game_theory": None}
     backend_error = False
     try:
         r = httpx.get(f"{API_BASE}/api/research/pemodelan-dashboard", timeout=15.0)

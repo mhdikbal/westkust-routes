@@ -1363,6 +1363,7 @@ class RisetPemodelanViewTest(SimpleTestCase):
 
     FAKE_DASHBOARD = {
         "markov": {"script": "<script>MARKOV_SCRIPT</script>", "div": "<div id='markov-div'></div>"},
+        "hawkes": {"script": "<script>HAWKES_SCRIPT</script>", "div": "<div id='hawkes-div'></div>"},
         "dynamics": {"script": "<script>DYNAMICS_SCRIPT</script>", "div": "<div id='dynamics-div'></div>"},
         "game_theory": {"script": "<script>GT_SCRIPT</script>", "div": "<div id='gt-div'></div>"},
     }
@@ -1389,13 +1390,15 @@ class RisetPemodelanViewTest(SimpleTestCase):
         self.assertIn("/api/research/pemodelan-dashboard", called_url)
 
     @patch("map_app.views.httpx.get")
-    def test_renders_all_three_chart_divs_and_scripts(self, mock_get):
+    def test_renders_all_four_chart_divs_and_scripts(self, mock_get):
         mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
         html = self.client.get(reverse("riset_pemodelan")).content.decode()
         self.assertIn("markov-div", html)
+        self.assertIn("hawkes-div", html)
         self.assertIn("dynamics-div", html)
         self.assertIn("gt-div", html)
         self.assertIn("MARKOV_SCRIPT", html)
+        self.assertIn("HAWKES_SCRIPT", html)
         self.assertIn("DYNAMICS_SCRIPT", html)
         self.assertIn("GT_SCRIPT", html)
 

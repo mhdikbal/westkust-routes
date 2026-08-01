@@ -583,14 +583,15 @@ class BokehChart(BaseModel):
 
 class PemodelanDashboardResponse(BaseModel):
     markov: _Optional[BokehChart] = None
+    hawkes: _Optional[BokehChart] = None
     dynamics: _Optional[BokehChart] = None
     game_theory: _Optional[BokehChart] = None
 
 
 @router.get("/pemodelan-dashboard", response_model=PemodelanDashboardResponse)
 async def get_pemodelan_dashboard(response: Response):
-    """Dashboard Bokeh interaktif /riset/pemodelan -- 3 figur dari output
-    Model 2/5/6 (data/export/), TIDAK menghitung ulang model apa pun (murni
+    """Dashboard Bokeh interaktif /riset/pemodelan -- 4 figur dari output
+    Model 2/3/5/6 (data/export/), TIDAK menghitung ulang model apa pun (murni
     visualisasi lebih kaya, lihat build_bokeh_dashboard.py). Cache-aside Redis
     sama pola endpoint lain di modul ini -- build_dashboard() baca file lokal
     + render Bokeh, cukup mahal utk di-cache 24 jam (TTL default cache_set).

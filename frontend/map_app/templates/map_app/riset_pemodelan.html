@@ -85,10 +85,10 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
 
   <header>
     <h1 class="title">Pemodelan Dinamika <em>Kekuasaan</em> Pesisir Barat</h1>
-    <p class="lede">Tiga model matematis atas data <span class="mono">dominion_status</span> (siapa berkuasa atas
-      tiap pos dagang, dari tahun ke tahun) — Rantai Markov, System Dynamics, dan Game Theory. Halaman ini
-      TIDAK menghitung ulang model apa pun; ia cuma memvisualisasikan lebih kaya angka yang sudah dihasilkan
-      Model 2/5/6 (bandingkan bendera+popup ringkas di layer "Kekuasaan" pada peta utama).</p>
+    <p class="lede">Empat model matematis atas data <span class="mono">dominion_status</span> (siapa berkuasa atas
+      tiap pos dagang, dari tahun ke tahun) — Rantai Markov, Proses Hawkes, System Dynamics, dan Game Theory.
+      Halaman ini TIDAK menghitung ulang model apa pun; ia cuma memvisualisasikan lebih kaya angka yang sudah
+      dihasilkan Model 2/3/5/6 (bandingkan bendera+popup ringkas di layer "Kekuasaan" pada peta utama).</p>
   </header>
 
   {% if backend_error %}
@@ -105,6 +105,19 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
       <div class="plate">{{ dashboard.markov.div|safe }}</div>
     {% else %}
       <div class="empty-panel">Data belum cukup — Model 2 belum pernah dijalankan.</div>
+    {% endif %}
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Model 3 — Proses Hawkes: Kaskade Defeksi</h2></div>
+    <p class="caption">Intensitas kondisional λ(t) proses Hawkes (kernel eksponensial) yang dicocokkan ke
+      seluruh event linimasa — menguji apakah "kaskade" defeksi berantai nyata secara statistik, bukan cuma
+      kesan dari cara linimasa ditulis. Titik menandai tahun event nyata di sepanjang kurva; judul menampilkan
+      α, β, uji rasio kemungkinan (LR), dan p-value.</p>
+    {% if dashboard.hawkes %}
+      <div class="plate">{{ dashboard.hawkes.div|safe }}</div>
+    {% else %}
+      <div class="empty-panel">Data belum cukup — Model 3 belum pernah dijalankan.</div>
     {% endif %}
   </section>
 
@@ -135,7 +148,7 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
 
   <footer>
     <h3>Metode &amp; batas</h3>
-    <p>Ketiga model dibangun dari <span class="mono">dominion_status</span> per event linimasa (backfill
+    <p>Keempat model dibangun dari <span class="mono">dominion_status</span> per event linimasa (backfill
       bertahap, belum menjangkau semua pos dagang). Fort dengan &lt;2 event tercatat ("data belum cukup")
       sengaja TIDAK dipaksa masuk simulasi — lihat klaster "Tipis" di legenda peta utama.</p>
     <p>
@@ -149,6 +162,7 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
 </div>
 
 {{ dashboard.markov.script|safe }}
+{{ dashboard.hawkes.script|safe }}
 {{ dashboard.dynamics.script|safe }}
 {{ dashboard.game_theory.script|safe }}
 </body>

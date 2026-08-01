@@ -1,7 +1,7 @@
 """
 build_bokeh_dashboard.py
 
-Bangun 3 figur Bokeh interaktif dari output Model 2/5/6 (data/export/) untuk
+Bangun 4 figur Bokeh interaktif dari output Model 2/3/5/6 (data/export/) untuk
 halaman /riset/pemodelan/ -- TIDAK menghitung ulang model apa pun, murni
 visualisasi lebih kaya dari angka yg sudah ada (bandingkan sparkline SVG kecil
 di popup /atlas: buildSparklineSVG() di atlas.js).
@@ -29,6 +29,7 @@ import csv
 import json
 from pathlib import Path
 
+import numpy as np
 from bokeh.embed import components
 from bokeh.models import ColumnDataSource, HoverTool, TabPanel, Tabs
 from bokeh.plotting import figure
@@ -55,6 +56,10 @@ SYSTEM_DYNAMICS_FILE = _first_existing([
 H2_REAFFIRMATION_FILE = _first_existing([
     Path("/app/data/export/game_theory_h2_reaffirmation.json"),
     _BASE / "data" / "export" / "game_theory_h2_reaffirmation.json",
+])
+HAWKES_FILE = _first_existing([
+    Path("/app/data/export/hawkes_model_output.json"),
+    _BASE / "data" / "export" / "hawkes_model_output.json",
 ])
 
 # REUSE persis dari atlas.js DOMINION_STATUS_COLORS/LABELS -- lihat komentar modul.
@@ -136,6 +141,56 @@ def build_markov_heatmap():
     return p
 
 
+def build_hawkes_intensity():
+    """Model 3: kurva intensitas kondisional lambda(t) proses Hawkes (kernel
+    eksponensial) yg dicocokkan ke 141 event linimasa, dgn 141 event asli
+    ditumpangkan sbg titik di sepanjang kurva (y diinterpolasi dari grid
+    intensitas via np.interp -- pola sama Model 5: titik aktual HANYA di tahun
+    event nyata, bukan garis simulasi yg diinterpolasi terus-menerus).
+    Judul menyertakan statistik kunci LANGSUNG dari file (alpha, beta, LR,
+    p-value, n) -- JANGAN hardcode angka dari memori sesi lama, itu sudah
+    berubah (mis. hasil stratifikasi per klaster beda dari hasil pooled di
+    file ini) [[project_markov_hawkes_models]]. p_value dibulatkan ke 0.0 di
+    file -> ditampilkan sbg 'p<0.0001', bukan literal 'p=0.0'."""
+    with open(HAWKES_FILE, encoding="utf-8") as f:
+        hk = json.load(f)
+
+    params = hk["params"]
+    years = [pt[0] for pt in hk["intensity"]]
+    lam = [pt[1] for pt in hk["intensity"]]
+    events = hk["events"]
+    event_lam = list(np.interp(events, years, lam))
+
+    curve_src = ColumnDataSource(dict(year=years, lam=lam))
+    event_src = ColumnDataSource(dict(year=events, lam=event_lam))
+
+    p_str = "p<0.0001" if params["p_value"] < 0.0001 else f"p={params['p_value']:.4f}"
+    p = figure(
+        title=(
+            f"Model 3 — Proses Hawkes: kaskade defeksi "
+            f"(α={params['alpha']:.3f}, β={params['beta']:.3f}/thn, "
+            f"LR={params['LR']:.1f}, {p_str}, n={params['n']})"
+        ),
+        x_axis_label="Tahun", y_axis_label="λ(t) — intensitas kondisional",
+        height=420, width=780,
+        toolbar_location="above", tools="pan,wheel_zoom,box_zoom,reset,save",
+    )
+    line_renderer = p.line(
+        "year", "lam", source=curve_src, line_width=2, color=CLUSTER_COLORS["Siklus"],
+        legend_label="λ(t) tercocokkan",
+    )
+    event_renderer = p.scatter(
+        "year", "lam", source=event_src, size=6, color="#31384C", marker="circle",
+        legend_label="Event nyata (linimasa)",
+    )
+    hover_curve = HoverTool(renderers=[line_renderer], tooltips=[("Tahun", "@year{0.0}"), ("λ(t)", "@lam{0.000}")])
+    hover_event = HoverTool(renderers=[event_renderer], tooltips=[("Tahun event", "@year{0.0}")])
+    p.add_tools(hover_curve, hover_event)
+    p.legend.location = "top_right"
+    p.legend.label_text_font_size = "9px"
+    return p
+
+
 def build_dynamics_selector():
     """Model 5: garis simulasi (sim_I) + titik aktual (actual_I, HANYA di tahun
     event nyata -- tak diinterpolasi, sama aturan buildSparklineSVG() atlas.js)
@@ -210,9 +265,9 @@ def build_reaffirmation_bars():
 
 
 def build_dashboard():
-    """Return {'markov': {...}, 'dynamics': {...}, 'game_theory': {...}} tiap
-    key {'script':..., 'div':...}, atau None utk key yg sumber datanya belum
-    ada (msh 'data belum cukup', bukan error keras -- konsisten pola
+    """Return {'markov': {...}, 'hawkes': {...}, 'dynamics': {...}, 'game_theory': {...}}
+    tiap key {'script':..., 'div':...}, atau None utk key yg sumber datanya
+    belum ada (msh 'data belum cukup', bukan error keras -- konsisten pola
     build_metric_row() di seed_fort_model_metrics.py)."""
     result = {}
 
@@ -221,6 +276,12 @@ def build_dashboard():
         result["markov"] = {"script": script, "div": div}
     else:
         result["markov"] = None
+
+    if HAWKES_FILE:
+        script, div = components(build_hawkes_intensity())
+        result["hawkes"] = {"script": script, "div": div}
+    else:
+        result["hawkes"] = None
 
     if SYSTEM_DYNAMICS_FILE:
         fig = build_dynamics_selector()
