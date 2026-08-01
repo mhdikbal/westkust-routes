@@ -1,6 +1,6 @@
 # PRD: Pengerasan Model 3/5/6 dari Temuan Tinjauan Literatur (Cliodynamics, MMHP, ABM, QuantCrit)
 
-**Status:** Draft — hasil sintesis tim MLOps atas tinjauan literatur `lit-review` mode (2026-07-29), dipetakan ke gap yang sudah tercatat sebagai Opsional/Pertanyaan Terbuka di `prd-rerun-pemodelan-data-terbaru.md` dan `prd-pemodelan-system-dynamics-game-theory.md`. **Ditambah 2026-07-31**: gap §3b dari pembacaan penuh terpisah (Porter & White 2012, Luthra dkk. 2022, `three-way-scan` mode) — independen dari lit-review 2026-07-29, tapi menyentuh gap yang sama (Model 3 Hawkes).
+**Status:** Draft — hasil sintesis tim MLOps atas tinjauan literatur `lit-review` mode (2026-07-29), dipetakan ke gap yang sudah tercatat sebagai Opsional/Pertanyaan Terbuka di `prd-rerun-pemodelan-data-terbaru.md` dan `prd-pemodelan-system-dynamics-game-theory.md`. **Ditambah 2026-07-31**: gap §3b dari pembacaan penuh terpisah (Porter & White 2012, Luthra dkk. 2022, `three-way-scan` mode) — independen dari lit-review 2026-07-29, tapi menyentuh gap yang sama (Model 3 Hawkes). **Ditambah 2026-08-01**: gap §3c (MBPP, Rizoiu dkk. 2022) dari `three-way-scan` audit ontologi/kausalitas lanjutan, dipicu temuan rekonsiliasi stratifikasi Siklus/Stabil hari yang sama. **§3c dieksekusi PENUH (bukan lite) 2026-08-01 sore** -- branching ratio Model 3 tervalidasi silang; ditambah 2 uji kausalitas/ontologi lanjutan (distinctness test klaster, capacity confound Model 6) -- lihat §8 poin 5-6.
 **Konteks:** Model 1-6 (Sentralitas/Markov/Hawkes/CLD/System Dynamics/Game Theory) sudah dieksekusi, konvergensi 5-metode terverifikasi ulang thd n=141 (`project_rerun_model_2356_n141`). PRD ini BUKAN model baru — ini paket kerja untuk mengisi gap metodologis yang literatur akademik (cliodynamics, pemodelan stokastik peristiwa, ABM, metodologi kuantitatif kritis) tunjukkan relevan terhadap gap yang SUDAH tercatat di PRD sebelumnya, bukan gap baru yang ditemukan dari nol.
 
 ---
@@ -15,6 +15,7 @@
 | 4 | Opsional: join `voyages` ↔ `linimasa_events`, 6 fort 0-voyage nyata (Painan/Bayang/Nias/Natal/Singkil/Sorkam) | ABM gravity+XTENT, Chliaoutakis & Chalkiadakis (*JASSS*, 2020) | Model komplementer baru |
 | 5 | Opsional: integrasi GM (409 halaman) ke Model 5 Loop 3/4 | Bayesian network dari arsip korespondensi kolonial, Ferreira & Alves (*Social Networks*, 2020) | Cetak biru integrasi data |
 | 6 | Model 3 Hawkes — kernel eksponensial berasumsi eksitasi *instan*, tak menangkap jeda logistik (waktu tempuh kapal/pesan antar-fort) sebelum defeksi tetangga terjadi | Self-Exciting Hurdle Model, Porter & White (*Annals of Applied Statistics*, 2012) — kernel peluruhan **shifted negative binomial**, ditambah log-probability-gain score sbg pelengkap LR-test/p-value | Evaluasi + kandidat kernel alternatif (independen dari #2/MMHP) |
+| 7 | Model 3 Hawkes — `jitter_ties()` menyebar event se-tahun secara deterministik supaya waktu-kontinu tak pathological; TAPI puncak tertunda kernel Gamma (§3b, k≈3.1) BISA JADI artefak jitter, bukan jeda historis genuine | Mean Behavior Poisson process, Rizoiu dkk. (*Journal of Machine Learning Research*, vol 23 no 338, 2022) — likelihood Poisson interval-censored dgn korespondensi parameter langsung ke Hawkes, TANPA butuh jitter presisi-tahun sama sekali | Evaluasi ontologis (apakah temuan §3b robust tanpa jitter) |
 
 ---
 
@@ -55,6 +56,37 @@
 
 ---
 
+## 3c. Prioritas #2c — Evaluasi MBPP (Rizoiu dkk. 2022) sebagai Pengganti `jitter_ties()`
+
+**Kenapa**: `jitter_ties()` (produksi & §3b) menyebar event se-tahun secara deterministik supaya
+Hawkes waktu-kontinu tak lari ke solusi patologis (β→∞). Ini bekerja, tapi menyisipkan urutan
+sub-tahun BUATAN yang tak benar-benar diketahui dari sumber. Kalau kernel Gamma (§3b) menemukan
+"puncak eksitasi tertunda ~0.42 tahun" — itu ANGKA DI BAWAH resolusi asli data (presisi-tahun) —
+curiga wajar: apakah ini jeda historis genuine, atau artefak cara `jitter_ties()` menyebar event?
+MBPP (Rizoiu dkk. 2022, JMLR vol 23 no 338) menjawab persis masalah ini: fit Hawkes lewat
+likelihood Poisson INTERVAL-CENSORED (count per-bin, bukan timestamp presisi), punya korespondensi
+parameter langsung ke Hawkes standar, TANPA butuh jitter/asumsi waktu-kontinu palsu sama sekali.
+
+- **Dikerjakan (2026-08-01, implementasi PENUH bukan lite)**: `docs/thesis/colab/model3_mbpp_full.py`
+  -- closed-form Eq (9)/(10)/(18) paper diambil LANGSUNG dari PDF (diverifikasi, bukan tebakan),
+  `s(t)=mu` konstan + kernel eksponensial, fit via IC-LL (Proposisi 4). TANPA jitter, TANPA
+  binning-lite ad hoc (versi awal 2026-08-01 pagi, `model3_mbpp_eval.py`, DIGANTIKAN skrip ini).
+- **Hasil**: `mu=0.2497 alpha=0.2263 beta=0.3346` vs produksi `mu=0.2573 alpha=0.4207 beta=0.6215`
+  -- selisih mu=2.9%, alpha/beta masing2 46.2%. **TAPI branching ratio (alpha/beta) NYARIS IDENTIK:
+  0.6763 (MBPP) vs 0.6769 (produksi), selisih <0.1%.** Temuan kausal-ontologis: MBPP dgn latar
+  belakang konstan menjawab pertanyaan BEDA dari Hawkes waktu-kontinu (rata-rata populasi vs
+  kecocokan realisasi tunggal) -- ξ(t) MBPP TERBUKTI monoton (dikonfirmasi eksplisit di output),
+  jadi TAK BISA mengonfirmasi/membantah klaim puncak-tertunda kernel Gamma §3b. Tapi branching
+  ratio 0.677 (klaim inti "kaskade stabil, tak eksplosif") **tervalidasi silang** oleh metode yg
+  sepenuhnya independen dari jitter -- MEMPERKUAT, bukan melemahkan, temuan inti Model 3.
+- **Kriteria selesai**: ✅ skrip tersimpan (`model3_mbpp_full.py`), tabel perbandingan lengkap +
+  interpretasi ontologis (`data/export/model3_mbpp_full_output.json`).
+- **Bukan tugas sesi ini**: varian MBPP multi-impuls (dibutuhkan utk uji langsung klaim
+  puncak-tertunda §3b -- di luar skope, dicatat sbg backlog terbuka); mengganti `jitter_ties()`
+  di produksi (branching ratio sudah tervalidasi TANPA perlu ganti apa pun).
+
+---
+
 ## 4. Prioritas #3 (Keputusan Riset, Bukan Teknis) — Stock 2 Dimensi Model 5
 
 **Kenapa**: `prd-pemodelan-system-dynamics-game-theory.md` §2.2 sudah mengakui skala `I_f(t)` satu sumbu (Aceh↔VOC) memaksakan trade-off palsu untuk `foreign_orbit`/`voc_withdrawal`. Ini SUDAH jadi Pertanyaan Terbuka #1 di PRD itu — belum dijawab pemilik riset. Turchin & Nefedov memberi preseden konkret: teori structural-demographic yang mapan memakai ≥4 variabel independen, bukan 1 sumbu, justru untuk menghindari pemaksaan trade-off semacam ini.
@@ -90,6 +122,8 @@
         │
 #2b (evaluasi kernel shifted-NB Model 3, eksperimen terpisah dari #2 — bisa paralel dgn #2, sama-sama tak menggantikan produksi)
         │
+#2c (evaluasi MBPP vs jitter_ties, independen dari #2/#2b — bisa paralel, sama-sama tak menggantikan produksi)
+        │
 #3 (keputusan 2D — TUNGGU jawaban pemilik riset, bukan dieksekusi otomatis)
         │
 opsional (ABM join voyages, Bayesian GM Loop 3/4) — independen, paralel kalau ada kapasitas
@@ -102,6 +136,7 @@ opsional (ABM join voyages, Bayesian GM Loop 3/4) — independen, paralel kalau 
 - Paragraf keterbatasan QuantCrit ditambahkan ke output/docstring Model 6 (Prioritas #1).
 - Notebook eksperimen MMHP tersimpan terpisah dari skrip Model 3 produksi, hasil perbandingan rezim otomatis vs klaster manual dicatat (Prioritas #2).
 - Skrip eksperimen kernel shifted-NB tersimpan terpisah, tabel AIC/log-prob-gain (eksponensial vs shifted-NB) dan keputusan pertahankan/ganti kernel dicatat (Prioritas #2b).
+- Skrip eksperimen MBPP tersimpan terpisah, tabel perbandingan alpha/beta (jitter vs MBPP-lite) dan kesimpulan robust/tidak-robust dicatat (Prioritas #2c).
 - Keputusan 1D/2D Model 5 didokumentasikan eksplisit di `prd-pemodelan-system-dynamics-game-theory.md` §2.2 (Prioritas #3), siapa pun jawabannya.
 - Opsional (§5) hanya dieksekusi dengan persetujuan eksplisit — didaftarkan untuk visibilitas backlog.
 
@@ -112,7 +147,10 @@ opsional (ABM join voyages, Bayesian GM Loop 3/4) — independen, paralel kalau 
 1. Prioritas #3 (stock 2D) — siapa pemilik keputusan riset yang perlu dikonfirmasi sebelum dieksekusi?
 2. ✅ **TERJAWAB 2026-08-01**: Prioritas #2 (MMHP) — kalau hasil rezim otomatis TIDAK cocok dengan klaster manual, apakah itu dilaporkan sebagai temuan baru terpisah, atau memicu re-evaluasi klaim konvergensi yang sudah dikutip? **Jawaban: memicu re-evaluasi.** MMHP menemukan "tidak jelas" (gap Siklus 4.9pp), yang mendorong reproduksi ulang stratifikasi manual (`model3_hawkes_stratified.py`, skrip lamanya tak pernah ter-checked-in) — hasilnya klaim lama "Siklus eksklusif" TAK REPLIKASI thd data terbaru (Stabil kini juga signifikan, p=0.0031). `prd-dashboard-konsolidasi-pemodelan.md` §1 baris #2 dan memory `project_markov_hawkes_models`/`project_rerun_model_2356_n141` sudah dikoreksi. MMHP dan Hawkes-per-klaster ternyata menguji klaim kausal BEDA JENIS (regime pooled-global vs self-excitation per-klaster) — bukan kontradiksi metodologis, tapi dua pertanyaan berbeda yang kebetulan disandingkan.
 3. ✅ **TERJAWAB 2026-08-01**: Prioritas #2b (kernel shifted-NB) — kalau AIC menang tipis, apa ambang batas? **Jawaban: konvensi Burnham & Anderson (2002/2004)** — ΔAIC 0-2 = dukungan substansial keduanya, 4-7 = jauh lebih lemah utk model kalah, **>10 = essentially no support utk model kalah (decisive)**. Hasil eksperimen kami: ΔAIC=18.3 (baseline=287.39, gamma=269.07) — **jauh melewati ambang 10, decisive menang kernel Gamma**. Ambang batas ini dicatat sbg keputusan metodologis baku utk perbandingan model serupa ke depan (bukan cuma sekali pakai). **TAPI**: menerapkan hasil ini ke kernel PRODUKSI (`model3_hawkes_kaskade_event.py`/`hawkes_model_output.json`) BELUM dieksekusi — itu langkah terpisah dgn efek berantai (dashboard live, angka α/β/branching yg sudah dikutip di banyak PRD/memory) yg butuh persetujuan eksplisit pemilik riset dulu, bukan otomatis krn AIC menang. Lihat §3b kriteria selesai: skrip eksperimen TETAP terpisah dari produksi.
-4. Opsional §5.1/§5.2 — mana yang masuk sprint berikutnya vs tetap backlog terbuka?
+4. ✅ **TERJAWAB 2026-08-01**: Prioritas #2c (MBPP) — ambang batas "beda jauh"? **Jawaban: pertanyaan ini jadi tak relevan setelah implementasi PENUH (bukan lite).** alpha/beta individual memang beda jauh (~46%), tapi branching ratio (kuantitas yg sebenarnya jadi klaim inti Model 3) beda <0.1%. Tak perlu ambang batas krn kesimpulannya bukan "menang/kalah" spt §3b -- dua model menjawab pertanyaan filosofis berbeda (rata-rata populasi vs kecocokan realisasi), branching ratio kebetulan konvergen sbg validasi silang independen.
+5. ✅ **TERJAWAB 2026-08-01** (audit kausalitas/ontologi lanjutan, dipicu permintaan user "uji kausalitas dan ontologis"): apakah klaster Siklus vs Stabil GENUINELY beda (bukan cuma sama-sama signifikan individually)? **Jawaban: TIDAK, p=0.0995** (`model3_cluster_distinctness_test.py`, permutation test 2000x) -- selisih branching ratio (0.391) tak cukup bukti beda dari pembelahan acak. Memperdalam koreksi Pertanyaan #2 di atas.
+6. ✅ **TERJAWAB 2026-08-01**: apakah payoff "revealed preference" Model 6 mungkin cerminan kapasitas administratif VOC (reverse-causality, kritik Lehtinen 2011), bukan preferensi Elite lokal? **Jawaban: ADA SINYAL AWAL** (`model6_capacity_confound_check.py`) -- jumlah komandan VOC berbeda per fort berkorelasi KUAT dgn frekuensi re-afirmasi voc_alliance (Spearman rho=0.763, p=0.0039, n=12 fort). Korelasi != kausalitas, n kecil, tapi ini bukan cuma kekhawatiran teoretis lagi.
+7. Opsional §5.1/§5.2 — mana yang masuk sprint berikutnya vs tetap backlog terbuka?
 
 ---
 
