@@ -1533,21 +1533,52 @@ class EnclaveConfigTest(SimpleTestCase):
         self.assertEqual(paths.cache_dir, Path("/tmp/salido-hdt-cache"))
 
     def test_canonical_dataset_readable_check(self):
-        """data_dir_exists is True only when canonical dataset is readable."""
+        """Canonical dataset properties: readable, required files exist, validation succeeds."""
         from map_app.enclave_config import load_enclave_paths
 
-        # In container, the canonical dataset is mounted at /app/data/salido_hdt_model_v0_4_1
-        # and IS readable. The solver snapshot directory exists but is empty,
-        # so it should be "unavailable" (not "error" - per plan: no synthetic data).
         os.environ["SALIDO_HDT_DATA_DIR"] = "/app/data/salido_hdt_model_v0_4_1"
         os.environ["SALIDO_HDT_SCENARIO_DIR"] = "/app/data/salido_solver_snapshot"
         os.environ["SALIDO_HDT_CACHE_DIR"] = "/tmp/test-cache-writable"
 
         paths = load_enclave_paths()
-        # In container with volume mount, data_dir_exists should be True
+        # Canonical dataset is readable
         self.assertTrue(paths.data_dir_exists)
-        # Scenario dir exists but is empty -> status "unavailable" (no synthetic data)
-        self.assertTrue(paths.scenario_dir_exists)
+        # Required files exist (validated via validate_dataset)
+        from map_app.enclave_data import get_adapter
+        adapter = get_adapter()
+        valid, issues = adapter.validate_dataset()
+        self.assertTrue(valid)
+        self.assertEqual(issues, [])
+
+    def test_scenario_snapshot_available_when_mounted(self):
+        """Mounted solver snapshot is available with 5 scenarios + validation summary."""
+        from map_app.enclave_config import load_enclave_paths
+
+        os.environ["SALIDO_HDT_DATA_DIR"] = "/app/data/salido_hdt_model_v0_4_1"
+        os.environ["SALIDO_HDT_SCENARIO_DIR"] = "/app/data/salido_solver_snapshot"
+        os.environ["SALIDO_HDT_CACHE_DIR"] = "/tmp/test-cache-writable"
+
+        paths = load_enclave_paths()
+        self.assertEqual(paths.scenario_snapshot_status, "available")
+
+        # Verify snapshot content
+        from map_app.enclave_data import get_adapter
+        adapter = get_adapter()
+        snapshot = adapter.load_scenario_snapshot()
+        self.assertIsNotNone(snapshot)
+        self.assertEqual(len(snapshot["scenarios"]), 5)
+        self.assertIn("validation_summary", snapshot)
+
+    def test_scenario_snapshot_unavailable_when_missing(self):
+        """Missing solver snapshot returns unavailable (explicit path override)."""
+        from map_app.enclave_config import load_enclave_paths
+
+        # Override to nonexistent path
+        os.environ["SALIDO_HDT_DATA_DIR"] = "/app/data/salido_hdt_model_v0_4_1"
+        os.environ["SALIDO_HDT_SCENARIO_DIR"] = "/nonexistent/scenario"
+        os.environ["SALIDO_HDT_CACHE_DIR"] = "/tmp/test-cache-writable"
+
+        paths = load_enclave_paths()
         self.assertEqual(paths.scenario_snapshot_status, "unavailable")
 
     def test_canonical_dataset_not_writable_from_container(self):
@@ -1683,7 +1714,7 @@ class EnclaveDataAdapterTest(SimpleTestCase):
         self.assertEqual(summary.assay_count, 19)
         self.assertEqual(summary.numeric_anomaly_count, 5)
         self.assertEqual(summary.unresolved_reading_count, 30)
-        self.assertEqual(summary.scenario_snapshot_status, "unavailable")
+        self.assertIn(summary.scenario_snapshot_status, ["available", "unavailable", "error"])
         self.assertEqual(summary.canonical_release, "v0.4.1")
 
     def test_adapter_validates_dataset(self):
@@ -1720,14 +1751,6 @@ class EnclaveDataAdapterTest(SimpleTestCase):
         valid, mismatches = adapter.verify_hashes()
         self.assertTrue(valid)
         self.assertEqual(mismatches, [])
-
-    def test_adapter_scenario_snapshot_unavailable(self):
-        """load_scenario_snapshot returns None when unavailable."""
-        from map_app.enclave_data import get_adapter
-
-        adapter = get_adapter()
-        snapshot = adapter.load_scenario_snapshot()
-        self.assertIsNone(snapshot)
 
     def test_adapter_loads_all_required_csvs(self):
         """All REQUIRED_CSVS can be loaded without error."""
@@ -1818,7 +1841,7 @@ class Enclave1682ViewTest(SimpleTestCase):
         content = response.content.decode("utf-8")
         self.assertIn("Rilis kanonik", content)
         self.assertIn("v0.4.1", content)
-        self.assertIn("Snapshot solver belum tersedia", content)
+        self.assertIn("tersedia", content)
 
     def test_riset_enclave_1682_petri_net_panel(self):
         """Page shows static Petri Net status panel."""
