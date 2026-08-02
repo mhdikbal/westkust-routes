@@ -72,12 +72,18 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DEBUG: ${DEBUG:-False}
       API_BASE_URL: ${API_BASE_URL:-http://backend:8000}
+      SALIDO_HDT_DATA_DIR: /app/data/salido_hdt_model_v0_4_1
+      SALIDO_HDT_SCENARIO_DIR: /app/data/salido_solver_snapshot
+      SALIDO_HDT_CACHE_DIR: /tmp/salido-hdt-cache
     depends_on:
       - backend
     # SEC-1: port 8001 TIDAK di-publish ke host — akses hanya via nginx :8084
     # (publish langsung mem-bypass CSP/rate-limit dan mengekspos dev server).
     expose:
       - "8001"
+    volumes:
+      - ./docs/enclave/salido_hdt_model_v0_4_1:/app/data/salido_hdt_model_v0_4_1:ro
+      - ./frontend/map_app/data/enclave_1682_solver_run:/app/data/salido_solver_snapshot:ro
     command: >
       sh -c "python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8001"
 
