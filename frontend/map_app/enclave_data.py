@@ -19,16 +19,31 @@ from .enclave_config import load_enclave_paths
 @dataclass(frozen=True, slots=True)
 class EnclaveDatasetSummary:
     """Summary counts for the canonical dataset and scenario snapshot."""
-    named_person_count: int
-    aggregate_group_count: int
-    total_entity_count: int
+
+    # Human entity metrics
+    named_person_records: int
+    aggregate_group_records: int
+    independent_aggregate_groups: int
+    aggregate_subgroups: int
+    primary_entity_count: int
+    total_human_related_records: int
+
+    # Other metrics
     role_count: int
     location_count: int
-    inventory_row_count: int
+
+    # Inventory metrics
+    inventory_source_rows: int
+    inventory_countable_items: int
+    inventory_parent_or_container_rows: int
+
+    # Other counts
     weekly_operation_count: int
     assay_count: int
     numeric_anomaly_count: int
     unresolved_reading_count: int
+
+    # Status
     scenario_snapshot_status: str
     canonical_release: str
 
@@ -71,19 +86,9 @@ def _read_csv_utf8_sig(path: Path) -> list[dict]:
         return [row for row in reader]
 
 
-def _count_named_persons(persons: list[dict]) -> int:
-    """Count named individuals (all persons in 02_persons.csv are named individuals)."""
-    return len(persons)
-
-
-def _count_aggregate_groups(human_groups: list[dict]) -> int:
-    """Count aggregate groups from human_groups.csv."""
-    return len(human_groups)
-
-
-def _count_inventory_rows(inventory: list[dict]) -> int:
-    """Count inventory child rows only (row_type == 'inventory_item')."""
-    return sum(1 for r in inventory if r.get("row_type") == "inventory_item")
+def _count_inventory_items_by_type(inventory: list[dict], row_type: str) -> int:
+    """Count inventory rows by row_type."""
+    return sum(1 for r in inventory if r.get("row_type") == row_type)
 
 
 def _count_unresolved_readings(inventory: list[dict]) -> int:
@@ -93,11 +98,9 @@ def _count_unresolved_readings(inventory: list[dict]) -> int:
 
 def _extract_canonical_release(manifest_rows: list[dict]) -> str:
     """Extract canonical release from manifest or README."""
-    # Try to find version in manifest filename patterns
     for row in manifest_rows:
         fname = row.get("file", "")
         if "salido_hdt_model_v" in fname:
-            # Extract version from filename like "salido_hdt_model_v0_4_1/..."
             import re
             match = re.search(r"salido_hdt_model_v([\d_]+)", fname)
             if match:
@@ -108,6 +111,30 @@ def _extract_canonical_release(manifest_rows: list[dict]) -> str:
 class EnclaveDataError(Exception):
     """Raised when canonical dataset cannot be loaded."""
     pass
+
+
+# Application-side human group hierarchy (reviewed grouping config, NOT canonical)
+# Groups with a parent are "subgroups"; groups without are "independent aggregate groups".
+# This does NOT modify the canonical dataset.
+HUMAN_GROUP_HIERARCHY: dict[str, Optional[str]] = {
+    "G-MS-121": None,
+    "G-HWJ-6": None,
+    "G-KJ-4": "G-HWJ-6",
+    "G-GRAS-7": None,
+    "G-COND-3": None,
+    "G-MANDOOR-8": None,
+    "G-VOORSLAGER-1": None,
+    "G-SLAVIN-68": None,
+    "G-MANDORESS-3": "G-SLAVIN-68",
+    "G-CHILD-KOST-4": None,
+    "G-CHILD-NOKOST-19": "G-CHILD-KOST-4",
+    "G-MADA-64": None,
+    "G-MADA-VJ-10": "G-MADA-64",
+    "G-MADA-HJ-8": "G-MADA-64",
+    "G-MADA-VM-30": "G-MADA-64",
+    "G-MADA-HM-10": "G-MADA-64",
+    "G-MADA-K-6": "G-MADA-64",
+}
 
 
 class EnclaveDataAdapter:
@@ -123,6 +150,71 @@ class EnclaveDataAdapter:
             paths = load_enclave_paths()
         self.paths = paths
         self._cache: dict[str, list[dict]] = {}
+        self._hierarchy: dict[str, Optional[str]] = {}
+
+    def _load_hierarchy(self) -> dict[str, Optional[str]]:
+        """Load human group hierarchy from embedded application-side config."""
+        if self._hierarchy:
+            return self._hierarchy
+
+        # Use embedded hierarchy as primary source
+        self._hierarchy = dict(HUMAN_GROUP_HIERARCHY)
+
+        # Optionally override from file if it exists (for local dev)
+        hierarchy_path = self.paths.cache_dir / "human_group_hierarchy.csv"
+        if not hierarchy_path.exists():
+            local_path = Path(__file__).resolve().parent / "data" / "human_group_hierarchy.csv"
+            if local_path.exists():
+                hierarchy_path = local_path
+            else:
+                hierarchy_path = None
+
+        if hierarchy_path and hierarchy_path.exists():
+            rows = _read_csv_utf8_sig(hierarchy_path)
+            for row in rows:
+                gid = row.get("group_id", "").strip()
+                parent = row.get("parent_group_id", "").strip()
+                if gid and not gid.startswith("#"):
+                    self._hierarchy[gid] = parent if parent else None
+
+        return self._hierarchy
+
+    def _compute_human_entity_metrics(self) -> tuple[int, int, int, int, int, int]:
+        """
+        Compute human entity metrics using hierarchy.
+
+        Returns:
+            (named_person_records, aggregate_group_records, independent_aggregate_groups,
+             aggregate_subgroups, primary_entity_count, total_human_related_records)
+        """
+        persons = self.load_persons()
+        human_groups = self.load_human_groups()
+        hierarchy = self._load_hierarchy()
+
+        named_person_records = len(persons)
+        aggregate_group_records = len(human_groups)
+
+        # Count independent vs subgroups using hierarchy
+        independent = 0
+        for g in human_groups:
+            gid = g["group_id"]
+            parent = hierarchy.get(gid)
+            if parent is None:
+                independent += 1
+
+        independent_aggregate_groups = independent
+        aggregate_subgroups = aggregate_group_records - independent_aggregate_groups
+        primary_entity_count = named_person_records + independent_aggregate_groups
+        total_human_related_records = named_person_records + aggregate_group_records
+
+        return (
+            named_person_records,
+            aggregate_group_records,
+            independent_aggregate_groups,
+            aggregate_subgroups,
+            primary_entity_count,
+            total_human_related_records,
+        )
 
     def validate_dataset(self) -> tuple[bool, list[str]]:
         """
@@ -159,7 +251,6 @@ class EnclaveDataAdapter:
         manifest = self.load_manifest()
         mismatches = []
 
-        # Only verify files that are in REQUIRED_CSVS
         required_files = set(REQUIRED_CSVS.keys())
 
         for row in manifest:
@@ -168,11 +259,9 @@ class EnclaveDataAdapter:
             if not fname or not expected_hash:
                 continue
 
-            # Extract just the filename from path
             if "/" in fname:
                 fname = fname.split("/")[-1]
 
-            # Skip files not in our required list
             if fname not in required_files:
                 continue
 
@@ -279,17 +368,36 @@ class EnclaveDataAdapter:
         human_groups = self.load_human_groups()
         inventory = self.load_inventory_items()
 
+        (
+            named_person_records,
+            aggregate_group_records,
+            independent_aggregate_groups,
+            aggregate_subgroups,
+            primary_entity_count,
+            total_human_related_records,
+        ) = self._compute_human_entity_metrics()
+
         return EnclaveDatasetSummary(
-            named_person_count=_count_named_persons(persons),
-            aggregate_group_count=_count_aggregate_groups(human_groups),
-            total_entity_count=len(persons) + len(human_groups),
+            # Human entities
+            named_person_records=named_person_records,
+            aggregate_group_records=aggregate_group_records,
+            independent_aggregate_groups=independent_aggregate_groups,
+            aggregate_subgroups=aggregate_subgroups,
+            primary_entity_count=primary_entity_count,
+            total_human_related_records=total_human_related_records,
+            # Other
             role_count=len(self.load_roles()),
             location_count=len(self.load_locations()),
-            inventory_row_count=_count_inventory_rows(inventory),
+            # Inventory
+            inventory_source_rows=len(inventory),
+            inventory_countable_items=_count_inventory_items_by_type(inventory, "inventory_item"),
+            inventory_parent_or_container_rows=_count_inventory_items_by_type(inventory, "container_or_parent"),
+            # Other counts
             weekly_operation_count=len(self.load_weekly_operations()),
             assay_count=len(self.load_assay_results()),
             numeric_anomaly_count=len(self.load_numeric_anomalies()),
             unresolved_reading_count=_count_unresolved_readings(inventory),
+            # Status
             scenario_snapshot_status=self.paths.scenario_snapshot_status,
             canonical_release=_extract_canonical_release(self.load_manifest()),
         )
@@ -306,7 +414,6 @@ class EnclaveDataAdapter:
         snapshot = {}
         scenario_dir = self.paths.scenario_dir
 
-        # Load scenarios
         scenarios = []
         for i in range(5):
             scenario_path = scenario_dir / f"scenario_{i:02d}.json"
@@ -315,13 +422,11 @@ class EnclaveDataAdapter:
                     scenarios.append(json.load(f))
         snapshot["scenarios"] = scenarios
 
-        # Load validation summary
         validation_path = scenario_dir / "validation_summary.json"
         if validation_path.exists():
             with validation_path.open("r", encoding="utf-8") as f:
                 snapshot["validation_summary"] = json.load(f)
 
-        # Load CSV outputs
         csv_files = {
             "equipment_capacity": "equipment_capacity.csv",
             "entity_presence": "entity_presence.csv",
@@ -336,7 +441,7 @@ class EnclaveDataAdapter:
         return snapshot
 
 
-# Module-level convenience functions (stateless, use default paths)
+# Module-level convenience functions
 _default_adapter: Optional[EnclaveDataAdapter] = None
 
 
@@ -354,7 +459,7 @@ def get_dataset_summary() -> EnclaveDatasetSummary:
 
 
 def load_canonical_csv(csv_name: str) -> list[dict]:
-    """Load a canonical CSV by logical name (e.g., 'persons', 'inventory_items')."""
+    """Load a canonical CSV by logical name."""
     adapter = get_adapter()
     method_map = {
         "documents": adapter.load_documents,

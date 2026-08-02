@@ -1627,40 +1627,58 @@ class EnclaveDataAdapterTest(SimpleTestCase):
         self.assertEqual(len(persons), 50)
 
     def test_adapter_counts_named_persons(self):
-        """Named person count excludes aggregate groups."""
-        from map_app.enclave_data import get_adapter, _count_named_persons, _count_aggregate_groups
+        """Named person count and aggregate group counts use hierarchy."""
+        from map_app.enclave_data import get_adapter
 
         adapter = get_adapter()
         persons = adapter.load_persons()
         human_groups = adapter.load_human_groups()
-        named = _count_named_persons(persons)
-        groups = _count_aggregate_groups(human_groups)
+        named = len(persons)
+        groups = len(human_groups)
         # 50 named individuals, 17 aggregate groups in v0.4.1
         self.assertEqual(named, 50)
         self.assertEqual(groups, 17)
 
+        # Summary uses hierarchy
+        summary = adapter.get_summary()
+        self.assertEqual(summary.named_person_records, 50)
+        self.assertEqual(summary.aggregate_group_records, 17)
+        self.assertEqual(summary.total_human_related_records, 67)
+        self.assertGreater(summary.independent_aggregate_groups, 0)
+        self.assertGreater(summary.aggregate_subgroups, 0)
+        self.assertEqual(summary.primary_entity_count, 50 + summary.independent_aggregate_groups)
+
     def test_adapter_loads_inventory_items(self):
-        """Adapter loads inventory items and counts child rows only."""
-        from map_app.enclave_data import get_adapter, _count_inventory_rows, _count_unresolved_readings
+        """Adapter loads inventory items and counts by row_type."""
+        from map_app.enclave_data import get_adapter
 
         adapter = get_adapter()
         inventory = adapter.load_inventory_items()
-        child_count = _count_inventory_rows(inventory)
-        unresolved = _count_unresolved_readings(inventory)
-        self.assertGreater(child_count, 0)
-        self.assertEqual(unresolved, 30)  # per v0.4.1 data
+        source_rows = len(inventory)
+        child_count = sum(1 for r in inventory if r.get("row_type") == "inventory_item")
+        parent_count = sum(1 for r in inventory if r.get("row_type") == "container_or_parent")
+        unresolved = sum(1 for r in inventory if r.get("reading_status") == "unresolved")
+        self.assertEqual(source_rows, 403)
+        self.assertEqual(child_count, 392)
+        self.assertEqual(parent_count, 11)
+        self.assertEqual(unresolved, 30)
 
     def test_adapter_summary_object(self):
         """get_summary returns EnclaveDatasetSummary with all fields."""
         from map_app.enclave_data import get_dataset_summary
 
         summary = get_dataset_summary()
-        self.assertEqual(summary.named_person_count, 50)
-        self.assertEqual(summary.aggregate_group_count, 17)
-        self.assertEqual(summary.total_entity_count, 67)
+        self.assertEqual(summary.named_person_records, 50)
+        self.assertEqual(summary.aggregate_group_records, 17)
+        self.assertEqual(summary.independent_aggregate_groups, 9)
+        self.assertEqual(summary.aggregate_subgroups, 8)
+        self.assertEqual(summary.primary_entity_count, 59)
+        self.assertEqual(summary.total_human_related_records, 67)
         self.assertEqual(summary.role_count, 22)
         self.assertEqual(summary.location_count, 23)
-        self.assertEqual(summary.inventory_row_count, 392)
+        self.assertEqual(summary.inventory_source_rows, 403)
+        self.assertEqual(summary.inventory_countable_items, 392)
+        self.assertEqual(summary.inventory_parent_or_container_rows, 11)
         self.assertEqual(summary.weekly_operation_count, 42)
         self.assertEqual(summary.assay_count, 19)
         self.assertEqual(summary.numeric_anomaly_count, 5)
