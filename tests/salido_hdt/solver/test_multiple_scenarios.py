@@ -62,6 +62,38 @@ def test_infeasible_model_returns_empty_list():
     assert scenarios == []
 
 
+def test_scenario_penalty_breakdown_matches_named_terms():
+    """v0.1.1 F7: collect_scenarios(penalty_terms=...) must report each
+    category's solved sum, independent of how the terms were weighted into
+    the objective itself."""
+    model = cp_model.CpModel()
+    a = model.NewBoolVar("a")
+    b = model.NewBoolVar("b")
+    c = model.NewBoolVar("c")
+    model.Add(a == 1)
+    model.Add(b == 1)
+    model.Add(c == 0)
+    expr = 1 * a + 1 * b + 1 * c
+    model.Minimize(expr)
+
+    scenarios = collect_scenarios(
+        model, expr, decision_vars={"a": a, "b": b, "c": c},
+        penalty_terms={"cat_x": [a, c], "cat_y": [b]},
+    )
+    assert len(scenarios) == 1
+    assert scenarios[0].penalty_breakdown == {"cat_x": 1, "cat_y": 1}
+
+
+def test_penalty_breakdown_defaults_to_empty_when_not_provided():
+    model = cp_model.CpModel()
+    a = model.NewBoolVar("a")
+    model.Add(a == 1)
+    expr = 1 * a
+
+    scenarios = collect_scenarios(model, expr, decision_vars={"a": a})
+    assert scenarios[0].penalty_breakdown == {}
+
+
 def test_tolerance_zero_excludes_strictly_worse_solutions():
     """Two options: one costs 1, the other costs 5. With tolerance=0 only
     the cost-1 optimum should be collectable -- the cost-5 alternative must

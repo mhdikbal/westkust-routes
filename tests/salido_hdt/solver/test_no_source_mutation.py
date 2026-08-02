@@ -48,3 +48,7 @@ def test_full_cli_run_does_not_mutate_v0_4_1(tmp_path):
     # the run must have written its output OUTSIDE the canonical tree
     assert output_dir.exists()
     assert list(output_dir.glob("*.json"))
+    # candidate-universe CSVs (entity_presence/candidate_entities/
+    # excluded_entities) must also land outside the canonical tree
+    for name in ("entity_presence.csv", "candidate_entities.csv", "excluded_entities.csv"):
+        assert (output_dir / name).exists()
