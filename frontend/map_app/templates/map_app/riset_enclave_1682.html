@@ -288,6 +288,18 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
         Ketidakpastian numerik (12_numeric_anomalies.csv) & bacaan tak terpecahkan (unresolved readings)
         ditampilkan apa adanya, tidak dibetulkan diam-diam.
       </p>
+      {% if scenario_snapshot.validation_summary %}
+      <p class="warning-text" style="margin-top:12px">
+        <b>Jumlah record kanonik berbeda dari jumlah entitas model solver.</b>
+        Dataset kanonik memuat record kelompok dan subkelompok tanpa relasi
+        <code>parent_group_id</code> atau <code>group_level</code> yang eksplisit.
+      </p>
+      <ul class="warning-text" style="margin-top:4px">
+        <li>Solver <code>entity_coverage</code> (snapshot): <b>{{ scenario_snapshot.validation_summary.entity_coverage|length }}</b> entitas — bukan hitungan kanonik</li>
+        <li>Solver <code>n_entities</code> (field internal snapshot): <b>{{ scenario_snapshot.validation_summary.n_entities }}</b> — tidak konsisten dengan <code>entity_coverage</code> di atas; diungkap sebagai inkonsistensi internal snapshot, tidak dibetulkan diam-diam</li>
+        <li>Interpretasi hierarki grup sisi-aplikasi (grup independen saja, lihat <code>HUMAN_GROUP_HIERARCHY</code>): <b>{{ summary.primary_entity_count }}</b> — konfigurasi aplikasi terpisah dari dataset kanonik</li>
+      </ul>
+      {% endif %}
     </div>
   </section>
 
@@ -329,7 +341,7 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
     <h3>Metode & batas</h3>
     <p>Dataset kanonik: <code>docs/enclave/salido_hdt_model_v0_4_1/</code> (read-only, mount <code>:ro</code>).</p>
     <p>Solver: CP-SAT (OR-Tools) via <code>salido_hdt.solver.cli</code> — offline, 5 skenario, diversifikasi terbatas.</p>
-    <p>Entitas: 50 orang bernama + 10 grup agregat = 60 entitas total. Semua dihitung (silently_missing = 0).</p>
+    <p>Entitas kanonik: 50 record individu bernama + 17 record kelompok agregat = 67 record manusia dan kelompok dalam dataset kanonik. Akuntansi entitas solver ditampilkan terpisah pada bagian "Peringatan Metodologi".</p>
     <p>Skenario 01–04: klaster aktif ~9 entitas, 4 tugas. Beda antar skenario = mekanisme diversifikasi (pemaksaan variabel acak), bukan bukti arsip.</p>
     <p>
       <span class="tag">thesis-only · noindex · nofollow</span>
@@ -347,11 +359,12 @@ function fmt(n) { return n.toLocaleString('id-ID'); }
 
 function renderSummaryTiles(summary) {
   const tiles = [
-    {k: fmt(summary.named_person_count), l: "orang bernama"},
-    {k: fmt(summary.aggregate_group_count), l: "grup agregat"},
-    {k: fmt(summary.total_entity_count), l: "total entitas manusia"},
+    {k: fmt(summary.named_person_records), l: "record individu bernama"},
+    {k: fmt(summary.aggregate_group_records), l: "record kelompok agregat"},
+    {k: fmt(summary.total_human_related_records), l: "record manusia dan kelompok"},
     {k: fmt(summary.location_count), l: "lokasi"},
-    {k: fmt(summary.inventory_row_count), l: "baris inventaris (child)"},
+    {k: fmt(summary.inventory_source_rows), l: "baris inventaris sumber"},
+    {k: fmt(summary.inventory_countable_items), l: "item inventaris non-parent"},
     {k: fmt(summary.weekly_operation_count), l: "catatan operasi mingguan"},
     {k: fmt(summary.assay_count), l: "observasi assay"},
     {k: fmt(summary.numeric_anomaly_count), l: "anomali numerik"},
@@ -364,9 +377,9 @@ function renderSummaryTiles(summary) {
 
 function renderHeaderTiles(summary) {
   const tiles = [
-    {k: fmt(summary.total_entity_count), l: "total entitas"},
+    {k: fmt(summary.total_human_related_records), l: "record manusia & kelompok"},
     {k: fmt(summary.location_count), l: "lokasi"},
-    {k: fmt(summary.inventory_row_count), l: "inventaris (item)"},
+    {k: fmt(summary.inventory_source_rows), l: "inventaris (baris)"},
     {k: fmt(summary.weekly_operation_count), l: "operasi mingguan"},
     {k: fmt(summary.numeric_anomaly_count), l: "anomali"},
   ];
@@ -385,11 +398,12 @@ function renderProv(summary) {
 
 // Initialize from template context
 const summaryData = {
-  named_person_count: {{ summary.named_person_count|default:0 }},
-  aggregate_group_count: {{ summary.aggregate_group_count|default:0 }},
-  total_entity_count: {{ summary.total_entity_count|default:0 }},
+  named_person_records: {{ summary.named_person_records|default:0 }},
+  aggregate_group_records: {{ summary.aggregate_group_records|default:0 }},
+  total_human_related_records: {{ summary.total_human_related_records|default:0 }},
   location_count: {{ summary.location_count|default:0 }},
-  inventory_row_count: {{ summary.inventory_row_count|default:0 }},
+  inventory_source_rows: {{ summary.inventory_source_rows|default:0 }},
+  inventory_countable_items: {{ summary.inventory_countable_items|default:0 }},
   weekly_operation_count: {{ summary.weekly_operation_count|default:0 }},
   assay_count: {{ summary.assay_count|default:0 }},
   numeric_anomaly_count: {{ summary.numeric_anomaly_count|default:0 }},

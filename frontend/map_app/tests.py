@@ -1822,18 +1822,34 @@ class Enclave1682ViewTest(SimpleTestCase):
         self.assertIn('name="googlebot" content="noindex, nofollow"', content)
 
     def test_riset_enclave_1682_summary_cards(self):
-        """Page renders summary statistic cards."""
+        """Page renders summary statistic cards with correct field-backed labels."""
         response = self.client.get("/riset/enclave-1682/")
         content = response.content.decode("utf-8")
-        self.assertIn("orang bernama", content)
-        self.assertIn("grup agregat", content)
-        self.assertIn("total entitas manusia", content)
+        self.assertIn("record individu bernama", content)
+        self.assertIn("record kelompok agregat", content)
+        self.assertIn("record manusia dan kelompok", content)
         self.assertIn("lokasi", content)
         self.assertIn("inventaris", content)
         self.assertIn("operasi mingguan", content)
         self.assertIn("assay", content)
         self.assertIn("anomali numerik", content)
         self.assertIn("bacaan tak terpecahkan", content)
+
+    def test_riset_enclave_1682_summary_values_not_zero(self):
+        """Summary tile values reflect real adapter counts, not silently-defaulted zeros."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("named_person_records: 50", content)
+        self.assertIn("aggregate_group_records: 17", content)
+        self.assertIn("total_human_related_records: 67", content)
+
+    def test_riset_enclave_1682_solver_disclosure(self):
+        """Solver-accounted entity counts are disclosed separately from the canonical CSV total."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Jumlah record kanonik berbeda dari jumlah entitas model solver", content)
+        self.assertIn("60", content)  # solver entity_coverage length
+        self.assertIn("57", content)  # solver n_entities, disclosed as internally inconsistent
 
     def test_riset_enclave_1682_dataset_status_banner(self):
         """Page shows dataset status banner with canonical release."""
