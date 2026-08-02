@@ -241,3 +241,53 @@ def port_detail(request, slug):
     # Merge summary + enrichment; enrichment keys win on conflict
     fort = {**fort_summary, **enrichment}
     return render(request, "map_app/port_detail.html", {"fort": fort})
+
+
+def riset_enclave_1682(request):
+    """
+    Enklave Tambang Salido 1682 — rekonstruksi sosial-teknis berbasis arsip VOC.
+
+    Server-side rendering with enclave_data adapter.
+    Thesis-only: noindex, nofollow, excluded from public navbar.
+    """
+    from .enclave_data import get_adapter, EnclaveDataError
+
+    adapter = get_adapter()
+
+    # Validate dataset
+    is_valid, issues = adapter.validate_dataset()
+    if not is_valid:
+        context = {
+            "title": "Enklave Tambang Salido 1682",
+            "subtitle": "Rekonstruksi sosial-teknis berbasis arsip VOC",
+            "source_archive": "Nationaal Archief, Den Haag",
+            "source_access": "Access 1.04.02",
+            "source_inventory": "Inventory 7964",
+            "dataset_error": True,
+            "dataset_issues": issues,
+            "summary": None,
+            "scenario_snapshot_status": adapter.paths.scenario_snapshot_status,
+            "petri_net_status": "Specification in development",
+            "petri_net_simulation": "Simulation not yet enabled",
+        }
+        return render(request, "map_app/riset_enclave_1682.html", context)
+
+    # Get summary and scenario snapshot
+    summary = adapter.get_summary()
+    scenario_snapshot = adapter.load_scenario_snapshot()
+
+    context = {
+        "title": "Enklave Tambang Salido 1682",
+        "subtitle": "Rekonstruksi sosial-teknis berbasis arsip VOC",
+        "source_archive": "Nationaal Archief, Den Haag",
+        "source_access": "Access 1.04.02",
+        "source_inventory": "Inventory 7964",
+        "dataset_error": False,
+        "dataset_issues": [],
+        "summary": summary,
+        "scenario_snapshot": scenario_snapshot,
+        "scenario_snapshot_status": adapter.paths.scenario_snapshot_status,
+        "petri_net_status": "Specification in development",
+        "petri_net_simulation": "Simulation not yet enabled",
+    }
+    return render(request, "map_app/riset_enclave_1682.html", context)

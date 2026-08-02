@@ -8,6 +8,7 @@ urlpatterns = [
     path("riset/jaringan/", views.riset_jaringan, name="riset_jaringan"),
     path("riset/atjeh-dagang/", views.riset_atjeh, name="riset_atjeh"),
     path("riset/pemodelan/", views.riset_pemodelan, name="riset_pemodelan"),
+    path("riset/enclave-1682/", views.riset_enclave_1682, name="riset_enclave_1682"),
     path("linimasa/", views.linimasa, name="linimasa"),
     path("ports/<slug:slug>/", views.port_detail, name="port_detail"),
 ]

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Enklave Tambang Salido 1682 — Rekonstruksi sosial-teknis berbasis arsip VOC</title>
+<style>
+/* ============================ TOKENS ============================ */
+:root{
+  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
+  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4;
+  --accent:#000000; --gold-ink:#6F5407;
+  --serif:"EB Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"Space Grotesk",ui-monospace,Menlo,Consolas,monospace;
+  --status-explicit:#2C5364; --status-normalized:#3A7D70;
+  --status-interpreted:#B0562A; --status-reconstructed:#7E4C68;
+  --status-uncertain:#A8842A; --status-needs-review:#6E7A3A;
+}
+:root[data-theme]{
+  --ground:#FFFFFF; --panel:#FFFFFF; --panel-2:#F5F5F5;
+  --ink:#000000; --muted:#767676; --muted-dark:#5C5C5C; --line:#E4E4E4;
+  --accent:#000000; --gold-ink:#6F5407;
+}
+
+/* ============================ BASE ============================ */
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:1560px;margin:0 auto;padding:clamp(20px,4vw,52px) clamp(16px,4vw,44px) 80px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted-dark);font-weight:600}
+a{color:inherit}
+.topnav{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.topnav .nav-l{display:flex;gap:10px;align-items:center}
+.topnav .home,.topnav .sib{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
+  font-size:.9rem;font-weight:600;color:var(--ink);text-decoration:none;
+  padding:8px 14px 8px 11px;border:1px solid var(--line);border-radius:999px;transition:.16s}
+.topnav .home:hover,.topnav .sib:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+.topnav .home:focus-visible,.topnav .sib:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.topnav .home svg{width:16px;height:16px}
+.topnav .brand{font-family:var(--serif);font-size:1.1rem;font-weight:600;letter-spacing:.02em;color:var(--muted-dark)}
+
+/* ============================ HEADER ============================ */
+header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:26px}
+.title{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.4vw,2.7rem);
+  line-height:1.06;letter-spacing:-.01em;margin:.5rem 0 .35rem}
+.title em{font-style:italic;color:var(--accent)}
+.subtitle{font-family:var(--sans);font-size:1.12rem;color:var(--ink);font-weight:400;margin:0 0 4px}
+.reading{font-size:.9rem;color:var(--ink);margin-top:10px}
+.reading b{font-weight:600}
+.prov{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:14px;letter-spacing:.01em}
+.prov span{white-space:nowrap}
+.prov .sep{opacity:.4;margin:0 .55em}
+
+/* stat tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:22px}
+.tile{background:var(--panel);padding:13px 15px}
+.tile .k{font-family:var(--mono);font-size:1.55rem;font-weight:600;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1}
+.tile .l{font-size:.73rem;color:var(--muted);margin-top:5px;letter-spacing:.02em}
+.tile .l b{color:var(--ink);font-weight:600}
+
+/* ============================ DATASET STATUS BANNER ============================ */
+.banner{display:flex;flex-wrap:wrap;align-items:center;gap:16px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:15px 18px;margin-bottom:20px}
+.banner.bad{border-color:#B0562A;background:#FFF8F5}
+.banner .icon{font-size:1.2rem}
+.banner .msg{flex:1;min-width:280px}
+.banner .msg .title{font-weight:600;font-size:.95rem}
+.banner .msg .detail{font-size:.8rem;color:var(--muted);margin-top:3px}
+.banner .actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font-family:var(--sans);font-size:.8rem;background:none;border:1px solid var(--line);
+  color:var(--muted);border-radius:7px;padding:7px 12px;cursor:pointer;transition:.14s}
+.btn:hover{color:var(--ink);border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ============================ SECTION ============================ */
+section{margin-top:30px}
+.sec-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.sec-head h2{font-family:var(--serif);font-size:1.35rem;font-weight:600}
+.sec-sub{font-size:.86rem;color:var(--muted);margin:0 0 16px;max-width:70ch}
+
+/* ============================ PLATE / TABLE ============================ */
+.plate{background:var(--panel);border:1px solid var(--line);
+  border-radius:4px;padding:10px 6px;position:relative;overflow:hidden}
+.plate-scroll{overflow-x:auto;overflow-y:hidden}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line)}
+th{font-family:var(--sans);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;background:var(--panel-2);position:sticky;top:0}
+td{font-family:var(--mono);font-size:.8rem;color:var(--ink)}
+tr:hover td{background:var(--panel-2)}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;font-family:var(--sans);
+  font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.badge-explicit{background:color-mix(in srgb,var(--status-explicit) 15%,transparent);color:var(--status-explicit);border:1px solid var(--status-explicit)}
+.badge-normalized{background:color-mix(in srgb,var(--status-normalized) 15%,transparent);color:var(--status-normalized);border:1px solid var(--status-normalized)}
+.badge-interpreted{background:color-mix(in srgb,var(--status-interpreted) 15%,transparent);color:var(--status-interpreted);border:1px solid var(--status-interpreted)}
+.badge-reconstructed{background:color-mix(in srgb,var(--status-reconstructed) 15%,transparent);color:var(--status-reconstructed);border:1px solid var(--status-reconstructed)}
+.badge-uncertain{background:color-mix(in srgb,var(--status-uncertain) 15%,transparent);color:var(--status-uncertain);border:1px solid var(--status-uncertain)}
+.badge-needs-review{background:color-mix(in srgb,var(--status-needs-review) 15%,transparent);color:var(--status-needs-review);border:1px solid var(--status-needs-review)}
+.warning-text{color:var(--muted);font-size:.85rem;margin-top:8px}
+.warning-text b{color:var(--ink)}
+
+/* ============================ LEGEND ============================ */
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:16px}
+.legend-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px}
+.legend-swatch{width:14px;height:14px;border-radius:3px;flex:none}
+.legend-label{font-family:var(--sans);font-size:.8rem;color:var(--ink);font-weight:500}
+
+/* ============================ PETRI NET PANEL ============================ */
+.petri-panel{background:var(--panel-2);border:1px dashed var(--line);border-radius:10px;padding:24px;text-align:center}
+.petri-panel h3{font-family:var(--serif);font-size:1.1rem;margin-bottom:8px}
+.petri-panel p{color:var(--muted);margin:4px 0}
+
+/* ============================ FOOTER ============================ */
+footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:.82rem;color:var(--muted);max-width:80ch}
+footer h3{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px}
+footer p{margin:0 0 10px}
+footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:1px solid var(--line);
+  border-radius:5px;padding:2px 7px;margin:2px 4px 2px 0;color:var(--muted)}
+
+/* ============================ RESPONSIVE ============================ */
+@media (max-width:640px){
+  .tiles .tile .k{font-size:1.3rem}
+  .banner{flex-direction:column;align-items:flex-start}
+  .banner .actions{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="topnav">
+    <div class="nav-l">
+      <a class="home" href="../../">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 19l-7-7 7-7"/><path d="M3 12h18"/></svg>
+        Peta VOC
+      </a>
+      <a class="sib" href="../tema/">Tema korpus</a>
+      <a class="sib" href="../petunjuk-arsip/">Petunjuk arsip</a>
+      <a class="sib" href="../jaringan/">Jaringan pelabuhan</a>
+      <a class="sib" href="../atjeh-dagang/">Dagang Atjeh</a>
+      <a class="sib" href="../pemodelan/">Dashboard pemodelan</a>
+      <a class="sib" href="../../linimasa/">Linimasa suksesi</a>
+    </div>
+    <span class="brand">Salido</span>
+  </nav>
+
+  <header>
+    <h1 class="title">Enklave Tambang Salido 1682</h1>
+    <p class="subtitle">Rekonstruksi sosial-teknis berbasis arsip VOC</p>
+    <div class="prov" id="prov"></div>
+
+    {% if dataset_error %}
+    <div class="banner bad" role="alert">
+      <span class="icon" aria-hidden="true">⚠</span>
+      <div class="msg">
+        <div class="title">Dataset kanonik tidak dapat dibaca</div>
+        <div class="detail">
+          {% for issue in dataset_issues %}
+            <div>• {{ issue }}</div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="location.reload()">Coba muat ulang</button>
+      </div>
+    </div>
+    {% else %}
+    <div class="tiles" id="tiles"></div>
+    {% endif %}
+  </header>
+
+  {% if not dataset_error %}
+  <!-- Dataset Status Banner -->
+  <div class="banner" id="datasetBanner" role="status">
+    <span class="icon" aria-hidden="true">{% if scenario_snapshot_status == 'available' %}✓{% else %}⚠{% endif %}</span>
+    <div class="msg">
+      <div class="title">
+        Rilis kanonik: <b>{{ summary.canonical_release }}</b>
+        {% if scenario_snapshot_status == 'available' %}· Snapshot solver: <b>tersedia</b>{% endif %}
+      </div>
+      <div class="detail">
+        Direktori: <span class="mono">{{ summary.canonical_release }}</span>
+        {% if scenario_snapshot_status == 'available' %}
+          · 5 skenario + validation_summary.json
+        {% else %}
+          · Snapshot solver belum tersedia (klik "Muat ulang" setelah snapshot dipasang)
+        {% endif %}
+      </div>
+    </div>
+    {% if scenario_snapshot_status != 'available' %}
+    <div class="actions">
+      <button class="btn" onclick="location.reload()">Muat ulang</button>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Summary Cards -->
+  <section aria-labelledby="summaryHeading">
+    <div class="sec-head"><h2 id="summaryHeading">Ringkasan Dataset Kanonik</h2></div>
+    <p class="sec-sub">Angka diambil langsung dari CSV kanonik (dibaca ulang setiap request, tanpa cache lintas-request).</p>
+    <div class="tiles" id="summaryTiles"></div>
+  </section>
+
+  <!-- Scenario Snapshot -->
+  <section aria-labelledby="scenarioHeading">
+    <div class="sec-head"><h2 id="scenarioHeading">Snapshot Solver (Offline)</h2></div>
+    <p class="sec-sub">
+      Snapshot dihasilkan oleh <code>salido_hdt.solver.cli</code> (commit <code class="mono">9caeec0</code>), offline.
+      Tidak pernah dijalankan saat request.
+    </p>
+    <div class="plate">
+      <div class="plate-scroll">
+        {% if scenario_snapshot %}
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Skenario</th>
+              <th scope="col">Nilai objektif</th>
+              <th scope="col">Penugasan aktif</th>
+              <th scope="col">Profil</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in scenario_snapshot.scenarios %}
+            <tr>
+              <td><code>{{ s.scenario_id }}</code></td>
+              <td><span class="mono">{{ s.objective_value }}</span></td>
+              <td>{{ s.active_assignments|length }}</td>
+              <td>
+                {% if s.scenario_id == 'scenario_00' %}
+                <span class="badge badge-reconstructed">Idle (biaya 0)</span>
+                {% else %}
+                <span class="badge badge-interpreted">Varian diversifikasi</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="warning-text"><b>Catatan:</b> Skenario 01–04 hampir identik (beda 1–2 penugasan) dipicu mekanisme diversifikasi, bukan bukti arsip berbeda.
+        Disajikan sebagai 2 profil: <b>Idle</b> (skenario 00) & <b>Klaster aktif ~9 entitas</b> (skenario 01–04, varian diversifikasi setara).</p>
+        {% else %}
+        <div style="padding:24px;text-align:center;color:var(--muted)">
+          <b>Snapshot solver belum tersedia.</b><br>
+          Jalankan <code>python -m salido_hdt.solver.cli --scenarios 5 --output <dir></code>
+          dan mount ke <code>/app/data/salido_solver_snapshot</code>.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Petri Net Status Panel -->
+  <section aria-labelledby="petriHeading">
+    <div class="sec-head"><h2 id="petriHeading">Model Proses (Petri Net)</h2></div>
+    <p class="sec-sub">Fase 1: spesifikasi saja. Simulasi belum diaktifkan.</p>
+    <div class="petri-panel">
+      <h3>🧱 Petri Net — Specification in Development</h3>
+      <p>{{ petri_net_status }}</p>
+      <p>{{ petri_net_simulation }}</p>
+      <p class="mono" style="margin-top:12px;color:var(--muted-dark)">Lihat <code>docs/enclave/salido_hdt_model_v0_4_1/docs/PETRI_NET_MODEL.md</code> untuk spesifikasi struktural.</p>
+    </div>
+  </section>
+
+  <!-- Methodology Warning -->
+  <section aria-labelledby="methodologyHeading">
+    <div class="sec-head"><h2 id="methodologyHeading">Peringatan Metodologi</h2></div>
+    <div class="plate" style="border-color:var(--status-reconstructed);background:#FDF8F5">
+      <p class="warning-text">
+        <b>Penugasan yang dihasilkan solver adalah rekontruksi — bukan pernyataan arsip.</b>
+        Setiap baris penugasan membawa status bukti <code class="badge badge-reconstructed">reconstructed</code>
+        dan label <q>not an archival statement</q>.
+        Ketidakpastian numerik (12_numeric_anomalies.csv) & bacaan tak terpecahkan (unresolved readings)
+        ditampilkan apa adanya, tidak dibetulkan diam-diam.
+      </p>
+    </div>
+  </section>
+
+  <!-- Evidence Legend -->
+  <section aria-labelledby="legendHeading">
+    <div class="sec-head"><h2 id="legendHeading">Legenda Status Bukti</h2></div>
+    <p class="sec-sub">Kosakata terkontrol dari <code>UNCERTAINTY_POLICY.md</code> — tidak ditambahkan skala baru.</p>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <span class="legend-swatch" style="background:var(--status-explicit)"></span>
+        <span class="legend-label"><b>explicit</b> — tercantum langsung di sumber</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-swatch" style="background:var(--status-normalized)"></span>
+        <span class="legend-label"><b>normalized</b> — dieja/format distandarkan</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-swatch" style="background:var(--status-interpreted)"></span>
+        <span class="legend-label"><b>interpreted</b> — inferensi peneliti dari konteks</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-swatch" style="background:var(--status-reconstructed)"></span>
+        <span class="legend-label"><b>reconstructed</b> — hasil solver CP-SAT (bukan arsip)</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-swatch" style="background:var(--status-uncertain)"></span>
+        <span class="legend-label"><b>uncertain</b> — ambiguitas tidak terpecahkan</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-swatch" style="background:var(--status-needs-review)"></span>
+        <span class="legend-label"><b>needs image review</b> — butuh verifikasi gambar asli</span>
+      </div>
+    </div>
+  </section>
+
+  {% endif %}
+
+  <footer>
+    <h3>Metode & batas</h3>
+    <p>Dataset kanonik: <code>docs/enclave/salido_hdt_model_v0_4_1/</code> (read-only, mount <code>:ro</code>).</p>
+    <p>Solver: CP-SAT (OR-Tools) via <code>salido_hdt.solver.cli</code> — offline, 5 skenario, diversifikasi terbatas.</p>
+    <p>Entitas: 50 orang bernama + 10 grup agregat = 60 entitas total. Semua dihitung (silently_missing = 0).</p>
+    <p>Skenario 01–04: klaster aktif ~9 entitas, 4 tugas. Beda antar skenario = mekanisme diversifikasi (pemaksaan variabel acak), bukan bukti arsip.</p>
+    <p>
+      <span class="tag">thesis-only · noindex · nofollow</span>
+      <span class="tag">route: /riset/enclave-1682/ (tidak di navbar publik)</span>
+      <span class="tag">sumber: Nationaal Archief, Den Haag — Access 1.04.02, Inventory 7964</span>
+      <span class="tag">design: salido.my.id (EB Garamond · Space Grotesk)</span>
+    </p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+function fmt(n) { return n.toLocaleString('id-ID'); }
+
+function renderSummaryTiles(summary) {
+  const tiles = [
+    {k: fmt(summary.named_person_count), l: "orang bernama"},
+    {k: fmt(summary.aggregate_group_count), l: "grup agregat"},
+    {k: fmt(summary.total_entity_count), l: "total entitas manusia"},
+    {k: fmt(summary.location_count), l: "lokasi"},
+    {k: fmt(summary.inventory_row_count), l: "baris inventaris (child)"},
+    {k: fmt(summary.weekly_operation_count), l: "catatan operasi mingguan"},
+    {k: fmt(summary.assay_count), l: "observasi assay"},
+    {k: fmt(summary.numeric_anomaly_count), l: "anomali numerik"},
+    {k: fmt(summary.unresolved_reading_count), l: "bacaan tak terpecahkan"},
+  ];
+  document.getElementById('summaryTiles').innerHTML = tiles.map(t =>
+    `<div class="tile"><div class="k">${t.k}</div><div class="l">${t.l}</div></div>`
+  ).join('');
+}
+
+function renderHeaderTiles(summary) {
+  const tiles = [
+    {k: fmt(summary.total_entity_count), l: "total entitas"},
+    {k: fmt(summary.location_count), l: "lokasi"},
+    {k: fmt(summary.inventory_row_count), l: "inventaris (item)"},
+    {k: fmt(summary.weekly_operation_count), l: "operasi mingguan"},
+    {k: fmt(summary.numeric_anomaly_count), l: "anomali"},
+  ];
+  document.getElementById('tiles').innerHTML = tiles.map(t =>
+    `<div class="tile"><div class="k">${t.k}</div><div class="l">${t.l}</div></div>`
+  ).join('');
+}
+
+function renderProv(summary) {
+  document.getElementById('prov').innerHTML =
+    `<span>Nationaal Archief, Den Haag</span><span class="sep">·</span>` +
+    `<span>Access 1.04.02</span><span class="sep">·</span>` +
+    `<span>Inventory 7964</span><span class="sep">·</span>` +
+    `<span>Rilis kanonik: ${summary.canonical_release}</span>`;
+}
+
+// Initialize from template context
+const summaryData = {
+  named_person_count: {{ summary.named_person_count|default:0 }},
+  aggregate_group_count: {{ summary.aggregate_group_count|default:0 }},
+  total_entity_count: {{ summary.total_entity_count|default:0 }},
+  location_count: {{ summary.location_count|default:0 }},
+  inventory_row_count: {{ summary.inventory_row_count|default:0 }},
+  weekly_operation_count: {{ summary.weekly_operation_count|default:0 }},
+  assay_count: {{ summary.assay_count|default:0 }},
+  numeric_anomaly_count: {{ summary.numeric_anomaly_count|default:0 }},
+  unresolved_reading_count: {{ summary.unresolved_reading_count|default:0 }},
+  canonical_release: "{{ summary.canonical_release|default:'v0.4.1' }}"
+};
+
+if (!{{ dataset_error|yesno:"1,0" }}) {
+  renderHeaderTiles(summaryData);
+  renderSummaryTiles(summaryData);
+  renderProv(summaryData);
+}
+</script>
+</body>
+</html>

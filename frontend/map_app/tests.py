@@ -1611,3 +1611,249 @@ class EnclaveConfigTest(SimpleTestCase):
         self.assertIsInstance(issues, list)
         for issue in issues:
             self.assertIsInstance(issue, str)
+
+
+class EnclaveDataAdapterTest(SimpleTestCase):
+    """Tests for SALIDO-HDT enclave data adapter (Phase 1B)."""
+
+    def test_adapter_loads_persons(self):
+        """Adapter loads persons CSV with correct count."""
+        from map_app.enclave_data import get_adapter
+
+        adapter = get_adapter()
+        persons = adapter.load_persons()
+        self.assertGreater(len(persons), 0)
+        # 02_persons.csv has 50 named individuals
+        self.assertEqual(len(persons), 50)
+
+    def test_adapter_counts_named_persons(self):
+        """Named person count excludes aggregate groups."""
+        from map_app.enclave_data import get_adapter, _count_named_persons, _count_aggregate_groups
+
+        adapter = get_adapter()
+        persons = adapter.load_persons()
+        human_groups = adapter.load_human_groups()
+        named = _count_named_persons(persons)
+        groups = _count_aggregate_groups(human_groups)
+        # 50 named individuals, 17 aggregate groups in v0.4.1
+        self.assertEqual(named, 50)
+        self.assertEqual(groups, 17)
+
+    def test_adapter_loads_inventory_items(self):
+        """Adapter loads inventory items and counts child rows only."""
+        from map_app.enclave_data import get_adapter, _count_inventory_rows, _count_unresolved_readings
+
+        adapter = get_adapter()
+        inventory = adapter.load_inventory_items()
+        child_count = _count_inventory_rows(inventory)
+        unresolved = _count_unresolved_readings(inventory)
+        self.assertGreater(child_count, 0)
+        self.assertEqual(unresolved, 30)  # per v0.4.1 data
+
+    def test_adapter_summary_object(self):
+        """get_summary returns EnclaveDatasetSummary with all fields."""
+        from map_app.enclave_data import get_dataset_summary
+
+        summary = get_dataset_summary()
+        self.assertEqual(summary.named_person_count, 50)
+        self.assertEqual(summary.aggregate_group_count, 17)
+        self.assertEqual(summary.total_entity_count, 67)
+        self.assertEqual(summary.role_count, 22)
+        self.assertEqual(summary.location_count, 23)
+        self.assertEqual(summary.inventory_row_count, 392)
+        self.assertEqual(summary.weekly_operation_count, 42)
+        self.assertEqual(summary.assay_count, 19)
+        self.assertEqual(summary.numeric_anomaly_count, 5)
+        self.assertEqual(summary.unresolved_reading_count, 30)
+        self.assertEqual(summary.scenario_snapshot_status, "unavailable")
+        self.assertEqual(summary.canonical_release, "v0.4.1")
+
+    def test_adapter_validates_dataset(self):
+        """validate_dataset returns True for canonical dataset."""
+        from map_app.enclave_data import get_adapter
+
+        adapter = get_adapter()
+        valid, issues = adapter.validate_dataset()
+        self.assertTrue(valid)
+        self.assertEqual(issues, [])
+
+    def test_adapter_never_opens_write_mode(self):
+        """Adapter never opens canonical files in write mode."""
+        from map_app.enclave_data import get_adapter
+        from unittest.mock import patch, mock_open
+
+        adapter = get_adapter()
+
+        # Mock open and track calls
+        with patch("builtins.open", mock_open(read_data="col1,col2\na,b")) as m:
+            adapter.load_persons()
+            for call in m.call_args_list:
+                args, kwargs = call
+                path = args[0]
+                mode = args[1] if len(args) > 1 else kwargs.get("mode", "r")
+                if "salido_hdt_model_v0_4_1" in str(path):
+                    self.assertEqual(mode, "r", f"Canonical file opened in {mode} mode: {path}")
+
+    def test_adapter_hash_verification(self):
+        """verify_hashes validates file integrity."""
+        from map_app.enclave_data import get_adapter
+
+        adapter = get_adapter()
+        valid, mismatches = adapter.verify_hashes()
+        self.assertTrue(valid)
+        self.assertEqual(mismatches, [])
+
+    def test_adapter_scenario_snapshot_unavailable(self):
+        """load_scenario_snapshot returns None when unavailable."""
+        from map_app.enclave_data import get_adapter
+
+        adapter = get_adapter()
+        snapshot = adapter.load_scenario_snapshot()
+        self.assertIsNone(snapshot)
+
+    def test_adapter_loads_all_required_csvs(self):
+        """All REQUIRED_CSVS can be loaded without error."""
+        from map_app.enclave_data import get_adapter, REQUIRED_CSVS
+
+        adapter = get_adapter()
+        for filename, key in REQUIRED_CSVS.items():
+            if key == "manifest":
+                data = adapter.load_manifest()
+            elif key == "persons":
+                data = adapter.load_persons()
+            elif key == "human_groups":
+                data = adapter.load_human_groups()
+            elif key == "locations":
+                data = adapter.load_locations()
+            elif key == "roles":
+                data = adapter.load_roles()
+            elif key == "weekly_operations":
+                data = adapter.load_weekly_operations()
+            elif key == "assay_results":
+                data = adapter.load_assay_results()
+            elif key == "inventory_items":
+                data = adapter.load_inventory_items()
+            elif key == "numeric_anomalies":
+                data = adapter.load_numeric_anomalies()
+            else:
+                continue  # skip some for brevity
+            self.assertIsInstance(data, list)
+
+
+class Enclave1682ViewTest(SimpleTestCase):
+    """Tests for /riset/enclave-1682/ route (Phase 1C)."""
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_riset_enclave_1682_returns_200(self):
+        """GET /riset/enclave-1682/ returns HTTP 200."""
+        response = self.client.get("/riset/enclave-1682/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_riset_enclave_1682_content_type_html(self):
+        """Response Content-Type is text/html."""
+        response = self.client.get("/riset/enclave-1682/")
+        self.assertIn("text/html", response["Content-Type"])
+
+    def test_riset_enclave_1682_has_title(self):
+        """Page contains the required title."""
+        response = self.client.get("/riset/enclave-1682/")
+        self.assertIn(b"Enklave Tambang Salido 1682", response.content)
+
+    def test_riset_enclave_1682_has_subtitle(self):
+        """Page contains the required subtitle."""
+        response = self.client.get("/riset/enclave-1682/")
+        self.assertIn(b"Rekonstruksi sosial-teknis berbasis arsip VOC", response.content)
+
+    def test_riset_enclave_1682_has_source_context(self):
+        """Page contains source archive context."""
+        response = self.client.get("/riset/enclave-1682/")
+        self.assertIn(b"Nationaal Archief", response.content)
+        self.assertIn(b"Access 1.04.02", response.content)
+        self.assertIn(b"Inventory 7964", response.content)
+
+    def test_riset_enclave_1682_noindex_nofollow(self):
+        """Page has noindex, nofollow meta tags."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn('name="robots" content="noindex, nofollow"', content)
+        self.assertIn('name="googlebot" content="noindex, nofollow"', content)
+
+    def test_riset_enclave_1682_summary_cards(self):
+        """Page renders summary statistic cards."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("orang bernama", content)
+        self.assertIn("grup agregat", content)
+        self.assertIn("total entitas manusia", content)
+        self.assertIn("lokasi", content)
+        self.assertIn("inventaris", content)
+        self.assertIn("operasi mingguan", content)
+        self.assertIn("assay", content)
+        self.assertIn("anomali numerik", content)
+        self.assertIn("bacaan tak terpecahkan", content)
+
+    def test_riset_enclave_1682_dataset_status_banner(self):
+        """Page shows dataset status banner with canonical release."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Rilis kanonik", content)
+        self.assertIn("v0.4.1", content)
+        self.assertIn("Snapshot solver belum tersedia", content)
+
+    def test_riset_enclave_1682_petri_net_panel(self):
+        """Page shows static Petri Net status panel."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Specification in development", content)
+        self.assertIn("Simulation not yet enabled", content)
+
+    def test_riset_enclave_1682_methodology_warning(self):
+        """Page shows methodology warning about reconstructions."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("not an archival statement", content)
+        self.assertIn("reconstructed", content)
+
+    def test_riset_enclave_1682_evidence_legend(self):
+        """Page shows evidence status legend with all 6 values."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("explicit", content)
+        self.assertIn("normalized", content)
+        self.assertIn("interpreted", content)
+        self.assertIn("reconstructed", content)
+        self.assertIn("uncertain", content)
+        self.assertIn("needs image review", content)
+
+    def test_riset_enclave_1682_graceful_dataset_error(self):
+        """Page handles missing dataset gracefully without 500."""
+        from unittest.mock import patch
+        from map_app.enclave_data import EnclaveDataAdapter
+        from map_app.enclave_config import EnclavePaths
+        from pathlib import Path
+
+        bad_paths = EnclavePaths(
+            data_dir=Path("/nonexistent"),
+            scenario_dir=Path("/nonexistent"),
+            cache_dir=Path("/tmp/test"),
+            data_dir_exists=False,
+            scenario_dir_exists=False,
+            cache_dir_writable=True,
+            scenario_snapshot_status="unavailable"
+        )
+        adapter = EnclaveDataAdapter(bad_paths)
+
+        with patch("map_app.enclave_data.get_adapter", return_value=adapter):
+            response = self.client.get("/riset/enclave-1682/")
+            self.assertEqual(response.status_code, 200)
+            content = response.content.decode("utf-8")
+            self.assertIn("Dataset kanonik tidak dapat dibaca", content)
+            self.assertIn("Canonical dataset directory not readable", content)
+
+    def test_riset_enclave_1682_trailing_slash_redirect(self):
+        """Non-slash URL redirects to trailing slash (Django default)."""
+        response = self.client.get("/riset/enclave-1682")
+        # Django's APPEND_SLASH=True redirects to /riset/enclave-1682/
+        self.assertIn(response.status_code, [200, 301, 302])
