@@ -81,18 +81,19 @@ Local image retention is **not required** by this project. `docs/SOURCE_PROVENAN
 Verification now proceeds via reviewed external-viewer philological attestation:
 
 ```text
-source_examined_externally    = pending_researcher_attestation
+source_examined_externally    = true
 image_retained_locally        = false
 image_retention_status        = not_retained_by_policy
 verification_method           = external_archive_viewer
 verified_against_local_image  = false  (never true under this policy)
 canonical_extraction_status   = missing
-researcher_attestation_status = draft_awaiting_researcher_completion
+structured_migration_authorized = false
+researcher_attestation_status = researcher_attested
 ```
 
-Recorded in `docs/enclave/implementation/A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md`. Once the researcher fills and approves the reading, `source_examined_externally` may be changed to `true` and `researcher_attestation_status: researcher_attested` recorded — not automatically, and not yet done as of this correction.
+Recorded in `docs/enclave/implementation/A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md`, committed `f98cfb090aa41b3939a77bf33417dafd946724f7`. The researcher has attested object identity and recorded quantities (object/ring/key counts, inventory examination date, later collation date) for both entries. `A0-2` is therefore **Done**. `A0-3` moves to **Review**, not Done — exact original Dutch spelling, folio number, viewer scan sequence, and IVdNT lemma remain unrecorded by design (nothing was invented to fill them); closing A0-3 fully requires either those fields or an explicit reviewer decision that object-and-count attestation alone is sufficient.
 
-**The remaining open item is unchanged by this correction**: `SP-01267`/`SP-01344` exist in `00_source_passages.csv` but are absent from `10_inventory_items.csv` — a passage-to-structured-row extraction gap, tracked as P0 (`A0-4`/`A0-5`).
+**The remaining open item is unchanged by this correction**: `SP-01267`/`SP-01344` exist in `00_source_passages.csv` but are absent from `10_inventory_items.csv` — a passage-to-structured-row extraction gap, tracked as P0. `A0-5` (read-only diagnosis of this gap) is now **Ready** — `A0-1` and `A0-2` are both done. `A0-5` must not modify `v0.4.1` and does not authorize any migration.
 
 ### Important dependency clarifications
 
@@ -718,10 +719,10 @@ Detailed execution board: `PHASE_A0_SPRINT_BOARD.md`.
 | ID | Task | Priority | Status | Deliverable | Dependency |
 |---|---|---:|---|---|---|
 | A0-1 | Trace SP-01267 and SP-01344 into structured extraction | P0 | READY | Restraint extraction trace | None |
-| A0-2 | Document external-viewer philological attestation | P0 | READY (template created, `draft_awaiting_researcher_completion`) | Philological attestation document | None — internal review dependency only |
-| A0-3 | Approve restraint transcription and terminology | P0 | BLOCKED | Reviewer decision | A0-2 |
+| A0-2 | Document external-viewer philological attestation | P0 | DONE (`A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md` committed `f98cfb090aa41b3939a77bf33417dafd946724f7`) | Philological attestation document | None — internal review dependency only |
+| A0-3 | Approve restraint transcription and terminology | P0 | REVIEW (object identity and recorded quantities attested; original Dutch spelling, folio, viewer scan sequence, IVdNT lemma not yet recorded) | Reviewer decision | A0-2 (done) — no longer blocked |
 | A0-4 | Map Madagascar parent-child groups | P0 | READY | Hierarchy trace | None |
-| A0-5 | Explain why restraint rows were omitted | P0 | BACKLOG | Root-cause report | A0-1 |
+| A0-5 | Explain why restraint rows were omitted | P0 | READY (read-only diagnosis only — must not modify v0.4.1, no migration authorized) | Root-cause report | A0-1, A0-2 (both done) |
 | A0-6 | Propose non-destructive candidate correction | P0 | BACKLOG | Migration proposal | A0-3 and A0-5 |
 | A0-7 | Review cross-document temporal overlap | P0 | READY | Overlap matrix | None |
 | A0-8 | Reconcile count tiers and prohibit invalid totals | P0 | READY | Count policy | A0-4 |
