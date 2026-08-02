@@ -48,6 +48,7 @@ from salido_hdt.solver.schicht import (
     SchichtSourceEvidence,
     resolve_schicht_labels,
     schicht_label_to_dict,
+    schicht_label_to_public_dict,
 )
 from salido_hdt.solver.soft_constraints import (
     add_explicit_location_preference_penalty,
@@ -474,14 +475,16 @@ def run(
                 continue
             h, j, l, s, t = k
             evidence = _assignment_evidence(dataset, sv, capacity_reports_by_task_location, h, j, l, t)
-            schicht_fields = schicht_label_to_dict(schicht_labels[s])  # v0.1.3 fix
+            # v0.1.4: end-user output uses the PUBLIC dict -- schicht_index_internal
+            # must never appear here, only schicht_id and its evidence fields.
+            schicht_fields = schicht_label_to_public_dict(schicht_labels[s])
             active_assignments.append({
                 "scenario_id": scenario_id,
                 "entity_id": h,
                 "entity_type": evidence["entity_type"],
                 "task_id": j,
                 "location_id": l,
-                **schicht_fields,  # schicht_index (internal) + schicht_id (controlled string) + evidence fields
+                **schicht_fields,  # schicht_id (controlled string) + evidence fields, no internal index
                 "time_bucket": t,
                 "assignment_state": evidence["assignment_state"],
                 "evidence_status": evidence["evidence_status"],
