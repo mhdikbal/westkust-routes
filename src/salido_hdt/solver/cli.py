@@ -42,6 +42,13 @@ from salido_hdt.solver.hard_constraints import (
 )
 from salido_hdt.solver.objective import STRUCTURAL_ZERO_CATEGORIES, build_objective
 from salido_hdt.solver.scenario_collector import collect_scenarios
+from salido_hdt.solver.schicht import (
+    SchichtId,
+    SchichtScenarioAssumption,
+    SchichtSourceEvidence,
+    resolve_schicht_labels,
+    schicht_label_to_dict,
+)
 from salido_hdt.solver.soft_constraints import (
     add_explicit_location_preference_penalty,
     add_minimum_movement_penalty,
@@ -58,7 +65,12 @@ from salido_hdt.solver.variables import _bucket_index_for, _parse_date, build_va
 #: to correctly scope scenario-to-scenario comparisons.
 _RUN_METADATA_NOTE = (
     "schicht_count is a documented minimal assumption (config.DEFAULT_SCHICHT_COUNT), "
-    "not derived from any CSV column. Scenario-to-scenario diversity reflects task "
+    "not derived from any CSV column. schicht_index (an internal bookkeeping integer) "
+    "and schicht_id (the controlled, public historical claim -- see schicht.py) are "
+    "two different statements: schicht_index=0 never means SCHICHT-DAY/SCHICHT-NIGHT "
+    "by itself, only SCHICHT-UNSPECIFIED unless explicit evidence or an explicit "
+    "scenario assumption was supplied for this run (see schicht_labels below). "
+    "Scenario-to-scenario diversity reflects task "
     "choice only, within an already HARD-fixed (entity, location, time-window) "
     "presence set resolved before variable construction -- it never represents "
     "alternate presence, location, or arrival/departure histories."
@@ -328,9 +340,22 @@ def _assignment_evidence(
     }
 
 
-def run(root: Path, output_dir: Path, max_scenarios: int | None = None) -> Path:
+def run(
+    root: Path,
+    output_dir: Path,
+    max_scenarios: int | None = None,
+    schicht_source_evidence: dict[int, SchichtSourceEvidence] | None = None,
+    schicht_scenario_assumptions: dict[int, SchichtScenarioAssumption] | None = None,
+) -> Path:
     """Runs the full pipeline once and writes scenario_*.json +
-    validation_summary.json under output_dir. Returns output_dir."""
+    validation_summary.json under output_dir. Returns output_dir.
+
+    schicht_source_evidence / schicht_scenario_assumptions: v0.1.3 fix
+    (SOLVER_V0_1_3_SCHICHT_PLAN.md) -- optional, per-index overrides for
+    the public schicht_id resolution (see schicht.resolve_schicht_labels).
+    Both default to None/empty: with neither supplied (every existing
+    caller), every schicht index resolves to SchichtId.UNSPECIFIED, which
+    is the only value the real v0.4.1 dataset can ever justify."""
     max_scenarios = max_scenarios or config.MAX_SCENARIOS
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -340,6 +365,9 @@ def run(root: Path, output_dir: Path, max_scenarios: int | None = None) -> Path:
 
     sv = build_variables(dataset)
     model = sv.model
+    schicht_labels = resolve_schicht_labels(
+        sv.schicht_count, schicht_source_evidence, schicht_scenario_assumptions
+    )
 
     task_preferred_roles = _task_preferred_roles(dataset)
     hard_task_preferred_roles = _hard_task_preferred_roles(dataset)  # v0.1.1 F4
@@ -446,13 +474,14 @@ def run(root: Path, output_dir: Path, max_scenarios: int | None = None) -> Path:
                 continue
             h, j, l, s, t = k
             evidence = _assignment_evidence(dataset, sv, capacity_reports_by_task_location, h, j, l, t)
+            schicht_fields = schicht_label_to_dict(schicht_labels[s])  # v0.1.3 fix
             active_assignments.append({
                 "scenario_id": scenario_id,
                 "entity_id": h,
                 "entity_type": evidence["entity_type"],
                 "task_id": j,
                 "location_id": l,
-                "schicht_id": s,
+                **schicht_fields,  # schicht_index (internal) + schicht_id (controlled string) + evidence fields
                 "time_bucket": t,
                 "assignment_state": evidence["assignment_state"],
                 "evidence_status": evidence["evidence_status"],
@@ -492,7 +521,9 @@ def run(root: Path, output_dir: Path, max_scenarios: int | None = None) -> Path:
     write_entity_presence_csv(dataset, sv, output_dir / "entity_presence.csv")
     write_candidate_entities_csv(dataset, sv, output_dir / "candidate_entities.csv", assigned_entity_ids)
     write_excluded_entities_csv(dataset, sv, output_dir / "excluded_entities.csv", assigned_entity_ids)
-    write_equipment_capacity_csv(capacity_reports, output_dir / "equipment_capacity.csv")
+    write_equipment_capacity_csv(
+        capacity_reports, output_dir / "equipment_capacity.csv", schicht_labels=schicht_labels,
+    )
 
     capacity_status_counts = Counter(r.capacity_status.value for r in capacity_reports)
 
@@ -515,6 +546,7 @@ def run(root: Path, output_dir: Path, max_scenarios: int | None = None) -> Path:
         "structural_zero_categories": sorted(STRUCTURAL_ZERO_CATEGORIES),  # v0.1.2 Item 2
         "run_metadata": {  # v0.1.1 F6
             "schicht_count": sv.schicht_count,
+            "schicht_labels": [schicht_label_to_dict(schicht_labels[i]) for i in sorted(schicht_labels)],  # v0.1.3
             "time_bucket_width_days": 7,
             "note": _RUN_METADATA_NOTE,
         },
@@ -527,14 +559,45 @@ def run(root: Path, output_dir: Path, max_scenarios: int | None = None) -> Path:
     return output_dir
 
 
+def parse_schicht_assumption_arg(raw: str) -> tuple[int, SchichtScenarioAssumption]:
+    """Parses "INDEX=SCHICHT_ID" (e.g. "0=SCHICHT-DAY") into
+    (index, SchichtScenarioAssumption). Raises ValueError on malformed
+    input or an unrecognized SchichtId -- v0.1.3 fix
+    (SOLVER_V0_1_3_SCHICHT_PLAN.md): explicit scenario assumptions must
+    never be silently misparsed into the wrong index/value."""
+    if "=" not in raw:
+        raise ValueError(f"expected INDEX=SCHICHT_ID, got {raw!r}")
+    index_part, _, schicht_id_part = raw.partition("=")
+    index = int(index_part)
+    try:
+        schicht_id = SchichtId(schicht_id_part)
+    except ValueError as exc:
+        valid = ", ".join(v.value for v in SchichtId)
+        raise ValueError(f"unrecognized schicht id {schicht_id_part!r}; expected one of: {valid}") from exc
+    assumption_id = f"CLI-ASSUMPTION-{index}-{schicht_id.value}"
+    return index, SchichtScenarioAssumption(schicht_id=schicht_id, assumption_id=assumption_id)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="SALIDO-HDT validation-first CP-SAT solver")
     parser.add_argument("--scenarios", type=int, default=config.MAX_SCENARIOS)
     parser.add_argument("--output", type=Path, default=config.DEFAULT_OUTPUT_ROOT)
     parser.add_argument("--root", type=Path, default=config.V0_4_1_ROOT)
+    parser.add_argument(
+        "--schicht-assumption", action="append", default=[], metavar="INDEX=SCHICHT_ID",
+        help="explicit, non-archival scenario assumption for a schicht index, e.g. 0=SCHICHT-DAY "
+             "(repeatable). Never inferred automatically -- see schicht.py.",
+    )
     args = parser.parse_args()
 
-    output_dir = run(root=args.root, output_dir=args.output, max_scenarios=args.scenarios)
+    schicht_scenario_assumptions = dict(
+        parse_schicht_assumption_arg(raw) for raw in args.schicht_assumption
+    )
+
+    output_dir = run(
+        root=args.root, output_dir=args.output, max_scenarios=args.scenarios,
+        schicht_scenario_assumptions=schicht_scenario_assumptions or None,
+    )
     print(f"Wrote solver run output to {output_dir}")
 
 

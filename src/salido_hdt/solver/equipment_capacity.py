@@ -218,18 +218,34 @@ def hard_capacity_bound(report: CapacityReport) -> int:
     return int(round(report.confirmed_capacity + report.uncertain_capacity))
 
 
-def write_equipment_capacity_csv(reports: list[CapacityReport], path: Path) -> None:
+def write_equipment_capacity_csv(reports: list[CapacityReport], path: Path, schicht_labels=None) -> None:
+    """v0.1.3 fix (SOLVER_V0_1_3_SCHICHT_PLAN.md): one row per (report,
+    schicht index in scope) -- the capacity bound `add_equipment_capacity`
+    wires is asserted independently per (schicht, time) pair (see
+    hard_constraints.add_equipment_capacity, fixed in ad8dc6b4), so this
+    report makes explicit which controlled schicht_id each uniform bound
+    applies to. `schicht_labels`: optional {index: schicht.SchichtLabel} --
+    when omitted (e.g. a caller that hasn't resolved schicht labels),
+    defaults to the single SCHICHT-UNSPECIFIED index, matching the
+    real dataset's only possible value today."""
+    from salido_hdt.solver.schicht import resolve_schicht_labels, schicht_label_to_dict
+
+    if schicht_labels is None:
+        schicht_labels = resolve_schicht_labels(1)
+
     with Path(path).open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow([
-            "task_id", "location_id", "confirmed_capacity", "uncertain_capacity",
+            "task_id", "location_id", "schicht_id", "confirmed_capacity", "uncertain_capacity",
             "required_capacity", "capacity_status", "source_inventory_item_ids",
             "required_capacity_semantics", "hard_bound_rationale",
         ])
         for r in reports:
-            writer.writerow([
-                r.task_id, r.location_id, r.confirmed_capacity, r.uncertain_capacity,
-                r.required_capacity if r.required_capacity is not None else "",
-                r.capacity_status.value, "|".join(r.source_inventory_item_ids),
-                r.required_capacity_semantics, r.hard_bound_rationale,
-            ])
+            for index in sorted(schicht_labels):
+                schicht_id = schicht_label_to_dict(schicht_labels[index])["schicht_id"]
+                writer.writerow([
+                    r.task_id, r.location_id, schicht_id, r.confirmed_capacity, r.uncertain_capacity,
+                    r.required_capacity if r.required_capacity is not None else "",
+                    r.capacity_status.value, "|".join(r.source_inventory_item_ids),
+                    r.required_capacity_semantics, r.hard_bound_rationale,
+                ])
