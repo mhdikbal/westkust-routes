@@ -40,7 +40,7 @@ from salido_hdt.solver.hard_constraints import (
     add_temporal_presence,
     add_topological_feasibility,
 )
-from salido_hdt.solver.objective import build_objective
+from salido_hdt.solver.objective import STRUCTURAL_ZERO_CATEGORIES, build_objective
 from salido_hdt.solver.scenario_collector import collect_scenarios
 from salido_hdt.solver.soft_constraints import (
     add_explicit_location_preference_penalty,
@@ -474,6 +474,7 @@ def run(root: Path, output_dir: Path, max_scenarios: int | None = None) -> Path:
             "status": scenario.status,
             "objective_value": scenario.objective_value,
             "penalty_breakdown": scenario.penalty_breakdown,  # v0.1.1 F7
+            "structural_zero_categories": sorted(STRUCTURAL_ZERO_CATEGORIES),  # v0.1.2 Item 2
             "active_assignments": active_assignments,
         }
         path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -501,6 +502,7 @@ def run(root: Path, output_dir: Path, max_scenarios: int | None = None) -> Path:
         "hard_eligible": len(report.hard_eligible),
         "excluded_from_hard": len(report.excluded_from_hard),
         "n_scenarios": len(scenarios),
+        "scenario_semantics": getattr(scenarios, "scenario_semantics", "unique_optimum"),  # v0.1.2 Item 4
         "n_time_buckets": len(sv.time_buckets),
         "n_entities": len(sv.entities),
         "n_x_variables": len(sv.x),
@@ -510,6 +512,7 @@ def run(root: Path, output_dir: Path, max_scenarios: int | None = None) -> Path:
         "equipment_capacity_status_counts": dict(capacity_status_counts),
         "equipment_capacity_note": _EQUIPMENT_CAPACITY_NOTE,
         "blocked_constraint_strength_tasks": _blocked_constraint_strength_tasks(dataset),
+        "structural_zero_categories": sorted(STRUCTURAL_ZERO_CATEGORIES),  # v0.1.2 Item 2
         "run_metadata": {  # v0.1.1 F6
             "schicht_count": sv.schicht_count,
             "time_bucket_width_days": 7,

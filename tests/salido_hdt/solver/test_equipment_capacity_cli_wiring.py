@@ -193,6 +193,47 @@ def test_write_equipment_capacity_csv_has_five_required_columns(tmp_path):
     assert row["source_inventory_item_ids"] == "INV-1|INV-2"
 
 
+# --- v0.1.2 Item 3: capacity-bound interpretation columns -------------------
+
+
+def test_required_capacity_semantics_is_reported():
+    report = _report_for(
+        [_mock_item(inventory_item_id="I1", item_text_id="boor", quantity=1.0,
+                     condition_normalized="serviceable")],
+        required=1.0,
+    )
+    assert report.required_capacity_semantics == "archival_minimum_crew_size"
+
+
+def test_hard_bound_rationale_distinguishes_matched_and_unmatched_pairs():
+    matched = _report_for(
+        [_mock_item(inventory_item_id="I1", item_text_id="boor", quantity=1.0,
+                     condition_normalized="serviceable")],
+        required=1.0,
+    )
+    unmatched = _report_for([], required=1.0)
+    no_requirement = compute_capacity_reports(Mock(
+        task_requirements={"T-X": Mock(required_tool_keywords=(), allowed_location_ids=("L-ORTEN",),
+                                        minimum_workers_assumption=1.0)},
+        inventory_items={},
+    ))[0]
+
+    assert matched.hard_bound_rationale != unmatched.hard_bound_rationale
+    assert "confirmed_capacity + uncertain_capacity" in matched.hard_bound_rationale
+    assert unmatched.hard_bound_rationale == "no constraint instantiated (no_inventory_match / no_requirement_declared)"
+    assert no_requirement.hard_bound_rationale == unmatched.hard_bound_rationale
+
+
+def test_real_run_equipment_capacity_csv_has_new_columns(tmp_path):
+    output_dir = run(root=config.V0_4_1_ROOT, output_dir=tmp_path / "out", max_scenarios=1)
+    with (output_dir / "equipment_capacity.csv").open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    assert rows
+    for row in rows:
+        assert row["required_capacity_semantics"] == "archival_minimum_crew_size"
+        assert row["hard_bound_rationale"]  # non-empty on every row, matched or not
+
+
 # --- real dataset -------------------------------------------------------------
 
 

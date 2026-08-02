@@ -72,3 +72,37 @@ def test_widened_bound_for_unresolved_reading_documented_by_caller():
     active = sum(solver.Value(v) for v in x.values())
     assert active == widened_capacity
     assert active != raw_reading
+
+
+def test_equipment_capacity_is_per_schicht_not_pooled_across_schicht():
+    """v0.1.2 fix (SOLVER_V0_1_2_FIX_PLAN.md Item 1): two different
+    schicht values at the same (task, location, time) must each get their
+    own capacity=1 pool -- 2 simultaneously active total, not 1. The old
+    group-by-t-only code would have pooled both schicht into a single
+    sum <= 1 constraint, forbidding this."""
+    model = cp_model.CpModel()
+    x = {
+        ("P-A", "T-DRILL", "L-ORTEN", 0, 0): model.NewBoolVar("x_s0"),
+        ("P-B", "T-DRILL", "L-ORTEN", 1, 0): model.NewBoolVar("x_s1"),
+    }
+    n = add_equipment_capacity(model, x, task_id="T-DRILL", location_id="L-ORTEN", capacity=1)
+    assert n == 2  # two distinct (schicht, time) groups
+    solver = _solve_max(model, list(x.values()))
+    active = sum(solver.Value(v) for v in x.values())
+    assert active == 2  # one per schicht, not one total
+
+
+def test_equipment_capacity_behaviour_unchanged_at_schicht_count_one():
+    """No-behaviour-change-today claim, verified: with every variable at
+    schicht=0 (the real config.DEFAULT_SCHICHT_COUNT), grouping by (s, t)
+    produces the identical bound as the old group-by-t-only code."""
+    model = cp_model.CpModel()
+    x = {
+        (f"P-{i}", "T-DRILL", "L-ORTEN", 0, 0): model.NewBoolVar(f"x{i}")
+        for i in range(5)
+    }
+    n = add_equipment_capacity(model, x, task_id="T-DRILL", location_id="L-ORTEN", capacity=3)
+    assert n == 1  # single (schicht=0, t=0) group, same as the old single-t group
+    solver = _solve_max(model, list(x.values()))
+    active = sum(solver.Value(v) for v in x.values())
+    assert active == 3

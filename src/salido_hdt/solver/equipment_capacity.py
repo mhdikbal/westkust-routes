@@ -93,6 +93,28 @@ def _matches_tool_keywords(item, keywords: tuple[str, ...]) -> bool:
     return any(kw.lower() in haystack for kw in keywords for haystack in haystacks)
 
 
+#: v0.1.2 fix (SOLVER_V0_1_2_FIX_PLAN.md Item 3): required_capacity is
+#: sourced from TaskRequirement.minimum_workers_assumption, which means
+#: "the archivally-assumed minimum crew size to run this task at all" --
+#: NOT "the maximum number of workers who might simultaneously want this
+#: equipment." No data source in this dataset states an actual
+#: simultaneous-demand estimate, so this fixed label is attached to every
+#: report rather than leaving the number's meaning to be inferred.
+REQUIRED_CAPACITY_SEMANTICS = "archival_minimum_crew_size"
+
+_UNMATCHED_BOUND_RATIONALE = "no constraint instantiated (no_inventory_match / no_requirement_declared)"
+
+
+def _hard_bound_rationale(status: CapacityStatus) -> str:
+    if status in (CapacityStatus.NO_INVENTORY_MATCH, CapacityStatus.NO_REQUIREMENT_DECLARED):
+        return _UNMATCHED_BOUND_RATIONALE
+    return (
+        "confirmed_capacity + uncertain_capacity (condition data mostly unknown "
+        "in the real archive; confirmed-only would hard-forbid tasks the archive "
+        "does not actually forbid -- see hard_capacity_bound())"
+    )
+
+
 @dataclass(frozen=True)
 class CapacityReport:
     task_id: str
@@ -102,6 +124,8 @@ class CapacityReport:
     required_capacity: float | None
     capacity_status: CapacityStatus
     source_inventory_item_ids: tuple[str, ...] = field(default_factory=tuple)
+    required_capacity_semantics: str = REQUIRED_CAPACITY_SEMANTICS
+    hard_bound_rationale: str = ""
 
 
 def compute_capacity_reports(dataset) -> list[CapacityReport]:
@@ -123,6 +147,7 @@ def compute_capacity_reports(dataset) -> list[CapacityReport]:
                     confirmed_capacity=0.0, uncertain_capacity=0.0,
                     required_capacity=required,
                     capacity_status=CapacityStatus.NO_REQUIREMENT_DECLARED,
+                    hard_bound_rationale=_hard_bound_rationale(CapacityStatus.NO_REQUIREMENT_DECLARED),
                 ))
             continue
 
@@ -169,6 +194,7 @@ def compute_capacity_reports(dataset) -> list[CapacityReport]:
                 confirmed_capacity=confirmed, uncertain_capacity=uncertain,
                 required_capacity=required, capacity_status=status,
                 source_inventory_item_ids=tuple(sorted(source_ids)),
+                hard_bound_rationale=_hard_bound_rationale(status),
             ))
     return reports
 
@@ -198,10 +224,12 @@ def write_equipment_capacity_csv(reports: list[CapacityReport], path: Path) -> N
         writer.writerow([
             "task_id", "location_id", "confirmed_capacity", "uncertain_capacity",
             "required_capacity", "capacity_status", "source_inventory_item_ids",
+            "required_capacity_semantics", "hard_bound_rationale",
         ])
         for r in reports:
             writer.writerow([
                 r.task_id, r.location_id, r.confirmed_capacity, r.uncertain_capacity,
                 r.required_capacity if r.required_capacity is not None else "",
                 r.capacity_status.value, "|".join(r.source_inventory_item_ids),
+                r.required_capacity_semantics, r.hard_bound_rationale,
             ])

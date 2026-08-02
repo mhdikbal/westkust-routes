@@ -41,6 +41,20 @@ from ortools.sat.python import cp_model
 
 from salido_hdt.solver import config
 
+#: v0.1.2 fix (SOLVER_V0_1_2_FIX_PLAN.md Item 2): the objective categories
+#: that are STRUCTURALLY always zero given this implementation's wiring --
+#: not a contingent finding of any particular run. temporal_violations and
+#: topological_violations are hard-enforced (model.Add(var == 0) in
+#: hard_constraints.add_temporal_presence / add_topological_feasibility),
+#: never soft-penalized, so cli.py always passes them as [] and they can
+#: never be anything but 0 in penalty_breakdown, forever, regardless of
+#: dataset or scenario. Exposed here (not just in this docstring) so
+#: cli.py can report it in output rather than leaving a reader unable to
+#: tell "zero this run" from "structurally can never be nonzero."
+STRUCTURAL_ZERO_CATEGORIES: frozenset[str] = frozenset({
+    "temporal_violations", "topological_violations",
+})
+
 
 def build_objective(
     model: cp_model.CpModel,

@@ -121,21 +121,33 @@ def add_equipment_capacity(
     capacity: int,
 ) -> int:
     """Simultaneous assignments to `task_id` at `location_id` cannot exceed
-    `capacity` at any single time bucket.
+    `capacity` within any single (schicht, time bucket) pair.
 
     `capacity` should already reflect the SOLVER_INPUT_READINESS.md §8/§9
     widening rule: if the source InventoryItem's reading_status is
     `unresolved` (e.g. INV-0232, "60 bor tambang, kemungkinan terbaca
     berghborers"), the caller must pass a widened bound, not the raw
     quantity, to avoid treating an uncertain reading as an exact cap.
+
+    v0.1.2 fix (SOLVER_V0_1_2_FIX_PLAN.md Item 1): grouped by (s, t), not
+    by t alone. CONSTRAINT_SOLVER.md defines the decision variable as
+    x[h,j,l,s,t] -- schicht is a first-class axis. Grouping by t alone
+    silently pooled every schicht's candidates into one shared capacity
+    check, which is dormant and invisible today only because
+    config.DEFAULT_SCHICHT_COUNT == 1 (so s is always 0); it would
+    under/over-count the moment more than one schicht value is ever used.
+    This is the more conservative reading (equipment is never assumed
+    shared across schicht) absent any archival statement either way -- see
+    the fix plan's "Remaining limitations" for why the underlying policy
+    question itself is not resolved here.
     """
-    by_time: dict[int, list[cp_model.IntVar]] = defaultdict(list)
+    by_schicht_time: dict[tuple[int, int], list[cp_model.IntVar]] = defaultdict(list)
     for (h, j, l, s, t), var in x_vars.items():
         if j == task_id and l == location_id:
-            by_time[t].append(var)
-    for t, vs in by_time.items():
+            by_schicht_time[(s, t)].append(var)
+    for (s, t), vs in by_schicht_time.items():
         model.Add(sum(vs) <= capacity)
-    return len(by_time)
+    return len(by_schicht_time)
 
 
 def add_topological_feasibility(
