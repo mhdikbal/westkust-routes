@@ -1,7 +1,7 @@
 # Phase A0 Sprint Board — Required Audits (Enclave 1682 Critical Model)
 
 Companion to `ENCLAVE_1682_CRITICAL_MODEL_PLAN.md` (commit `4ff7dff`), §15 "Phase A0 — Required audits (new, gates Phase A)".
-Status: **planning only — no ticket below has been started or executed by this board's setup.**
+Status: **Workstream 2 (A0-7…A0-11) complete and signed off. Workstream 1 (A0-2…A0-6) remains blocked on archival scan access. Overall Phase A0 gate (`S1-03`) not yet open.**
 
 ## Gate condition (repeated from the approved plan, not new)
 
@@ -37,11 +37,11 @@ Traces to plan §15 Phase A0, bullet 2; §8 tier 6; §5 `group_hierarchy_review.
 
 | ID | Ticket | Status | Depends on | Acceptance criteria |
 |---|---|---|---|---|
-| A0-7 | Enumerate all documents in the corpus with a time window overlapping the 1682-01-09 personnel register | **Backlog** | — | Query `01_documents.csv` for any `document_id` whose date range intersects `DOC-PERSONNEL-1682-01-09`'s period; list is exhaustive over the current corpus (not a sample), with each candidate document's relationship to the personnel register stated explicitly (same register / distinct register / inventory-only / correspondence). |
-| A0-8 | Check candidate documents for population overlap with the Beneden-Pagger and Madagascar-arrival cohorts | **Backlog** | A0-7 | For each candidate document from A0-7, state explicitly whether it names or counts any of the same people/groups as `06_human_groups.csv`'s 17 records — with a citation (`source_document_id` + `source_passage_id`) for every "yes," not just a summary judgement. |
-| A0-9 | Confirm (or revise) the `group_hierarchy_review.csv` parent/child de-duplication decision | **Backlog** | A0-8 | Reviewer confirms the plan's recommended assignment (`counts_toward_unique_person_estimate=true` on `G-MADA-64` parent, `false` on its 5 children) still holds after A0-8, or documents why it should change — either way, `SUM(record_person_count WHERE counts_toward_unique_person_estimate)` across the Madagascar rows must equal 64, never 128 (the direct regression condition from plan §16). |
-| A0-10 | Document findings and update the tier-6 status in `archival_visibility.csv`/`uncertainty_critical.csv` scaffolding | **Backlog** | A0-8, A0-9 | States plainly whether 308 (tier 5, provisional single-document estimate) still stands as the best available *provisional* figure after cross-document review, or whether A0-8 surfaced overlap requiring a different provisional figure. **In neither case does this ticket produce a tier-6 "verified" number** — per the approval qualification, tier 6 (`unique_person_verified_count`) can only move off "unresolved" through a separate, explicit future decision, not as a byproduct of this review. |
-| A0-11 | Reviewer sign-off, Workstream 2 | **Blocked on A0-10** | A0-10 | A named reviewer confirms A0-10's findings; `group_hierarchy_review.csv`'s `cross_document_temporal_overlap_checked` flips to `true` only after this sign-off. |
+| A0-7 | Enumerate all documents in the corpus with a time window overlapping the 1682-01-09 personnel register | **Done** | — | All 5 corpus documents enumerated and checked (exhaustive — the corpus contains only 5 documents total); findings in `CROSS_DOCUMENT_OVERLAP_FINDINGS.md` §2. Discrepancy flagged (archive catalogue period vs. two documents' internal dates), not resolved. |
+| A0-8 | Check candidate documents for population overlap with the Beneden-Pagger and Madagascar-arrival cohorts | **Done** | A0-7 | Findings in `CROSS_DOCUMENT_OVERLAP_FINDINGS.md` §3: `DOC-PROTOCOL-1682` and `DOC-INVENTORY-1682-01-04` show structural overlap (cited by HRLT/claims row IDs); `DOC-ASSAY-1682-03-12` and `DOC-OLITSCH-1682-04-30` show none in currently-linked tables. Exhaustiveness limitation explicitly recorded: `00_source_passages.csv`'s `source_document_id` is empty for all 1488 rows, so "no overlap" for those two documents is bounded by that gap, not an absolute claim. |
+| A0-9 | Confirm (or revise) the `group_hierarchy_review.csv` parent/child de-duplication decision | **Done** | A0-8 | Reviewer (Muhammad Ikbal) confirmed the plan's recommended assignment (`counts_toward_unique_person_estimate=true` on `G-MADA-64` parent, `false` on its 5 children) — no cross-document evidence found in A0-8 contradicts it; the only other reference to the cohort (`DOC-PROTOCOL-1682` claim `CL-003`) re-attests the same `group_id`, not a second count. `SUM(record_person_count WHERE counts_toward_unique_person_estimate)` across the Madagascar rows remains 64, never 128. |
+| A0-10 | Document findings and update the tier-6 status in `archival_visibility.csv`/`uncertainty_critical.csv` scaffolding | **Done** | A0-8, A0-9 | `CROSS_DOCUMENT_OVERLAP_FINDINGS.md` written. States plainly that 308 (tier 5) still stands as the best available *provisional* figure. Tier 6 (`unique_person_verified_count`) explicitly recorded as remaining **unresolved** — this ticket did not and could not promote it, per the approval qualification. Tier-6 status recorded in prose (§5 of that document) pending Sprint 2 creating the actual `uncertainty_critical.csv` file to hold it. |
+| A0-11 | Reviewer sign-off, Workstream 2 | **Done — signed off by Muhammad Ikbal** | A0-10 | Reviewer confirmed `CROSS_DOCUMENT_OVERLAP_FINDINGS.md`'s findings. `group_hierarchy_review.csv`'s `cross_document_temporal_overlap_checked` field is authorized to flip to `true` once Sprint 2 creates that file (the file does not exist yet — this sign-off pre-authorizes that specific field value for when it does). This sign-off closes **Workstream 2 only** — Workstream 1 (`A0-2`…`A0-6`) remains blocked on archival scan access; the overall Phase A0 gate (`S1-03`) stays blocked until Workstream 1 also reaches sign-off. |
 
 ---
 
@@ -51,10 +51,10 @@ A0-1 and A0-4 have no blocking dependency and can be picked up immediately. A0-7
 
 ## Explicitly not on this board
 
-- No Phase A (schema/derivation layer) tickets — blocked entirely until both workstreams reach sign-off (A0-6, A0-11), per the gate condition above.
+- No Phase A (schema/derivation layer) tickets — blocked entirely until both workstreams reach sign-off. **A0-11 signed off; A0-6 still outstanding** (blocked on archival scan access) — per the gate condition above, Phase A stays blocked until A0-6 closes too.
 - No ticket authorizes writing to any canonical dataset, solver snapshot, or Docker configuration — consistent with every prior approval in this project.
 - No estimate/story-point/velocity fields — this board tracks archival-review dependencies and gate status, not delivery-date forecasting, since the binding constraint here is scan access and reviewer availability, not engineering capacity.
 
 ---
 
-*This board is planning only. No ticket has been started. No canonical dataset, solver snapshot, or Docker configuration was touched while setting it up — only read access to `00_source_passages.csv` and a directory-existence check on `docs/enclave/scans/`.*
+*Workstream 2 (A0-7…A0-11) executed and signed off via direct, read-only queries against the canonical v0.4.1 CSVs — full findings in `CROSS_DOCUMENT_OVERLAP_FINDINGS.md`. No canonical dataset, solver snapshot, application code, or Docker configuration was modified at any point. Workstream 1 remains untouched pending archival scan access.*
