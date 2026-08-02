@@ -46,7 +46,7 @@ No task on this board or in `ENCLAVE_1682_BACKLOG.csv` changes any row of this t
 ```mermaid
 graph TD
     S0[Sprint 0: Baseline and governance] -->|S0-05 gate| S1[Sprint 1: Phase A0 evidence reconciliation]
-    S1 -->|S1-03 gate — BLOCKED: archival scans| S2[Sprint 2: Critical dataset candidate v0.5]
+    S1 -->|S1-03 gate — pending A0-2..A0-6 attestation chain, no longer scan-blocked| S2[Sprint 2: Critical dataset candidate v0.5]
     S2 -->|S2-09 gate| S3[Sprint 3: Critical temporal knowledge graph]
     S2 -->|S2-09 gate| S5[Sprint 5: Critical Petri Net specification]
     S3 -->|S3-06 gate| S4[Sprint 4: Critical interface redesign]
@@ -70,7 +70,7 @@ The dashed "Simulation engine work" node is intentionally outside every sprint o
 
 ### Sprint 1 — Phase A0 evidence reconciliation
 - **DoR**: Sprint 0 complete; `PHASE_A0_SPRINT_BOARD.md` exists and is approved.
-- **DoD**: `A0-6` (Workstream 1 reviewer sign-off) **and** `A0-11` (Workstream 2 reviewer sign-off) both recorded in `PHASE_A0_SPRINT_BOARD.md`; `S1-03` gate task closed. **Currently blocked**: Workstream 1 cannot reach `A0-6` until archival scans are obtained (`docs/enclave/scans/` does not exist in this repository) — see External Blockers below. Workstream 2 has no external blocker and can proceed independently.
+- **DoD**: `A0-6` (Workstream 1 reviewer sign-off) **and** `A0-11` (Workstream 2 reviewer sign-off) both recorded in `PHASE_A0_SPRINT_BOARD.md`; `S1-03` gate task closed. Workstream 2 already closed. Workstream 1 is no longer externally blocked — evidence-retention policy corrected (`PHASE_A0_SPRINT_BOARD.md` §0): verification proceeds via researcher-completed, reviewer-confirmed philological attestation (`A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md`), not local image possession. `docs/enclave/scans/` must not be created.
 
 ### Sprint 2 — Critical dataset candidate v0.5
 - **DoR**: Sprint 1's `S1-03` gate closed (both workstreams signed off).
@@ -110,13 +110,14 @@ The dashed "Simulation engine work" node is intentionally outside every sprint o
 
 ## External-evidence blockers
 
-| Blocker | Affects | Current state | Who must resolve it |
+| Former/current item | Affects | Current state | Resolution |
 |---|---|---|---|
-| **Archival scan access** (Nationaal Archief, Den Haag — Access 1.04.02, Inventory 7964) | `S1-01` (and everything downstream that depends on the restraint-device audit reaching a non-pending state: `S2-03` partially, `S2-04` partially, `S4-05` partially) | `docs/enclave/scans/` does not exist in this repository (confirmed during Phase A0 board setup and re-confirmed as unchanged for this board) | Research owner — this is not resolvable by repository-local work |
-| **Cross-document corpus review exhaustiveness** | `S1-02` | No blocker on starting, but requires a genuinely exhaustive review of `01_documents.csv`'s date-overlapping documents, not a sampled check, per `A0-7`/`A0-8` acceptance criteria | Reviewer conducting `S1-02` |
+| ~~Archival scan access~~ (Nationaal Archief, Den Haag — Access 1.04.02, Inventory 7964) | `S1-01`, and partially `S2-03`/`S2-04`/`S4-05` | **No longer an external blocker.** Local image retention was never required by `docs/SOURCE_PROVENANCE.md` — the original framing conflated scan access with local duplication. Researcher reads the relevant scans directly via the Nationaal Archief external viewer; `docs/enclave/scans/` must not be created and no image may be downloaded or committed. | Internal — researcher completes `A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md` (currently `draft_awaiting_researcher_completion`), then reviewer confirms it (`A0-3`) |
+| **Passage-to-structured-row extraction gap** (`SP-01267`/`SP-01344` exist in `00_source_passages.csv` but are absent from `10_inventory_items.csv`) | `S1-01` (`A0-4`/`A0-5`) | Unaffected by the evidence-retention correction — this is the actual remaining P0 issue, not a source-access problem | Internal — `A0-4` populates `restraint_device_review.csv`, `A0-5` documents the extraction-gap audit outcome |
+| **Cross-document corpus review exhaustiveness** | `S1-02` | Already resolved — `S1-02` closed, see `CROSS_DOCUMENT_OVERLAP_FINDINGS.md` | Closed |
 | **Reviewer availability** (a person other than this plan's author, per `docs/ETHICAL_MODELING.md`'s spirit and this board's repeated "named reviewer" requirement) | Every gate task (`S0-05`, `S1-03`, `S2-09`, `S3-06`, `S4-09`, `S5-05`, `S6-01`, `S6-03`) | Not currently identified on this board — this board deliberately leaves `owner` blank throughout (see `ENCLAVE_1682_BACKLOG.csv`), consistent with `PHASE_A0_SPRINT_BOARD.md`'s existing convention | Research owner, to assign |
 
-**The archival-scan blocker is the single most consequential item on this board** — it is the only one Sprint 4 (`S4-05`)'s evidence requirement explicitly notes can be worked around (the Coercion Context section can ship with both restraint-device rows in "audit pending" state), meaning the programme does not have to stall entirely on it, but the *badges* on that section cannot honestly read anything other than "pending" until it resolves.
+Sprint 4 (`S4-05`)'s badges still read "audit pending" until `A0-6` closes — that status is now driven by attestation-review and extraction-gap resolution, not by scan availability.
 
 ---
 
