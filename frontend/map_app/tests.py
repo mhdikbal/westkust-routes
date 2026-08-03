@@ -18,6 +18,7 @@ from FastAPI backend via httpx (mocked in tests that hit view logic).
 """
 import json
 import os
+import re
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 from django.test import SimpleTestCase, Client
@@ -1826,6 +1827,155 @@ class EnclaveDataAdapterTest(SimpleTestCase):
             self.assertEqual(e.target_person_status, "not_recorded")
             self.assertEqual(e.date_of_use_status, "not_recorded")
 
+    def test_load_visibility_explorer_accounts_all_50_named_persons(self):
+        """All 50 named-person records are represented, none synthesized."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        self.assertEqual(len(result.persons), 50)
+
+    def test_load_visibility_explorer_accounts_all_17_groups(self):
+        """All 17 aggregate-group records are represented, none synthesized."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        self.assertEqual(len(result.groups), 17)
+
+    def test_load_visibility_explorer_missing_role_is_not_structured(self):
+        """A person absent from 04_person_roles.csv is not_structured, never no_role."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        statuses = {e.role_visibility for e in result.persons}
+        self.assertTrue(statuses.issubset({"recorded", "not_structured"}))
+        self.assertTrue(any(e.role_visibility == "not_structured" for e in result.persons))
+
+    def test_load_visibility_explorer_missing_location_is_not_structured(self):
+        """A person absent from 07_human_role_location_time.csv is not_structured, never absent/zero."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        statuses = {e.location_visibility for e in result.persons}
+        self.assertTrue(statuses.issubset({"recorded", "not_structured"}))
+        self.assertTrue(any(e.location_visibility == "not_structured" for e in result.persons))
+
+    def test_load_visibility_explorer_signature_always_not_structured(self):
+        """signature_visibility is always not_structured, never not_recorded."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        for e in result.persons:
+            self.assertEqual(e.signature_visibility, "not_structured")
+
+    def test_load_visibility_explorer_no_synthetic_person_from_group_count(self):
+        """Groups never expand record_person_count into per-person entries."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        person_ids = {e.person_id for e in result.persons}
+        group_ids = {e.group_id for e in result.groups}
+        self.assertTrue(person_ids.isdisjoint(group_ids))
+        self.assertEqual(len(result.persons) + len(result.groups), 67)
+
+    def test_load_visibility_explorer_deterministic_ordering(self):
+        """Two consecutive calls return persons/groups in the same, sorted-by-id order."""
+        from map_app.enclave_data import get_adapter
+
+        r1 = get_adapter().load_visibility_explorer()
+        r2 = get_adapter().load_visibility_explorer()
+        self.assertEqual([e.person_id for e in r1.persons], [e.person_id for e in r2.persons])
+        self.assertEqual([e.group_id for e in r1.groups], [e.group_id for e in r2.groups])
+        self.assertEqual([e.person_id for e in r1.persons], sorted(e.person_id for e in r1.persons))
+
+    def test_load_visibility_explorer_warns_on_unresolved_hrlt_identifier(self):
+        """An HRLT row referencing an unknown person/group id produces a typed warning, not a crash."""
+        from unittest.mock import patch
+        from map_app.enclave_data import EnclaveDataAdapter
+
+        adapter = EnclaveDataAdapter()
+        bogus_row = {
+            "hrlt_id": "HRLT-BOGUS", "human_or_group_id": "P-DOES-NOT-EXIST",
+            "entity_type": "individual", "location_id": "L-SALIDO",
+        }
+        with patch.object(
+            adapter, "load_human_role_location_time",
+            return_value=adapter.load_human_role_location_time() + [bogus_row],
+        ):
+            result = adapter.load_visibility_explorer()
+        self.assertTrue(any("P-DOES-NOT-EXIST" in w for w in result.warnings))
+
+    def test_explicit_hrlt_assignment_is_labelled_explicit(self):
+        """A person backed by an explicit HRLT row gets assignment_evidence=explicit."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        by_id = {e.person_id: e for e in result.persons}
+        # HRLT-0001: P-VOGEL, evidence_status=explicit
+        self.assertEqual(by_id["P-VOGEL"].assignment_evidence, "explicit")
+
+    def test_register_presence_is_not_assignment_evidence(self):
+        """Register-reporting-only presence rows always carry assignment_evidence=not_structured."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        reporting_only = [e for e in result.presence if e.presence_basis == "register_reporting_only"]
+        self.assertTrue(reporting_only)
+        for e in reporting_only:
+            self.assertEqual(e.assignment_evidence, "not_structured")
+
+    def test_missing_assignment_is_not_structured_not_not_applicable(self):
+        """A named person with no HRLT row gets assignment_evidence=not_structured, never not_applicable."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        persons_without_hrlt = [e for e in result.persons if e.location_visibility == "not_structured"]
+        self.assertTrue(persons_without_hrlt)
+        for e in persons_without_hrlt:
+            self.assertEqual(e.assignment_evidence, "not_structured")
+            self.assertNotEqual(e.assignment_evidence, "not_applicable")
+
+    def test_reconstructed_assignment_is_not_archival_evidence(self):
+        """A solver-reconstructed HRLT-style row is labelled reconstructed, never explicit/interpreted."""
+        from unittest.mock import patch
+        from map_app.enclave_data import EnclaveDataAdapter
+
+        adapter = EnclaveDataAdapter()
+        base_rows = adapter.load_human_role_location_time()
+        reconstructed_row = dict(base_rows[0])
+        reconstructed_row["evidence_status"] = "reconstructed"
+        reconstructed_row["human_or_group_id"] = "P-OLITSCH"
+        with patch.object(
+            adapter, "load_human_role_location_time",
+            return_value=base_rows + [reconstructed_row],
+        ):
+            result = adapter.load_visibility_explorer()
+        by_id = {e.person_id: e for e in result.persons}
+        self.assertEqual(by_id["P-OLITSCH"].assignment_evidence, "reconstructed")
+        self.assertNotIn(by_id["P-OLITSCH"].assignment_evidence, {"explicit", "interpreted"})
+
+    def test_group_without_assignment_gets_no_synthetic_assignment(self):
+        """Every group entry has assignment_evidence=not_applicable; never fabricated as explicit/interpreted/reconstructed."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        for e in result.groups:
+            self.assertEqual(e.assignment_evidence, "not_applicable")
+
+    def test_presence_basis_and_assignment_evidence_are_independent(self):
+        """presence_basis and assignment_evidence come from different source signals."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_visibility_explorer()
+        hrlt_backed_explicit = [
+            e for e in result.presence
+            if e.presence_basis == "register_and_hrlt" and e.assignment_evidence == "explicit"
+        ]
+        self.assertTrue(hrlt_backed_explicit)
+        reporting_only = [e for e in result.presence if e.presence_basis == "register_reporting_only"]
+        self.assertTrue(reporting_only)
+        for e in reporting_only:
+            self.assertNotEqual(e.assignment_evidence, "explicit")
+
 
 class Enclave1682ViewTest(SimpleTestCase):
     """Tests for /riset/enclave-1682/ route (Phase 1C)."""
@@ -1995,3 +2145,78 @@ class Enclave1682ViewTest(SimpleTestCase):
         content = response.content.decode("utf-8")
         self.assertNotIn("372", content)
         self.assertNotIn("308", content)
+
+    def test_riset_enclave_1682_has_visibility_explorer_section(self):
+        """Page contains the People and Archival Visibility Explorer section heading."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("People and Archival Visibility Explorer", content)
+
+    def test_riset_enclave_1682_visibility_explorer_person_and_group_counts(self):
+        """Persons (50) and groups (17) tile labels render."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("record individu bernama", content)
+        self.assertIn("record kelompok agregat", content)
+
+    def test_riset_enclave_1682_visibility_explorer_renders_all_named_persons(self):
+        """All 50 person_id values render inside the explorer section."""
+        from map_app.enclave_data import get_adapter
+
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        for p in get_adapter().load_persons():
+            self.assertIn(p["person_id"], content)
+
+    def test_riset_enclave_1682_visibility_explorer_renders_all_groups(self):
+        """All 17 group_id values render inside the explorer section."""
+        from map_app.enclave_data import get_adapter
+
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        for g in get_adapter().load_human_groups():
+            self.assertIn(g["group_id"], content)
+
+    def test_riset_enclave_1682_visibility_explorer_uses_controlled_vocabulary(self):
+        """not_structured appears (role/location gaps); no badge ever renders a forbidden ad-hoc label.
+
+        The section's own explanatory prose intentionally quotes "no_role" as a
+        documented forbidden example (in <code>), so this checks rendered badge
+        output specifically, not a raw substring search over the whole page.
+        """
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("not_structured", content)
+        self.assertNotRegex(content, r'class="badge[^"]*">\s*no_role\s*<')
+        self.assertNotRegex(content, r'class="badge[^"]*">\s*absent\s*<')
+        self.assertNotRegex(content, r'class="badge[^"]*">\s*zero\s*<')
+
+    def test_riset_enclave_1682_visibility_explorer_assignment_evidence_independent_of_presence(self):
+        """assignment_evidence is derived per-entity, not hardcoded; both presence_basis values render."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("register_reporting_only", content)
+        self.assertIn("register_and_hrlt", content)
+        self.assertIn("not_structured", content)
+        self.assertIn("not_applicable", content)
+
+    def test_riset_enclave_1682_visibility_explorer_filter_controls_present(self):
+        """Person/group filter radio inputs exist and work without JavaScript."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn('id="vizFilterPersons"', content)
+        self.assertIn('id="vizFilterGroups"', content)
+
+    def test_riset_enclave_1682_visibility_explorer_no_naming_percentage_or_unique_person_total(self):
+        """No naming percentage or unique-person estimate appears in the explorer section."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        start = content.index("People and Archival Visibility Explorer")
+        end = content.index("Scenario Snapshot")
+        section = content[start:end]
+        # Strip inline style="..." attributes first -- CSS values like
+        # "width:100%" are not naming percentages and must not trip this check.
+        section_no_styles = re.sub(r'style="[^"]*"', "", section)
+        self.assertNotIn("372", section)
+        self.assertNotIn("308", section)
+        self.assertNotRegex(section_no_styles, r"\d+(\.\d+)?%")

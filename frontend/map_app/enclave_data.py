@@ -140,6 +140,109 @@ class RestraintEvidenceResult:
     warnings: list[str]
 
 
+# Controlled visibility vocabulary for the People and Archival Visibility
+# Explorer (S4-CRIT-02). A missing relational join is "not_structured",
+# never "no_role"/"absent"/"zero" -- the join failing is a data-model fact,
+# not an archival claim. Signature events exist in the source corpus but
+# are not yet structured per person, so signature_visibility is always
+# "not_structured", never "not_recorded" (which would wrongly imply the
+# archive has no signatures at all).
+VISIBILITY_STATES = frozenset({
+    "recorded",
+    "not_recorded",
+    "not_structured",
+    "not_evaluated",
+    "not_applicable",
+    "uncertain",
+})
+
+# Controlled vocabulary for assignment_evidence specifically. Derived
+# independently of presence_basis: presence_basis reflects register/HRLT
+# *reporting*, assignment_evidence reflects whether an actual role/task
+# assignment record (07_human_role_location_time.csv) exists and what its
+# own evidence_status says. "not_applicable" is reserved for records where
+# an assignment is genuinely out of semantic scope (aggregate groups), not
+# merely because assignment evidence happens to be missing for a person.
+ASSIGNMENT_EVIDENCE_STATES = frozenset({
+    "explicit",
+    "interpreted",
+    "reconstructed",
+    "not_structured",
+    "not_applicable",
+})
+
+# Maps an HRLT row's own evidence_status to assignment_evidence. Any value
+# not in this mapping -- including a blank evidence_status -- falls through
+# to "not_structured" and is never silently promoted to "explicit".
+_HRLT_EVIDENCE_TO_ASSIGNMENT: dict[str, str] = {
+    "explicit": "explicit",
+    "interpreted": "interpreted",
+    "reconstructed": "reconstructed",
+}
+
+
+@dataclass(frozen=True, slots=True)
+class PersonVisibilityEntry:
+    """One named-person record's archival-visibility status (S4-CRIT-02)."""
+
+    person_id: str
+    name_canonical: str
+    role_visibility: str
+    role_ids: tuple[str, ...]
+    location_visibility: str
+    location_ids: tuple[str, ...]
+    signature_visibility: str
+    assignment_evidence: str
+    evidence_status: str
+    source_document_id: str
+    source_passage_id: str
+
+
+@dataclass(frozen=True, slots=True)
+class GroupVisibilityEntry:
+    """One aggregate-group record's archival-visibility status (S4-CRIT-02)."""
+
+    group_id: str
+    source_category_original: str
+    record_person_count: int
+    status_category: str
+    growth_category_original: str
+    sex_category_original: str
+    location_visibility: str
+    location_ids: tuple[str, ...]
+    assignment_evidence: str  # always "not_applicable" -- groups never receive a synthetic assignment
+    evidence_status: str
+    source_document_id: str
+    source_passage_id: str
+
+
+@dataclass(frozen=True, slots=True)
+class PresenceVisibilityEntry:
+    """One offline solver-snapshot presence-reporting row (S4-CRIT-02).
+
+    presence_basis and assignment_evidence are derived independently, from
+    different source signals: presence_basis from register/HRLT presence
+    reporting (entity_presence.csv / candidate_entities.csv), assignment_evidence
+    from the entity's own HRLT row evidence_status, if one exists.
+    """
+
+    entity_id: str
+    presence_basis: str
+    assignment_evidence: str
+    derivation_status: str
+    note: str
+
+
+@dataclass(frozen=True, slots=True)
+class VisibilityExplorerResult:
+    """Result of load_visibility_explorer(): deterministic, read-only."""
+
+    persons: list[PersonVisibilityEntry]
+    groups: list[GroupVisibilityEntry]
+    presence: list[PresenceVisibilityEntry]
+    warnings: list[str]
+
+
 # Reviewed restraint-device mapping (application-side, NOT canonical).
 # Ring/key counts are the researcher-attested reading recorded in
 # A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md (committed f98cfb0, corrected 0361953).
@@ -454,6 +557,147 @@ class EnclaveDataAdapter:
             ))
 
         return RestraintEvidenceResult(entries=entries, warnings=warnings)
+
+    def load_visibility_explorer(self) -> VisibilityExplorerResult:
+        """
+        Read-only People and Archival Visibility Explorer (S4-CRIT-02).
+
+        Every dimension uses the controlled vocabulary in VISIBILITY_STATES /
+        ASSIGNMENT_EVIDENCE_STATES. A missing role or location join is
+        reported as "not_structured" (the relational join found no row),
+        never "no_role", "absent", or "zero". signature_visibility is always
+        "not_structured", never "not_recorded". assignment_evidence is
+        derived independently of presence_basis, from each entity's own HRLT
+        row evidence_status (never hardcoded, never promoted from a blank
+        value to "explicit"); absence of an HRLT row is "not_structured",
+        not "no historical assignment". Aggregate groups always get
+        assignment_evidence="not_applicable" -- assignment is genuinely out
+        of scope for a group record, and groups never receive a synthetic
+        per-entity assignment. Never expands a group's count into synthetic
+        per-person entries, and never sums group counts into a total.
+        """
+        persons = self.load_persons()
+        groups = self.load_human_groups()
+        hrlt = self.load_human_role_location_time()
+        person_roles = self.load_person_roles()
+
+        warnings: list[str] = []
+
+        roles_by_person: dict[str, list[str]] = {}
+        for pr in person_roles:
+            pid = pr.get("person_id", "")
+            if pid:
+                roles_by_person.setdefault(pid, []).append(pr.get("role_id", ""))
+
+        known_person_ids = {p["person_id"] for p in persons}
+        known_group_ids = {g["group_id"] for g in groups}
+
+        locations_by_entity: dict[str, list[str]] = {}
+        assignment_by_person: dict[str, str] = {}
+        for row in sorted(hrlt, key=lambda r: r.get("hrlt_id", "")):
+            entity_id = row.get("human_or_group_id", "")
+            entity_type = row.get("entity_type", "")
+            location_id = row.get("location_id", "")
+            if not entity_id:
+                continue
+            if entity_type == "individual" and entity_id not in known_person_ids:
+                warnings.append(
+                    f"Unresolved HRLT individual identifier: {entity_id} "
+                    f"(row {row.get('hrlt_id', '?')})"
+                )
+                continue
+            if entity_type == "aggregate_group" and entity_id not in known_group_ids:
+                warnings.append(
+                    f"Unresolved HRLT group identifier: {entity_id} "
+                    f"(row {row.get('hrlt_id', '?')})"
+                )
+                continue
+            if location_id:
+                locations_by_entity.setdefault(entity_id, []).append(location_id)
+            if entity_type == "individual" and entity_id not in assignment_by_person:
+                assignment_by_person[entity_id] = _HRLT_EVIDENCE_TO_ASSIGNMENT.get(
+                    row.get("evidence_status", ""), "not_structured"
+                )
+
+        person_entries: list[PersonVisibilityEntry] = []
+        for p in sorted(persons, key=lambda r: r["person_id"]):
+            pid = p["person_id"]
+            role_ids = tuple(roles_by_person.get(pid, ()))
+            location_ids = tuple(locations_by_entity.get(pid, ()))
+            person_entries.append(PersonVisibilityEntry(
+                person_id=pid,
+                name_canonical=p.get("name_canonical", ""),
+                role_visibility="recorded" if role_ids else "not_structured",
+                role_ids=role_ids,
+                location_visibility="recorded" if location_ids else "not_structured",
+                location_ids=location_ids,
+                signature_visibility="not_structured",
+                assignment_evidence=assignment_by_person.get(pid, "not_structured"),
+                evidence_status=p.get("evidence_status") or "not_recorded",
+                source_document_id=p.get("source_document_id") or "not_recorded",
+                source_passage_id=p.get("source_passage_id") or "not_recorded",
+            ))
+
+        group_entries: list[GroupVisibilityEntry] = []
+        for g in sorted(groups, key=lambda r: r["group_id"]):
+            gid = g["group_id"]
+            own_location = g.get("location_id", "")
+            location_ids = list(locations_by_entity.get(gid, ()))
+            if own_location and own_location not in location_ids:
+                location_ids.insert(0, own_location)
+            group_entries.append(GroupVisibilityEntry(
+                group_id=gid,
+                source_category_original=g.get("source_category_original", ""),
+                record_person_count=int(g.get("count") or 0),
+                status_category=g.get("status_category", ""),
+                growth_category_original=g.get("growth_category_original", ""),
+                sex_category_original=g.get("sex_category_original", ""),
+                location_visibility="recorded" if location_ids else "not_structured",
+                location_ids=tuple(location_ids),
+                assignment_evidence="not_applicable",
+                evidence_status=g.get("evidence_status") or "not_recorded",
+                source_document_id=g.get("source_document_id") or "not_recorded",
+                source_passage_id=g.get("source_passage_id") or "not_recorded",
+            ))
+
+        presence_entries: list[PresenceVisibilityEntry] = []
+        snapshot = self.load_scenario_snapshot()
+        if snapshot is None:
+            warnings.append(
+                "Presence data not available offline (solver snapshot not mounted)."
+            )
+        else:
+            hrlt_backed_ids = {
+                r.get("entity_id", "")
+                for r in snapshot.get("candidate_entities", [])
+                if r.get("has_hrlt_presence") == "True"
+            }
+            note_by_id = {
+                r.get("entity_id", ""): r.get("reason", "")
+                for r in snapshot.get("excluded_entities", [])
+            }
+            for row in sorted(
+                snapshot.get("entity_presence", []),
+                key=lambda r: r.get("entity_id", ""),
+            ):
+                eid = row.get("entity_id", "")
+                presence_entries.append(PresenceVisibilityEntry(
+                    entity_id=eid,
+                    presence_basis=(
+                        "register_and_hrlt" if eid in hrlt_backed_ids
+                        else "register_reporting_only"
+                    ),
+                    assignment_evidence=assignment_by_person.get(eid, "not_structured"),
+                    derivation_status=row.get("derivation_status") or "not_recorded",
+                    note=note_by_id.get(eid) or "not_recorded",
+                ))
+
+        return VisibilityExplorerResult(
+            persons=person_entries,
+            groups=group_entries,
+            presence=presence_entries,
+            warnings=warnings,
+        )
 
     def get_summary(self) -> EnclaveDatasetSummary:
         """Compute summary counts for the canonical dataset."""

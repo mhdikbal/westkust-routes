@@ -118,6 +118,17 @@ tr:hover td{background:var(--panel-2)}
 .legend-swatch{width:14px;height:14px;border-radius:3px;flex:none}
 .legend-label{font-family:var(--sans);font-size:.8rem;color:var(--ink);font-weight:500}
 
+/* ============================ VISIBILITY EXPLORER ============================ */
+.viz-filter-input{position:absolute;opacity:0;pointer-events:none}
+.viz-filter-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.viz-filter-tabs label{cursor:pointer;padding:6px 12px;border:1px solid var(--line);border-radius:999px;font-family:var(--sans);font-size:.82rem}
+#vizFilterAll:checked ~ .viz-filter-tabs label[for="vizFilterAll"],
+#vizFilterPersons:checked ~ .viz-filter-tabs label[for="vizFilterPersons"],
+#vizFilterGroups:checked ~ .viz-filter-tabs label[for="vizFilterGroups"]{background:var(--ink);color:var(--panel)}
+.viz-panel{display:block}
+#vizFilterPersons:checked ~ .viz-panel-groups{display:none}
+#vizFilterGroups:checked ~ .viz-panel-persons{display:none}
+
 /* ============================ PETRI NET PANEL ============================ */
 .petri-panel{background:var(--panel-2);border:1px dashed var(--line);border-radius:10px;padding:24px;text-align:center}
 .petri-panel h3{font-family:var(--serif);font-size:1.1rem;margin-bottom:8px}
@@ -266,6 +277,115 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
         <li>penggunaan eksklusif terhadap pekerja yang diperbudak: <code>not_recorded</code></li>
       </ul>
     </div>
+  </section>
+
+  <!-- People and Archival Visibility Explorer -->
+  <section aria-labelledby="visibilityHeading">
+    <div class="sec-head"><h2 id="visibilityHeading">People and Archival Visibility Explorer</h2></div>
+    <p class="sec-sub">
+      Setiap record diklasifikasikan per dimensi visibilitas menggunakan kosakata terkontrol:
+      <code>recorded</code>, <code>not_recorded</code>, <code>not_structured</code>,
+      <code>not_evaluated</code>, <code>not_applicable</code>, <code>uncertain</code>. Peran atau
+      lokasi yang tidak ditemukan pada join relasional dilaporkan sebagai <code>not_structured</code>
+      — bukan <code>no_role</code>, <code>absent</code>, atau <code>zero</code>. Tanda tangan
+      (signature) diketahui ada pada korpus sumber, tetapi peristiwa tanda tangan belum
+      distrukturkan per orang, sehingga <code>signature_visibility</code> selalu
+      <code>not_structured</code> — bukan <code>not_recorded</code>, yang akan secara keliru
+      menyiratkan arsip sama sekali tidak memiliki tanda tangan. <code>assignment_evidence</code>
+      dihitung independen dari <code>presence_basis</code>: nilainya berasal dari status bukti
+      baris HRLT milik entitas itu sendiri (<code>explicit</code>/<code>interpreted</code>/
+      <code>reconstructed</code>), <code>not_structured</code> bila baris HRLT tidak ada — bukan
+      berarti tidak pernah ada penugasan historis — dan <code>not_applicable</code> hanya untuk
+      kelompok agregat, karena penugasan per-entitas memang di luar cakupan record kelompok.
+    </p>
+
+    <div class="tiles" style="margin-bottom:16px">
+      <div class="tile"><div class="k">{{ visibility_explorer.persons|length }}</div><div class="l">record individu bernama</div></div>
+      <div class="tile"><div class="k">{{ visibility_explorer.groups|length }}</div><div class="l">record kelompok agregat</div></div>
+    </div>
+
+    <input type="radio" id="vizFilterAll" name="vizFilter" class="viz-filter-input" checked>
+    <input type="radio" id="vizFilterPersons" name="vizFilter" class="viz-filter-input">
+    <input type="radio" id="vizFilterGroups" name="vizFilter" class="viz-filter-input">
+    <div class="viz-filter-tabs" role="group" aria-label="Filter individu atau kelompok">
+      <label for="vizFilterAll">Semua</label>
+      <label for="vizFilterPersons">Individu ({{ visibility_explorer.persons|length }})</label>
+      <label for="vizFilterGroups">Kelompok ({{ visibility_explorer.groups|length }})</label>
+    </div>
+
+    <div class="viz-panel viz-panel-persons">
+      <h3 style="font-family:var(--serif);font-size:1.05rem;margin:14px 0 8px">Individu bernama</h3>
+      <div class="legend-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+        {% for e in visibility_explorer.persons %}
+        <details class="plate" style="padding:12px 14px">
+          <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.88rem">
+            <code class="mono">{{ e.person_id }}</code> — {{ e.name_canonical }}
+          </summary>
+          <div style="margin-top:8px;font-size:.82rem">
+            <p>Peran: <span class="badge{% if e.role_visibility == 'recorded' %} badge-explicit{% endif %}">{{ e.role_visibility }}</span>
+              {% if e.role_ids %}<span class="mono">{{ e.role_ids|join:", " }}</span>{% endif %}</p>
+            <p>Lokasi: <span class="badge{% if e.location_visibility == 'recorded' %} badge-explicit{% endif %}">{{ e.location_visibility }}</span>
+              {% if e.location_ids %}<span class="mono">{{ e.location_ids|join:", " }}</span>{% endif %}</p>
+            <p>Tanda tangan: <span class="badge">{{ e.signature_visibility }}</span></p>
+            <p>Penugasan: <span class="badge{% if e.assignment_evidence == 'explicit' %} badge-explicit{% elif e.assignment_evidence == 'interpreted' %} badge-interpreted{% elif e.assignment_evidence == 'reconstructed' %} badge-reconstructed{% endif %}">{{ e.assignment_evidence }}</span></p>
+            <p>Status bukti: <span class="mono">{{ e.evidence_status }}</span></p>
+            <p>Sumber: <span class="mono">{{ e.source_document_id }} / {{ e.source_passage_id }}</span></p>
+          </div>
+        </details>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="viz-panel viz-panel-groups">
+      <h3 style="font-family:var(--serif);font-size:1.05rem;margin:14px 0 8px">Kelompok agregat</h3>
+      <div class="legend-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+        {% for e in visibility_explorer.groups %}
+        <details class="plate" style="padding:12px 14px">
+          <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.88rem">
+            <code class="mono">{{ e.group_id }}</code> — {{ e.source_category_original }} ({{ e.record_person_count }})
+          </summary>
+          <div style="margin-top:8px;font-size:.82rem">
+            <p>Kategori: <span class="mono">{{ e.status_category }} / {{ e.growth_category_original }} / {{ e.sex_category_original }}</span></p>
+            <p>Lokasi: <span class="badge{% if e.location_visibility == 'recorded' %} badge-explicit{% endif %}">{{ e.location_visibility }}</span>
+              {% if e.location_ids %}<span class="mono">{{ e.location_ids|join:", " }}</span>{% endif %}</p>
+            <p>Penugasan: <span class="badge">{{ e.assignment_evidence }}</span> — kelompok tidak menerima penugasan sintetis per orang</p>
+            <p>Status bukti: <span class="mono">{{ e.evidence_status }}</span></p>
+            <p>Sumber: <span class="mono">{{ e.source_document_id }} / {{ e.source_passage_id }}</span></p>
+          </div>
+        </details>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if visibility_explorer.presence %}
+    <details class="plate" style="margin-top:18px;padding:14px 16px">
+      <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.92rem">
+        Presence vs. Assignment ({{ visibility_explorer.presence|length }} entitas dari snapshot solver offline)
+      </summary>
+      <div style="margin-top:10px;font-size:.85rem">
+        <p class="warning-text">
+          <code>presence_basis</code> (kemunculan register/HRLT) dan <code>assignment_evidence</code>
+          (status bukti penugasan) dihitung dari sinyal sumber yang berbeda dan independen satu
+          sama lain. Kemunculan register semata (<code>register_reporting_only</code>) tidak pernah
+          menjadi bukti penugasan — baris tanpa catatan HRLT selalu <code>not_structured</code>.
+        </p>
+        <div class="plate-scroll">
+        <table style="width:100%;font-size:.78rem;border-collapse:collapse" class="mono">
+          <thead><tr><th style="text-align:left;padding:4px 8px">entity_id</th><th style="text-align:left;padding:4px 8px">presence_basis</th><th style="text-align:left;padding:4px 8px">assignment_evidence</th></tr></thead>
+          <tbody>
+          {% for e in visibility_explorer.presence %}
+          <tr><td style="padding:4px 8px">{{ e.entity_id }}</td><td style="padding:4px 8px">{{ e.presence_basis }}</td><td style="padding:4px 8px">{{ e.assignment_evidence }}</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </details>
+    {% endif %}
+
+    {% for w in visibility_explorer.warnings %}
+    <p class="warning-text">⚠ {{ w }}</p>
+    {% endfor %}
   </section>
 
   <!-- Scenario Snapshot -->
