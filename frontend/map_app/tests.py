@@ -2408,3 +2408,83 @@ class Enclave1682ViewTest(SimpleTestCase):
         self.assertNotIn("128 orang", section)
         self.assertNotIn("308 orang unik", section)
         self.assertNotIn("372 orang unik", section)
+
+    def test_group_hierarchy_localizes_standalone_group(self):
+        """standalone_group renders as 'Record kelompok lain' for genuinely unreviewed-but-standalone groups."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Record kelompok lain", content)
+
+    def test_group_hierarchy_localizes_standalone_count(self):
+        """standalone_count renders as 'Ditampilkan sebagai hitungan record tersendiri'."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Ditampilkan sebagai hitungan record tersendiri", content)
+
+    def test_group_hierarchy_localizes_true_and_false_booleans(self):
+        """partition_reconciles True renders as 'Sesuai'; bare True/False never appear as visible text."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        start = content.index("Hierarki Kelompok dan Makna Hitungan")
+        end = content.index("Scenario Snapshot")
+        section = content[start:end]
+        self.assertIn("Sesuai", section)
+        self.assertNotIn(">True<", section)
+        self.assertNotIn(">False<", section)
+
+    def test_group_hierarchy_preserves_machine_values_in_data_attributes(self):
+        """Raw machine vocabulary remains available in stable, lowercase data attributes."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn('data-aggregation-role="standalone_group"', content)
+        self.assertIn('data-count-semantics="standalone_count"', content)
+        self.assertIn('data-partition-reconciles="true"', content)
+        self.assertIn('data-cross-document-overlap="not_evaluated"', content)
+
+    def test_legacy_candidate_groups_render_unreviewed_aggregation_role(self):
+        """The 6 groups referenced by legacy pairs render aggregation_role=unknown / count_semantics=unresolved."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Peran agregasi belum ditinjau", content)
+        self.assertIn("Makna hitungan belum direkonsiliasi", content)
+        self.assertIn('data-aggregation-role="unknown"', content)
+        self.assertIn('data-count-semantics="unresolved"', content)
+        self.assertIn('data-relation-status="unresolved"', content)
+        self.assertIn('data-counting-effect="not_applied"', content)
+
+    def test_legacy_candidate_groups_do_not_render_as_reviewed_standalone(self):
+        """Groups in a legacy pair never claim standalone_group/standalone_count in their own card."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        legacy_ids = ["G-HWJ-6", "G-KJ-4", "G-SLAVIN-68", "G-MANDORESS-3", "G-CHILD-KOST-4", "G-CHILD-NOKOST-19"]
+        for gid in legacy_ids:
+            card_start = content.index(f'<code class="mono">{gid}</code>')
+            card_end = content.index("</details>", card_start)
+            card_slice = content[card_start:card_end]
+            self.assertNotIn('data-aggregation-role="standalone_group"', card_slice)
+            self.assertNotIn('data-count-semantics="standalone_count"', card_slice)
+
+    def test_presentation_patch_does_not_change_group_counts(self):
+        """Relabeling/legacy-flagging in other_groups does not alter any hierarchy count invariant."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        self.assertEqual(1 + len(result.madagascar_components) + len(result.other_groups), 17)
+        self.assertEqual(len(result.other_groups), 11)
+        self.assertEqual(result.summary.recorded_parent_count, 64)
+        self.assertEqual(result.summary.reconciled_component_sum, 64)
+        self.assertEqual(result.summary.arithmetic_discrepancy, 0)
+        self.assertEqual(result.summary.cross_document_unique_person_total, "not_evaluated")
+
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        for metric, value in (
+            ("canonical-group-record-count", "17"),
+            ("parent-record-count", "1"),
+            ("component-record-count", "5"),
+            ("other-record-count", "11"),
+            ("parent-recorded-count", "64"),
+            ("component-count-sum", "64"),
+            ("count-discrepancy", "0"),
+        ):
+            self.assertIn(f'data-metric="{metric}" data-value="{value}"', content)

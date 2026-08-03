@@ -408,7 +408,7 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
       <div class="tile" data-metric="count-discrepancy" data-value="{{ group_hierarchy_explorer.summary.arithmetic_discrepancy }}"><div class="k">{{ group_hierarchy_explorer.summary.arithmetic_discrepancy }}</div><div class="l">selisih aritmetis</div></div>
     </div>
     <p class="sec-sub">
-      Jumlah unik lintas dokumen: <span class="badge" data-unique-person-total-status="{{ group_hierarchy_explorer.summary.cross_document_unique_person_total }}">{{ group_hierarchy_explorer.summary.cross_document_unique_person_total }}</span>
+      Jumlah unik lintas dokumen: <span class="badge" data-unique-person-total-status="{{ group_hierarchy_explorer.summary.cross_document_unique_person_total }}">{% if group_hierarchy_explorer.summary.cross_document_unique_person_total == 'not_evaluated' %}Belum dievaluasi{% else %}{{ group_hierarchy_explorer.summary.cross_document_unique_person_total }}{% endif %}</span>
       — belum dievaluasi, tidak boleh dihitung dari struktur ini.
     </p>
 
@@ -418,28 +418,30 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
         <code class="mono">{{ group_hierarchy_explorer.parent.group_id }}</code> —
         {{ group_hierarchy_explorer.parent.source_category_original }}
         ({{ group_hierarchy_explorer.parent.recorded_count }}) —
-        <span class="badge badge-explicit">{{ group_hierarchy_explorer.parent.count_semantics }}</span>
+        <span class="badge badge-explicit" data-count-semantics="{{ group_hierarchy_explorer.parent.count_semantics }}">{% if group_hierarchy_explorer.parent.count_semantics == 'count_once_as_parent' %}Hitung satu kali melalui record induk{% else %}{{ group_hierarchy_explorer.parent.count_semantics }}{% endif %}</span>
       </summary>
       <div style="margin-top:8px;font-size:.82rem">
-        <p>Peran agregasi: <span class="mono">{{ group_hierarchy_explorer.parent.aggregation_role }}</span></p>
-        <p>Asal relasi: <span class="mono">{{ group_hierarchy_explorer.parent.derivation_status }}</span>
+        <p>Peran agregasi: <span class="mono" data-aggregation-role="{{ group_hierarchy_explorer.parent.aggregation_role }}">{% if group_hierarchy_explorer.parent.aggregation_role == 'parent_total' %}Record induk{% else %}{{ group_hierarchy_explorer.parent.aggregation_role }}{% endif %}</span></p>
+        <p>Asal relasi: <span class="mono" data-derivation-status="{{ group_hierarchy_explorer.parent.derivation_status }}">{% if group_hierarchy_explorer.parent.derivation_status == 'reviewed_application_mapping' %}Relasi hasil tinjauan peneliti{% else %}{{ group_hierarchy_explorer.parent.derivation_status }}{% endif %}</span>
           (bukan <code>explicit</code> — tidak ada kolom <code>parent_group_id</code> kanonik)</p>
-        <p>Rekonsiliasi partisi: <span class="badge{% if group_hierarchy_explorer.parent.partition_reconciles %} badge-explicit{% endif %}">{{ group_hierarchy_explorer.parent.partition_reconciles }}</span></p>
+        <p>Rekonsiliasi partisi: <span class="badge{% if group_hierarchy_explorer.parent.partition_reconciles %} badge-explicit{% endif %}" data-partition-reconciles="{{ group_hierarchy_explorer.parent.partition_reconciles|lower }}">{% if group_hierarchy_explorer.parent.partition_reconciles %}Sesuai{% else %}Tidak sesuai{% endif %}</span></p>
         <p>Overlap lintas dokumen: <span class="badge" data-cross-document-overlap="{{ group_hierarchy_explorer.parent.cross_document_overlap_status }}">{% if group_hierarchy_explorer.parent.cross_document_overlap_status == 'not_evaluated' %}Belum dievaluasi{% else %}{{ group_hierarchy_explorer.parent.cross_document_overlap_status }}{% endif %}</span></p>
-        <p>Sumber: <span class="mono">{{ group_hierarchy_explorer.parent.source_document_id }} / {{ group_hierarchy_explorer.parent.source_passage_id }}</span></p>
+        <p>Dokumen sumber: <span class="mono" data-source-document-id="{{ group_hierarchy_explorer.parent.source_document_id }}">{% if group_hierarchy_explorer.parent.source_document_id == 'not_recorded' %}Belum terstruktur{% else %}{{ group_hierarchy_explorer.parent.source_document_id }}{% endif %}</span></p>
+        <p>Passage sumber: <span class="mono" data-source-passage-id="{{ group_hierarchy_explorer.parent.source_passage_id }}">{% if group_hierarchy_explorer.parent.source_passage_id == 'not_recorded' %}Belum terstruktur{% else %}{{ group_hierarchy_explorer.parent.source_passage_id }}{% endif %}</span></p>
       </div>
       <div style="margin:10px 0 0 18px;border-left:2px solid var(--line);padding-left:14px">
         {% for c in group_hierarchy_explorer.madagascar_components %}
         <details class="plate" style="padding:10px 12px;margin-bottom:8px">
           <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.85rem">
             <code class="mono">{{ c.group_id }}</code> — {{ c.source_category_original }}
-            ({{ c.recorded_count }}) — <span class="badge">{{ c.count_semantics }}</span>
+            ({{ c.recorded_count }}) — <span class="badge" data-count-semantics="{{ c.count_semantics }}">{% if c.count_semantics == 'do_not_sum_with_parent' %}Jangan dijumlahkan kembali dengan record induk{% else %}{{ c.count_semantics }}{% endif %}</span>
           </summary>
           <div style="margin-top:6px;font-size:.8rem">
-            <p>Peran agregasi: <span class="mono">{{ c.aggregation_role }}</span></p>
+            <p>Peran agregasi: <span class="mono" data-aggregation-role="{{ c.aggregation_role }}">{% if c.aggregation_role == 'component_group' %}Komponen klasifikasi{% else %}{{ c.aggregation_role }}{% endif %}</span></p>
             <p>Induk: <code class="mono">{{ c.parent_group_id }}</code></p>
             <p>Overlap lintas dokumen: <span class="badge" data-cross-document-overlap="{{ c.cross_document_overlap_status }}">{% if c.cross_document_overlap_status == 'not_evaluated' %}Belum dievaluasi{% else %}{{ c.cross_document_overlap_status }}{% endif %}</span></p>
-            <p>Sumber: <span class="mono">{{ c.source_document_id }} / {{ c.source_passage_id }}</span></p>
+            <p>Dokumen sumber: <span class="mono" data-source-document-id="{{ c.source_document_id }}">{% if c.source_document_id == 'not_recorded' %}Belum terstruktur{% else %}{{ c.source_document_id }}{% endif %}</span></p>
+            <p>Passage sumber: <span class="mono" data-source-passage-id="{{ c.source_passage_id }}">{% if c.source_passage_id == 'not_recorded' %}Belum terstruktur{% else %}{{ c.source_passage_id }}{% endif %}</span></p>
           </div>
         </details>
         {% endfor %}
@@ -449,17 +451,33 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
     <h3 style="font-family:var(--serif);font-size:1.05rem;margin:18px 0 8px">Kelompok lain di luar struktur Madagaskar</h3>
     <div class="legend-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
       {% for g in group_hierarchy_explorer.other_groups %}
+      {% if g.group_id == 'G-HWJ-6' or g.group_id == 'G-KJ-4' or g.group_id == 'G-SLAVIN-68' or g.group_id == 'G-MANDORESS-3' or g.group_id == 'G-CHILD-KOST-4' or g.group_id == 'G-CHILD-NOKOST-19' %}
+      <details class="plate" style="padding:10px 12px" data-relation-status="unresolved" data-counting-effect="not_applied">
+        <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.85rem">
+          <code class="mono">{{ g.group_id }}</code> — {{ g.source_category_original }} ({{ g.recorded_count }})
+        </summary>
+        <div style="margin-top:6px;font-size:.8rem">
+          <p>Peran agregasi: <span class="mono" data-aggregation-role="unknown">Peran agregasi belum ditinjau</span></p>
+          <p>Semantik hitungan: <span class="mono" data-count-semantics="unresolved">Makna hitungan belum direkonsiliasi</span></p>
+          <p>Overlap lintas dokumen: <span class="badge" data-cross-document-overlap="{{ g.cross_document_overlap_status }}">{% if g.cross_document_overlap_status == 'not_evaluated' %}Belum dievaluasi{% else %}{{ g.cross_document_overlap_status }}{% endif %}</span></p>
+          <p>Dokumen sumber: <span class="mono" data-source-document-id="{{ g.source_document_id }}">{% if g.source_document_id == 'not_recorded' %}Belum terstruktur{% else %}{{ g.source_document_id }}{% endif %}</span></p>
+          <p>Passage sumber: <span class="mono" data-source-passage-id="{{ g.source_passage_id }}">{% if g.source_passage_id == 'not_recorded' %}Belum terstruktur{% else %}{{ g.source_passage_id }}{% endif %}</span></p>
+        </div>
+      </details>
+      {% else %}
       <details class="plate" style="padding:10px 12px">
         <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.85rem">
           <code class="mono">{{ g.group_id }}</code> — {{ g.source_category_original }} ({{ g.recorded_count }})
         </summary>
         <div style="margin-top:6px;font-size:.8rem">
-          <p>Peran agregasi: <span class="mono">{{ g.aggregation_role }}</span></p>
-          <p>Semantik hitungan: <span class="mono">{{ g.count_semantics }}</span></p>
+          <p>Peran agregasi: <span class="mono" data-aggregation-role="{{ g.aggregation_role }}">{% if g.aggregation_role == 'standalone_group' %}Record kelompok lain{% else %}{{ g.aggregation_role }}{% endif %}</span></p>
+          <p>Semantik hitungan: <span class="mono" data-count-semantics="{{ g.count_semantics }}">{% if g.count_semantics == 'standalone_count' %}Ditampilkan sebagai hitungan record tersendiri{% else %}{{ g.count_semantics }}{% endif %}</span></p>
           <p>Overlap lintas dokumen: <span class="badge" data-cross-document-overlap="{{ g.cross_document_overlap_status }}">{% if g.cross_document_overlap_status == 'not_evaluated' %}Belum dievaluasi{% else %}{{ g.cross_document_overlap_status }}{% endif %}</span></p>
-          <p>Sumber: <span class="mono">{{ g.source_document_id }} / {{ g.source_passage_id }}</span></p>
+          <p>Dokumen sumber: <span class="mono" data-source-document-id="{{ g.source_document_id }}">{% if g.source_document_id == 'not_recorded' %}Belum terstruktur{% else %}{{ g.source_document_id }}{% endif %}</span></p>
+          <p>Passage sumber: <span class="mono" data-source-passage-id="{{ g.source_passage_id }}">{% if g.source_passage_id == 'not_recorded' %}Belum terstruktur{% else %}{{ g.source_passage_id }}{% endif %}</span></p>
         </div>
       </details>
+      {% endif %}
       {% endfor %}
     </div>
 
