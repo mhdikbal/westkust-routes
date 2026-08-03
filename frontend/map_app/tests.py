@@ -1780,6 +1780,52 @@ class EnclaveDataAdapterTest(SimpleTestCase):
                 continue  # skip some for brevity
             self.assertIsInstance(data, list)
 
+    def test_load_restraint_evidence_returns_both_entries(self):
+        """load_restraint_evidence resolves both reviewed mappings with no warnings."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_restraint_evidence()
+        self.assertEqual(len(result.entries), 2)
+        self.assertEqual(result.warnings, [])
+        self.assertEqual({e.inventory_item_id for e in result.entries}, {"INV-0343", "INV-0401"})
+
+    def test_load_restraint_evidence_deterministic_order(self):
+        """Entries are always returned in mapping order: SP-01267 first, SP-01344 second."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_restraint_evidence()
+        self.assertEqual(result.entries[0].inventory_item_id, "INV-0343")
+        self.assertEqual(result.entries[1].inventory_item_id, "INV-0401")
+
+    def test_load_restraint_evidence_preserves_source_translation(self):
+        """source_translation_full is preserved verbatim from the canonical row."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_restraint_evidence()
+        self.assertIn("belenggu", result.entries[0].source_translation_full)
+        self.assertIn("belenggu", result.entries[1].source_translation_full)
+
+    def test_load_restraint_evidence_ring_and_key_counts(self):
+        """Ring and key counts match the reviewed mapping exactly."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_restraint_evidence()
+        by_id = {e.inventory_item_id: e for e in result.entries}
+        self.assertEqual(by_id["INV-0343"].ring_count, 5)
+        self.assertEqual(by_id["INV-0343"].key_count, 1)
+        self.assertEqual(by_id["INV-0401"].ring_count, 3)
+        self.assertEqual(by_id["INV-0401"].key_count, 1)
+
+    def test_load_restraint_evidence_never_infers_use_or_target(self):
+        """actual_use_status, target_person_status, date_of_use_status are always not_recorded."""
+        from map_app.enclave_data import get_adapter
+
+        for e in get_adapter().load_restraint_evidence().entries:
+            self.assertEqual(e.presence_status, "explicit")
+            self.assertEqual(e.actual_use_status, "not_recorded")
+            self.assertEqual(e.target_person_status, "not_recorded")
+            self.assertEqual(e.date_of_use_status, "not_recorded")
+
 
 class Enclave1682ViewTest(SimpleTestCase):
     """Tests for /riset/enclave-1682/ route (Phase 1C)."""
@@ -1914,3 +1960,38 @@ class Enclave1682ViewTest(SimpleTestCase):
         response = self.client.get("/riset/enclave-1682")
         # Django's APPEND_SLASH=True redirects to /riset/enclave-1682/
         self.assertIn(response.status_code, [200, 301, 302])
+
+    def test_riset_enclave_1682_has_arsip_visibilitas_section(self):
+        """Page contains the Arsip, Visibilitas, dan Kekuasaan section heading."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Arsip, Visibilitas, dan Kekuasaan", content)
+
+    def test_riset_enclave_1682_restraint_evidence_renders_both_entries(self):
+        """Both restraint-evidence inventory rows and source passages render."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        for token in ("INV-0343", "INV-0401", "SP-01267", "SP-01344"):
+            self.assertIn(token, content)
+
+    def test_riset_enclave_1682_restraint_ring_and_key_counts_render(self):
+        """Ring and key counts render as 5/1 and 3/1."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("5 gelang", content)
+        self.assertIn("3 gelang", content)
+        self.assertIn("1 kunci", content)
+
+    def test_riset_enclave_1682_restraint_epistemic_limits_present(self):
+        """The epistemic-status block states use, target, and date as not_recorded."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("not_recorded", content)
+        self.assertIn("Batas epistemik", content)
+
+    def test_riset_enclave_1682_no_unique_person_total_in_arsip_section(self):
+        """No naming percentage or unique-person total appears anywhere on the page."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertNotIn("372", content)
+        self.assertNotIn("308", content)

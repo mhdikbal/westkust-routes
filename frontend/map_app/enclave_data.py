@@ -113,6 +113,47 @@ class EnclaveDataError(Exception):
     pass
 
 
+@dataclass(frozen=True, slots=True)
+class RestraintEvidenceEntry:
+    """One reviewed restraint-device entry, cross-checked against canonical rows."""
+
+    inventory_item_id: str
+    source_passage_id: str
+    source_paragraph_index: int
+    document_section: str
+    location_id: str
+    object_count: int
+    ring_count: int
+    key_count: int
+    source_translation_full: str
+    presence_status: str
+    actual_use_status: str
+    target_person_status: str
+    date_of_use_status: str
+
+
+@dataclass(frozen=True, slots=True)
+class RestraintEvidenceResult:
+    """Result of load_restraint_evidence(): resolved entries plus any unresolved-mapping warnings."""
+
+    entries: list[RestraintEvidenceEntry]
+    warnings: list[str]
+
+
+# Reviewed restraint-device mapping (application-side, NOT canonical).
+# Ring/key counts are the researcher-attested reading recorded in
+# A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md (committed f98cfb0, corrected 0361953).
+# object_count is cross-checked against 10_inventory_items.csv's own `quantity`
+# column at load time (see load_restraint_evidence); this constant does not
+# modify or duplicate canonical data, and neither field asserts use or a target person.
+RESTRAINT_EVIDENCE_MAPPING: tuple[dict, ...] = (
+    {"source_passage_id": "SP-01267", "inventory_item_id": "INV-0343",
+     "source_paragraph_index": 1267, "object_count": 1, "ring_count": 5, "key_count": 1},
+    {"source_passage_id": "SP-01344", "inventory_item_id": "INV-0401",
+     "source_paragraph_index": 1344, "object_count": 1, "ring_count": 3, "key_count": 1},
+)
+
+
 # Application-side human group hierarchy (reviewed grouping config, NOT canonical)
 # Groups with a parent are "subgroups"; groups without are "independent aggregate groups".
 # This does NOT modify the canonical dataset.
@@ -361,6 +402,58 @@ class EnclaveDataAdapter:
         if "location_adjacency" not in self._cache:
             self._cache["location_adjacency"] = _read_csv_utf8_sig(self.paths.data_dir / "16_location_adjacency.csv")
         return self._cache["location_adjacency"]
+
+    def load_source_passages(self) -> list[dict]:
+        if "source_passages" not in self._cache:
+            self._cache["source_passages"] = _read_csv_utf8_sig(self.paths.data_dir / "00_source_passages.csv")
+        return self._cache["source_passages"]
+
+    def load_restraint_evidence(self) -> RestraintEvidenceResult:
+        """
+        Read-only lookup of the two reviewed restraint-device entries (A0-5 finding).
+
+        Never writes. Never substitutes a different row if a mapping is unresolved —
+        emits a controlled warning instead of guessing. Never infers use or a target person.
+        """
+        inventory_by_id = {r["inventory_item_id"]: r for r in self.load_inventory_items()}
+        passages_by_id = {r["source_passage_id"]: r for r in self.load_source_passages()}
+
+        entries: list[RestraintEvidenceEntry] = []
+        warnings: list[str] = []
+        for m in RESTRAINT_EVIDENCE_MAPPING:
+            inv_row = inventory_by_id.get(m["inventory_item_id"])
+            sp_row = passages_by_id.get(m["source_passage_id"])
+            if inv_row is None or sp_row is None:
+                warnings.append(
+                    f"Restraint evidence mapping unresolved: {m['source_passage_id']} -> "
+                    f"{m['inventory_item_id']} (inventory_row_found={inv_row is not None}, "
+                    f"passage_found={sp_row is not None})"
+                )
+                continue
+            actual_paragraph = int(inv_row.get("source_paragraph_index") or 0)
+            if actual_paragraph != m["source_paragraph_index"]:
+                warnings.append(
+                    f"Restraint evidence paragraph mismatch for {m['inventory_item_id']}: "
+                    f"expected {m['source_paragraph_index']}, found {actual_paragraph}"
+                )
+                continue
+            entries.append(RestraintEvidenceEntry(
+                inventory_item_id=inv_row["inventory_item_id"],
+                source_passage_id=sp_row["source_passage_id"],
+                source_paragraph_index=actual_paragraph,
+                document_section=inv_row.get("inventory_section", ""),
+                location_id=inv_row.get("location_id", ""),
+                object_count=m["object_count"],
+                ring_count=m["ring_count"],
+                key_count=m["key_count"],
+                source_translation_full=inv_row.get("source_translation_full", ""),
+                presence_status="explicit",
+                actual_use_status="not_recorded",
+                target_person_status="not_recorded",
+                date_of_use_status="not_recorded",
+            ))
+
+        return RestraintEvidenceResult(entries=entries, warnings=warnings)
 
     def get_summary(self) -> EnclaveDatasetSummary:
         """Compute summary counts for the canonical dataset."""

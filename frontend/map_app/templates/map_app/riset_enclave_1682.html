@@ -216,6 +216,58 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
     <div class="tiles" id="summaryTiles"></div>
   </section>
 
+  <!-- Arsip, Visibilitas, dan Kekuasaan -->
+  <section aria-labelledby="arsipHeading">
+    <div class="sec-head"><h2 id="arsipHeading">Arsip, Visibilitas, dan Kekuasaan</h2></div>
+    <p class="sec-sub">
+      Register personil VOC 1682 mencatat orang dengan dua cara berbeda pada dokumen yang sama:
+      50 individu dicatat dengan nama dan peran; orang lain hanya dicatat sebagai kategori dan
+      jumlah dalam 17 record kelompok agregat. Administrasi kolonial menjadikan manusia dapat
+      dihitung dan diklasifikasikan berdampingan dengan inventaris material —
+      <b>ini bukan pernyataan bahwa orang yang diperbudak setara dengan objek</b>, melainkan
+      pengamatan atas bagaimana arsip administratif mencatat mereka.
+    </p>
+
+    <div class="tiles" style="margin-bottom:20px">
+      <div class="tile"><div class="k">50</div><div class="l">record individu bernama</div></div>
+      <div class="tile"><div class="k">17</div><div class="l">record kelompok agregat</div></div>
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:1.05rem;margin-bottom:10px">Dua bukti perangkat pengekangan</h3>
+    <div class="legend-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      {% for e in restraint_evidence.entries %}
+      <details class="plate" style="padding:14px 16px">
+        <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.92rem">
+          <code class="mono">{{ e.inventory_item_id }}</code> — {{ e.ring_count }} gelang, {{ e.key_count }} kunci
+        </summary>
+        <div style="margin-top:10px;font-size:.85rem">
+          <p><b>Source passage:</b> <code class="mono">{{ e.source_passage_id }}</code> (paragraf {{ e.source_paragraph_index }})</p>
+          <p><b>Bagian dokumen:</b> {{ e.document_section }}</p>
+          <p><b>Lokasi:</b> <code class="mono">{{ e.location_id }}</code></p>
+          <p><b>Teks sumber:</b> <span class="mono">{{ e.source_translation_full }}</span></p>
+          <p><span class="badge badge-explicit">{{ e.presence_status }}</span> kehadiran dalam inventaris</p>
+        </div>
+      </details>
+      {% endfor %}
+    </div>
+    {% for w in restraint_evidence.warnings %}
+    <p class="warning-text">⚠ {{ w }}</p>
+    {% endfor %}
+
+    <div class="plate" style="margin-top:16px;border-color:var(--status-reconstructed);background:#FDF8F5">
+      <p class="warning-text">
+        <b>Batas epistemik.</b> Kehadiran dua perangkat pengekangan dalam inventaris bersifat
+        <span class="badge badge-explicit">explicit</span>. Yang <b>tidak</b> tercatat, dan tidak boleh disimpulkan:
+      </p>
+      <ul class="warning-text">
+        <li>penggunaan aktual: <code>not_recorded</code></li>
+        <li>orang yang menjadi sasaran: <code>not_recorded</code></li>
+        <li>tanggal penggunaan: <code>not_recorded</code></li>
+        <li>penggunaan eksklusif terhadap pekerja yang diperbudak: <code>not_recorded</code></li>
+      </ul>
+    </div>
+  </section>
+
   <!-- Scenario Snapshot -->
   <section aria-labelledby="scenarioHeading">
     <div class="sec-head"><h2 id="scenarioHeading">Snapshot Solver (Offline)</h2></div>

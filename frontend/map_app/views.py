@@ -275,6 +275,7 @@ def riset_enclave_1682(request):
     # Get summary and scenario snapshot
     summary = adapter.get_summary()
     scenario_snapshot = adapter.load_scenario_snapshot()
+    restraint_evidence = adapter.load_restraint_evidence()
 
     context = {
         "title": "Enklave Tambang Salido 1682",
@@ -285,6 +286,7 @@ def riset_enclave_1682(request):
         "dataset_error": False,
         "dataset_issues": [],
         "summary": summary,
+        "restraint_evidence": restraint_evidence,
         "scenario_snapshot": scenario_snapshot,
         "scenario_snapshot_status": adapter.paths.scenario_snapshot_status,
         "petri_net_status": "Specification in development",
