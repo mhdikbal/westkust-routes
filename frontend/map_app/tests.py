@@ -1976,6 +1976,126 @@ class EnclaveDataAdapterTest(SimpleTestCase):
         for e in reporting_only:
             self.assertNotEqual(e.assignment_evidence, "explicit")
 
+    def test_group_hierarchy_accounts_for_exactly_17_group_records(self):
+        """1 parent + 5 components + 11 other records == 17 canonical group records."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        self.assertEqual(
+            1
+            + len(result.madagascar_components)
+            + len(result.other_groups),
+            17,
+        )
+
+    def test_group_hierarchy_has_1_parent_5_components_and_11_other_records(self):
+        """Explicit counts, never 'other 16'."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        self.assertEqual(result.parent.group_id, "G-MADA-64")
+        self.assertEqual(len(result.madagascar_components), 5)
+        self.assertEqual(len(result.other_groups), 11)
+
+    def test_madagascar_component_sum_equals_parent_count(self):
+        """10+8+30+10+6 == 64 == parent's recorded count; discrepancy is 0."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        self.assertEqual(result.summary.reconciled_component_sum, 64)
+        self.assertEqual(result.summary.recorded_parent_count, 64)
+        self.assertEqual(result.summary.arithmetic_discrepancy, 0)
+        self.assertTrue(result.parent.partition_reconciles)
+
+    def test_group_hierarchy_never_sums_parent_and_components(self):
+        """CountSemanticsSummary exposes no combined parent+component total field."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        self.assertFalse(hasattr(result.summary, "combined_total"))
+        self.assertFalse(hasattr(result.summary, "total_person_count"))
+
+    def test_cross_document_unique_person_total_is_string_never_number(self):
+        """The tier-6 status is always a controlled-vocabulary string, never a figure."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        self.assertIsInstance(result.summary.cross_document_unique_person_total, str)
+        self.assertEqual(result.summary.cross_document_unique_person_total, "not_evaluated")
+
+    def test_group_hierarchy_cross_document_overlap_status_is_not_evaluated(self):
+        """Per-node overlap review has not been performed -- not_evaluated, never cannot_determine."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        self.assertEqual(result.parent.cross_document_overlap_status, "not_evaluated")
+        for c in result.madagascar_components:
+            self.assertEqual(c.cross_document_overlap_status, "not_evaluated")
+        for g in result.other_groups:
+            self.assertEqual(g.cross_document_overlap_status, "not_evaluated")
+
+    def test_hierarchy_relation_derivation_status_is_reviewed_application_mapping_not_explicit(self):
+        """No canonical parent_group_id column exists -- the relation is never 'explicit'."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        self.assertEqual(result.parent.derivation_status, "reviewed_application_mapping")
+        for c in result.madagascar_components:
+            self.assertEqual(c.derivation_status, "reviewed_application_mapping")
+        for rel in result.relations:
+            self.assertEqual(rel.derivation_status, "reviewed_application_mapping")
+
+    def test_legacy_pairs_are_warnings_not_reviewed_relations(self):
+        """All 3 legacy pairs surface as unresolved/not_reviewed candidates."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        self.assertEqual(len(result.legacy_relation_candidates), 3)
+        for rel in result.legacy_relation_candidates:
+            self.assertEqual(rel.relation_status, "unresolved")
+            self.assertEqual(rel.derivation_status, "not_reviewed")
+            self.assertEqual(rel.warning_code, "UNREVIEWED_LEGACY_GROUP_RELATION")
+
+    def test_legacy_pairs_have_no_counting_effect(self):
+        """counting_effect is always not_applied -- never used for population math."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        for rel in result.legacy_relation_candidates:
+            self.assertEqual(rel.counting_effect, "not_applied")
+
+    def test_legacy_pairs_do_not_receive_parent_child_direction(self):
+        """LegacyGroupRelationCandidate has group_a_id/group_b_id, never parent/child fields."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        for rel in result.legacy_relation_candidates:
+            self.assertFalse(hasattr(rel, "parent_group_id"))
+            self.assertFalse(hasattr(rel, "child_group_id"))
+            self.assertTrue(hasattr(rel, "group_a_id"))
+            self.assertTrue(hasattr(rel, "group_b_id"))
+
+    def test_legacy_warning_records_are_not_counted_twice(self):
+        """The 6 groups named in legacy pairs each appear exactly once in other_groups."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        other_ids = [g.group_id for g in result.other_groups]
+        legacy_ids = {"G-HWJ-6", "G-KJ-4", "G-SLAVIN-68", "G-MANDORESS-3", "G-CHILD-KOST-4", "G-CHILD-NOKOST-19"}
+        for gid in legacy_ids:
+            self.assertEqual(other_ids.count(gid), 1)
+        self.assertEqual(len(other_ids), len(set(other_ids)))
+
+    def test_madagascar_parent_and_components_are_not_in_other_group_list(self):
+        """G-MADA-64 and its 5 components never leak into other_groups."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_group_hierarchy_explorer()
+        other_ids = {g.group_id for g in result.other_groups}
+        self.assertNotIn("G-MADA-64", other_ids)
+        for c in result.madagascar_components:
+            self.assertNotIn(c.group_id, other_ids)
+
 
 class Enclave1682ViewTest(SimpleTestCase):
     """Tests for /riset/enclave-1682/ route (Phase 1C)."""
@@ -2220,3 +2340,71 @@ class Enclave1682ViewTest(SimpleTestCase):
         self.assertNotIn("372", section)
         self.assertNotIn("308", section)
         self.assertNotRegex(section_no_styles, r"\d+(\.\d+)?%")
+
+    def test_riset_enclave_1682_has_group_hierarchy_section(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Hierarki Kelompok dan Makna Hitungan", content)
+
+    def test_riset_enclave_1682_group_hierarchy_accounting_tiles_render(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("record induk", content)
+        self.assertIn("record komponen", content)
+        self.assertIn("record kelompok lain di luar struktur Madagaskar", content)
+        self.assertNotIn("kelompok lain (16)", content)
+        self.assertNotIn("16 kelompok lain", content)
+
+    def test_riset_enclave_1682_group_hierarchy_stable_metric_attributes_render(self):
+        """All 7 required data-metric/data-value pairs render with the correct values."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        expected = {
+            "canonical-group-record-count": "17",
+            "parent-record-count": "1",
+            "component-record-count": "5",
+            "other-record-count": "11",
+            "parent-recorded-count": "64",
+            "component-count-sum": "64",
+            "count-discrepancy": "0",
+        }
+        for metric, value in expected.items():
+            self.assertIn(f'data-metric="{metric}" data-value="{value}"', content)
+
+    def test_riset_enclave_1682_group_hierarchy_legacy_panel_renders(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Relasi Kelompok Lain yang Belum Direkonsiliasi", content)
+        self.assertIn("UNREVIEWED_LEGACY_GROUP_RELATION", content)
+        self.assertIn("Tiga pasangan ini berasal dari konfigurasi hierarki lama", content)
+
+    def test_riset_enclave_1682_group_hierarchy_overlap_status_renders_not_evaluated(self):
+        """Cross-document overlap review status is not_evaluated, labelled Belum dievaluasi."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Belum dievaluasi", content)
+        self.assertIn('data-cross-document-overlap="not_evaluated"', content)
+        self.assertNotIn('data-cross-document-overlap="cannot_determine"', content)
+
+    def test_riset_enclave_1682_group_hierarchy_unique_person_total_status_attribute(self):
+        """Unique-person-total status renders via an explicit markup attribute, not a bare figure."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn('data-unique-person-total-status="not_evaluated"', content)
+
+    def test_riset_enclave_1682_group_hierarchy_double_counting_prohibited_attribute(self):
+        """The Madagascar structure marks double-counting as structurally prohibited."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn('data-parent-component-double-counting="prohibited"', content)
+
+    def test_riset_enclave_1682_group_hierarchy_no_population_claims(self):
+        """Specific forbidden population claims never appear; bare numeric IDs elsewhere are unaffected."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        start = content.index("Hierarki Kelompok dan Makna Hitungan")
+        end = content.index("Scenario Snapshot")
+        section = content[start:end]
+        self.assertNotIn("128 orang", section)
+        self.assertNotIn("308 orang unik", section)
+        self.assertNotIn("372 orang unik", section)

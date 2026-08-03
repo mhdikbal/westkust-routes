@@ -388,6 +388,110 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
     {% endfor %}
   </section>
 
+  <!-- Group Hierarchy and Count Semantics Explorer -->
+  <section aria-labelledby="hierarchyHeading">
+    <div class="sec-head"><h2 id="hierarchyHeading">Hierarki Kelompok dan Makna Hitungan</h2></div>
+    <p class="sec-sub">
+      Terdapat 17 record kelompok agregat kanonik. Struktur Madagaskar yang telah ditinjau terdiri
+      dari 1 record induk dan 5 record komponen; 11 record lainnya berada di luar struktur ini.
+      Parent dan komponen menjelaskan klasifikasi <b>64 orang yang sama</b> — keduanya
+      <b>tidak dijumlahkan bersama</b>.
+    </p>
+
+    <div class="tiles" style="margin-bottom:16px">
+      <div class="tile" data-metric="canonical-group-record-count" data-value="{{ group_hierarchy_explorer.summary.total_group_record_count }}"><div class="k">{{ group_hierarchy_explorer.summary.total_group_record_count }}</div><div class="l">record kelompok kanonik total</div></div>
+      <div class="tile" data-metric="parent-record-count" data-value="{{ group_hierarchy_explorer.summary.parent_record_count }}"><div class="k">{{ group_hierarchy_explorer.summary.parent_record_count }}</div><div class="l">record induk</div></div>
+      <div class="tile" data-metric="component-record-count" data-value="{{ group_hierarchy_explorer.summary.component_record_count }}"><div class="k">{{ group_hierarchy_explorer.summary.component_record_count }}</div><div class="l">record komponen</div></div>
+      <div class="tile" data-metric="other-record-count" data-value="{{ group_hierarchy_explorer.summary.other_group_record_count }}"><div class="k">{{ group_hierarchy_explorer.summary.other_group_record_count }}</div><div class="l">record kelompok lain di luar struktur Madagaskar</div></div>
+      <div class="tile" data-metric="parent-recorded-count" data-value="{{ group_hierarchy_explorer.summary.recorded_parent_count }}"><div class="k">{{ group_hierarchy_explorer.summary.recorded_parent_count }}</div><div class="l">jumlah dicatat pada parent</div></div>
+      <div class="tile" data-metric="component-count-sum" data-value="{{ group_hierarchy_explorer.summary.reconciled_component_sum }}"><div class="k">{{ group_hierarchy_explorer.summary.reconciled_component_sum }}</div><div class="l">jumlah komponen direkonsiliasi</div></div>
+      <div class="tile" data-metric="count-discrepancy" data-value="{{ group_hierarchy_explorer.summary.arithmetic_discrepancy }}"><div class="k">{{ group_hierarchy_explorer.summary.arithmetic_discrepancy }}</div><div class="l">selisih aritmetis</div></div>
+    </div>
+    <p class="sec-sub">
+      Jumlah unik lintas dokumen: <span class="badge" data-unique-person-total-status="{{ group_hierarchy_explorer.summary.cross_document_unique_person_total }}">{{ group_hierarchy_explorer.summary.cross_document_unique_person_total }}</span>
+      — belum dievaluasi, tidak boleh dihitung dari struktur ini.
+    </p>
+
+    <h3 style="font-family:var(--serif);font-size:1.05rem;margin:14px 0 8px">Struktur Madagaskar (ditinjau)</h3>
+    <details class="plate" style="padding:12px 14px" data-parent-component-double-counting="prohibited">
+      <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.9rem">
+        <code class="mono">{{ group_hierarchy_explorer.parent.group_id }}</code> —
+        {{ group_hierarchy_explorer.parent.source_category_original }}
+        ({{ group_hierarchy_explorer.parent.recorded_count }}) —
+        <span class="badge badge-explicit">{{ group_hierarchy_explorer.parent.count_semantics }}</span>
+      </summary>
+      <div style="margin-top:8px;font-size:.82rem">
+        <p>Peran agregasi: <span class="mono">{{ group_hierarchy_explorer.parent.aggregation_role }}</span></p>
+        <p>Asal relasi: <span class="mono">{{ group_hierarchy_explorer.parent.derivation_status }}</span>
+          (bukan <code>explicit</code> — tidak ada kolom <code>parent_group_id</code> kanonik)</p>
+        <p>Rekonsiliasi partisi: <span class="badge{% if group_hierarchy_explorer.parent.partition_reconciles %} badge-explicit{% endif %}">{{ group_hierarchy_explorer.parent.partition_reconciles }}</span></p>
+        <p>Overlap lintas dokumen: <span class="badge" data-cross-document-overlap="{{ group_hierarchy_explorer.parent.cross_document_overlap_status }}">{% if group_hierarchy_explorer.parent.cross_document_overlap_status == 'not_evaluated' %}Belum dievaluasi{% else %}{{ group_hierarchy_explorer.parent.cross_document_overlap_status }}{% endif %}</span></p>
+        <p>Sumber: <span class="mono">{{ group_hierarchy_explorer.parent.source_document_id }} / {{ group_hierarchy_explorer.parent.source_passage_id }}</span></p>
+      </div>
+      <div style="margin:10px 0 0 18px;border-left:2px solid var(--line);padding-left:14px">
+        {% for c in group_hierarchy_explorer.madagascar_components %}
+        <details class="plate" style="padding:10px 12px;margin-bottom:8px">
+          <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.85rem">
+            <code class="mono">{{ c.group_id }}</code> — {{ c.source_category_original }}
+            ({{ c.recorded_count }}) — <span class="badge">{{ c.count_semantics }}</span>
+          </summary>
+          <div style="margin-top:6px;font-size:.8rem">
+            <p>Peran agregasi: <span class="mono">{{ c.aggregation_role }}</span></p>
+            <p>Induk: <code class="mono">{{ c.parent_group_id }}</code></p>
+            <p>Overlap lintas dokumen: <span class="badge" data-cross-document-overlap="{{ c.cross_document_overlap_status }}">{% if c.cross_document_overlap_status == 'not_evaluated' %}Belum dievaluasi{% else %}{{ c.cross_document_overlap_status }}{% endif %}</span></p>
+            <p>Sumber: <span class="mono">{{ c.source_document_id }} / {{ c.source_passage_id }}</span></p>
+          </div>
+        </details>
+        {% endfor %}
+      </div>
+    </details>
+
+    <h3 style="font-family:var(--serif);font-size:1.05rem;margin:18px 0 8px">Kelompok lain di luar struktur Madagaskar</h3>
+    <div class="legend-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+      {% for g in group_hierarchy_explorer.other_groups %}
+      <details class="plate" style="padding:10px 12px">
+        <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.85rem">
+          <code class="mono">{{ g.group_id }}</code> — {{ g.source_category_original }} ({{ g.recorded_count }})
+        </summary>
+        <div style="margin-top:6px;font-size:.8rem">
+          <p>Peran agregasi: <span class="mono">{{ g.aggregation_role }}</span></p>
+          <p>Semantik hitungan: <span class="mono">{{ g.count_semantics }}</span></p>
+          <p>Overlap lintas dokumen: <span class="badge" data-cross-document-overlap="{{ g.cross_document_overlap_status }}">{% if g.cross_document_overlap_status == 'not_evaluated' %}Belum dievaluasi{% else %}{{ g.cross_document_overlap_status }}{% endif %}</span></p>
+          <p>Sumber: <span class="mono">{{ g.source_document_id }} / {{ g.source_passage_id }}</span></p>
+        </div>
+      </details>
+      {% endfor %}
+    </div>
+
+    <div class="sec-head" style="margin-top:24px">
+      <h3 id="legacyRelationHeading" style="font-family:var(--serif);font-size:1.05rem">Relasi Kelompok Lain yang Belum Direkonsiliasi</h3>
+    </div>
+    <p class="warning-text">
+      Tiga pasangan ini berasal dari konfigurasi hierarki lama, tetapi belum ditinjau sebagai relasi
+      parent-component. Sistem tidak menggunakan pasangan tersebut untuk menghitung populasi atau
+      mengurangi duplikasi.
+    </p>
+    <div class="legend-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      {% for rel in group_hierarchy_explorer.legacy_relation_candidates %}
+      <div class="plate" style="padding:12px 14px" data-relation-status="{{ rel.relation_status }}" data-counting-effect="{{ rel.counting_effect }}">
+        <p style="font-weight:600;font-family:var(--sans);font-size:.88rem">
+          <code class="mono">{{ rel.group_a_id }}</code> — <code class="mono">{{ rel.group_b_id }}</code>
+        </p>
+        <div style="margin-top:6px;font-size:.8rem">
+          <p>Status relasi: <span class="badge badge-uncertain">{{ rel.relation_status }}</span></p>
+          <p>Asal: <span class="mono">{{ rel.derivation_status }}</span></p>
+          <p>Efek penghitungan: <span class="mono">{{ rel.counting_effect }}</span></p>
+          <p>Kode peringatan: <span class="mono">{{ rel.warning_code }}</span></p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% for w in group_hierarchy_explorer.warnings %}
+    <p class="warning-text">⚠ {{ w.message }}</p>
+    {% endfor %}
+  </section>
+
   <!-- Scenario Snapshot -->
   <section aria-labelledby="scenarioHeading">
     <div class="sec-head"><h2 id="scenarioHeading">Snapshot Solver (Offline)</h2></div>

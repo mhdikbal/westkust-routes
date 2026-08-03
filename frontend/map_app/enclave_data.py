@@ -243,6 +243,144 @@ class VisibilityExplorerResult:
     warnings: list[str]
 
 
+AGGREGATION_ROLE_STATES = frozenset({"standalone_group", "parent_total", "component_group", "unknown"})
+COUNT_SEMANTICS_STATES = frozenset({
+    "count_once_as_parent",
+    "count_once_as_components",
+    "standalone_count",
+    "do_not_sum_with_parent",
+    "unresolved",
+})
+CROSS_DOCUMENT_OVERLAP_STATES = frozenset({
+    "not_evaluated",
+    "no_overlap_supported",
+    "possible_overlap",
+    "confirmed_overlap",
+    "cannot_determine",
+})
+GROUP_HIERARCHY_DERIVATION_STATES = frozenset({
+    "explicit",
+    "reviewed_application_mapping",
+    "interpreted",
+    "unresolved",
+})
+
+
+@dataclass(frozen=True, slots=True)
+class GroupHierarchyNode:
+    """One of the 17 canonical group records, with its hierarchy role and count semantics (S4-CRIT-03)."""
+
+    group_id: str
+    source_category_original: str
+    recorded_count: int
+    aggregation_role: str
+    count_semantics: str
+    parent_group_id: Optional[str]
+    component_group_ids: tuple[str, ...]
+    component_count_sum: Optional[int]
+    partition_reconciles: Optional[bool]
+    cross_document_overlap_status: str
+    source_document_id: str
+    source_passage_id: str
+    evidence_status: str
+    review_status: str
+    derivation_status: str
+
+
+@dataclass(frozen=True, slots=True)
+class GroupHierarchyRelation:
+    """The one reviewed relation type in this ticket: the Madagascar parent/component partition."""
+
+    parent_group_id: str
+    component_group_id: str
+    component_count: int
+    derivation_status: str
+    review_status: str
+    notes: str
+
+
+@dataclass(frozen=True, slots=True)
+class LegacyGroupRelationCandidate:
+    """One of the 3 pre-existing HUMAN_GROUP_HIERARCHY pairs that does not
+    reconcile by count and was never reviewed as a parent/component relation.
+
+    Deliberately has no parent_group_id/child_group_id -- direction has not
+    been reviewed. group_a_id/group_b_id carry no directional claim. Never
+    used for counting or de-duplication (counting_effect is always
+    "not_applied").
+    """
+
+    group_a_id: str
+    group_b_id: str
+    relation_status: str
+    derivation_status: str
+    counting_effect: str
+    warning_code: str
+
+
+@dataclass(frozen=True, slots=True)
+class CountSemanticsSummary:
+    """Explicit, separated count tiers -- parent and components are never summed together."""
+
+    parent_record_count: int
+    component_record_count: int
+    other_group_record_count: int
+    total_group_record_count: int
+    recorded_parent_count: int
+    reconciled_component_sum: int
+    arithmetic_discrepancy: int
+    cross_document_unique_person_total: str
+
+
+@dataclass(frozen=True, slots=True)
+class GroupHierarchyWarning:
+    code: str
+    message: str
+    group_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class GroupHierarchyExplorerResult:
+    """Result of load_group_hierarchy_explorer(): deterministic, read-only.
+
+    1 (parent) + len(madagascar_components) + len(other_groups) always
+    equals the canonical group-record count (17).
+    """
+
+    parent: GroupHierarchyNode
+    madagascar_components: list[GroupHierarchyNode]
+    other_groups: list[GroupHierarchyNode]
+    relations: list[GroupHierarchyRelation]
+    legacy_relation_candidates: list[LegacyGroupRelationCandidate]
+    summary: CountSemanticsSummary
+    warnings: list[GroupHierarchyWarning]
+
+
+# Reviewed Madagascar parent/component partition (application-side,
+# derivation_status="reviewed_application_mapping" -- NOT canonical; no
+# parent_group_id column exists in 06_human_groups.csv). Component counts
+# are the group's own canonical `count` column values; the partition is
+# cross-checked against G-MADA-64's own count at load time (see
+# load_group_hierarchy_explorer), not hardcoded as always-true.
+GROUP_HIERARCHY_RELATIONS: tuple[dict, ...] = (
+    {"parent_group_id": "G-MADA-64", "component_group_id": "G-MADA-VJ-10", "component_count": 10},
+    {"parent_group_id": "G-MADA-64", "component_group_id": "G-MADA-HJ-8", "component_count": 8},
+    {"parent_group_id": "G-MADA-64", "component_group_id": "G-MADA-VM-30", "component_count": 30},
+    {"parent_group_id": "G-MADA-64", "component_group_id": "G-MADA-HM-10", "component_count": 10},
+    {"parent_group_id": "G-MADA-64", "component_group_id": "G-MADA-K-6", "component_count": 6},
+)
+
+# Pre-existing HUMAN_GROUP_HIERARCHY pairs that do not reconcile by count
+# (6 vs 4, 68 vs 3, 4 vs 19) and were never reviewed as parent/component
+# relations. Listed without directional claim -- neither position implies
+# parent or child.
+LEGACY_UNREVIEWED_GROUP_PAIRS: tuple[tuple[str, str], ...] = (
+    ("G-HWJ-6", "G-KJ-4"),
+    ("G-SLAVIN-68", "G-MANDORESS-3"),
+    ("G-CHILD-KOST-4", "G-CHILD-NOKOST-19"),
+)
+
+
 # Reviewed restraint-device mapping (application-side, NOT canonical).
 # Ring/key counts are the researcher-attested reading recorded in
 # A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md (committed f98cfb0, corrected 0361953).
@@ -696,6 +834,166 @@ class EnclaveDataAdapter:
             persons=person_entries,
             groups=group_entries,
             presence=presence_entries,
+            warnings=warnings,
+        )
+
+    def load_group_hierarchy_explorer(self) -> GroupHierarchyExplorerResult:
+        """
+        Read-only Group Hierarchy and Count Semantics Explorer (S4-CRIT-03).
+
+        The Madagascar parent/component relation is the only reviewed
+        hierarchy in this ticket (derivation_status="reviewed_application_mapping"
+        -- no canonical parent_group_id column exists, so this is never
+        "explicit"). Parent and components are never summed together;
+        component_count_sum is checked against the parent's own canonical
+        count at load time, not hardcoded. 17 canonical group records
+        partition exactly into 1 parent + 5 components + 11 other records --
+        never rendered as "other 16". cross_document_overlap_status and
+        cross_document_unique_person_total are both "not_evaluated": the
+        cross-document overlap review has not been performed at the level
+        exposed here -- distinct from "cannot_determine", which would mean a
+        review was performed but evidence was insufficient. That is not the
+        case here. The 3 legacy HUMAN_GROUP_HIERARCHY pairs that don't
+        reconcile by count are surfaced as unresolved candidates only
+        (group_a_id/group_b_id, no direction, counting_effect="not_applied")
+        -- never folded into the reviewed relation set, never used for any
+        count adjustment.
+        """
+        groups = self.load_human_groups()
+        by_id = {g["group_id"]: g for g in groups}
+        warnings: list[GroupHierarchyWarning] = []
+
+        component_ids = tuple(r["component_group_id"] for r in GROUP_HIERARCHY_RELATIONS)
+        component_count_sum = sum(r["component_count"] for r in GROUP_HIERARCHY_RELATIONS)
+        parent_row = by_id.get("G-MADA-64")
+        recorded_parent_count = int(parent_row.get("count") or 0) if parent_row else 0
+        partition_reconciles = parent_row is not None and recorded_parent_count == component_count_sum
+        if not partition_reconciles:
+            warnings.append(GroupHierarchyWarning(
+                code="madagascar_partition_mismatch",
+                message=(
+                    f"G-MADA-64 recorded count ({recorded_parent_count}) does not equal "
+                    f"the reviewed component sum ({component_count_sum})."
+                ),
+                group_ids=("G-MADA-64",) + component_ids,
+            ))
+
+        parent = GroupHierarchyNode(
+            group_id="G-MADA-64",
+            source_category_original=(parent_row or {}).get("source_category_original", ""),
+            recorded_count=recorded_parent_count,
+            aggregation_role="parent_total",
+            count_semantics="count_once_as_parent",
+            parent_group_id=None,
+            component_group_ids=component_ids,
+            component_count_sum=component_count_sum,
+            partition_reconciles=partition_reconciles,
+            cross_document_overlap_status="not_evaluated",
+            source_document_id=(parent_row or {}).get("source_document_id") or "not_recorded",
+            source_passage_id=(parent_row or {}).get("source_passage_id") or "not_recorded",
+            evidence_status=(parent_row or {}).get("evidence_status") or "not_recorded",
+            review_status=(parent_row or {}).get("review_status") or "not_recorded",
+            derivation_status="reviewed_application_mapping",
+        )
+
+        relations: list[GroupHierarchyRelation] = []
+        madagascar_components: list[GroupHierarchyNode] = []
+        for r in GROUP_HIERARCHY_RELATIONS:
+            cid = r["component_group_id"]
+            crow = by_id.get(cid)
+            if crow is None:
+                warnings.append(GroupHierarchyWarning(
+                    code="madagascar_component_missing",
+                    message=f"Reviewed component {cid} not found in canonical 06_human_groups.csv.",
+                    group_ids=(cid,),
+                ))
+                continue
+            relations.append(GroupHierarchyRelation(
+                parent_group_id="G-MADA-64",
+                component_group_id=cid,
+                component_count=r["component_count"],
+                derivation_status="reviewed_application_mapping",
+                review_status=crow.get("review_status") or "not_recorded",
+                notes="Reviewed application-side partition; no canonical parent_group_id column exists.",
+            ))
+            madagascar_components.append(GroupHierarchyNode(
+                group_id=cid,
+                source_category_original=crow.get("source_category_original", ""),
+                recorded_count=int(crow.get("count") or 0),
+                aggregation_role="component_group",
+                count_semantics="do_not_sum_with_parent",
+                parent_group_id="G-MADA-64",
+                component_group_ids=(),
+                component_count_sum=None,
+                partition_reconciles=None,
+                cross_document_overlap_status="not_evaluated",
+                source_document_id=crow.get("source_document_id") or "not_recorded",
+                source_passage_id=crow.get("source_passage_id") or "not_recorded",
+                evidence_status=crow.get("evidence_status") or "not_recorded",
+                review_status=crow.get("review_status") or "not_recorded",
+                derivation_status="reviewed_application_mapping",
+            ))
+
+        madagascar_ids = {"G-MADA-64"} | set(component_ids)
+        other_groups: list[GroupHierarchyNode] = []
+        for g in sorted(groups, key=lambda r: r["group_id"]):
+            gid = g["group_id"]
+            if gid in madagascar_ids:
+                continue
+            other_groups.append(GroupHierarchyNode(
+                group_id=gid,
+                source_category_original=g.get("source_category_original", ""),
+                recorded_count=int(g.get("count") or 0),
+                aggregation_role="standalone_group",
+                count_semantics="standalone_count",
+                parent_group_id=None,
+                component_group_ids=(),
+                component_count_sum=None,
+                partition_reconciles=None,
+                cross_document_overlap_status="not_evaluated",
+                source_document_id=g.get("source_document_id") or "not_recorded",
+                source_passage_id=g.get("source_passage_id") or "not_recorded",
+                evidence_status=g.get("evidence_status") or "not_recorded",
+                review_status=g.get("review_status") or "not_recorded",
+                derivation_status="explicit",
+            ))
+
+        legacy_relation_candidates: list[LegacyGroupRelationCandidate] = []
+        for a, b in LEGACY_UNREVIEWED_GROUP_PAIRS:
+            if a not in by_id or b not in by_id:
+                warnings.append(GroupHierarchyWarning(
+                    code="legacy_pair_group_missing",
+                    message=f"Legacy pair references a group not found in canonical data: {a} / {b}.",
+                    group_ids=(a, b),
+                ))
+                continue
+            legacy_relation_candidates.append(LegacyGroupRelationCandidate(
+                group_a_id=a,
+                group_b_id=b,
+                relation_status="unresolved",
+                derivation_status="not_reviewed",
+                counting_effect="not_applied",
+                warning_code="UNREVIEWED_LEGACY_GROUP_RELATION",
+            ))
+
+        summary = CountSemanticsSummary(
+            parent_record_count=1,
+            component_record_count=len(madagascar_components),
+            other_group_record_count=len(other_groups),
+            total_group_record_count=1 + len(madagascar_components) + len(other_groups),
+            recorded_parent_count=recorded_parent_count,
+            reconciled_component_sum=component_count_sum,
+            arithmetic_discrepancy=recorded_parent_count - component_count_sum,
+            cross_document_unique_person_total="not_evaluated",
+        )
+
+        return GroupHierarchyExplorerResult(
+            parent=parent,
+            madagascar_components=madagascar_components,
+            other_groups=other_groups,
+            relations=relations,
+            legacy_relation_candidates=legacy_relation_candidates,
+            summary=summary,
             warnings=warnings,
         )
 
