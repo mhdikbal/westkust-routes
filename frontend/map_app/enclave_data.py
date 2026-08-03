@@ -419,6 +419,170 @@ HUMAN_GROUP_HIERARCHY: dict[str, Optional[str]] = {
 }
 
 
+ROOT_BASIS_STATES = frozenset({
+    "containment_root",
+    "regional_external_location",
+    "no_parent_recorded",
+    "disconnected_reference",
+    "parent_declared_without_contains_edge",
+})
+LOCATION_PRESENCE_BASIS_STATES = frozenset({
+    "hrlt_record",
+    "group_record_location",
+    "not_structured",
+})
+LOCATION_RELATION_LABELS: dict[str, str] = {
+    "contains": "Berisi",
+    "approaches_or_audibly_connected": "Mendekati atau terhubung secara audibel",
+    "topological_relation_unknown": "Relasi topologis belum diketahui",
+    "associated_with": "Terkait secara dokumenter",
+    "regional_route": "Rute regional",
+    "shipping_route": "Rute pengapalan",
+    "coerced_mobility_route": "Rute mobilitas paksa",
+}
+LOCATION_TOPOLOGY_WARNING_CODES = frozenset({
+    "PARENT_DECLARED_WITHOUT_CONTAINS_EDGE",
+    "UNRESOLVED_RELATION_ENDPOINT",
+    "UNRESOLVED_PRESENCE_ENTITY",
+    "CYCLIC_CONTAINMENT",
+    "MULTIPLE_CONTAINMENT_PARENTS",
+    "SELF_RELATION",
+    "UNKNOWN_RELATION_TYPE",
+})
+
+
+@dataclass(frozen=True, slots=True)
+class LocationTopologyNode:
+    """One of the 23 canonical location records (S4-CRIT-04)."""
+
+    location_id: str
+    name_source: str
+    name_normalized: str
+    location_type: str
+    parent_location_id: Optional[str]
+    appears_as_contains_child: bool
+    root_basis: Optional[str]
+    evidence_status: str
+    source_document_id: str
+    source_passage_id: str
+
+
+@dataclass(frozen=True, slots=True)
+class LocationRelation:
+    """One row of 16_location_adjacency.csv.
+
+    Never carries source_document_id/source_passage_id -- that table has no
+    such columns at all (verified header), and relation-level provenance is
+    never copied from a node's own provenance.
+    """
+
+    edge_id: str
+    from_location_id: str
+    to_location_id: str
+    relation_type: str
+    evidence_status: str
+    evidence_basis: str
+    notes: str
+    directionality: str
+    derivation_status: str
+
+
+@dataclass(frozen=True, slots=True)
+class LocationHumanPresence:
+    location_id: str
+    entity_id: str
+    entity_type: str
+    presence_basis: str
+    role_id: str
+    evidence_status: str
+    review_status: str
+    assignment_evidence: str
+    source_document_id: str
+    source_passage_id: str
+
+
+@dataclass(frozen=True, slots=True)
+class LocationPresenceReconciliation:
+    """Record counts and distinct-entity counts, always reported separately -- never a population figure."""
+
+    hrlt_record_count: int
+    hrlt_distinct_entity_count: int
+    group_record_location_count: int
+    group_only_distinct_count: int
+    overlap_distinct_count: int
+    total_presence_record_count: int
+    total_distinct_entity_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class LocationInventorySummary:
+    location_id: str
+    inventory_source_row_count: int
+    inventory_non_parent_item_count: int
+    inventory_parent_or_container_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class LocationOperationSummary:
+    """Record counts and evidence status only -- never a production or labour figure."""
+
+    location_id: str
+    weekly_operation_record_count: int
+    period_start_earliest: str
+    period_end_latest: str
+    evidence_status_breakdown: tuple[str, ...]
+    review_status_breakdown: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class LocationTopologySummary:
+    location_id: str
+    named_person_record_count: int
+    aggregate_group_record_count: int
+    inventory_source_row_count: int
+    inventory_non_parent_item_count: int
+    weekly_operation_record_count: int
+    role_compatibility_count: int
+    location_relation_row_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class RelationTypeCount:
+    relation_type: str
+    row_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class LocationTopologyWarning:
+    code: str
+    message: str
+    location_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class LocationTopologyExplorerResult:
+    """Result of load_location_topology_explorer(): deterministic, read-only.
+
+    containment_roots (edge-graph derived, 7) and declared_parent_top_level_nodes
+    (parent_location_id derived, 5) are kept as two separate lists, never merged --
+    their difference is exactly parent_edge_inconsistencies (2).
+    """
+
+    nodes: list[LocationTopologyNode]
+    relations: list[LocationRelation]
+    containment_roots: list[LocationTopologyNode]
+    declared_parent_top_level_nodes: list[LocationTopologyNode]
+    parent_edge_inconsistencies: list[LocationTopologyWarning]
+    presence: list[LocationHumanPresence]
+    presence_reconciliation: LocationPresenceReconciliation
+    inventory_summaries: list[LocationInventorySummary]
+    operation_summaries: list[LocationOperationSummary]
+    summaries: list[LocationTopologySummary]
+    relation_type_counts: tuple[RelationTypeCount, ...]
+    total_weekly_operation_record_count: int
+    warnings: list[LocationTopologyWarning]
+
+
 class EnclaveDataAdapter:
     """
     Read-only data adapter for SALIDO-HDT canonical dataset.
@@ -994,6 +1158,383 @@ class EnclaveDataAdapter:
             relations=relations,
             legacy_relation_candidates=legacy_relation_candidates,
             summary=summary,
+            warnings=warnings,
+        )
+
+    def load_location_topology_explorer(self) -> LocationTopologyExplorerResult:
+        """
+        Read-only Topologi Lokasi dan Infrastruktur Sosial-Teknis explorer (S4-CRIT-04).
+
+        Two distinct topology representations are kept separate and never merged:
+        containment_roots is derived purely from 16_location_adjacency.csv's
+        `contains` edges (23 nodes minus the 16 distinct contains-edge children =
+        7 roots); declared_parent_top_level_nodes is derived purely from
+        05_locations.csv's own `parent_location_id` field (5 roots). Their
+        difference (2 nodes -- L-ZZW-DAGGANG, L-MALEIJTS-ORT -- each with a
+        stated parent but no confirming contains edge) is never resolved by
+        synthesizing a missing edge or by hiding either fact; both nodes remain
+        visible in every relevant list and are reported via
+        parent_edge_inconsistencies (code=PARENT_DECLARED_WITHOUT_CONTAINS_EDGE).
+
+        Presence is built from two independent sources and never deduplicated:
+        07_human_role_location_time.csv rows (presence_basis="hrlt_record") and
+        06_human_groups.csv rows (presence_basis="group_record_location"). The
+        10 groups attested by both sources keep both records -- 32 presence
+        records total, 22 distinct entities, reported as separate numbers,
+        never as one population count. Role-location compatibility
+        (15_role_location_compatibility.csv) is a model-input rule, counted
+        only in role_compatibility_count, never added to `presence`. A location
+        stated on an aggregate-group record is never expanded into individual
+        presence for unnamed members.
+
+        16_location_adjacency.csv carries no source_document_id/source_passage_id
+        columns -- LocationRelation never fabricates them, and relation-level
+        provenance is never copied from a node's own provenance.
+
+        No labour/productivity figure is ever computed: weekly-operation and
+        inventory summaries expose only record counts and evidence/review
+        status, never schoten or ore_weight_lb divided by any person or group
+        count.
+        """
+        locations = self.load_locations()
+        adjacency = self.load_location_adjacency()
+        groups = self.load_human_groups()
+        hrlt = self.load_human_role_location_time()
+        operations = self.load_weekly_operations()
+        inventory = self.load_inventory_items()
+        role_compat = self.load_role_location_compatibility()
+        persons = self.load_persons()
+
+        loc_ids = {l["location_id"] for l in locations}
+        person_ids = {p["person_id"] for p in persons}
+        group_ids = {g["group_id"] for g in groups}
+
+        warnings: list[LocationTopologyWarning] = []
+
+        # --- Relations -------------------------------------------------------
+        relations: list[LocationRelation] = []
+        relation_type_counter: dict[str, int] = {}
+        contains_children: dict[str, list[str]] = {}
+        for row in sorted(adjacency, key=lambda r: r["edge_id"]):
+            rel_type = row.get("relation_type", "")
+            relation_type_counter[rel_type] = relation_type_counter.get(rel_type, 0) + 1
+
+            from_id = row.get("from_location_id", "")
+            to_id = row.get("to_location_id", "")
+
+            if from_id not in loc_ids or to_id not in loc_ids:
+                warnings.append(LocationTopologyWarning(
+                    code="UNRESOLVED_RELATION_ENDPOINT",
+                    message=(
+                        f"Relation {row.get('edge_id', '?')} references an unknown "
+                        f"location ({from_id} -> {to_id})."
+                    ),
+                    location_ids=(from_id, to_id),
+                ))
+                continue
+
+            if from_id == to_id:
+                warnings.append(LocationTopologyWarning(
+                    code="SELF_RELATION",
+                    message=f"Relation {row.get('edge_id', '?')} has identical from/to location ({from_id}).",
+                    location_ids=(from_id,),
+                ))
+
+            if rel_type not in LOCATION_RELATION_LABELS:
+                warnings.append(LocationTopologyWarning(
+                    code="UNKNOWN_RELATION_TYPE",
+                    message=(
+                        f"Relation {row.get('edge_id', '?')} uses an unrecognized "
+                        f"relation_type: {rel_type}."
+                    ),
+                    location_ids=(from_id, to_id),
+                ))
+
+            bidirectional_raw = (row.get("bidirectional") or "").strip().lower()
+            directionality = "bidirectional" if bidirectional_raw == "true" else "unidirectional"
+
+            relations.append(LocationRelation(
+                edge_id=row.get("edge_id", ""),
+                from_location_id=from_id,
+                to_location_id=to_id,
+                relation_type=rel_type,
+                evidence_status=row.get("evidence_status") or "not_recorded",
+                evidence_basis=row.get("evidence_basis") or "not_recorded",
+                notes=row.get("notes") or "not_recorded",
+                directionality=directionality,
+                derivation_status="canonical_row",
+            ))
+
+            if rel_type == "contains":
+                contains_children.setdefault(to_id, []).append(from_id)
+
+        for child, parents in contains_children.items():
+            if len(set(parents)) > 1:
+                warnings.append(LocationTopologyWarning(
+                    code="MULTIPLE_CONTAINMENT_PARENTS",
+                    message=(
+                        f"{child} is listed as a contains-child of more than one "
+                        f"location: {sorted(set(parents))}."
+                    ),
+                    location_ids=(child,) + tuple(sorted(set(parents))),
+                ))
+
+        contains_child_ids = set(contains_children.keys())
+
+        # --- Cycle check (parent_location_id walk) ----------------------------
+        parent_map = {l["location_id"]: (l.get("parent_location_id") or None) for l in locations}
+
+        def _walk_has_cycle(start: str) -> bool:
+            seen: set[str] = set()
+            cur: Optional[str] = start
+            while cur:
+                if cur in seen:
+                    return True
+                seen.add(cur)
+                cur = parent_map.get(cur)
+            return False
+
+        cyclic_nodes = tuple(sorted(lid for lid in loc_ids if _walk_has_cycle(lid)))
+        if cyclic_nodes:
+            warnings.append(LocationTopologyWarning(
+                code="CYCLIC_CONTAINMENT",
+                message=f"Containment cycle detected involving: {cyclic_nodes}.",
+                location_ids=cyclic_nodes,
+            ))
+
+        # --- Nodes and root classification -------------------------------------
+        declared_parent_ids = {l["location_id"] for l in locations if not l.get("parent_location_id")}
+        containment_root_ids = loc_ids - contains_child_ids
+        parent_edge_inconsistency_ids = containment_root_ids - declared_parent_ids
+        contains_from_ids = {r["from_location_id"] for r in adjacency if r["relation_type"] == "contains"}
+
+        def _root_basis(lid: str, parent_blank: bool) -> Optional[str]:
+            if lid in parent_edge_inconsistency_ids:
+                return "parent_declared_without_contains_edge"
+            if not parent_blank:
+                return None
+            if lid in contains_from_ids:
+                return "containment_root"
+            referenced_elsewhere = (
+                any(r["from_location_id"] == lid or r["to_location_id"] == lid for r in adjacency)
+                or any(g["location_id"] == lid for g in groups)
+                or any(h["location_id"] == lid for h in hrlt)
+                or any(o["location_id"] == lid for o in operations)
+                or any(i["location_id"] == lid for i in inventory)
+                or any(rc["location_id"] == lid for rc in role_compat)
+            )
+            return "regional_external_location" if referenced_elsewhere else "disconnected_reference"
+
+        nodes: list[LocationTopologyNode] = []
+        for l in sorted(locations, key=lambda r: r["location_id"]):
+            lid = l["location_id"]
+            parent_blank = not l.get("parent_location_id")
+            nodes.append(LocationTopologyNode(
+                location_id=lid,
+                name_source=l.get("name_original", ""),
+                name_normalized=l.get("name_normalized_id", ""),
+                location_type=l.get("location_type", ""),
+                parent_location_id=l.get("parent_location_id") or None,
+                appears_as_contains_child=lid in contains_child_ids,
+                root_basis=_root_basis(lid, parent_blank),
+                evidence_status=l.get("evidence_status") or "not_recorded",
+                source_document_id=l.get("source_document_id") or "not_recorded",
+                source_passage_id=l.get("source_passage_id") or "not_recorded",
+            ))
+
+        nodes_by_id = {n.location_id: n for n in nodes}
+        containment_roots = [nodes_by_id[lid] for lid in sorted(containment_root_ids)]
+        declared_parent_top_level_nodes = [nodes_by_id[lid] for lid in sorted(declared_parent_ids)]
+
+        parent_edge_inconsistencies: list[LocationTopologyWarning] = []
+        for lid in sorted(parent_edge_inconsistency_ids):
+            stated_parent = nodes_by_id[lid].parent_location_id
+            parent_edge_inconsistencies.append(LocationTopologyWarning(
+                code="PARENT_DECLARED_WITHOUT_CONTAINS_EDGE",
+                message=(
+                    f"{lid} states parent_location_id={stated_parent}, but no contains "
+                    f"edge {stated_parent} -> {lid} exists in 16_location_adjacency.csv."
+                ),
+                location_ids=(lid,),
+            ))
+        warnings.extend(parent_edge_inconsistencies)
+
+        # --- Presence ------------------------------------------------------------
+        presence: list[LocationHumanPresence] = []
+        for row in sorted(hrlt, key=lambda r: r["hrlt_id"]):
+            entity_id = row.get("human_or_group_id", "")
+            entity_type = row.get("entity_type", "")
+            loc_id = row.get("location_id", "")
+            if loc_id not in loc_ids:
+                warnings.append(LocationTopologyWarning(
+                    code="UNRESOLVED_RELATION_ENDPOINT",
+                    message=f"HRLT row {row.get('hrlt_id', '?')} references an unknown location: {loc_id}.",
+                    location_ids=(loc_id,),
+                ))
+                continue
+            if entity_type == "individual" and entity_id not in person_ids:
+                warnings.append(LocationTopologyWarning(
+                    code="UNRESOLVED_PRESENCE_ENTITY",
+                    message=f"HRLT row {row.get('hrlt_id', '?')} references an unknown person: {entity_id}.",
+                    location_ids=(loc_id,),
+                ))
+                continue
+            if entity_type == "aggregate_group" and entity_id not in group_ids:
+                warnings.append(LocationTopologyWarning(
+                    code="UNRESOLVED_PRESENCE_ENTITY",
+                    message=f"HRLT row {row.get('hrlt_id', '?')} references an unknown group: {entity_id}.",
+                    location_ids=(loc_id,),
+                ))
+                continue
+            presence_basis = "hrlt_record" if entity_type in ("individual", "aggregate_group") else "not_structured"
+            presence.append(LocationHumanPresence(
+                location_id=loc_id,
+                entity_id=entity_id,
+                entity_type=entity_type or "not_structured",
+                presence_basis=presence_basis,
+                role_id=row.get("role_id") or "not_applicable",
+                evidence_status=row.get("evidence_status") or "not_recorded",
+                review_status=row.get("review_status") or "not_recorded",
+                assignment_evidence=_HRLT_EVIDENCE_TO_ASSIGNMENT.get(
+                    row.get("evidence_status", ""), "not_structured"
+                ),
+                source_document_id=row.get("source_document_id") or "not_recorded",
+                source_passage_id=row.get("source_passage_id") or "not_recorded",
+            ))
+
+        hrlt_record_count = sum(1 for p in presence if p.presence_basis == "hrlt_record")
+        hrlt_distinct_entity_count = len(
+            {p.entity_id for p in presence if p.presence_basis == "hrlt_record"}
+        )
+
+        for g in sorted(groups, key=lambda r: r["group_id"]):
+            loc_id = g.get("location_id", "")
+            if loc_id not in loc_ids:
+                warnings.append(LocationTopologyWarning(
+                    code="UNRESOLVED_RELATION_ENDPOINT",
+                    message=f"Group {g.get('group_id', '?')} references an unknown location: {loc_id}.",
+                    location_ids=(loc_id,),
+                ))
+                continue
+            presence.append(LocationHumanPresence(
+                location_id=loc_id,
+                entity_id=g["group_id"],
+                entity_type="aggregate_group",
+                presence_basis="group_record_location",
+                role_id="not_applicable",
+                evidence_status=g.get("evidence_status") or "not_recorded",
+                review_status=g.get("review_status") or "not_recorded",
+                assignment_evidence="not_applicable",
+                source_document_id=g.get("source_document_id") or "not_recorded",
+                source_passage_id=g.get("source_passage_id") or "not_recorded",
+            ))
+
+        group_record_location_count = sum(
+            1 for p in presence if p.presence_basis == "group_record_location"
+        )
+        hrlt_group_ids = {
+            p.entity_id for p in presence
+            if p.presence_basis == "hrlt_record" and p.entity_type == "aggregate_group"
+        }
+        group_only_ids = group_ids - hrlt_group_ids
+        overlap_ids = group_ids & hrlt_group_ids
+
+        presence_reconciliation = LocationPresenceReconciliation(
+            hrlt_record_count=hrlt_record_count,
+            hrlt_distinct_entity_count=hrlt_distinct_entity_count,
+            group_record_location_count=group_record_location_count,
+            group_only_distinct_count=len(group_only_ids),
+            overlap_distinct_count=len(overlap_ids),
+            total_presence_record_count=len(presence),
+            total_distinct_entity_count=len({p.entity_id for p in presence}),
+        )
+
+        # --- Inventory summaries -----------------------------------------------
+        inventory_summaries: list[LocationInventorySummary] = []
+        for lid in sorted(loc_ids):
+            rows_here = [r for r in inventory if r.get("location_id") == lid]
+            non_parent = sum(1 for r in rows_here if r.get("row_type") != "container_or_parent")
+            parent_or_container = sum(1 for r in rows_here if r.get("row_type") == "container_or_parent")
+            inventory_summaries.append(LocationInventorySummary(
+                location_id=lid,
+                inventory_source_row_count=len(rows_here),
+                inventory_non_parent_item_count=non_parent,
+                inventory_parent_or_container_count=parent_or_container,
+            ))
+
+        # --- Operation summaries ------------------------------------------------
+        operation_summaries: list[LocationOperationSummary] = []
+        for lid in sorted(loc_ids):
+            rows_here = [r for r in operations if r.get("location_id") == lid]
+            starts = sorted(r["period_start"] for r in rows_here if r.get("period_start"))
+            ends = sorted(r["period_end"] for r in rows_here if r.get("period_end"))
+            operation_summaries.append(LocationOperationSummary(
+                location_id=lid,
+                weekly_operation_record_count=len(rows_here),
+                period_start_earliest=starts[0] if starts else "not_recorded",
+                period_end_latest=ends[-1] if ends else "not_recorded",
+                evidence_status_breakdown=tuple(
+                    sorted({r.get("evidence_status") or "not_recorded" for r in rows_here})
+                ),
+                review_status_breakdown=tuple(
+                    sorted({r.get("review_status") or "not_recorded" for r in rows_here})
+                ),
+            ))
+
+        # --- Per-location rollup -------------------------------------------------
+        named_person_counts: dict[str, int] = {}
+        aggregate_group_counts: dict[str, int] = {}
+        for p in presence:
+            if p.entity_type == "individual":
+                named_person_counts[p.location_id] = named_person_counts.get(p.location_id, 0) + 1
+            elif p.entity_type == "aggregate_group" and p.presence_basis == "group_record_location":
+                aggregate_group_counts[p.location_id] = aggregate_group_counts.get(p.location_id, 0) + 1
+
+        role_compat_counts: dict[str, int] = {}
+        for r in role_compat:
+            lid = r.get("location_id", "")
+            role_compat_counts[lid] = role_compat_counts.get(lid, 0) + 1
+
+        relation_row_counts: dict[str, int] = {}
+        for r in relations:
+            relation_row_counts[r.from_location_id] = relation_row_counts.get(r.from_location_id, 0) + 1
+            if r.to_location_id != r.from_location_id:
+                relation_row_counts[r.to_location_id] = relation_row_counts.get(r.to_location_id, 0) + 1
+
+        inv_by_id = {s.location_id: s for s in inventory_summaries}
+        op_by_id = {s.location_id: s for s in operation_summaries}
+
+        summaries: list[LocationTopologySummary] = []
+        for lid in sorted(loc_ids):
+            summaries.append(LocationTopologySummary(
+                location_id=lid,
+                named_person_record_count=named_person_counts.get(lid, 0),
+                aggregate_group_record_count=aggregate_group_counts.get(lid, 0),
+                inventory_source_row_count=inv_by_id[lid].inventory_source_row_count,
+                inventory_non_parent_item_count=inv_by_id[lid].inventory_non_parent_item_count,
+                weekly_operation_record_count=op_by_id[lid].weekly_operation_record_count,
+                role_compatibility_count=role_compat_counts.get(lid, 0),
+                location_relation_row_count=relation_row_counts.get(lid, 0),
+            ))
+
+        relation_type_counts = tuple(
+            RelationTypeCount(relation_type=rt, row_count=cnt)
+            for rt, cnt in sorted(relation_type_counter.items())
+        )
+
+        return LocationTopologyExplorerResult(
+            nodes=nodes,
+            relations=relations,
+            containment_roots=containment_roots,
+            declared_parent_top_level_nodes=declared_parent_top_level_nodes,
+            parent_edge_inconsistencies=parent_edge_inconsistencies,
+            presence=presence,
+            presence_reconciliation=presence_reconciliation,
+            inventory_summaries=inventory_summaries,
+            operation_summaries=operation_summaries,
+            summaries=summaries,
+            relation_type_counts=relation_type_counts,
+            total_weekly_operation_record_count=len(operations),
             warnings=warnings,
         )
 

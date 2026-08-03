@@ -510,6 +510,225 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
     {% endfor %}
   </section>
 
+  <!-- Topologi Lokasi dan Infrastruktur Sosial-Teknis -->
+  <section aria-labelledby="locationTopologyHeading">
+    <div class="sec-head"><h2 id="locationTopologyHeading">Topologi Lokasi dan Infrastruktur Sosial-Teknis</h2></div>
+
+    <h3 style="font-family:var(--serif);font-size:1.05rem;margin:8px 0">Ringkasan topologi</h3>
+    <div class="tiles" style="margin-bottom:16px">
+      <div class="tile" data-metric="canonical-location-count" data-value="{{ location_topology_explorer.nodes|length }}"><div class="k">{{ location_topology_explorer.nodes|length }}</div><div class="l">record lokasi kanonik</div></div>
+      <div class="tile" data-metric="location-relation-row-count" data-value="{{ location_topology_explorer.relations|length }}"><div class="k">{{ location_topology_explorer.relations|length }}</div><div class="l">baris relasi lokasi</div></div>
+      <div class="tile" data-metric="contains-edge-count" data-value="{% for rtc in location_topology_explorer.relation_type_counts %}{% if rtc.relation_type == 'contains' %}{{ rtc.row_count }}{% endif %}{% endfor %}"><div class="k">{% for rtc in location_topology_explorer.relation_type_counts %}{% if rtc.relation_type == 'contains' %}{{ rtc.row_count }}{% endif %}{% endfor %}</div><div class="l">relasi containment (contains)</div></div>
+      <div class="tile" data-metric="containment-root-count" data-value="{{ location_topology_explorer.containment_roots|length }}"><div class="k">{{ location_topology_explorer.containment_roots|length }}</div><div class="l">root pada graf contains</div></div>
+      <div class="tile" data-metric="declared-parent-top-level-count" data-value="{{ location_topology_explorer.declared_parent_top_level_nodes|length }}"><div class="k">{{ location_topology_explorer.declared_parent_top_level_nodes|length }}</div><div class="l">node top-level menurut parent_location_id</div></div>
+      <div class="tile" data-metric="parent-edge-inconsistency-count" data-value="{{ location_topology_explorer.parent_edge_inconsistencies|length }}"><div class="k">{{ location_topology_explorer.parent_edge_inconsistencies|length }}</div><div class="l">inkonsistensi induk vs. tepi contains</div></div>
+      <div class="tile" data-metric="weekly-operation-record-count" data-value="{{ location_topology_explorer.total_weekly_operation_record_count }}"><div class="k">{{ location_topology_explorer.total_weekly_operation_record_count }}</div><div class="l">record operasi mingguan</div></div>
+      <div class="tile" data-metric="location-presence-record-count" data-value="{{ location_topology_explorer.presence_reconciliation.total_presence_record_count }}"><div class="k">{{ location_topology_explorer.presence_reconciliation.total_presence_record_count }}</div><div class="l">record bukti lokasi</div></div>
+      <div class="tile" data-metric="distinct-referenced-entity-count" data-value="{{ location_topology_explorer.presence_reconciliation.total_distinct_entity_count }}"><div class="k">{{ location_topology_explorer.presence_reconciliation.total_distinct_entity_count }}</div><div class="l">ID manusia atau kelompok yang dirujuk</div></div>
+    </div>
+    <p class="sec-sub">
+      Record bukti lokasi (<b>{{ location_topology_explorer.presence_reconciliation.total_presence_record_count }}</b>) dan ID unik yang dirujuk
+      (<b>{{ location_topology_explorer.presence_reconciliation.total_distinct_entity_count }}</b>) ditampilkan terpisah dan
+      <b>bukan angka populasi</b> — sebagian ID muncul lewat dua sumber bukti sekaligus (catatan HRLT dan field lokasi
+      milik record kelompok), dan kedua bukti tetap disimpan, bukan digabung menjadi satu.
+    </p>
+
+    <h3 style="font-family:var(--serif);font-size:1.05rem;margin:20px 0 8px">Struktur containment eksplisit</h3>
+    <p class="sec-sub">
+      Pohon di bawah ini dibangun <b>hanya</b> dari relasi <code>contains</code> pada
+      <code>16_location_adjacency.csv</code> — bukan dari field <code>parent_location_id</code>. Ada
+      {{ location_topology_explorer.containment_roots|length }} root pada graf ini.
+    </p>
+    <div>
+      {% for root in location_topology_explorer.containment_roots %}
+      <details class="plate" style="padding:12px 14px;margin-bottom:8px" data-root-basis="{{ root.root_basis }}" data-location-id="{{ root.location_id }}" data-topology-role="containment_root">
+        <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.88rem">
+          <code class="mono">{{ root.location_id }}</code> — {{ root.name_normalized }}
+          (<span class="mono" data-location-type="{{ root.location_type }}">{{ root.location_type }}</span>)
+        </summary>
+        <div style="margin-top:8px;font-size:.82rem">
+          <p>Basis root: <span class="mono">{{ root.root_basis }}</span></p>
+          <p>Status bukti: <span class="mono">{{ root.evidence_status }}</span></p>
+          <p>Dokumen sumber: <span class="mono">{% if root.source_document_id == 'not_recorded' %}Belum terstruktur{% else %}{{ root.source_document_id }}{% endif %}</span></p>
+          <p>Passage sumber: <span class="mono">{% if root.source_passage_id == 'not_recorded' %}Belum terstruktur{% else %}{{ root.source_passage_id }}{% endif %}</span></p>
+        </div>
+        <div style="margin:8px 0 0 18px;border-left:2px solid var(--line);padding-left:14px">
+          {% for child in location_topology_explorer.nodes %}
+          {% if child.parent_location_id == root.location_id and child.appears_as_contains_child %}
+          <details class="plate" style="padding:10px 12px;margin-bottom:6px" data-location-relation="contains" data-parent-location-id="{{ root.location_id }}" data-location-id="{{ child.location_id }}" data-derivation-status="canonical_row">
+            <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.84rem">
+              <code class="mono">{{ child.location_id }}</code> — {{ child.name_normalized }}
+              (<span class="mono">{{ child.location_type }}</span>)
+            </summary>
+            <div style="margin-top:6px;font-size:.8rem">
+              <p>Status bukti: <span class="mono">{{ child.evidence_status }}</span></p>
+              <p>Dokumen sumber: <span class="mono">{% if child.source_document_id == 'not_recorded' %}Belum terstruktur{% else %}{{ child.source_document_id }}{% endif %}</span></p>
+              <p>Passage sumber: <span class="mono">{% if child.source_passage_id == 'not_recorded' %}Belum terstruktur{% else %}{{ child.source_passage_id }}{% endif %}</span></p>
+            </div>
+            <div style="margin:6px 0 0 16px;border-left:2px solid var(--line);padding-left:12px">
+              {% for grandchild in location_topology_explorer.nodes %}
+              {% if grandchild.parent_location_id == child.location_id and grandchild.appears_as_contains_child %}
+              <details class="plate" style="padding:8px 10px;margin-bottom:4px" data-location-relation="contains" data-parent-location-id="{{ child.location_id }}" data-location-id="{{ grandchild.location_id }}" data-derivation-status="canonical_row">
+                <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.8rem">
+                  <code class="mono">{{ grandchild.location_id }}</code> — {{ grandchild.name_normalized }}
+                  (<span class="mono">{{ grandchild.location_type }}</span>)
+                </summary>
+                <div style="margin-top:6px;font-size:.78rem">
+                  <p>Status bukti: <span class="mono">{{ grandchild.evidence_status }}</span></p>
+                </div>
+              </details>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </details>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </details>
+      {% endfor %}
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:1.05rem;margin:20px 0 8px">Referensi induk yang belum direkonsiliasi</h3>
+    <p class="warning-text">
+      Kedua node berikut menyatakan <code>parent_location_id</code>, tetapi tidak ada relasi
+      <code>contains</code> yang mengonfirmasinya di <code>16_location_adjacency.csv</code>. Sistem tidak
+      membuat relasi contains baru dan tidak menyembunyikan atau menghapus field induk yang dinyatakan.
+    </p>
+    <div class="legend-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      {% for node in location_topology_explorer.nodes %}
+      {% if node.root_basis == 'parent_declared_without_contains_edge' %}
+      <div class="plate" style="padding:12px 14px" data-warning-code="PARENT_DECLARED_WITHOUT_CONTAINS_EDGE">
+        <p style="font-weight:600;font-family:var(--sans);font-size:.88rem"><code class="mono">{{ node.location_id }}</code> — {{ node.name_normalized }}</p>
+        <div style="margin-top:6px;font-size:.8rem">
+          <p>Induk yang dinyatakan: <code class="mono">{{ node.parent_location_id }}</code></p>
+          <p>Tepi contains yang hilang: <span class="mono">{{ node.parent_location_id }} → {{ node.location_id }}</span></p>
+          <p>Tipe lokasi: <span class="mono">{{ node.location_type }}</span></p>
+          <p>Status bukti: <span class="mono">{{ node.evidence_status }}</span></p>
+          <p>Dokumen sumber: <span class="mono">Belum terstruktur</span></p>
+          <p>Passage sumber: <span class="mono">Belum terstruktur</span></p>
+          <p>Kode peringatan: <span class="mono">PARENT_DECLARED_WITHOUT_CONTAINS_EDGE</span></p>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:1.05rem;margin:20px 0 8px">Relasi lokasi non-containment</h3>
+    <p class="sec-sub">
+      Relasi berikut bukan relasi containment dan bukan pula mobilitas paksa (lihat bagian tersendiri di
+      bawah). <code>contains</code> bukan <code>adjacent_to</code>; <code>approaches_or_audibly_connected</code>
+      bukan rute yang telah dikonfirmasi dapat dilalui; <code>associated_with</code> bukan koneksi fisik.
+    </p>
+    <div class="legend-grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      {% for rel in location_topology_explorer.relations %}
+      {% if rel.relation_type != 'contains' and rel.relation_type != 'coerced_mobility_route' %}
+      <div class="plate" style="padding:12px 14px">
+        <p style="font-weight:600;font-family:var(--sans);font-size:.88rem">
+          <code class="mono">{{ rel.from_location_id }}</code> → <code class="mono">{{ rel.to_location_id }}</code>
+        </p>
+        <div style="margin-top:6px;font-size:.8rem">
+          <p>Jenis relasi:
+            <span class="badge" data-location-relation="{{ rel.relation_type }}">
+              {% if rel.relation_type == 'approaches_or_audibly_connected' %}Mendekati atau terhubung secara audibel
+              {% elif rel.relation_type == 'topological_relation_unknown' %}Relasi topologis belum diketahui
+              {% elif rel.relation_type == 'associated_with' %}Terkait secara dokumenter
+              {% elif rel.relation_type == 'regional_route' %}Rute regional
+              {% elif rel.relation_type == 'shipping_route' %}Rute pengapalan
+              {% else %}{{ rel.relation_type }}{% endif %}
+            </span>
+          </p>
+          <p>Status bukti: <span class="mono">{{ rel.evidence_status }}</span></p>
+          <p>Basis bukti: <span class="mono">{{ rel.evidence_basis }}</span></p>
+          <p>Arah: <span class="mono">{{ rel.directionality }}</span></p>
+          <p>Dokumen sumber relasi: <span class="mono" data-location-relation-source-document="not_structured">Belum terstruktur</span></p>
+          <p>Passage sumber relasi: <span class="mono" data-location-relation-source-passage="not_structured">Belum terstruktur</span></p>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:1.05rem;margin:20px 0 8px">Mobilitas Paksa yang Tercatat</h3>
+    <div class="plate" style="border-color:var(--status-reconstructed);background:#FDF8F5;padding:14px 16px">
+      {% for rel in location_topology_explorer.relations %}
+      {% if rel.relation_type == 'coerced_mobility_route' %}
+      <p style="font-weight:600;font-family:var(--sans);font-size:.9rem">
+        <code class="mono">{{ rel.edge_id }}</code> —
+        <code class="mono">{{ rel.from_location_id }}</code> → <code class="mono">{{ rel.to_location_id }}</code>
+      </p>
+      <div style="margin-top:8px;font-size:.85rem">
+        <p>Jenis relasi: <span class="badge" data-location-relation="{{ rel.relation_type }}">Rute mobilitas paksa</span></p>
+        <p>Status bukti: <span class="badge{% if rel.evidence_status == 'explicit' %} badge-explicit{% endif %}">{{ rel.evidence_status }}</span></p>
+        <p>Basis bukti lengkap: <span class="mono">{{ rel.evidence_basis }}</span></p>
+        <p>Arah: <span class="mono">{{ rel.directionality }}</span></p>
+        <p>Catatan tersedia: <span class="mono">{% if rel.notes == 'not_recorded' %}Belum terstruktur{% else %}{{ rel.notes }}{% endif %}</span></p>
+        <p>Dokumen sumber relasi: <span class="mono" data-location-relation-source-document="not_structured">Belum terstruktur</span></p>
+        <p>Passage sumber relasi: <span class="mono" data-location-relation-source-passage="not_structured">Belum terstruktur</span></p>
+      </div>
+      <p class="warning-text" style="margin-top:10px">
+        Relasi ini merepresentasikan mobilitas paksa yang dinyatakan atau ditafsirkan dari bukti sumber. Relasi
+        ini tidak dinormalisasi sebagai arus logistik netral.
+      </p>
+      {% endif %}
+      {% endfor %}
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:1.05rem;margin:20px 0 8px">Infrastruktur sosial-teknis per lokasi</h3>
+    <p class="warning-text">
+      Inventaris dicatat pada lokasi ini. Pencatatan lokasi tidak otomatis membuktikan penggunaan aktif benda
+      dalam suatu operasi.
+    </p>
+    <p class="warning-text">
+      Kompatibilitas peran merupakan aturan model, bukan bukti kehadiran historis seseorang di lokasi ini.
+    </p>
+    <div class="legend-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+      {% for s in location_topology_explorer.summaries %}
+      <details class="plate" style="padding:10px 12px">
+        <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.85rem">
+          <code class="mono">{{ s.location_id }}</code>
+        </summary>
+        <div style="margin-top:6px;font-size:.8rem">
+          <p>Record individu bernama: <span class="mono">{{ s.named_person_record_count }}</span></p>
+          <p>Record kelompok agregat: <span class="mono">{{ s.aggregate_group_record_count }}</span></p>
+          <p>Baris sumber inventaris: <span class="mono">{{ s.inventory_source_row_count }}</span></p>
+          <p>Item inventaris non-parent: <span class="mono">{{ s.inventory_non_parent_item_count }}</span></p>
+          <p>Record operasi mingguan: <span class="mono">{{ s.weekly_operation_record_count }}</span></p>
+          <p>Baris kompatibilitas peran-lokasi: <span class="mono">{{ s.role_compatibility_count }}</span></p>
+          <p>Baris relasi lokasi: <span class="mono">{{ s.location_relation_row_count }}</span></p>
+        </div>
+      </details>
+      {% endfor %}
+    </div>
+
+    <h3 style="font-family:var(--serif);font-size:1.05rem;margin:20px 0 8px">Legenda relasi dan batas epistemik</h3>
+    <ul class="warning-text">
+      <li><code>contains</code> (Berisi) tidak sama dengan <code>adjacent_to</code> — hanya menyatakan
+        containment struktural, bukan kedekatan spasial umum.</li>
+      <li><code>approaches_or_audibly_connected</code> (Mendekati atau terhubung secara audibel) tidak sama
+        dengan rute yang telah dikonfirmasi dapat dilalui.</li>
+      <li><code>associated_with</code> (Terkait secara dokumenter) tidak sama dengan koneksi fisik.</li>
+      <li>Pencatatan inventaris pada suatu lokasi (<code>inventory_recorded_at</code>) tidak sama dengan bukti
+        penggunaan (<code>used_at</code>).</li>
+      <li>Kompatibilitas peran-lokasi (<code>role_compatible_with</code>) tidak sama dengan kehadiran historis
+        seseorang yang terdokumentasi.</li>
+      <li><code>regional_route</code> (Rute regional) tidak sama dengan <code>shipping_route</code> (Rute
+        pengapalan) — keduanya rute logistik biasa, berbeda dari rute mobilitas paksa.</li>
+      <li><code>coerced_mobility_route</code> (Rute mobilitas paksa) tidak dinormalisasi menjadi logistik
+        biasa dan selalu ditampilkan terpisah.</li>
+      <li>Basis kehadiran <code>hrlt_record</code>: baris eksplisit pada <code>07_human_role_location_time.csv</code>.</li>
+      <li>Basis kehadiran <code>group_record_location</code>: lokasi dari field milik record kelompok itu
+        sendiri pada <code>06_human_groups.csv</code>, tanpa baris HRLT terpisah.</li>
+      <li>Basis kehadiran <code>not_structured</code>: entitas belum terklasifikasi sebagai individu atau
+        kelompok agregat.</li>
+      <li>Lokasi yang dinyatakan pada record kelompok agregat tidak boleh ditafsirkan sebagai kehadiran
+        individual untuk setiap anggota yang tidak disebutkan namanya.</li>
+    </ul>
+
+    {% for w in location_topology_explorer.warnings %}
+    <p class="warning-text">⚠ {{ w.message }}</p>
+    {% endfor %}
+  </section>
+
   <!-- Scenario Snapshot -->
   <section aria-labelledby="scenarioHeading">
     <div class="sec-head"><h2 id="scenarioHeading">Snapshot Solver (Offline)</h2></div>

@@ -278,6 +278,7 @@ def riset_enclave_1682(request):
     restraint_evidence = adapter.load_restraint_evidence()
     visibility_explorer = adapter.load_visibility_explorer()
     group_hierarchy_explorer = adapter.load_group_hierarchy_explorer()
+    location_topology_explorer = adapter.load_location_topology_explorer()
 
     context = {
         "title": "Enklave Tambang Salido 1682",
@@ -291,6 +292,7 @@ def riset_enclave_1682(request):
         "restraint_evidence": restraint_evidence,
         "visibility_explorer": visibility_explorer,
         "group_hierarchy_explorer": group_hierarchy_explorer,
+        "location_topology_explorer": location_topology_explorer,
         "scenario_snapshot": scenario_snapshot,
         "scenario_snapshot_status": adapter.paths.scenario_snapshot_status,
         "petri_net_status": "Specification in development",

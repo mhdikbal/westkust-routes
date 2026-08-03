@@ -2096,6 +2096,224 @@ class EnclaveDataAdapterTest(SimpleTestCase):
         for c in result.madagascar_components:
             self.assertNotIn(c.group_id, other_ids)
 
+    def test_location_topology_reads_08_weekly_operations_file_only(self):
+        """The adapter reads 08_weekly_operations.csv; no 13_weekly_operations.csv path is ever used."""
+        from map_app.enclave_data import get_adapter
+
+        adapter = get_adapter()
+        ops = adapter.load_weekly_operations()
+        self.assertEqual(len(ops), 42)
+        self.assertFalse((adapter.paths.data_dir / "13_weekly_operations.csv").exists())
+
+    def test_location_topology_accounts_for_all_23_locations(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        self.assertEqual(len(result.nodes), 23)
+
+    def test_location_topology_relation_count_matches_22(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        self.assertEqual(len(result.relations), 22)
+
+    def test_location_topology_relation_types_not_collapsed(self):
+        """All 7 distinct relation_type values are present and individually countable."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        types = {rtc.relation_type for rtc in result.relation_type_counts}
+        self.assertEqual(types, {
+            "contains", "approaches_or_audibly_connected", "topological_relation_unknown",
+            "associated_with", "regional_route", "shipping_route", "coerced_mobility_route",
+        })
+
+    def test_location_topology_relation_type_counts_reconcile_to_total(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        self.assertEqual(sum(rtc.row_count for rtc in result.relation_type_counts), 22)
+        by_type = {rtc.relation_type: rtc.row_count for rtc in result.relation_type_counts}
+        self.assertEqual(by_type["contains"], 16)
+        self.assertEqual(by_type["coerced_mobility_route"], 1)
+
+    def test_location_topology_coerced_mobility_route_isolated_from_ordinary_routes(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        coerced = [r for r in result.relations if r.relation_type == "coerced_mobility_route"]
+        self.assertEqual(len(coerced), 1)
+        self.assertEqual(coerced[0].from_location_id, "L-MADAGASCAR")
+        self.assertEqual(coerced[0].to_location_id, "L-SALIDO")
+        self.assertIn("kapal Sillida", coerced[0].evidence_basis)
+        ordinary = [r for r in result.relations if r.relation_type in ("regional_route", "shipping_route")]
+        self.assertEqual(len(ordinary), 2)
+
+    def test_location_relation_does_not_fabricate_missing_source_identifiers(self):
+        """LocationRelation has no source_document_id/source_passage_id fields at all."""
+        import dataclasses
+        from map_app.enclave_data import get_adapter, LocationRelation
+
+        result = get_adapter().load_location_topology_explorer()
+        self.assertTrue(len(result.relations) > 0)
+        field_names = {f.name for f in dataclasses.fields(LocationRelation)}
+        self.assertNotIn("source_document_id", field_names)
+        self.assertNotIn("source_passage_id", field_names)
+
+    def test_contains_edge_graph_has_7_roots(self):
+        """Containment roots equal all nodes minus children of contains edges.
+        Declared parent_location_id values are not promoted into synthetic contains edges."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        self.assertEqual(len(result.containment_roots), 7)
+        self.assertEqual(
+            {n.location_id for n in result.containment_roots},
+            {"L-SALIDO", "L-POULO-CHINCO", "L-PADANG", "L-BATAVIA", "L-MADAGASCAR",
+             "L-ZZW-DAGGANG", "L-MALEIJTS-ORT"},
+        )
+
+    def test_declared_parent_model_has_5_top_level_nodes(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        self.assertEqual(len(result.declared_parent_top_level_nodes), 5)
+        self.assertEqual(
+            {n.location_id for n in result.declared_parent_top_level_nodes},
+            {"L-SALIDO", "L-POULO-CHINCO", "L-PADANG", "L-BATAVIA", "L-MADAGASCAR"},
+        )
+
+    def test_two_parent_references_lack_contains_edges(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        self.assertEqual(len(result.parent_edge_inconsistencies), 2)
+        ids = {loc_id for w in result.parent_edge_inconsistencies for loc_id in w.location_ids}
+        self.assertEqual(ids, {"L-ZZW-DAGGANG", "L-MALEIJTS-ORT"})
+
+    def test_parent_reference_without_contains_edge_produces_warning(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        codes = {w.code for w in result.parent_edge_inconsistencies}
+        self.assertEqual(codes, {"PARENT_DECLARED_WITHOUT_CONTAINS_EDGE"})
+        self.assertEqual(len(result.warnings), 2)
+        self.assertTrue(all(w.code == "PARENT_DECLARED_WITHOUT_CONTAINS_EDGE" for w in result.warnings))
+
+    def test_parent_reference_is_not_promoted_to_explicit_contains(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        synthesized = [
+            r for r in result.relations
+            if r.relation_type == "contains" and r.to_location_id in {"L-ZZW-DAGGANG", "L-MALEIJTS-ORT"}
+        ]
+        self.assertEqual(synthesized, [])
+
+    def test_containment_tree_uses_contains_edges_only(self):
+        """Containment roots equal all nodes minus children of contains edges.
+        Declared parent_location_id values are not promoted into synthetic
+        contains edges."""
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        edge_children = {r.to_location_id for r in result.relations if r.relation_type == "contains"}
+        root_ids = {n.location_id for n in result.containment_roots}
+        all_ids = {n.location_id for n in result.nodes}
+        self.assertEqual(root_ids, all_ids - edge_children)
+
+    def test_parent_edge_inconsistency_nodes_remain_visible(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        node_ids = {n.location_id for n in result.nodes}
+        root_ids = {n.location_id for n in result.containment_roots}
+        for lid in ("L-ZZW-DAGGANG", "L-MALEIJTS-ORT"):
+            self.assertIn(lid, node_ids)
+            self.assertIn(lid, root_ids)
+
+    def test_location_topology_no_containment_cycles(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        self.assertEqual([w for w in result.warnings if w.code == "CYCLIC_CONTAINMENT"], [])
+
+    def test_location_topology_no_multiple_containment_parents(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        self.assertEqual([w for w in result.warnings if w.code == "MULTIPLE_CONTAINMENT_PARENTS"], [])
+
+    def test_location_topology_presence_basis_values_are_hrlt_record_and_group_record_location(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        bases = {p.presence_basis for p in result.presence}
+        self.assertTrue(bases.issubset({"hrlt_record", "group_record_location", "not_structured"}))
+        self.assertNotIn("hrlt_confirmed", bases)
+        self.assertNotIn("group_record_only", bases)
+
+    def test_location_topology_presence_preserves_both_records_for_overlapping_groups(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        overlap_ids = {"G-CHILD-KOST-4", "G-CHILD-NOKOST-19", "G-COND-3", "G-HWJ-6", "G-KJ-4",
+                       "G-MANDOOR-8", "G-MANDORESS-3", "G-MS-121", "G-SLAVIN-68", "G-VOORSLAGER-1"}
+        for gid in overlap_ids:
+            bases = {p.presence_basis for p in result.presence if p.entity_id == gid}
+            self.assertEqual(bases, {"hrlt_record", "group_record_location"})
+
+    def test_location_topology_presence_counts_records_and_distinct_ids_separately(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        self.assertEqual(len(result.presence), 32)
+        self.assertEqual(result.presence_reconciliation.total_presence_record_count, 32)
+        self.assertEqual(result.presence_reconciliation.total_distinct_entity_count, 22)
+        self.assertEqual(len({p.entity_id for p in result.presence}), 22)
+
+    def test_location_topology_role_compatibility_never_becomes_presence(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        presence_ids = {p.entity_id for p in result.presence}
+        role_ids = {r["role_id"] for r in get_adapter().load_role_location_compatibility()}
+        self.assertTrue(presence_ids.isdisjoint(role_ids))
+        summed_role_compat = sum(s.role_compatibility_count for s in result.summaries)
+        self.assertEqual(summed_role_compat, 31)
+
+    def test_inventory_parent_rows_are_excluded_from_non_parent_count(self):
+        from map_app.enclave_data import get_adapter
+
+        result = get_adapter().load_location_topology_explorer()
+        total_non_parent = sum(s.inventory_non_parent_item_count for s in result.inventory_summaries)
+        total_parent = sum(s.inventory_parent_or_container_count for s in result.inventory_summaries)
+        self.assertEqual(total_non_parent, 392)
+        self.assertEqual(total_parent, 11)
+
+    def test_location_topology_no_labour_productivity_terms(self):
+        import dataclasses
+        from map_app import enclave_data as ed
+
+        forbidden = {"worker_capacity", "labour_supply", "slave_productivity",
+                     "labour_productivity", "ore_per_person", "schoten_per_person"}
+        for cls in (ed.LocationTopologyNode, ed.LocationRelation, ed.LocationHumanPresence,
+                    ed.LocationPresenceReconciliation, ed.LocationInventorySummary,
+                    ed.LocationOperationSummary, ed.LocationTopologySummary,
+                    ed.LocationTopologyExplorerResult):
+            field_names = {f.name for f in dataclasses.fields(cls)}
+            self.assertTrue(field_names.isdisjoint(forbidden))
+
+    def test_location_topology_nodes_and_relations_are_deterministically_ordered(self):
+        from map_app.enclave_data import get_adapter
+
+        r1 = get_adapter().load_location_topology_explorer()
+        r2 = get_adapter().load_location_topology_explorer()
+        self.assertEqual([n.location_id for n in r1.nodes], [n.location_id for n in r2.nodes])
+        self.assertEqual([n.location_id for n in r1.nodes], sorted(n.location_id for n in r1.nodes))
+        self.assertEqual([r.edge_id for r in r1.relations], [r.edge_id for r in r2.relations])
+        self.assertEqual([r.edge_id for r in r1.relations], sorted(r.edge_id for r in r1.relations))
+
 
 class Enclave1682ViewTest(SimpleTestCase):
     """Tests for /riset/enclave-1682/ route (Phase 1C)."""
@@ -2488,3 +2706,116 @@ class Enclave1682ViewTest(SimpleTestCase):
             ("count-discrepancy", "0"),
         ):
             self.assertIn(f'data-metric="{metric}" data-value="{value}"', content)
+
+    def test_riset_enclave_1682_has_location_topology_section(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Topologi Lokasi dan Infrastruktur Sosial-Teknis", content)
+
+    def test_location_topology_renders_spatial_and_sociotechnical_sections(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        for heading in (
+            "Ringkasan topologi",
+            "Struktur containment eksplisit",
+            "Referensi induk yang belum direkonsiliasi",
+            "Relasi lokasi non-containment",
+            "Mobilitas Paksa yang Tercatat",
+            "Infrastruktur sosial-teknis per lokasi",
+            "Legenda relasi dan batas epistemik",
+        ):
+            self.assertIn(heading, content)
+
+    def test_coerced_mobility_route_has_separate_visible_section(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        start = content.index("Mobilitas Paksa yang Tercatat")
+        end = content.index("Infrastruktur sosial-teknis per lokasi")
+        section = content[start:end]
+        self.assertIn("L-MADAGASCAR", section)
+        self.assertIn("kapal Sillida dari Madagaskar", section)
+        self.assertIn("tidak dinormalisasi sebagai arus logistik netral", section)
+        self.assertNotIn("Rute regional", section)
+        self.assertNotIn("Rute pengapalan", section)
+
+    def test_location_topology_localizes_relation_labels(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        for label in (
+            "Berisi", "Mendekati atau terhubung secara audibel", "Relasi topologis belum diketahui",
+            "Terkait secara dokumenter", "Rute regional", "Rute pengapalan", "Rute mobilitas paksa",
+        ):
+            self.assertIn(label, content)
+
+    def test_location_topology_preserves_machine_values_in_data_attributes(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn('data-location-relation="contains"', content)
+        self.assertIn('data-location-relation="coerced_mobility_route"', content)
+        self.assertIn('data-metric="canonical-location-count" data-value="23"', content)
+        self.assertIn('data-metric="location-relation-row-count" data-value="22"', content)
+        self.assertIn('data-metric="contains-edge-count" data-value="16"', content)
+        self.assertIn('data-metric="containment-root-count" data-value="7"', content)
+        self.assertIn('data-metric="declared-parent-top-level-count" data-value="5"', content)
+        self.assertIn('data-metric="parent-edge-inconsistency-count" data-value="2"', content)
+        self.assertIn('data-metric="weekly-operation-record-count" data-value="42"', content)
+        self.assertIn('data-metric="location-presence-record-count" data-value="32"', content)
+        self.assertIn('data-metric="distinct-referenced-entity-count" data-value="22"', content)
+
+    def test_location_topology_exactly_16_contains_markers_rendered(self):
+        """The containment tree marks exactly 16 nodes as nested through a canonical contains edge."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertEqual(content.count('data-location-relation="contains"'), 16)
+
+    def test_location_topology_7_roots_marked_containment_root(self):
+        """All 7 edge-graph roots (including the 2 parent-edge-inconsistency nodes) carry
+        data-topology-role=containment_root -- this is about their status in the edge
+        graph, not a claim that a contains edge confirms their declared parent."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertEqual(content.count('data-topology-role="containment_root"'), 7)
+
+    def test_location_topology_inconsistent_nodes_not_marked_contains(self):
+        """L-ZZW-DAGGANG and L-MALEIJTS-ORT are never tagged data-location-relation=contains,
+        even though they render as containment_root entries."""
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        for lid in ("L-ZZW-DAGGANG", "L-MALEIJTS-ORT"):
+            tag_start = content.index(f'data-location-id="{lid}"')
+            tag_line_start = content.rfind("<details", 0, tag_start)
+            tag_line_end = content.index(">", tag_start)
+            tag = content[tag_line_start:tag_line_end]
+            self.assertNotIn('data-location-relation="contains"', tag)
+            self.assertIn('data-topology-role="containment_root"', tag)
+
+    def test_role_compatibility_has_model_rule_warning(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Kompatibilitas peran merupakan aturan model, bukan bukti kehadiran historis", content)
+
+    def test_inventory_location_has_recorded_not_used_warning(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        self.assertIn("Pencatatan lokasi tidak otomatis membuktikan penggunaan aktif benda", content)
+
+    def test_location_topology_has_accessible_provenance_details(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        start = content.index("Topologi Lokasi dan Infrastruktur Sosial-Teknis")
+        end = content.index("Scenario Snapshot")
+        section = content[start:end]
+        self.assertIn("Belum terstruktur", section)
+        self.assertNotRegex(section, r">\s*None\s*<")
+        self.assertNotIn(">null<", section)
+
+    def test_riset_enclave_1682_location_topology_no_labour_productivity_terms_visible(self):
+        response = self.client.get("/riset/enclave-1682/")
+        content = response.content.decode("utf-8")
+        start = content.index("Topologi Lokasi dan Infrastruktur Sosial-Teknis")
+        end = content.index("Scenario Snapshot")
+        section = content[start:end]
+        for term in ("worker_capacity", "labour_supply", "slave_productivity",
+                     "labour_productivity", "ore_per_person", "schoten_per_person",
+                     "kapasitas pekerja", "produktivitas budak", "produktivitas pekerja"):
+            self.assertNotIn(term, section)
