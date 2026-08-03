@@ -418,7 +418,7 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
         <code class="mono">{{ group_hierarchy_explorer.parent.group_id }}</code> —
         {{ group_hierarchy_explorer.parent.source_category_original }}
         ({{ group_hierarchy_explorer.parent.recorded_count }}) —
-        <span class="badge badge-explicit" data-count-semantics="{{ group_hierarchy_explorer.parent.count_semantics }}">{% if group_hierarchy_explorer.parent.count_semantics == 'count_once_as_parent' %}Hitung satu kali melalui record induk{% else %}{{ group_hierarchy_explorer.parent.count_semantics }}{% endif %}</span>
+        <span class="badge badge-explicit" style="white-space:normal;text-align:left" data-count-semantics="{{ group_hierarchy_explorer.parent.count_semantics }}">{% if group_hierarchy_explorer.parent.count_semantics == 'count_once_as_parent' %}Hitung satu kali melalui record induk{% else %}{{ group_hierarchy_explorer.parent.count_semantics }}{% endif %}</span>
       </summary>
       <div style="margin-top:8px;font-size:.82rem">
         <p>Peran agregasi: <span class="mono" data-aggregation-role="{{ group_hierarchy_explorer.parent.aggregation_role }}">{% if group_hierarchy_explorer.parent.aggregation_role == 'parent_total' %}Record induk{% else %}{{ group_hierarchy_explorer.parent.aggregation_role }}{% endif %}</span></p>
@@ -434,7 +434,7 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
         <details class="plate" style="padding:10px 12px;margin-bottom:8px">
           <summary style="cursor:pointer;font-weight:600;font-family:var(--sans);font-size:.85rem">
             <code class="mono">{{ c.group_id }}</code> — {{ c.source_category_original }}
-            ({{ c.recorded_count }}) — <span class="badge" data-count-semantics="{{ c.count_semantics }}">{% if c.count_semantics == 'do_not_sum_with_parent' %}Jangan dijumlahkan kembali dengan record induk{% else %}{{ c.count_semantics }}{% endif %}</span>
+            ({{ c.recorded_count }}) — <span class="badge" style="white-space:normal;text-align:left" data-count-semantics="{{ c.count_semantics }}">{% if c.count_semantics == 'do_not_sum_with_parent' %}Jangan dijumlahkan kembali dengan record induk{% else %}{{ c.count_semantics }}{% endif %}</span>
           </summary>
           <div style="margin-top:6px;font-size:.8rem">
             <p>Peran agregasi: <span class="mono" data-aggregation-role="{{ c.aggregation_role }}">{% if c.aggregation_role == 'component_group' %}Komponen klasifikasi{% else %}{{ c.aggregation_role }}{% endif %}</span></p>
