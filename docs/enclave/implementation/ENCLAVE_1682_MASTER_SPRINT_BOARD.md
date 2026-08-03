@@ -46,7 +46,7 @@ No task on this board or in `ENCLAVE_1682_BACKLOG.csv` changes any row of this t
 ```mermaid
 graph TD
     S0[Sprint 0: Baseline and governance] -->|S0-05 gate| S1[Sprint 1: Phase A0 evidence reconciliation]
-    S1 -->|S1-03 gate — pending A0-3 review closure + A0-4/A0-5/A0-6, no longer scan-blocked| S2[Sprint 2: Critical dataset candidate v0.5]
+    S1 -->|S1-03 gate — pending A0-3 review closure only, no extraction defect found| S2[Sprint 2: Critical dataset candidate v0.5]
     S2 -->|S2-09 gate| S3[Sprint 3: Critical temporal knowledge graph]
     S2 -->|S2-09 gate| S5[Sprint 5: Critical Petri Net specification]
     S3 -->|S3-06 gate| S4[Sprint 4: Critical interface redesign]
@@ -70,7 +70,7 @@ The dashed "Simulation engine work" node is intentionally outside every sprint o
 
 ### Sprint 1 — Phase A0 evidence reconciliation
 - **DoR**: Sprint 0 complete; `PHASE_A0_SPRINT_BOARD.md` exists and is approved.
-- **DoD**: `A0-6` (Workstream 1 reviewer sign-off) **and** `A0-11` (Workstream 2 reviewer sign-off) both recorded in `PHASE_A0_SPRINT_BOARD.md`; `S1-03` gate task closed. Workstream 2 already closed. Workstream 1: `A0-1`/`A0-2` done (attestation committed `f98cfb0`), `A0-3` in Review (object identity and counts attested; exact original Dutch spelling, folio, viewer scan sequence, and IVdNT lemma not yet recorded), `A0-5` ready for read-only diagnosis, `A0-4`/`A0-6` still blocked on their own dependencies. `docs/enclave/scans/` must not be created.
+- **DoD**: `A0-3` closed (Workstream 1) **and** `A0-11` (Workstream 2 reviewer sign-off) both recorded in `PHASE_A0_SPRINT_BOARD.md`; `S1-03` gate task closed. Workstream 2 already closed. Workstream 1: `A0-1`/`A0-2`/`A0-5` done, `A0-3` in Review (object identity and counts attested; exact original Dutch spelling, folio, viewer scan sequence, and IVdNT lemma not yet recorded), `A0-4`/`A0-6` rejected — `A0-5` found no extraction defect and no missing canonical row, so there is nothing for them to resolve. `docs/enclave/scans/` must not be created.
 
 ### Sprint 2 — Critical dataset candidate v0.5
 - **DoR**: Sprint 1's `S1-03` gate closed (both workstreams signed off).
@@ -99,7 +99,7 @@ The dashed "Simulation engine work" node is intentionally outside every sprint o
 | Gate task | Blocks | Cannot pass until |
 |---|---|---|
 | `S0-05` | Sprint 1 | Release mapping and gate conditions agreed (this document) |
-| `S1-03` | Sprint 2 | Both A0 workstreams (`A0-6`, `A0-11`) reviewer-signed in `PHASE_A0_SPRINT_BOARD.md` |
+| `S1-03` | Sprint 2 | Workstream 1's `A0-3` closed (`A0-4`/`A0-6` rejected as moot, not blocking) **and** Workstream 2's `A0-11` reviewer-signed, both in `PHASE_A0_SPRINT_BOARD.md` |
 | `S2-09` | Sprint 3, Sprint 5 | All Sprint 2 schemas built, tested, hash-verified; canonical dataset diff confirmed empty |
 | `S3-06` | Sprint 4 | Dual-ontology separation test passes; graph type-completeness test passes |
 | `S4-09` | Sprint 6 | Full page test suite passes incl. existing 198-test baseline; ship-vs-flag decision made |
@@ -114,11 +114,11 @@ The dashed "Simulation engine work" node is intentionally outside every sprint o
 |---|---|---|---|
 | ~~Archival scan access~~ (Nationaal Archief, Den Haag — Access 1.04.02, Inventory 7964) | `S1-01`, and partially `S2-03`/`S2-04`/`S4-05` | **Resolved.** Local image retention was never required by `docs/SOURCE_PROVENANCE.md`. Researcher completed `A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md` (`researcher_attestation_status=researcher_attested`, committed `f98cfb0`); `docs/enclave/scans/` correctly remains absent. | Closed — `A0-2` done |
 | **Attestation completeness gap** (original Dutch spelling, folio number, viewer scan sequence, IVdNT lemma not recorded) | `S1-01` (`A0-3`) | Object identity and recorded quantities are attested; these four fields remain open by design — nothing was invented to fill them | Internal — reviewer decides whether to close `A0-3` on object-and-count attestation alone, or require the remaining fields first |
-| **Passage-to-structured-row extraction gap** (`SP-01267`/`SP-01344` exist in `00_source_passages.csv` but are absent from `10_inventory_items.csv`) | `S1-01` (`A0-4`/`A0-5`) | Unaffected by the evidence-retention correction — this is the actual remaining P0 issue, not a source-access problem. `A0-5` is now ready to start as a **read-only diagnosis** — it must not modify `v0.4.1` and does not authorize any migration. | Internal — `A0-4` populates `restraint_device_review.csv`, `A0-5` documents the extraction-gap audit outcome |
+| ~~Passage-to-structured-row extraction gap~~ (`SP-01267`/`SP-01344`) | `S1-01` (`A0-4`, `A0-5`, `A0-6`) | **Withdrawn — never real.** `A0-5`'s read-only diagnosis found both entries already exist as canonical rows: `SP-01267 -> INV-0343`, `SP-01344 -> INV-0401`, both in `10_inventory_items.csv`, sourced from `DOC-INVENTORY-1682-01-04`. No parser omission, section filter, vocabulary filter, range truncation, or deduplication defect exists. `evidence_status`/`review_status` are blank on both rows, matching every other row in the 403-row file — the pre-existing corpus-wide metadata-population gap, not a defect specific to these two. | Closed — `A0-5` done, `A0-4`/`A0-6` rejected as moot |
 | **Cross-document corpus review exhaustiveness** | `S1-02` | Already resolved — `S1-02` closed, see `CROSS_DOCUMENT_OVERLAP_FINDINGS.md` | Closed |
 | **Reviewer availability** (a person other than this plan's author, per `docs/ETHICAL_MODELING.md`'s spirit and this board's repeated "named reviewer" requirement) | Every gate task (`S0-05`, `S1-03`, `S2-09`, `S3-06`, `S4-09`, `S5-05`, `S6-01`, `S6-03`) | Not currently identified on this board — this board deliberately leaves `owner` blank throughout (see `ENCLAVE_1682_BACKLOG.csv`), consistent with `PHASE_A0_SPRINT_BOARD.md`'s existing convention | Research owner, to assign |
 
-Sprint 4 (`S4-05`)'s badges still read "audit pending" until `A0-6` closes — that status is now driven by attestation-review and extraction-gap resolution, not by scan availability.
+Sprint 4 (`S4-05`)'s badges still read "audit pending" until `A0-3` closes — the extraction-gap contingency no longer applies (none was found); only A0-3's remaining philological fields (or a reviewer waiver) gate that status now.
 
 ---
 

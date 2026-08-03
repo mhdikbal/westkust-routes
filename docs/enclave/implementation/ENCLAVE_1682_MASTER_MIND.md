@@ -86,20 +86,20 @@ image_retained_locally        = false
 image_retention_status        = not_retained_by_policy
 verification_method           = external_archive_viewer
 verified_against_local_image  = false  (never true under this policy)
-canonical_extraction_status   = missing
-structured_migration_authorized = false
+canonical_extraction_status   = present  (SP-01267 -> INV-0343, SP-01344 -> INV-0401)
+structured_migration_authorized = false  (none needed — nothing is missing)
 researcher_attestation_status = researcher_attested
 ```
 
 Recorded in `docs/enclave/implementation/A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md`, committed `f98cfb090aa41b3939a77bf33417dafd946724f7`. The researcher has attested object identity and recorded quantities (object/ring/key counts, inventory examination date, later collation date) for both entries. `A0-2` is therefore **Done**. `A0-3` moves to **Review**, not Done — exact original Dutch spelling, folio number, viewer scan sequence, and IVdNT lemma remain unrecorded by design (nothing was invented to fill them); closing A0-3 fully requires either those fields or an explicit reviewer decision that object-and-count attestation alone is sufficient.
 
-**The remaining open item is unchanged by this correction**: `SP-01267`/`SP-01344` exist in `00_source_passages.csv` but are absent from `10_inventory_items.csv` — a passage-to-structured-row extraction gap, tracked as P0. `A0-5` (read-only diagnosis of this gap) is now **Ready** — `A0-1` and `A0-2` are both done. `A0-5` must not modify `v0.4.1` and does not authorize any migration.
+**Correction — the "passage-to-structured-row extraction gap" premise stated in earlier revisions of this section is formally withdrawn.** `A0-5` (read-only diagnosis, now **Done**) ran a direct row-level query against `10_inventory_items.csv` and found both entries already exist as canonical rows: `SP-01267 -> INV-0343` (Ammunitie van oorlogh, `military_inventory`, `L-SALIDO`), `SP-01344 -> INV-0401` (Waker transfer Beneden-Pagger, `transferred_military_inventory`, `L-BENEDEN-PAGGER`), both sourced from `DOC-INVENTORY-1682-01-04`. No parser omission, section filter, vocabulary filter, range truncation, or deduplication defect exists. `A0-4` and `A0-6` are **Rejected** — both were scoped around an extraction-gap premise that no longer holds. `evidence_status`/`review_status` are blank on both rows, matching every other row in the corpus-wide metadata-population gap (`REVIEW_QUEUE.md` §A) — not a defect specific to these two.
 
 ### Important dependency clarifications
 
-- The two restraint passages already exist in `00_source_passages.csv` as `SP-01267` and `SP-01344`.
-- The defect is passage-to-structured-row extraction, not total passage absence.
-- Both passages remain `image_verified = not_checked`.
+- The two restraint passages exist in `00_source_passages.csv` as `SP-01267` and `SP-01344`, **and** both already have structured canonical rows: `INV-0343` and `INV-0401` in `10_inventory_items.csv`.
+- There is no passage-to-structured-row defect — this was an unverified claim in an earlier revision, corrected by `A0-5`'s direct row-level check.
+- Both passages remain `image_verified = not_checked` — that status is about archival-image confirmation of the *reading*, unrelated to whether a structured row exists (it does).
 - Sprint 5 Petri Net specification is not sequentially dependent on Sprints 3 and 4; it depends on the required Sprint 2 evidence structures and may be authored with `use_evidence = not_recorded` where appropriate.
 - Sprint 6 is a gate-decision sprint. Its legitimate Definition of Done may be a documented `simulation_not_authorized` decision. Sprint 6 does not promise that a simulation engine will be built.
 
@@ -281,12 +281,12 @@ This table is the executive project board. Update it after every accepted releas
 | Research source DOCX | Available | Researcher-prepared transcription, translation, notes, personnel, inventory, operations, and assay material | Not all readings are philologically attested | Attestation review per `A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md` |
 | Archival scans | Consulted externally, not retained locally (by policy) | Nationaal Archief online viewer used directly; `docs/enclave/scans/` intentionally does not exist and must not be created | None — resolved by evidence-retention policy correction | Researcher completes attestation; reviewer confirms (A0-3) |
 | Canonical dataset v0.4.1 | Ready and immutable | Validated schema and deterministic provenance patch | Critical evidence extensions not yet migrated | Preserve as read-only baseline |
-| Source passages | Ready | Includes `SP-01267` and `SP-01344` for the two restraint entries | Passage-to-structured-row extraction gap | Phase A0 extraction trace |
+| Source passages | Ready | Includes `SP-01267` and `SP-01344` for the two restraint entries, mapped to canonical rows `INV-0343`/`INV-0401` | None — `A0-5` found no extraction gap | Only `evidence_status`/`review_status` population remains (corpus-wide gap, not restraint-specific) |
 | Persons | Ready at record level | 50 named-person records | Not a full population of everyone in the enclave | Add archival-visibility analysis |
 | Aggregate groups | Ready at record level | 17 aggregate-group records | Parent-child and cross-document overlap incomplete | Phase A0 hierarchy and overlap review |
 | Unique-person population | Unresolved | No verified cross-document unique-person count | Parent-child duplication and temporal overlap | Reviewer-approved hierarchy and overlap model |
-| Restraint evidence | Textually present, structurally missing | Two explicit DOCX/source-passage entries, 5 rings plus 1 key and 3 rings plus 1 key | Missing canonical inventory rows and no image verification | Phase A0 restraint extraction audit |
-| Inventory | Ready with known gap | 403 source rows, 392 non-parent items, 11 parent or container rows | Two restraint rows absent from structured inventory | Candidate correction only after audit |
+| Restraint evidence | Present, textually and structurally | Two explicit entries, 5 rings plus 1 key (`INV-0343`) and 3 rings plus 1 key (`INV-0401`), object identity and counts researcher-attested | Exact original Dutch spelling, folio, viewer scan sequence, IVdNT lemma not yet recorded (philological completeness only) | `A0-3` review closure or explicit reviewer waiver |
+| Inventory | Ready with known corpus-wide gap | 403 source rows, 392 non-parent items, 11 parent or container rows, both restraint rows included | `evidence_status`/`review_status` blank corpus-wide (`REVIEW_QUEUE.md` §A) — not restraint-specific | General metadata-population pass, not a restraint-specific correction |
 | HRLT tensor | Seed implementation | Explicit and selected aggregate location assertions | Sparse and not sufficient for full reconstruction | Expand only through reviewed evidence |
 | Constraint solver | Technical baseline accepted | Tests passed, CLI works, read-only snapshot, explicit schicht semantics | Three defined-but-unused model elements and count inconsistencies | Keep as feasibility layer, not truth engine |
 | Solver scenarios | Available offline | 5 files, roughly 2 meaningful profiles | Scenarios 01 to 04 are diversification variants | Display as two profiles with warnings |
@@ -366,14 +366,14 @@ When sources disagree, use this order and report the disagreement:
 
 A lower layer must not silently override a higher layer.
 
-### Known discrepancy
+### Formerly-stated discrepancy — withdrawn
 
 ```text
-SP-01267: restraint with 5 rings and 1 key
-SP-01344: restraint with 3 rings and 1 key
+SP-01267 -> INV-0343: restraint with 5 rings and 1 key (Ammunitie van oorlogh, L-SALIDO)
+SP-01344 -> INV-0401: restraint with 3 rings and 1 key (Waker transfer, Beneden-Pagger, L-BENEDEN-PAGGER)
 ```
 
-Both passages exist, with `image_verified = not_checked`. The related restraint rows are absent from the current structured inventory. This is a passage-to-structured-row extraction gap. It is not permission to modify v0.4.1 directly.
+Both passages exist, with `image_verified = not_checked` (a separate, still-open philological-completeness question, tracked at `A0-3`). **The related restraint rows are not absent from the structured inventory — they were found present by `A0-5`'s direct row-level query.** There is no passage-to-structured-row extraction gap. This section previously stated otherwise without a direct row-level check; that claim is withdrawn. No canonical modification to `v0.4.1` was made, needed, or is authorized by this correction.
 
 ---
 
@@ -721,9 +721,9 @@ Detailed execution board: `PHASE_A0_SPRINT_BOARD.md`.
 | A0-1 | Trace SP-01267 and SP-01344 into structured extraction | P0 | READY | Restraint extraction trace | None |
 | A0-2 | Document external-viewer philological attestation | P0 | DONE (`A0_RESTRAINT_PHILOLOGICAL_ATTESTATION.md` committed `f98cfb090aa41b3939a77bf33417dafd946724f7`) | Philological attestation document | None — internal review dependency only |
 | A0-3 | Approve restraint transcription and terminology | P0 | REVIEW (object identity and recorded quantities attested; original Dutch spelling, folio, viewer scan sequence, IVdNT lemma not yet recorded) | Reviewer decision | A0-2 (done) — no longer blocked |
-| A0-4 | Map Madagascar parent-child groups | P0 | READY | Hierarchy trace | None |
-| A0-5 | Explain why restraint rows were omitted | P0 | READY (read-only diagnosis only — must not modify v0.4.1, no migration authorized) | Root-cause report | A0-1, A0-2 (both done) |
-| A0-6 | Propose non-destructive candidate correction | P0 | BACKLOG | Migration proposal | A0-3 and A0-5 |
+| A0-4 | Map Madagascar parent-child groups | P0 | READY | Hierarchy trace | None — **note**: this table's `A0-4` is a different task than `PHASE_A0_SPRINT_BOARD.md`'s `A0-4` (restraint-device review seed rows, now Rejected there); this row's own task (Madagascar hierarchy mapping) is unaffected by the restraint-row correction and not addressed by this patch |
+| A0-5 | Explain why restraint rows were omitted | P0 | **DONE — they were not omitted** | Root-cause report | A0-1, A0-2 (both done) |
+| A0-6 | Propose non-destructive candidate correction | P0 | **REJECTED — no correction needed** | Migration proposal | A0-3 and A0-5 |
 | A0-7 | Review cross-document temporal overlap | P0 | READY | Overlap matrix | None |
 | A0-8 | Reconcile count tiers and prohibit invalid totals | P0 | READY | Count policy | A0-4 |
 | A0-9 | Produce Phase A0 validation report | P0 | BACKLOG | Validation report | A0 workstreams |
