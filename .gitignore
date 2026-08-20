@@ -54,8 +54,21 @@ Thumbs.db
 node_modules/
 
 # Materi riset thesis (PDF besar, draft, notebook Colab) — bukan bagian app,
-# jangan masuk git (bisa ratusan MB)
-docs/thesis/
+# jangan masuk git (bisa ratusan MB). Selective tracking: 8 artefak metodologis
+# episode-ontology dipilih visible eksplisit di bawah (lihat
+# CORPUS_DIPLOMATICUM_RECOVERY_PREFLIGHT.md, fase apply-patch) — SEMUA isi lain
+# docs/thesis/ (CSV korpus, PDF, notebook, XML, model output, dsb.) tetap ignored.
+docs/thesis/*
+!docs/thesis/EPISODE_ONTOLOGY_ANNOTATION_PROTOCOL_DRAFT.md
+!docs/thesis/pilot_annotation/
+docs/thesis/pilot_annotation/*
+!docs/thesis/pilot_annotation/EPISODE_ANNOTATION_TEMPLATE.md
+!docs/thesis/pilot_annotation/BARUS_EPISODE_DOSSIER_DRAFT.md
+!docs/thesis/pilot_annotation/INDERAPURA_EPISODE_DOSSIER_DRAFT.md
+!docs/thesis/pilot_annotation/PARIAMAN_EPISODE_DOSSIER_DRAFT.md
+!docs/thesis/pilot_annotation/KOTO_TANGAH_EPISODE_DOSSIER_DRAFT.md
+!docs/thesis/pilot_annotation/PILOT_CLAIM_LEDGER.md
+!docs/thesis/pilot_annotation/ARCHIVAL_DENSITY_MEASUREMENT_PLAN.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
@@ -75,6 +88,13 @@ data/**/*.raw
 *.raw
 *text_asli*
 !data/research/korpus_tema_slim.csv
+
+# Staging pemulihan Corpus Diplomaticum (CD1-6.pdf) dari Google Drive eksternal
+# peneliti (lihat CORPUS_DIPLOMATICUM_RECOVERY_PREFLIGHT.md) -- PDF/archive/OCR/
+# hasil ekstraksi sementara TIDAK BOLEH masuk git, sama alasan docs/*.pdf di atas.
+# Direktori belum dibuat sesi ini; rule ditambah lebih dulu supaya aman begitu
+# dipakai. Tanpa pengecualian manifest -- manifest kelak di lokasi tracked terpisah.
+data/archive_sources/corpus_diplomaticum/
 
 # Sumber gambar 404 (3MB) — pakai jpg teroptimasi di static
 Designer404.png
