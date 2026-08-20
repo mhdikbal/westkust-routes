@@ -75,6 +75,10 @@ docs/thesis/pilot_annotation/*
 # jadi PDF mentah tak perlu ikut git history
 docs/*.pdf
 
+# Sumber arsip lokal Corpus Diplomaticum (CD1-6.pdf, ~106MB) -- objek scan
+# mentah, bukan bagian app, tidak boleh dilacak Git sama sekali.
+docs/cd/
+
 # Claude Code — state lokal per-mesin, bukan konfigurasi proyek yg dibagikan
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
