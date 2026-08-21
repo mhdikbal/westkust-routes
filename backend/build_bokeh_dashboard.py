@@ -167,7 +167,7 @@ def build_hawkes_intensity():
     p_str = "p<0.0001" if params["p_value"] < 0.0001 else f"p={params['p_value']:.4f}"
     p = figure(
         title=(
-            f"Model 3 — Proses Hawkes: kaskade defeksi "
+            f"Model 3 — Baseline Hawkes Eksploratif "
             f"(α={params['alpha']:.3f}, β={params['beta']:.3f}/thn, "
             f"LR={params['LR']:.1f}, {p_str}, n={params['n']})"
         ),
@@ -188,7 +188,24 @@ def build_hawkes_intensity():
     p.add_tools(hover_curve, hover_event)
     p.legend.location = "top_right"
     p.legend.label_text_font_size = "9px"
-    return p
+
+    # Ringkasan statistik presentasi utk panel "Batas Interpretasi" /riset/pemodelan --
+    # SEMUA nilai dibaca langsung dari HAWKES_FILE (params di atas), TIDAK ada fitting
+    # ulang. branching_ratio = alpha/beta adalah pembagian deterministik murni,
+    # BUKAN parameter baru yg dicocokkan (lihat BETA_UI_DEPLOYMENT_AUDIT.md #4).
+    branching_ratio = params["alpha"] / params["beta"]
+    hawkes_stats = {
+        "n_events": params["n"],
+        # Diformat sbg string desimal-koma (id-ID) SEKALI di sini -- satu-satunya
+        # sumber format angka utk panel "Ringkasan Statistik", supaya tak ada
+        # pembulatan berbeda antar komponen UI (lihat BETA_UI_DEPLOYMENT_AUDIT.md #4).
+        "mu": f"{params['mu']:.3f}".replace(".", ","),
+        "alpha": f"{params['alpha']:.3f}".replace(".", ","),
+        "beta": f"{params['beta']:.3f}".replace(".", ","),
+        "branching_ratio": f"{branching_ratio:.3f}".replace(".", ","),
+        "kernel": "eksponensial",
+    }
+    return p, hawkes_stats
 
 
 def build_dynamics_selector():
@@ -278,8 +295,9 @@ def build_dashboard():
         result["markov"] = None
 
     if HAWKES_FILE:
-        script, div = components(build_hawkes_intensity())
-        result["hawkes"] = {"script": script, "div": div}
+        fig, hawkes_stats = build_hawkes_intensity()
+        script, div = components(fig)
+        result["hawkes"] = {"script": script, "div": div, "params": hawkes_stats}
     else:
         result["hawkes"] = None
 

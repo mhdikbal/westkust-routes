@@ -58,6 +58,17 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:26p
 .empty-panel{border:1px dashed var(--line);border-radius:10px;padding:34px 20px;
   text-align:center;color:var(--muted)}
 .empty-panel b{color:var(--ink);font-weight:600}
+.subtitle{font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;color:var(--muted);
+  margin:0 0 10px}
+.stats-panel,.limits-panel{background:var(--panel-2);border:1px solid var(--line);
+  border-radius:10px;padding:14px 18px;margin-top:14px}
+.stats-panel h3,.limits-panel h3{font-family:var(--mono);font-size:.74rem;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted-dark);margin:0 0 10px}
+.stats-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 22px;
+  font-size:.86rem}
+.stats-list li{white-space:nowrap}
+.limits-list{margin:0;padding-left:1.2em;font-size:.86rem;line-height:1.6;max-width:74ch}
+.limits-list li{margin-bottom:4px}
 footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);
   font-size:.82rem;color:var(--muted);max-width:80ch}
 footer h3{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
@@ -109,13 +120,43 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
   </section>
 
   <section class="section">
-    <div class="section-head"><h2>Model 3 — Proses Hawkes: Kaskade Defeksi</h2></div>
-    <p class="caption">Intensitas kondisional λ(t) proses Hawkes (kernel eksponensial) yang dicocokkan ke
-      seluruh event linimasa — menguji apakah "kaskade" defeksi berantai nyata secara statistik, bukan cuma
-      kesan dari cara linimasa ditulis. Titik menandai tahun event nyata di sepanjang kurva; judul menampilkan
-      α, β, uji rasio kemungkinan (LR), dan p-value.</p>
+    <div class="section-head"><h2>Model 3 — Baseline Hawkes Eksploratif</h2></div>
+    <p class="subtitle mono">Pooled Exploratory Hawkes Baseline</p>
+    <p class="caption">Model Hawkes univariat ini mengevaluasi pengelompokan temporal pada 141 peristiwa
+      campuran. Model tidak mengidentifikasi satu mekanisme historis yang seragam dan tidak membuktikan
+      defeksi, resistensi, ataupun kausalitas.</p>
     {% if dashboard.hawkes %}
       <div class="plate">{{ dashboard.hawkes.div|safe }}</div>
+
+      {% if dashboard.hawkes.params %}
+      <div class="stats-panel">
+        <h3>Ringkasan Statistik</h3>
+        <ul class="stats-list mono">
+          <li>Event: {{ dashboard.hawkes.params.n_events }}</li>
+          <li>μ: {{ dashboard.hawkes.params.mu }}</li>
+          <li>α: {{ dashboard.hawkes.params.alpha }}</li>
+          <li>β: {{ dashboard.hawkes.params.beta }}</li>
+          <li>Branching ratio α/β: {{ dashboard.hawkes.params.branching_ratio }}</li>
+          <li>Kernel produksi: {{ dashboard.hawkes.params.kernel }}</li>
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="limits-panel">
+        <h3>Batas Interpretasi</h3>
+        <ol class="limits-list">
+          <li>Dataset mencakup 141 peristiwa campuran.</li>
+          <li>Model menggunakan Hawkes univariat pooled.</li>
+          <li>Model mendeteksi temporal clustering atau self-excitation.</li>
+          <li>Branching ratio 0,677 bukan persentase defeksi.</li>
+          <li>Hasil tidak mengidentifikasi mekanisme historis tunggal.</li>
+          <li>Hasil tidak membuktikan hubungan kausal.</li>
+          <li>Hasil tidak membuktikan resistensi atau pembangkangan.</li>
+          <li>Process tracing menemukan mekanisme yang heterogen.</li>
+          <li>Marked Hawkes belum siap digunakan.</li>
+          <li>Multivariate Hawkes belum siap digunakan.</li>
+        </ol>
+      </div>
     {% else %}
       <div class="empty-panel">Data belum cukup — Model 3 belum pernah dijalankan.</div>
     {% endif %}

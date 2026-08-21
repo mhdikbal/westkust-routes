@@ -579,6 +579,7 @@ async def get_linimasa(
 class BokehChart(BaseModel):
     script: str
     div: str
+    params: _Optional[dict] = None
 
 
 class PemodelanDashboardResponse(BaseModel):
