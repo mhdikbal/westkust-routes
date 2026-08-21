@@ -167,6 +167,26 @@ def riset_pemodelan(request):
     return render(request, "map_app/riset_pemodelan.html", context)
 
 
+def riset_pemodelan_panduan(request):
+    """Halaman penjelas awam Model 3 + roadmap pemodelan (thesis-only,
+    /riset/pemodelan/panduan). Reuse dashboard.hawkes.params dari endpoint
+    yang sama dgn /riset/pemodelan (SSR httpx.get(), pola sama) -- supaya
+    enam nilai statistik di §13 (Rumus dan catatan teknis) SATU sumber
+    kebenaran dgn halaman utama, tidak ada duplikasi angka. noindex + tidak
+    di navbar publik (konsisten semua /riset/*)."""
+    dashboard = {"hawkes": None}
+    backend_error = False
+    try:
+        r = httpx.get(f"{API_BASE}/api/research/pemodelan-dashboard", timeout=15.0)
+        r.raise_for_status()
+        dashboard = r.json()
+    except Exception:
+        backend_error = True
+
+    context = {"dashboard": dashboard, "backend_error": backend_error}
+    return render(request, "map_app/riset_pemodelan_panduan.html", context)
+
+
 def linimasa(request):
     """Linimasa suksesi kekuasaan Atjeh, Iskandar Muda -> Ratu -> Traktat
     Painan 1663 (thesis-only, top-level /linimasa). Fase 1 (docs/prd/prd-linimasa-

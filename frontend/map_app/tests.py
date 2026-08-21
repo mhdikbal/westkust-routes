@@ -1365,7 +1365,18 @@ class RisetPemodelanViewTest(SimpleTestCase):
 
     FAKE_DASHBOARD = {
         "markov": {"script": "<script>MARKOV_SCRIPT</script>", "div": "<div id='markov-div'></div>"},
-        "hawkes": {"script": "<script>HAWKES_SCRIPT</script>", "div": "<div id='hawkes-div'></div>"},
+        "hawkes": {
+            "script": "<script>HAWKES_SCRIPT</script>",
+            "div": "<div id='hawkes-div'></div>",
+            "params": {
+                "n_events": 141,
+                "mu": "0,257",
+                "alpha": "0,421",
+                "beta": "0,622",
+                "branching_ratio": "0,677",
+                "kernel": "eksponensial",
+            },
+        },
         "dynamics": {"script": "<script>DYNAMICS_SCRIPT</script>", "div": "<div id='dynamics-div'></div>"},
         "game_theory": {"script": "<script>GT_SCRIPT</script>", "div": "<div id='gt-div'></div>"},
     }
@@ -1439,6 +1450,179 @@ class RisetPemodelanViewTest(SimpleTestCase):
         html = self.client.get(reverse("riset_pemodelan")).content.decode()
         self.assertIn("EB Garamond", html)
         self.assertIn("Space Grotesk", html)
+
+    @patch("map_app.views.httpx.get")
+    def test_plain_language_intro_present(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan")).content.decode()
+        self.assertIn(
+            "Peristiwa-peristiwa politik dalam dataset cenderung mengelompok "
+            "dalam waktu",
+            html,
+        )
+        self.assertIn("Cara Membaca Grafik", html)
+
+    @patch("map_app.views.httpx.get")
+    def test_case_cards_present(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        resp = self.client.get(reverse("riset_pemodelan"))
+        html = resp.content.decode()
+        self.assertEqual(resp.status_code, 200)
+        for loc in ["Barus", "Indrapura", "Pariaman", "Sillida"]:
+            self.assertIn(loc, html)
+        self.assertIn("Empat kasus, mekanisme yang berbeda", html)
+
+    @patch("map_app.views.httpx.get")
+    def test_link_to_panduan_present(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan")).content.decode()
+        self.assertIn(reverse("riset_pemodelan_panduan"), html)
+
+    @patch("map_app.views.httpx.get")
+    def test_existing_sections_unchanged(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan")).content.decode()
+        self.assertIn("Model 2", html)
+        self.assertIn("Model 5", html)
+        self.assertIn("Model 6", html)
+        self.assertIn("Baseline Hawkes Eksploratif", html)
+        self.assertIn("Batas Interpretasi", html)
+        self.assertIn("Ringkasan Statistik", html)
+
+    @patch("map_app.views.httpx.get")
+    def test_no_kaskade_defeksi_label(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan")).content.decode().lower()
+        self.assertNotIn("kaskade defeksi", html)
+        self.assertNotIn("defection cascade", html)
+
+
+class RisetPemodelanPanduanViewTest(SimpleTestCase):
+    """Halaman /riset/pemodelan/panduan -- pola SSR sama persis
+    riset_pemodelan(), reuse endpoint /api/research/pemodelan-dashboard
+    supaya enam nilai statistik satu sumber kebenaran dgn halaman utama."""
+
+    FAKE_DASHBOARD = {
+        "hawkes": {
+            "script": "<script>HAWKES_SCRIPT</script>",
+            "div": "<div id='hawkes-div'></div>",
+            "params": {
+                "n_events": 141,
+                "mu": "0,257",
+                "alpha": "0,421",
+                "beta": "0,622",
+                "branching_ratio": "0,677",
+                "kernel": "eksponensial",
+            },
+        },
+    }
+
+    SECTION_TITLES = [
+        "Apa yang sedang diuji?",
+        "Dari arsip menjadi event",
+        "Apa itu proses Hawkes?",
+        "Cara membaca grafik",
+        "Arti setiap parameter",
+        "Apa yang dapat disimpulkan?",
+        "Apa yang tidak dapat disimpulkan?",
+        "Mengapa process tracing diperlukan?",
+        "Empat kasus dengan susunan mekanisme yang berbeda",
+        "Masalah kepadatan arsip",
+        "Masalah laporan ganda",
+        "Roadmap model berikutnya",
+        "Rumus dan catatan teknis",
+        "Status penelitian saat ini",
+    ]
+
+    FORBIDDEN_TERMS = [
+        "kaskade defeksi",
+        "defection cascade",
+        "kaskade resistensi",
+        "rezim kausal",
+        "defeksi memicu defeksi",
+        "resistensi menyebar",
+    ]
+
+    @patch("map_app.views.httpx.get")
+    def test_route_200(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        resp = self.client.get(reverse("riset_pemodelan_panduan"))
+        self.assertEqual(resp.status_code, 200)
+
+    @patch("map_app.views.httpx.get")
+    def test_noindex_meta(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan_panduan")).content.decode()
+        self.assertIn("noindex", html)
+        self.assertIn('name="robots"', html)
+
+    @patch("map_app.views.httpx.get")
+    def test_all_14_sections_present(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan_panduan")).content.decode()
+        for title in self.SECTION_TITLES:
+            self.assertIn(title, html)
+
+    @patch("map_app.views.httpx.get")
+    def test_no_forbidden_labels(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan_panduan")).content.decode().lower()
+        for term in self.FORBIDDEN_TERMS:
+            self.assertNotIn(term, html)
+
+    @patch("map_app.views.httpx.get")
+    def test_stats_match_main_page(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        panduan_html = self.client.get(reverse("riset_pemodelan_panduan")).content.decode()
+        main_html = self.client.get(reverse("riset_pemodelan")).content.decode()
+        for value in ["0,257", "0,421", "0,622", "0,677", "eksponensial"]:
+            self.assertIn(value, panduan_html)
+            self.assertIn(value, main_html)
+
+    @patch("map_app.views.httpx.get")
+    def test_backend_error_graceful(self, mock_get):
+        mock_get.side_effect = Exception("connection refused")
+        resp = self.client.get(reverse("riset_pemodelan_panduan"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("tak tersedia", resp.content.decode().lower())
+
+    @patch("map_app.views.httpx.get")
+    def test_case_cards_have_limitation(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan_panduan")).content.decode()
+        self.assertIn("Batasan", html)
+        for loc in ["Barus", "Indrapura", "Pariaman", "Sillida"]:
+            self.assertIn(loc, html)
+
+    @patch("map_app.views.httpx.get")
+    def test_formula_in_disclosure(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan_panduan")).content.decode()
+        details_start = html.find("<details>")
+        details_end = html.find("</details>")
+        formula_pos = html.find("branching ratio = ")
+        self.assertNotEqual(details_start, -1)
+        self.assertGreater(formula_pos, details_start)
+        self.assertLess(formula_pos, details_end)
+
+    @patch("map_app.views.httpx.get")
+    def test_no_causal_or_resistance_claims(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan_panduan")).content.decode().lower()
+        for phrase in [
+            "terbukti menyebabkan",
+            "disebabkan oleh",
+            "resistensi terbukti",
+            "defeksi terbukti",
+        ]:
+            self.assertNotIn(phrase, html)
+
+    @patch("map_app.views.httpx.get")
+    def test_section_title_is_mekanisme_berbeda(self, mock_get):
+        mock_get.return_value = _make_httpx_response(self.FAKE_DASHBOARD)
+        html = self.client.get(reverse("riset_pemodelan_panduan")).content.decode()
+        self.assertIn("Empat kasus dengan susunan mekanisme yang berbeda", html)
+        self.assertNotIn("Empat mekanisme historis", html)
 
 
 class NavbarPemodelanLinkTest(SimpleTestCase):

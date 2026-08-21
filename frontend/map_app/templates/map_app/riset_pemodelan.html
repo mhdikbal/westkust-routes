@@ -69,6 +69,28 @@ header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:26p
 .stats-list li{white-space:nowrap}
 .limits-list{margin:0;padding-left:1.2em;font-size:.86rem;line-height:1.6;max-width:74ch}
 .limits-list li{margin-bottom:4px}
+.intro-block{margin-bottom:36px;padding-bottom:26px;border-bottom:1px solid var(--line)}
+.intro-block .lede{font-size:1.02rem}
+.case-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;margin:14px 0}
+.case-card{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px}
+.case-card h3{font-family:var(--serif);font-size:1.05rem;font-weight:600;margin-bottom:2px}
+.case-card .period{font-family:var(--mono);font-size:.74rem;color:var(--muted);margin-bottom:8px}
+.case-card p{font-size:.86rem;margin:0 0 8px}
+.case-card .limitation{font-size:.8rem;color:var(--muted-dark);border-top:1px solid var(--line);
+  padding-top:8px;margin-top:8px}
+.badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.72rem;
+  padding:3px 9px;border-radius:999px;border:1px solid var(--muted-dark);margin:2px 4px 2px 0;
+  color:var(--ink)}
+.badge .icon{font-weight:700}
+.roadmap-mini{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.roadmap-mini li{font-size:.82rem;background:var(--panel-2);border:1px solid var(--line);
+  border-radius:8px;padding:6px 12px}
+.roadmap-mini .stage-status{font-family:var(--mono);font-size:.72rem;color:var(--muted);
+  display:block;margin-top:2px}
+.panduan-link{display:inline-block;margin-top:10px;font-weight:600;font-size:.92rem;
+  text-decoration:underline}
 footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);
   font-size:.82rem;color:var(--muted);max-width:80ch}
 footer h3{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
@@ -101,6 +123,18 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
       Halaman ini TIDAK menghitung ulang model apa pun; ia cuma memvisualisasikan lebih kaya angka yang sudah
       dihasilkan Model 2/3/5/6 (bandingkan bendera+popup ringkas di layer "Kekuasaan" pada peta utama).</p>
   </header>
+
+  <div class="intro-block">
+    <h2>Apakah peristiwa politik di Pantai Barat cenderung berantai?</h2>
+    <p class="lede">Peristiwa-peristiwa politik dalam dataset cenderung mengelompok dalam waktu, tetapi
+      pembacaan arsip menunjukkan bahwa pengelompokan tersebut berasal dari mekanisme sejarah yang
+      berbeda-beda.</p>
+    <h3 style="margin-top:18px;font-family:var(--serif);font-size:1.05rem;font-weight:600">Cara Membaca Grafik</h3>
+    <p class="caption">Tiap grafik di bawah punya kurva (nilai terhitung sepanjang waktu) dan/atau titik
+      (event nyata dari arsip). Arahkan kursor untuk melihat nilai persis. Grafik Model 3 secara khusus
+      menunjukkan pengelompokan waktu — bukan bukti sebab-akibat. Penjelasan lengkap ada di
+      <a class="panduan-link" href="{% url 'riset_pemodelan_panduan' %}">halaman panduan →</a></p>
+  </div>
 
   {% if backend_error %}
   <div class="empty-panel"><b>Dashboard sedang tak tersedia.</b><br>Backend tidak merespons — coba muat ulang halaman beberapa saat lagi.</div>
@@ -186,6 +220,57 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
   </section>
 
   {% endif %}
+
+  <section class="section">
+    <div class="section-head"><h2>Empat kasus, mekanisme yang berbeda</h2></div>
+    <p class="caption">Hasil penelusuran arsip langsung — bukan interpretasi tunggal dari grafik Model 3.
+      Sumber lengkap: <a href="{% url 'riset_pemodelan_panduan' %}">baca penjelasan lengkap →</a></p>
+    <div class="case-cards">
+      <div class="case-card">
+        <h3>Barus</h3>
+        <p class="period mono">1668–1690</p>
+        <span class="badge"><span class="icon">✓</span> Didukung sumber</span>
+        <p>Pelanggaran kontraktual oleh faksi Radja d'Ilheer dalam konflik internal Barus.</p>
+        <p class="limitation">Batasan: tindakan hanya terbukti untuk faksi Radja d'Ilheer, bukan Barus
+          sebagai keseluruhan.</p>
+      </div>
+      <div class="case-card">
+        <h3>Indrapura</h3>
+        <p class="period mono">1665–1716</p>
+        <span class="badge"><span class="icon">✓</span> Didukung sumber</span>
+        <span class="badge"><span class="icon">◐</span> Didukung sebagian</span>
+        <p>Peralihan strategis bertahap kepada EIC setelah kegagalan VOC memenuhi janji bantuan.</p>
+        <p class="limitation">Batasan: serangan VOC yang terverifikasi menyasar Batang Kapas dan
+          Sepuluh Bandar, bukan Indrapura secara langsung.</p>
+      </div>
+      <div class="case-card">
+        <h3>Pariaman</h3>
+        <p class="period mono">1705–1713</p>
+        <span class="badge"><span class="icon">?</span> Interpretif</span>
+        <p>Hipotesis agregasi administratif, masih interpretif.</p>
+        <p class="limitation">Batasan: Tiku, Pariaman, Saruaso, "sommiger regenten", dan "de vijanden"
+          tidak terbukti sebagai satu aktor.</p>
+      </div>
+      <div class="case-card">
+        <h3>Sillida/Salido</h3>
+        <p class="period mono">1679–1681</p>
+        <span class="badge"><span class="icon">✓</span> Didukung sumber</span>
+        <p>Konflik terbuka, rekonsiliasi perdagangan, dan perubahan tata kelola sumber daya.</p>
+        <p class="limitation">Batasan: hanya hubungan perdamaian → pemulihan perdagangan berstatus
+          mekanisme eksplisit; hubungan lain baru sebatas urutan yang masuk akal.</p>
+      </div>
+    </div>
+    <a class="panduan-link" href="{% url 'riset_pemodelan_panduan' %}">Baca penjelasan lengkap →</a>
+
+    <ul class="roadmap-mini">
+      <li>Tahap 1 — Pooled Hawkes Baseline<span class="stage-status">tersedia</span></li>
+      <li>Tahap 2 — Kontrol kepadatan arsip<span class="stage-status">direncanakan</span></li>
+      <li>Tahap 3 — Deduplikasi episode<span class="stage-status">sedang dipersiapkan</span></li>
+      <li>Tahap 4 — Stratified descriptive analysis<span class="stage-status">belum dijalankan</span></li>
+      <li>Tahap 5 — Marked Hawkes<span class="stage-status">belum siap</span></li>
+      <li>Tahap 6 — Multivariate Hawkes<span class="stage-status">belum siap</span></li>
+    </ul>
+  </section>
 
   <footer>
     <h3>Metode &amp; batas</h3>
