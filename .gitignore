@@ -60,6 +60,22 @@ node_modules/
 # docs/thesis/ (CSV korpus, PDF, notebook, XML, model output, dsb.) tetap ignored.
 docs/thesis/*
 !docs/thesis/EPISODE_ONTOLOGY_ANNOTATION_PROTOCOL_DRAFT.md
+
+# Model 3B-CD simulation/recovery framework (Fase 1, audited) — only the
+# .py source and test modules are tracked. Everything else under
+# docs/thesis/colab/ (CSV corpora, other model3_*.py scripts, notebooks,
+# and any simulation output/cache the framework generates at runtime —
+# __pycache__, .pytest_cache, JSONL failure logs, result CSVs, etc.)
+# stays ignored.
+!docs/thesis/colab/
+docs/thesis/colab/*
+!docs/thesis/colab/model3b_cd_simulator/
+docs/thesis/colab/model3b_cd_simulator/*
+!docs/thesis/colab/model3b_cd_simulator/*.py
+!docs/thesis/colab/model3b_cd_simulator/tests/
+docs/thesis/colab/model3b_cd_simulator/tests/*
+!docs/thesis/colab/model3b_cd_simulator/tests/*.py
+
 !docs/thesis/pilot_annotation/
 docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/EPISODE_ANNOTATION_TEMPLATE.md
