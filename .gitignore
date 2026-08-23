@@ -88,6 +88,7 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/PADANG_INSTITUTIONAL_SCHEMA_V1_DRAFT.md
 !docs/thesis/pilot_annotation/MODEL_3B_CD_SIMULATION_RECOVERY_PLAN.md
 !docs/thesis/pilot_annotation/MODEL_3B_CD_SIMULATION_CELL_MANIFEST.md
+!docs/thesis/pilot_annotation/MODEL_3B_CD_PILOT_100_AUDIT.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
@@ -132,6 +133,11 @@ data/export/
 
 # SALIDO-HDT solver run output -- hasil skenario CP-SAT, bukan input kanonik
 docs/enclave/implementation/solver_runs/
+
+# Model 3B-CD pilot/final simulation working results (per-replicate JSONL,
+# failure logs, technical summaries) -- large, regenerable from the audited
+# simulator (docs/thesis/colab/model3b_cd_simulator/), never a source of truth.
+data/model3b_working/
 *.egg-info/
 
 # SALIDO-HDT solver -- generated runtime output, never canonical input
