@@ -70,6 +70,7 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/PILOT_CLAIM_LEDGER.md
 !docs/thesis/pilot_annotation/ARCHIVAL_DENSITY_MEASUREMENT_PLAN.md
 !docs/thesis/pilot_annotation/PADANG_INSTITUTIONAL_SCHEMA_V1_DRAFT.md
+!docs/thesis/pilot_annotation/MODEL_3B_CD_SIMULATION_RECOVERY_PLAN.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
