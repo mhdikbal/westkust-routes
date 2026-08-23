@@ -9,11 +9,24 @@ smoke test. It does NOT run the pilot (100 replicates/cell) or final
 (1000 replicates/cell) study, and does NOT fit real linimasa_events.
 """
 
-from . import density, estimate, kernel, likelihood, logging_utils, metrics, rng, schema, simulate, validation
+from . import (
+    density,
+    estimate,
+    gamma_cluster_simulator,
+    kernel,
+    likelihood,
+    logging_utils,
+    metrics,
+    rng,
+    schema,
+    simulate,
+    validation,
+)
 
 __all__ = [
     "density",
     "estimate",
+    "gamma_cluster_simulator",
     "kernel",
     "likelihood",
     "logging_utils",
