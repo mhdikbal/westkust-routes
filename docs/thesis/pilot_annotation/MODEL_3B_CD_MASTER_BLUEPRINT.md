@@ -2,7 +2,8 @@
 
 > **MASTER RESEARCH AND EXECUTION BLUEPRINT**  
 > **SOURCE OF TRUTH FOR CONTINUING WORK**  
-> **REAL-DATA FITTING NOT YET AUTHORIZED**  
+> **MODEL 3B-CD V1: CLOSED AFTER FAILED RECOVERY VALIDATION**  
+> **REAL-DATA FITTING NOT AUTHORIZED**  
 > **NUMERICAL DECISION GATES PRE-SPECIFIED**  
 > **RESEARCHER APPROVAL REQUIRED AT MAJOR GATES**
 
@@ -500,6 +501,19 @@ parameter correlation >= 0.85
 
 Keputusan final wajib dilaporkan tanpa mengubah ambang setelah hasil tersedia.
 
+### Hasil Aktual (V1, final 1.000-replikasi)
+
+```text
+SIMULATION_RECOVERY_FAILED
+```
+
+Dasar (laporan lengkap: `MODEL_3B_CD_FINAL_1000_RECOVERY_AUDIT.md`):
+
+1. Gate A (hard implementation): S4-G1 berhenti pada replikasi 301/1.000 akibat `OverflowError` yang tidak tertangani di jalur estimator inti — technical defect terpisah, dicatat tapi **tidak diperbaiki pada tahap ini** dan tidak mengubah keputusan global.
+2. Independen dari poin 1: 9 cell yang selesai penuh (9.000 sequence, 27.000 fit) gagal pada beberapa hard gate dengan presisi tinggi (n=1.000/cell) — false-positive excitation S1 (7.3-9.6% vs ambang ≤5%), relative bias alpha/beta (~13-35%), branching-ratio recovery (underrecovery 16-18%, median-robust), CI coverage alpha/beta (60-84% vs target 92.5-97.5%), dan correct-model-selection rate untuk skenario M3B-CD sejati (AIC/BIC memilih M1 80-98% dari waktu).
+
+**MODEL_3B_CD_V1: CLOSED_AFTER_FAILED_RECOVERY_VALIDATION.** Tidak ada rekalibrasi ambang, tidak ada penghapusan cell, tidak ada parameter tambahan yang diterapkan untuk mengubah hasil ini.
+
 ---
 
 ## 15. Real-Data Fitting Authorization Gate
@@ -513,7 +527,16 @@ SIMULATION_RECOVERY_PASSED
 REAL_DATA_FITTING_REQUIRES_RESEARCHER_AUTHORIZATION
 ```
 
-Jika diizinkan, real-data stage meliputi:
+### Status Aktual (V1)
+
+```text
+SIMULATION_RECOVERY_FAILED
+REAL_DATA_FITTING_NOT_AUTHORIZED
+```
+
+Fitting 141 event nyata dengan M3B-CD V1 **dilarang**. Klaim mekanisme historis tetap bersumber dari process tracing (§3), bukan dari parameter Hawkes terkoreksi-densitas.
+
+Jika diizinkan (skenario hipotetis, tidak berlaku untuk V1), real-data stage meliputi:
 
 1. fit M1;
 2. fit M2;
@@ -643,10 +666,10 @@ Claude Code wajib:
 Persentase ini merupakan estimasi manajemen proyek, bukan hasil statistik.
 
 ```text
-Model 3B infrastructure: 95%
-Simulation-recovery study: 65%
-Readiness for real-data fitting decision: 55%
-Public Model 3B: 40%
+Model 3B infrastructure: 100% (complete)
+Simulation-recovery study: 100% (complete -- decision: FAILED)
+Readiness for real-data fitting decision: 100% (decided -- NOT AUTHORIZED)
+Public Model 3B: 0% (V1 closed, not proceeding to public release)
 ```
 
 ---
@@ -661,16 +684,42 @@ GAMMA_GENERATOR: COMPLETE
 NUMERICAL_GATES: FROZEN
 STATISTICAL_INSTRUMENTATION: COMPLETE
 EVENT_SEQUENCE_PERSISTENCE: COMPLETE
-PILOT_INSTRUMENTATION_10x10: NEXT
-FINAL_1000: NOT RUN
-SIMULATION_RECOVERY: NOT YET ASSESSED
-REAL_DATA_FITTING: NOT AUTHORIZED
-PUBLIC_MODEL_3B: NOT READY
+PILOT_INSTRUMENTATION_10x10: TECHNICALLY_READY
+FINAL_1000: RUN_COMPLETE_9_OF_10_CELLS -- S4-G1_STOPPED_BY_UNHANDLED_OVERFLOWERROR
+SIMULATION_RECOVERY: FAILED
+REAL_DATA_FITTING: NOT_AUTHORIZED
+MODEL_3B_CD_V1: CLOSED_AFTER_FAILED_RECOVERY_VALIDATION
+PUBLIC_MODEL_3B: NOT_READY
 ```
+
+Laporan lengkap: `MODEL_3B_CD_FINAL_1000_RECOVERY_AUDIT.md`. S4-G1's `OverflowError` adalah technical defect terpisah (dicatat, tidak diperbaiki pada tahap ini) yang tidak mengubah keputusan global -- 9 cell yang selesai penuh sudah gagal secara independen pada false-positive, bias, CI coverage, branching-ratio recovery, dan model-selection gates.
 
 ---
 
-## 23. Immediate Stop Condition
+## 24. Remaining Research Options (setelah V1 dibekukan)
+
+Tiga pilihan sah untuk kelanjutan riset setelah `MODEL_3B_CD_V1_CLOSED_AFTER_FAILED_RECOVERY_VALIDATION`:
+
+**Pilihan A -- direkomendasikan untuk tesis.** Pertahankan Model 3 sebagai eksplorasi dan gunakan kegagalan Model 3B sebagai hasil metodologis: upaya mengontrol kepadatan Corpus Diplomaticum tidak berhasil memisahkan efek dokumentasi dari self-excitation secara stabil, sehingga model temporal dipertahankan hanya sebagai alat eksplorasi, sedangkan penjelasan mekanisme tetap bergantung pada process tracing (§3). Paling kuat secara epistemik, tidak memperpanjang pekerjaan secara tidak perlu.
+
+**Pilihan B -- studi metode baru.** Bangun Model 3C sebagai proyek baru (regularisasi; parameterisasi log untuk alpha dan beta; profile likelihood; bootstrap CI; baseline spline; observation model eksplisit; Bayesian hierarchical point process). Seluruh numerical gates dan simulation plan harus dipraspesifikasikan ulang -- bukan kelanjutan hasil V1 yang sama.
+
+**Pilihan C -- tinggalkan Hawkes terkoreksi.** Gunakan analisis yang lebih defensibel: statistik deskriptif per periode; permutation tests; stratified event counts; parent-episode deduplication; process tracing; sensitivity terhadap kepadatan dokumentasi tanpa mengklaim parameter Hawkes terkoreksi.
+
+### Arah yang dipilih untuk saat ini: Pilihan A
+
+```text
+Model 3: retained as exploratory baseline
+Model 3B-CD V1: closed after failed recovery validation
+Real-data M3B-CD fitting: prohibited
+Historical mechanism claims: derived from process tracing, not Hawkes
+```
+
+Keputusan ini dapat ditinjau ulang oleh peneliti kapan pun; Pilihan B dan C tetap tercatat sebagai opsi sah yang belum dijalankan.
+
+---
+
+## 25. Immediate Stop Condition
 
 Setelah blueprint tersimpan:
 
