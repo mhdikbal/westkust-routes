@@ -189,6 +189,10 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
           <li>Process tracing menemukan mekanisme yang heterogen.</li>
           <li>Marked Hawkes belum siap digunakan.</li>
           <li>Multivariate Hawkes belum siap digunakan.</li>
+          <li>Model dasar (Model 3) mendeteksi pengelompokan waktu, tetapi model
+            terkontrol-densitas-arsip (Model 3B-CD V1) tidak lolos uji validasi
+            simulasi-pemulihan. Karena itu, model terkontrol tersebut tidak
+            diterapkan pada data 141 peristiwa historis.</li>
         </ol>
       </div>
     {% else %}
@@ -264,7 +268,7 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
 
     <ul class="roadmap-mini">
       <li>Tahap 1 — Pooled Hawkes Baseline<span class="stage-status">tersedia</span></li>
-      <li>Tahap 2 — Kontrol kepadatan arsip<span class="stage-status">direncanakan</span></li>
+      <li>Tahap 2 — Kontrol kepadatan arsip (Model 3B-CD V1)<span class="stage-status">dicoba, ditutup setelah gagal validasi</span></li>
       <li>Tahap 3 — Deduplikasi episode<span class="stage-status">sedang dipersiapkan</span></li>
       <li>Tahap 4 — Stratified descriptive analysis<span class="stage-status">belum dijalankan</span></li>
       <li>Tahap 5 — Marked Hawkes<span class="stage-status">belum siap</span></li>

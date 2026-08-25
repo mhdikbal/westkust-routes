@@ -79,10 +79,36 @@ const SEA_WAYPOINTS = {
   "Padang→Fort Marlborough":         [[-1.6, 100.7], [-2.4, 101.1], [-3.6, 101.9]],
 };
 
+// Label + tooltip provenance -- SAMA PERSIS dgn backend/routers/forts.py
+// ProvenanceInfo (Data Contract draft §4) supaya badge di layer ini
+// (statis, tak lewat API -- lihat komentar HISTORICAL_ROUTES di bawah)
+// konsisten kata-katanya dgn badge di layer status kekuasaan yg lewat API.
+const HISTORICAL_ROUTE_PROVENANCE_LABELS = {
+  CD_PRIMARY:            "Bergantung utama pada Corpus Diplomaticum",
+  CD_PARTIAL:            "Didukung sebagian oleh sumber independen",
+  CD_INDEPENDENT:        "Terverifikasi dari sumber primer non-CD",
+  MULTI_SOURCE_VERIFIED: "Diverifikasi oleh lebih dari satu aliran sumber independen",
+  PROVENANCE_AMBIGUOUS:  "Provenance belum dapat dipastikan",
+};
+const HISTORICAL_ROUTE_PROVENANCE_TOOLTIPS = {
+  CD_PRIMARY:            "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum. Belum ditemukan sumber independen yang mengoroborasi.",
+  CD_PARTIAL:            "Isi dan tanggal spesifik berasal dari Corpus Diplomaticum; sumber independen mengoroborasi keberadaan episode di sekitarnya, bukan detail traktatnya sendiri.",
+  CD_INDEPENDENT:        "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum yang dibaca langsung dan dapat diverifikasi.",
+  MULTI_SOURCE_VERIFIED: "Dua aliran sumber primer yang independen dan tak saling mengutip sama-sama melaporkan peristiwa ini.",
+  PROVENANCE_AMBIGUOUS:  "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+};
+
 // Rute historis SATU-KALI (bukan agregat voyages) -- narasi non-VOC yg tak
 // masuk tabel voyages, jadi digambar terpisah dari drawRoutes(). Abu-abu
 // (bukan navy/teal/hijau existing) supaya visual jelas beda kategori: bukan
 // dagang VOC rutin, tapi kunjungan tunggal armada bangsa lain.
+//
+// `segment.provenance` (Atlas Implementation Phase 1) -- status per segmen
+// dari audit Phase B 141-event (docs/thesis/pilot_annotation/
+// MODEL_3B_EVENT_SOURCE_PROVENANCE_AUDIT.md), dicocokkan manual krn layer
+// ini statis/hand-authored (TIDAK lewat linimasa_events/API, lihat Atlas
+// Application Data Flow Audit §1.3) -- bukan klaim baru, HANYA
+// menampilkan status yg sudah diaudit.
 const HISTORICAL_ROUTES = [
   {
     id: "lancaster-1602",
@@ -90,7 +116,7 @@ const HISTORICAL_ROUTES = [
     year: 1602,
     color: "#8A857A",
     segments: [
-      { from: "Aceh", to: "Pariaman", note: "Nov 1602 -- singgah dlm perjalanan pulang dari Aceh, temukan kapal Susan sudah muat lada+cengkeh" },
+      { from: "Aceh", to: "Pariaman", note: "Nov 1602 -- singgah dlm perjalanan pulang dari Aceh, temukan kapal Susan sudah muat lada+cengkeh", provenance: "CD_INDEPENDENT" },
     ],
   },
   // Ekspedisi Henry Botham 1781 -- perluasan Perang Inggris-Belanda IV (1780-84)
@@ -105,8 +131,8 @@ const HISTORICAL_ROUTES = [
     year: 1781,
     color: "#8b2f2f",
     segments: [
-      { from: "Fort Marlborough", to: "Pulau Cingkuak", note: "16 Agst 1781 -- bendera gencatan senjata, Residen VOC (van Kempen) menyerah tanpa lawan" },
-      { from: "Pulau Cingkuak", to: "Padang", note: "17 Agst 1781 -- Padang menyerah sehari kemudian, Gubernur VOC Heerskerch tunduk" },
+      { from: "Fort Marlborough", to: "Pulau Cingkuak", note: "16 Agst 1781 -- bendera gencatan senjata, Residen VOC (van Kempen) menyerah tanpa lawan", provenance: "MULTI_SOURCE_VERIFIED" },
+      { from: "Pulau Cingkuak", to: "Padang", note: "17 Agst 1781 -- Padang menyerah sehari kemudian, Gubernur VOC Heerskerch tunduk", provenance: "MULTI_SOURCE_VERIFIED" },
     ],
   },
   // Perluasan kontrol EIC ke pos-pos bawahan Padang stlh penyerahan --
@@ -117,8 +143,8 @@ const HISTORICAL_ROUTES = [
     year: 1781,
     color: "#b06a55",
     segments: [
-      { from: "Padang", to: "Pariaman", note: "1781 -- Pariaman ('Priamang') ikut jatuh sbg bawahan Padang" },
-      { from: "Padang", to: "Air Haji", note: "1781 -- 'Ayer Adjee' (dugaan Air Haji) ikut diklaim, identitas belum pasti" },
+      { from: "Padang", to: "Pariaman", note: "1781 -- Pariaman ('Priamang') ikut jatuh sbg bawahan Padang", provenance: "CD_INDEPENDENT" },
+      { from: "Padang", to: "Air Haji", note: "1781 -- 'Ayer Adjee' (dugaan Air Haji) ikut diklaim, identitas belum pasti", provenance: "CD_INDEPENDENT" },
     ],
   },
   // VOC merebut kembali Padang 1784/85 stlh Traktat Paris (perdamaian
@@ -129,7 +155,7 @@ const HISTORICAL_ROUTES = [
     year: 1784,
     color: "#31384C",
     segments: [
-      { from: "Padang", to: "Fort Marlborough", note: "1784/85 -- EIC mundur ke Bengkulu psca traktat damai Inggris-Belanda" },
+      { from: "Padang", to: "Fort Marlborough", note: "1784/85 -- EIC mundur ke Bengkulu psca traktat damai Inggris-Belanda", provenance: "PROVENANCE_AMBIGUOUS" },
     ],
   },
 ];
@@ -153,11 +179,19 @@ function drawHistoricalRoutes() {
         opacity: 0.7,
         dashArray: "3,9",
       }).addTo(map);
+      const segProvenance = seg.provenance
+        ? {
+            status: seg.provenance,
+            label: HISTORICAL_ROUTE_PROVENANCE_LABELS[seg.provenance],
+            tooltip: HISTORICAL_ROUTE_PROVENANCE_TOOLTIPS[seg.provenance],
+          }
+        : null;
       line.bindPopup(
         `<div class="dominion-popup-card" style="--dominion-color:${route.color}">
            <div class="dominion-popup-fort">${esc(route.label)}</div>
            <div class="dominion-popup-event">${esc(seg.from)} &rarr; ${esc(seg.to)}</div>
            <div class="dominion-popup-meta">${route.year} &middot; ${esc(seg.note)}</div>
+           ${provenanceBadgeHTML(segProvenance)}
          </div>`,
         { className: "dominion-popup", closeButton: true, minWidth: 200, maxWidth: 280 }
       );
@@ -545,6 +579,57 @@ const CLUSTER_LABELS = {
   Tipis:  "Data belum cukup",
 };
 
+// Provenance badge (Atlas Implementation Phase 1, keputusan peneliti #1/#2) --
+// progressive disclosure: HANYA muncul di dalam popup yg SUDAH terbuka via
+// klik (bukan lapisan hover baru, bukan marker/rute/legenda baru). Sumber
+// data: /api/forts/power-status?year= mengembalikan field
+// `as_of_event.provenance` (join read-only ke docs/thesis/colab/
+// MODEL_3B_EVENT_SOURCE_PROVENANCE_WORKING.csv via
+// data/provenance/provenance_artifact.json -- linimasa_events.csv & skema DB
+// TIDAK diubah, lihat backend/routers/forts.py _provenance_for_event()).
+//
+// GUARD SEMANTIK: provenance ini milik SATU EVENT (as_of_event) yg
+// KEBETULAN sedang jadi status terkini fort pada tahun slider aktif --
+// BUKAN properti permanen fort/lokasi itu sendiri. Fort yg sama pd tahun
+// lain bisa py as_of_event (dan provenance) yg beda sama sekali. Sengaja
+// dibaca dari item.as_of_event.provenance (bukan item.provenance) supaya
+// bentuk data sendiri tak bisa disalahbaca sbg "provenance fort".
+//
+// as_of_event.provenance null/undefined -- BUKAN error, BUKAN
+// PROVENANCE_AMBIGUOUS tersembunyi -- artinya artifact belum menjangkau
+// event ini; badge cukup tidak dirender (fail-open), bukan menampilkan
+// status keliru.
+//
+// Glyph + label TEKS adalah pembeda utama (bukan warna semata) -- lihat
+// PROVENANCE_GLYPHS. Warna latar (--prov-color) hanya penguat sekunder,
+// sengaja lembut (bukan warna jenuh baru di legenda politik existing).
+const PROVENANCE_GLYPHS = {
+  CD_PRIMARY:            "◆",
+  CD_PARTIAL:            "◐",
+  CD_INDEPENDENT:        "◇",
+  MULTI_SOURCE_VERIFIED: "◆◆",
+  PROVENANCE_AMBIGUOUS:  "?",
+};
+const PROVENANCE_BADGE_COLORS = {
+  CD_PRIMARY:            "#6b6456",
+  CD_PARTIAL:            "#7a6a3f",
+  CD_INDEPENDENT:        "#3f6b5a",
+  MULTI_SOURCE_VERIFIED: "#2c5364",
+  PROVENANCE_AMBIGUOUS:  "#7a3f3f",
+};
+
+function provenanceBadgeHTML(provenance) {
+  if (!provenance || !provenance.status) return "";
+  const glyph = PROVENANCE_GLYPHS[provenance.status] || "•";
+  const color = PROVENANCE_BADGE_COLORS[provenance.status] || "#6b6456";
+  // label TEKS selalu dirender penuh (termasuk utk PROVENANCE_AMBIGUOUS --
+  // keputusan peneliti eksplisit: jangan sembunyikan/kaburkan, tetap jelas).
+  return `<div class="provenance-badge" style="--prov-color:${color}" title="${esc(provenance.tooltip)}">
+    <span class="provenance-badge-glyph" aria-hidden="true">${glyph}</span>
+    <span class="provenance-badge-label">${esc(provenance.label)}</span>
+  </div>`;
+}
+
 // Ikon bendera-di-tiang -- motif kartografi VOC-era sesungguhnya (menancapkan
 // bendera = klaim wilayah), BUKAN circleMarker polos. Selaras dgn createFortSVG/
 // createAnchorSVG yg sudah dipakai fort roster (SVG custom, bukan Leaflet
@@ -736,6 +821,7 @@ async function drawPowerStatus(year) {
          ${clusterChip}
          <div class="dominion-popup-event">${esc(item.as_of_event.title)}</div>
          <div class="dominion-popup-meta">${item.as_of_event.year ?? "?"} &middot; ${esc(item.as_of_event.source_document)}</div>
+         ${provenanceBadgeHTML(item.as_of_event.provenance)}
          ${sparkline ? `<div class="dwell-spark-wrap">${sparkline}</div>` : ""}
        </div>`,
       { className: "dominion-popup", closeButton: true, minWidth: 200, maxWidth: 280 }

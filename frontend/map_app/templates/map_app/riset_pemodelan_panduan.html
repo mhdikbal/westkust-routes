@@ -301,7 +301,7 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
     <table class="roadmap-table">
       <tr><th>Tahap</th><th>Status</th></tr>
       <tr><td>1 — Pooled Hawkes Baseline</td><td><span class="status-chip">tersedia</span></td></tr>
-      <tr><td>2 — Kontrol kepadatan arsip</td><td><span class="status-chip">direncanakan</span></td></tr>
+      <tr><td>2 — Kontrol kepadatan arsip (Model 3B-CD V1)</td><td><span class="status-chip">dicoba, ditutup setelah gagal validasi</span></td></tr>
       <tr><td>3 — Deduplikasi episode</td><td><span class="status-chip">sedang dipersiapkan</span></td></tr>
       <tr><td>4 — Stratified descriptive analysis</td><td><span class="status-chip">belum dijalankan</span></td></tr>
       <tr><td>5 — Marked Hawkes</td><td><span class="status-chip">belum siap</span></td></tr>
@@ -310,9 +310,17 @@ footer .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;border:
     <p><b>Tahap 1</b> — model yang ditampilkan di halaman utama saat ini:
       satu model Hawkes untuk seluruh 141 peristiwa, tanpa pembedaan lokasi
       atau mekanisme.</p>
-    <p><b>Tahap 2</b> — status <i>direncanakan</i>, BUKAN sedang dikerjakan:
-      kepadatan arsip per lokasi/dekade belum dihitung secara kuantitatif
-      sama sekali (lihat §10).</p>
+    <p><b>Tahap 2</b> — status <i>dicoba, ditutup setelah gagal validasi</i>:
+      model Model 3B-CD V1 (kontrol kepadatan arsip per lokasi/dekade)
+      SUDAH dibangun dan dijalankan lewat uji validasi simulasi-pemulihan
+      (simulation-recovery validation) untuk memastikan model bisa memulihkan
+      parameter yang diketahui dari data simulasi sebelum dipercaya pada data
+      arsip nyata. Uji ini GAGAL — model tidak lolos memulihkan parameternya
+      sendiri secara andal. Karena itu, Model 3B-CD V1 DITUTUP dan TIDAK
+      pernah diterapkan pada 141 peristiwa historis nyata (lihat §10).
+      Kegagalan ini adalah temuan tentang pendekatan model tersebut, BUKAN
+      bukti bahwa kepadatan arsip menjelaskan seluruh pengelompokan waktu
+      yang terdeteksi Model 3 — pertanyaan itu tetap terbuka.</p>
     <p><b>Tahap 3</b> — status <i>sedang dipersiapkan</i>: struktur untuk
       mencegah laporan ganda (lihat §11) sudah dirancang dan sudah
       diterapkan pada 2 dossier (Pariaman, Sillida/Salido), tapi belum

@@ -434,11 +434,13 @@ async def test_list_fort_voyages_filter_year():
 
 def make_power_row(fort_id, fort_name, dominion_status, event_id, year,
                     event_date_raw, title, text_asli, source_document,
+                    source_page="1", book_page=None,
                     cluster=None, p_self_current_status=None, dynamics_series=None, rmse=None):
     return SimpleNamespace(
         fort_id=fort_id, fort_name=fort_name, dominion_status=dominion_status,
         event_id=event_id, year=year, event_date_raw=event_date_raw,
         title=title, text_asli=text_asli, source_document=source_document,
+        source_page=source_page, book_page=book_page,
         cluster=cluster, p_self_current_status=p_self_current_status,
         dynamics_series=dynamics_series, rmse=rmse,
     )
@@ -516,6 +518,103 @@ async def test_power_status_empty_before_any_event():
 
     assert response.status_code == 200
     assert response.json() == []
+
+
+# ─── /power-status provenance join (Atlas Implementation Phase 1) ────────────
+# Read-only join against a separate provenance artifact (Phase B audit),
+# NOT a linimasa_events column. See routers/forts.py _provenance_for_event /
+# _provenance_join_hash and data/provenance/provenance_artifact.json.
+
+import routers.forts as forts_router  # noqa: E402
+
+
+@pytest.mark.asyncio
+async def test_power_status_provenance_populated_when_artifact_matches(monkeypatch):
+    """When the join hash matches an artifact entry, `provenance` is populated
+    with the five public-facing fields -- never raw research notes."""
+    h = forts_router._provenance_join_hash("CD6", "404", "393", "23 Januari 1775",
+                                            "VOC tarik mundur dari loge Barus, kalah saing Inggris Bengkulu")
+    monkeypatch.setattr(forts_router, "PROVENANCE_ARTIFACT", {
+        h: {
+            "event_id": "EVT-1775-CD6-404-TEST",
+            "source_row_index": 114,
+            "provenance_status": "CD_PRIMARY",
+            "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+            "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum.",
+            "researcher_review_required": True,
+            "multi_source_verified": False,
+        }
+    })
+
+    rows = [
+        make_power_row(5, "Barus", "voc_withdrawal", 187, 1775,
+                        "23 Januari 1775", "VOC tarik mundur dari loge Barus, kalah saing Inggris Bengkulu",
+                        "Sedert een eeuw...", "CD6", source_page="404", book_page="393"),
+    ]
+
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.side_effect = [make_rows_result(rows)]
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/power-status?year=1780")
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    item = response.json()[0]
+    assert item["as_of_event"]["provenance"]["status"] == "CD_PRIMARY"
+    assert item["as_of_event"]["provenance"]["label"] == "Bergantung utama pada Corpus Diplomaticum"
+    assert item["as_of_event"]["provenance"]["researcher_review_required"] is True
+    assert item["as_of_event"]["provenance"]["multi_source_verified"] is False
+
+
+@pytest.mark.asyncio
+async def test_power_status_provenance_none_when_artifact_has_no_match():
+    """No matching artifact entry -> provenance is null, not an error and not
+    a fabricated PROVENANCE_AMBIGUOUS."""
+    rows = [
+        make_power_row(1, "Pariaman", "relapse_aceh", 88, 1712,
+                        "1712", "Priaman dkk kembali ke pangkuan Aceh, lalu ditundukkan ulang",
+                        "In de eerste jaren...", "CD4", source_page="999999", book_page=None),
+    ]
+
+    async def mock_get_db():
+        session = AsyncMock()
+        session.execute.side_effect = [make_rows_result(rows)]
+        yield session
+
+    from database import get_db
+    app.dependency_overrides[get_db] = mock_get_db
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/forts/power-status?year=1780")
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert response.json()[0]["as_of_event"]["provenance"] is None
+
+
+def test_provenance_join_hash_normalizes_null_book_page():
+    """book_page=None (Postgres NULL) must hash identically to book_page=""
+    (an empty CSV field) -- this is the exact normalization Phase B's audit
+    and the artifact-generation script both depend on."""
+    h_none = forts_router._provenance_join_hash("eic-bl-ior-g35", "198", None,
+                                                  "18/22 September 1686",
+                                                  'Surat York Fort: konsesi "Raja Manacabo" Barus-Silebar dan kehilangan pos Batang Capas')
+    h_empty = forts_router._provenance_join_hash("eic-bl-ior-g35", "198", "",
+                                                   "18/22 September 1686",
+                                                   'Surat York Fort: konsesi "Raja Manacabo" Barus-Silebar dan kehilangan pos Batang Capas')
+    assert h_none == h_empty
+
+
+def test_provenance_artifact_loads_and_covers_141_events():
+    """Guards against the artifact silently going empty/stale -- the join
+    integrity script (backend/scripts/verify_provenance_join.py) is the
+    authoritative 141/141 check against the live DB; this is a cheaper,
+    always-on regression guard that the artifact file itself is intact."""
+    assert len(forts_router.PROVENANCE_ARTIFACT) == 141
 
 
 @pytest.mark.asyncio

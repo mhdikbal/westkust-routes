@@ -754,6 +754,25 @@
     }
     .dominion-flag-icon { background: none; border: none; }
 
+    /* Provenance badge (Atlas Implementation Phase 1, keputusan peneliti #1/#2)
+       -- progressive disclosure DI DALAM popup yg sudah ada (dominion-status
+       & rute historis), BUKAN marker/legenda baru. Label TEKS + glyph adalah
+       pembeda utama (lihat PROVENANCE_GLYPHS di atlas.js) -- --prov-color
+       cuma penguat lembut sekunder, BUKAN satu-satunya pembeda, dan bukan
+       warna jenuh baru di legenda politik existing (badge ini tak muncul di
+       legenda sama sekali). PROVENANCE_AMBIGUOUS SENGAJA memakai styling
+       yg SAMA (bukan disamarkan/opacity rendah) -- label tetap terbaca jelas. */
+    .provenance-badge {
+      display: flex; align-items: baseline; gap: .35rem;
+      margin-top: .35rem; padding-top: .35rem; border-top: 1px dashed var(--border);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .62rem; font-weight: 600; line-height: 1.35;
+      color: var(--prov-color);
+      cursor: help; /* title attr = tooltip lengkap, progressive disclosure lapis-3 */
+    }
+    .provenance-badge-glyph { flex-shrink: 0; font-size: .68rem; }
+    .provenance-badge-label { color: var(--text-primary); font-weight: 500; }
+
     /* Klaster arketipe (Model 2/5/6) -- chip independen dari dominion-popup-status
        (dominion_status), kanal warna beda sengaja (var --cluster-color inline
        per popup, bukan --dominion-color). */
@@ -1202,6 +1221,6 @@
         integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
         crossorigin="anonymous"></script>
 
-<script src="{% static 'map_app/js/atlas.js' %}?v=4"></script>
+<script src="{% static 'map_app/js/atlas.js' %}?v=5"></script>
 </body>
 </html>

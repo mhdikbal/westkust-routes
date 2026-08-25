@@ -1,0 +1,1276 @@
+{
+ "schema_version": 1,
+ "generated_from": "MODEL_3B_EVENT_SOURCE_PROVENANCE_WORKING.csv (Phase B, 141/141 audited)",
+ "join_key": "sha1(source_document|source_page|book_page|event_date_raw|title)[:4]",
+ "events": {
+  "72aa": {
+   "event_id": "EVT-1600-CD1-47-72aa",
+   "source_row_index": 1,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "8bac": {
+   "event_id": "EVT-1607-CD1-74-8bac",
+   "source_row_index": 2,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "a59d": {
+   "event_id": "EVT-1625-1624_1629-212-a59d",
+   "source_row_index": 3,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "6b13": {
+   "event_id": "EVT-1625-1624_1629-213-6b13",
+   "source_row_index": 4,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "5efb": {
+   "event_id": "EVT-1625-1624_1629-223-5efb",
+   "source_row_index": 5,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "9368": {
+   "event_id": "EVT-1632-1631_1634-140-9368",
+   "source_row_index": 6,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "ce0f": {
+   "event_id": "EVT-1636-1636-264-ce0f",
+   "source_row_index": 7,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "f729": {
+   "event_id": "EVT-1637-1637-99-f729",
+   "source_row_index": 8,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "c3a4": {
+   "event_id": "EVT-1641-CD1-371-c3a4",
+   "source_row_index": 9,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "8322": {
+   "event_id": "EVT-1641-CD1-372-8322",
+   "source_row_index": 10,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "3fbd": {
+   "event_id": "EVT-1644-1643_1644-61-3fbd",
+   "source_row_index": 11,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "38cc": {
+   "event_id": "EVT-1647-1647_1648-22-38cc",
+   "source_row_index": 12,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "362c": {
+   "event_id": "EVT-1648-1647_1648-94-362c",
+   "source_row_index": 13,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "4193": {
+   "event_id": "EVT-1649-CD1-555-4193",
+   "source_row_index": 14,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "c4b0": {
+   "event_id": "EVT-1650-CD1-564-c4b0",
+   "source_row_index": 15,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "d138": {
+   "event_id": "EVT-1655-CD2-94-d138",
+   "source_row_index": 16,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "3243": {
+   "event_id": "EVT-1656-1656_1657-101-3243",
+   "source_row_index": 17,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "8536": {
+   "event_id": "EVT-1657-1656_1657-101-8536",
+   "source_row_index": 18,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "fa7d": {
+   "event_id": "EVT-1657-1656_1657-131-fa7d",
+   "source_row_index": 19,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "ae4f": {
+   "event_id": "EVT-1657-1656_1657-171-ae4f",
+   "source_row_index": 20,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "c73e": {
+   "event_id": "EVT-1657-1656_1657-196-c73e",
+   "source_row_index": 21,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "19f3": {
+   "event_id": "EVT-1659-1659-65-19f3",
+   "source_row_index": 22,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "baa6": {
+   "event_id": "EVT-1659-1659-111-baa6",
+   "source_row_index": 23,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "27ad": {
+   "event_id": "EVT-1659-CD2-168-27ad",
+   "source_row_index": 24,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "cdde": {
+   "event_id": "EVT-1660-1661-570-cdde",
+   "source_row_index": 25,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "8ceb": {
+   "event_id": "EVT-1660-CD2-179-8ceb",
+   "source_row_index": 26,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "a8b3": {
+   "event_id": "EVT-1660-CD2-184-a8b3",
+   "source_row_index": 27,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "95cf": {
+   "event_id": "EVT-1660-CD2-182-95cf",
+   "source_row_index": 28,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "78b0": {
+   "event_id": "EVT-1660-buku_padang_1718-237-78b0",
+   "source_row_index": 29,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "b897": {
+   "event_id": "EVT-1661-1661-593-b897",
+   "source_row_index": 30,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "06f1": {
+   "event_id": "EVT-1661-1661-594-06f1",
+   "source_row_index": 31,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "52b5": {
+   "event_id": "EVT-1662-1663-90-52b5",
+   "source_row_index": 32,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "3145": {
+   "event_id": "EVT-1662-1663-92-3145",
+   "source_row_index": 33,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "5869": {
+   "event_id": "EVT-1663-1663-89-5869",
+   "source_row_index": 34,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "1af4": {
+   "event_id": "EVT-1663-1663-93-1af4",
+   "source_row_index": 35,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "8198": {
+   "event_id": "EVT-1663-CD2-268-8198",
+   "source_row_index": 36,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "aefa": {
+   "event_id": "EVT-1664-1664-540-aefa",
+   "source_row_index": 37,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "725f": {
+   "event_id": "EVT-1664-1664-560-725f",
+   "source_row_index": 38,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "dfed": {
+   "event_id": "EVT-1664-1664-564-dfed",
+   "source_row_index": 39,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "a0c7": {
+   "event_id": "EVT-1665-1665-648-a0c7",
+   "source_row_index": 40,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "5c28": {
+   "event_id": "EVT-1665-1665-668-5c28",
+   "source_row_index": 41,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "0a69": {
+   "event_id": "EVT-1665-buku_padang_1718-237-0a69",
+   "source_row_index": 42,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "a987": {
+   "event_id": "EVT-1667-1681-968-a987",
+   "source_row_index": 43,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "583e": {
+   "event_id": "EVT-1667-CD2-385-583e",
+   "source_row_index": 44,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "dc97": {
+   "event_id": "EVT-1668-CD2-399-dc97",
+   "source_row_index": 45,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "244e": {
+   "event_id": "EVT-1668-CD2-426-244e",
+   "source_row_index": 46,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "3321": {
+   "event_id": "EVT-1668-CD2-426-3321",
+   "source_row_index": 47,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "5f54": {
+   "event_id": "EVT-1670-buku_padang_1718-238-5f54",
+   "source_row_index": 48,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "1d39": {
+   "event_id": "EVT-1671-CD2-449-1d39",
+   "source_row_index": 49,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "306d": {
+   "event_id": "EVT-1671-CD2-454-306d",
+   "source_row_index": 50,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "2aea": {
+   "event_id": "EVT-1671-CD2-459-2aea",
+   "source_row_index": 51,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "d7c8": {
+   "event_id": "EVT-1671-buku_padang_1718-238-d7c8",
+   "source_row_index": 52,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "34e0": {
+   "event_id": "EVT-1672-CD2-476-34e0",
+   "source_row_index": 53,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "f351": {
+   "event_id": "EVT-1673-CD2-498-f351",
+   "source_row_index": 54,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "d8b8": {
+   "event_id": "EVT-1678-CD3-171-d8b8",
+   "source_row_index": 55,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "9ada": {
+   "event_id": "EVT-1679-CD3-188-9ada",
+   "source_row_index": 56,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "e635": {
+   "event_id": "EVT-1679-CD3-208-e635",
+   "source_row_index": 57,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "4cb1": {
+   "event_id": "EVT-1680-CD3-230-4cb1",
+   "source_row_index": 58,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "2c30": {
+   "event_id": "EVT-1680-CD3-231-2c30",
+   "source_row_index": 59,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "dae1": {
+   "event_id": "EVT-1681-1681-971-dae1",
+   "source_row_index": 60,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "27a2": {
+   "event_id": "EVT-1681-CD3-239-27a2",
+   "source_row_index": 61,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "1165": {
+   "event_id": "EVT-1681-CD3-244-1165",
+   "source_row_index": 62,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "fde8": {
+   "event_id": "EVT-1681-CD3-263-fde8",
+   "source_row_index": 63,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "1a96": {
+   "event_id": "EVT-1681-CD3-269-1a96",
+   "source_row_index": 64,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "3780": {
+   "event_id": "EVT-1681-CD3-271-3780",
+   "source_row_index": 65,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "add0": {
+   "event_id": "EVT-1682-CD3-301-add0",
+   "source_row_index": 66,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "b42a": {
+   "event_id": "EVT-1682-CD3-309-b42a",
+   "source_row_index": 67,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "7f5b": {
+   "event_id": "EVT-1684-CD3-365-7f5b",
+   "source_row_index": 68,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "27bc": {
+   "event_id": "EVT-1684-CD3-366-27bc",
+   "source_row_index": 69,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "bfad": {
+   "event_id": "EVT-1685-CD3-399-bfad",
+   "source_row_index": 70,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "2078": {
+   "event_id": "EVT-1686-buku_vogel_1690-722-2078",
+   "source_row_index": 71,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "b331": {
+   "event_id": "EVT-1687-CD3-436-b331",
+   "source_row_index": 72,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "9ab5": {
+   "event_id": "EVT-1689-CD3-490-9ab5",
+   "source_row_index": 73,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "cce7": {
+   "event_id": "EVT-1690-CD3-547-cce7",
+   "source_row_index": 74,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "3bed": {
+   "event_id": "EVT-1693-CD4-24-3bed",
+   "source_row_index": 75,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "25a0": {
+   "event_id": "EVT-1693-CD4-28-25a0",
+   "source_row_index": 76,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "f372": {
+   "event_id": "EVT-1693-CD4-35-f372",
+   "source_row_index": 77,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "0ecc": {
+   "event_id": "EVT-1693-CD4-40-0ecc",
+   "source_row_index": 78,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "09eb": {
+   "event_id": "EVT-1693-CD4-44-09eb",
+   "source_row_index": 79,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "3e44": {
+   "event_id": "EVT-1693-CD4-48-3e44",
+   "source_row_index": 80,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "063c": {
+   "event_id": "EVT-1693-CD4-51-063c",
+   "source_row_index": 81,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "95a5": {
+   "event_id": "EVT-1693-CD4-55-95a5",
+   "source_row_index": 82,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "3300": {
+   "event_id": "EVT-1693-CD4-59-3300",
+   "source_row_index": 83,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "8c0b": {
+   "event_id": "EVT-1693-CD4-61-8c0b",
+   "source_row_index": 84,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "8780": {
+   "event_id": "EVT-1694-CD4-81-8780",
+   "source_row_index": 85,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "0dad": {
+   "event_id": "EVT-1694-CD4-93-0dad",
+   "source_row_index": 86,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "421e": {
+   "event_id": "EVT-1698-CD4-146-421e",
+   "source_row_index": 87,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "3c4b": {
+   "event_id": "EVT-1698-CD4-152-3c4b",
+   "source_row_index": 88,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "fb99": {
+   "event_id": "EVT-1705-CD4-248-fb99",
+   "source_row_index": 89,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "c342": {
+   "event_id": "EVT-1705-buku-padang-1718-238-c342",
+   "source_row_index": 90,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "b83c": {
+   "event_id": "EVT-1707-CD4-274-b83c",
+   "source_row_index": 91,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "8287": {
+   "event_id": "EVT-1707-CD4-276-8287",
+   "source_row_index": 92,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "8883": {
+   "event_id": "EVT-1712-CD4-399-8883",
+   "source_row_index": 93,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "c777": {
+   "event_id": "EVT-1712-buku-padang-1718-238-c777",
+   "source_row_index": 94,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "ca42": {
+   "event_id": "EVT-1716-CD4-487-ca42",
+   "source_row_index": 95,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "a32f": {
+   "event_id": "EVT-1716-CD4-493-a32f",
+   "source_row_index": 96,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "5907": {
+   "event_id": "EVT-1727-CD5-26-5907",
+   "source_row_index": 97,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "0f5b": {
+   "event_id": "EVT-1731-CD5-108-0f5b",
+   "source_row_index": 98,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "dda1": {
+   "event_id": "EVT-1737-CD5-271-dda1",
+   "source_row_index": 99,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "35fb": {
+   "event_id": "EVT-1738-buku-padang-1718-92-35fb",
+   "source_row_index": 100,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "0c74": {
+   "event_id": "EVT-1740-buku-padang-1718-93-0c74",
+   "source_row_index": 101,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "472f": {
+   "event_id": "EVT-1741-CD5-330-472f",
+   "source_row_index": 102,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "9efa": {
+   "event_id": "EVT-1751-buku-padang-1718-93-9efa",
+   "source_row_index": 103,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "a16a": {
+   "event_id": "EVT-1755-CD6-42-a16a",
+   "source_row_index": 104,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "2daa": {
+   "event_id": "EVT-1755-CD6-47-2daa",
+   "source_row_index": 105,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "868c": {
+   "event_id": "EVT-1755-CD6-62-868c",
+   "source_row_index": 106,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "0727": {
+   "event_id": "EVT-1755-buku-padang-1718-238-0727",
+   "source_row_index": 107,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "eec0": {
+   "event_id": "EVT-1759-buku-padang-1718-94-eec0",
+   "source_row_index": 108,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "53b2": {
+   "event_id": "EVT-1760-CD6-210-53b2",
+   "source_row_index": 109,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "cedc": {
+   "event_id": "EVT-1760-CD6-223-cedc",
+   "source_row_index": 110,
+   "provenance_status": "CD_PARTIAL",
+   "provenance_label": "Didukung sebagian oleh sumber independen",
+   "provenance_tooltip": "Isi dan tanggal spesifik peristiwa ini berasal dari Corpus Diplomaticum; sumber independen lain mengoroborasi keberadaan peristiwa atau episode di sekitarnya, bukan detail traktatnya sendiri.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "4d0e": {
+   "event_id": "EVT-1760-buku-padang-1718-94-4d0e",
+   "source_row_index": 111,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "9efe": {
+   "event_id": "EVT-1763-CD6-239-9efe",
+   "source_row_index": 112,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "cb4b": {
+   "event_id": "EVT-1767-CD6-301-cb4b",
+   "source_row_index": 113,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "a460": {
+   "event_id": "EVT-1775-CD6-404-a460",
+   "source_row_index": 114,
+   "provenance_status": "CD_PRIMARY",
+   "provenance_label": "Bergantung utama pada Corpus Diplomaticum",
+   "provenance_tooltip": "Detail tanggal dan isi peristiwa ini berasal dari Corpus Diplomaticum (kompilasi traktat VOC). Belum ditemukan sumber independen yang mengoroborasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "1a71": {
+   "event_id": "EVT-1678-buku-vogel-1690-715-1a71",
+   "source_row_index": 115,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "2972": {
+   "event_id": "EVT-1686-buku-vogel-1690-715-2972",
+   "source_row_index": 116,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "fa01": {
+   "event_id": "EVT-1686-buku-vogel-1690-458-fa01",
+   "source_row_index": 117,
+   "provenance_status": "MULTI_SOURCE_VERIFIED",
+   "provenance_label": "Diverifikasi oleh lebih dari satu aliran sumber independen",
+   "provenance_tooltip": "Dua aliran sumber primer yang independen dan tak saling mengutip sama-sama melaporkan peristiwa ini.",
+   "researcher_review_required": true,
+   "multi_source_verified": true
+  },
+  "82b3": {
+   "event_id": "EVT-1687-buku-vogel-1690-467-82b3",
+   "source_row_index": 118,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "c3df": {
+   "event_id": "EVT-1687-buku-vogel-1690-543-c3df",
+   "source_row_index": 119,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "171c": {
+   "event_id": "EVT-1686-eic-bl-ior-g35-198-171c",
+   "source_row_index": 120,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "7181": {
+   "event_id": "EVT-1676-gm-vol04-05-101-7181",
+   "source_row_index": 121,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "a6b1": {
+   "event_id": "EVT-1687-gm-vol04-05-162-a6b1",
+   "source_row_index": 122,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "a0a4": {
+   "event_id": "EVT-1688-gm-vol04-05-162-a0a4",
+   "source_row_index": 123,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "a6fd": {
+   "event_id": "EVT-1683-gm-vol04-05-600-a6fd",
+   "source_row_index": 124,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "ac7e": {
+   "event_id": "EVT-1694-gm-vol04-05-599-ac7e",
+   "source_row_index": 125,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "154b": {
+   "event_id": "EVT-1687-buku-vogel-1690-477-154b",
+   "source_row_index": 126,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "3f44": {
+   "event_id": "EVT-1687-buku-vogel-1690-545-3f44",
+   "source_row_index": 127,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "c28a": {
+   "event_id": "EVT-1602-lancaster-1601-1603-1-c28a",
+   "source_row_index": 128,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "6c8a": {
+   "event_id": "EVT-1781-kathirithamby-1965-314-6c8a",
+   "source_row_index": 129,
+   "provenance_status": "MULTI_SOURCE_VERIFIED",
+   "provenance_label": "Diverifikasi oleh lebih dari satu aliran sumber independen",
+   "provenance_tooltip": "Dua aliran sumber primer yang independen dan tak saling mengutip sama-sama melaporkan peristiwa ini.",
+   "researcher_review_required": true,
+   "multi_source_verified": true
+  },
+  "d154": {
+   "event_id": "EVT-1781-botham-letter-1781-1-d154",
+   "source_row_index": 130,
+   "provenance_status": "MULTI_SOURCE_VERIFIED",
+   "provenance_label": "Diverifikasi oleh lebih dari satu aliran sumber independen",
+   "provenance_tooltip": "Dua aliran sumber primer yang independen dan tak saling mengutip sama-sama melaporkan peristiwa ini.",
+   "researcher_review_required": true,
+   "multi_source_verified": true
+  },
+  "5a01": {
+   "event_id": "EVT-1781-botham-letter-1781-1-5a01",
+   "source_row_index": 131,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": false,
+   "multi_source_verified": false
+  },
+  "5333": {
+   "event_id": "EVT-1781-botham-letter-1781-1-5333",
+   "source_row_index": 132,
+   "provenance_status": "CD_INDEPENDENT",
+   "provenance_label": "Terverifikasi dari sumber primer non-CD",
+   "provenance_tooltip": "Peristiwa ini tertelusur ke sumber primer di luar Corpus Diplomaticum (mis. Generale Missiven, memoar, atau arsip lain) yang dibaca langsung dan dapat diverifikasi.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "9273": {
+   "event_id": "EVT-1782-kathirithamby-1965-318-9273",
+   "source_row_index": 133,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "2db5": {
+   "event_id": "EVT-1783-kathirithamby-1965-320-2db5",
+   "source_row_index": 134,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "b7b8": {
+   "event_id": "EVT-1784-kathirithamby-1965-320-b7b8",
+   "source_row_index": 135,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "ffbe": {
+   "event_id": "EVT-1750-kathirithamby-1965-246-ffbe",
+   "source_row_index": 136,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "3f3e": {
+   "event_id": "EVT-1767-kathirithamby-1965-246-3f3e",
+   "source_row_index": 137,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "2ab5": {
+   "event_id": "EVT-1772-kathirithamby-1965-246-2ab5",
+   "source_row_index": 138,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "2969": {
+   "event_id": "EVT-1773-kathirithamby-1965-247-2969",
+   "source_row_index": 139,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "49e5": {
+   "event_id": "EVT-1685-kathirithamby-1965-364-49e5",
+   "source_row_index": 140,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  },
+  "5008": {
+   "event_id": "EVT-1714-kathirithamby-1965-364-5008",
+   "source_row_index": 141,
+   "provenance_status": "PROVENANCE_AMBIGUOUS",
+   "provenance_label": "Provenance belum dapat dipastikan",
+   "provenance_tooltip": "Sumber untuk peristiwa ini belum dapat ditelusuri atau diverifikasi sepenuhnya dari arsip yang tersedia.",
+   "researcher_review_required": true,
+   "multi_source_verified": false
+  }
+ }
+}

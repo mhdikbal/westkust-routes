@@ -1,3 +1,6 @@
+import hashlib
+import json
+import os
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,6 +13,47 @@ from models import Fort, Voyage, PortArrivalTally, LinimasaEvent, FortModelMetri
 from routers.voyages import _year_gte, _year_lte
 
 router = APIRouter()
+
+# ---------- Provenance artifact (Phase B audit, read-only join) ----------
+# Separate, nonproduction artifact -- NOT a schema change, NOT
+# linimasa_events.csv. Lives under the ./data bind mount (Docker Compose
+# ships ./data:/app/data), so it can be updated without a backend rebuild.
+# Loaded once at import time; if absent, provenance is simply omitted from
+# responses (fail-open, never 500s the endpoint) -- see PROVENANCE_ARTIFACT
+# below and _provenance_for_event().
+_PROVENANCE_ARTIFACT_PATH = "/app/data/provenance/provenance_artifact.json"
+
+
+def _load_provenance_artifact():
+    try:
+        with open(_PROVENANCE_ARTIFACT_PATH, encoding="utf-8") as f:
+            return json.load(f).get("events", {})
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {}
+
+
+PROVENANCE_ARTIFACT = _load_provenance_artifact()
+
+
+def _provenance_join_hash(source_document: str, source_page, book_page, event_date_raw: str, title: str) -> str:
+    """Same deterministic join key as Phase B's stable event_id
+    (docs/thesis/pilot_annotation/MODEL_3B_EVENT_SOURCE_PROVENANCE_AUDIT.md).
+    book_page NULL -> "" to match csv.DictReader's empty-field convention,
+    which is what the artifact was built from (backend/scripts/
+    verify_provenance_join.py documents and tests this normalization)."""
+    sp = str(source_page)
+    bp = book_page or ""
+    return hashlib.sha1(f"{source_document}|{sp}|{bp}|{event_date_raw}|{title}".encode("utf-8")).hexdigest()[:4]
+
+
+def _provenance_for_event(source_document, source_page, book_page, event_date_raw, title) -> Optional[dict]:
+    """Look up provenance for one LinimasaEvent row. Returns None if the
+    artifact is missing/stale/unmatched -- callers must treat that as
+    "no provenance data available", never as an error."""
+    if not PROVENANCE_ARTIFACT:
+        return None
+    h = _provenance_join_hash(source_document, source_page, book_page, event_date_raw, title)
+    return PROVENANCE_ARTIFACT.get(h)
 
 
 # ---------- Schemas ----------
@@ -296,6 +340,30 @@ async def list_all_routes(response: Response, db: AsyncSession = Depends(get_db)
     return payload
 
 
+class ProvenanceInfo(BaseModel):
+    """Read-only join result from the Phase B provenance audit (141/141
+    events). NOT derived from a database column -- see PROVENANCE_ARTIFACT
+    above. Absent (None on the parent field) when the artifact doesn't cover
+    this event or hasn't been generated -- frontend must treat that as
+    "no badge", never as an error or as PROVENANCE_AMBIGUOUS.
+
+    SEMANTIC GUARD: this describes the provenance of ONE historical event
+    (as_of_event below) -- the specific dated record currently qualifying
+    as a fort's "latest status as of year Y". It is NOT a property of the
+    fort or location itself, and must never be read as such. A fort's
+    dominion_status changes over time as different events qualify at
+    different years; each such event carries its own, independent
+    provenance. This is why `provenance` is nested inside `PowerStatusEvent`
+    (as_of_event.provenance), not a sibling field on PowerStatusItem --
+    the API shape itself should make "this is the event's provenance, not
+    the fort's" impossible to misread."""
+    status: str
+    label: str
+    tooltip: str
+    researcher_review_required: bool
+    multi_source_verified: bool
+
+
 class PowerStatusEvent(BaseModel):
     id: int
     year: Optional[int] = None
@@ -303,6 +371,7 @@ class PowerStatusEvent(BaseModel):
     title: str
     text_asli: str
     source_document: str
+    provenance: Optional[ProvenanceInfo] = None
 
 
 class PowerStatusItem(BaseModel):
@@ -348,6 +417,12 @@ async def get_power_status(
             LinimasaEvent.title,
             LinimasaEvent.text_asli,
             LinimasaEvent.source_document,
+            # source_page/book_page: not shown in the response body itself --
+            # needed only to recompute the Phase B provenance join key
+            # (_provenance_join_hash). Selecting them is an additive change
+            # to an existing query, not a schema change.
+            LinimasaEvent.source_page,
+            LinimasaEvent.book_page,
             FortModelMetric.cluster,
             FortModelMetric.p_self_current_status,
             FortModelMetric.dynamics_series,
@@ -369,26 +444,37 @@ async def get_power_status(
     )
     rows = (await db.execute(query)).all()
 
-    payload = [
-        PowerStatusItem(
-            fort_id=r.fort_id,
-            fort_name=r.fort_name,
-            dominion_status=r.dominion_status,
-            as_of_event=PowerStatusEvent(
-                id=r.event_id,
-                year=r.year,
-                event_date_raw=r.event_date_raw,
-                title=r.title,
-                text_asli=r.text_asli,
-                source_document=r.source_document,
-            ),
-            cluster=r.cluster,
-            p_self_current_status=r.p_self_current_status,
-            dynamics_series=r.dynamics_series,
-            rmse=r.rmse,
-        ).model_dump()
-        for r in rows
-    ]
+    payload = []
+    for r in rows:
+        prov = _provenance_for_event(
+            r.source_document, r.source_page, r.book_page, r.event_date_raw, r.title
+        )
+        payload.append(
+            PowerStatusItem(
+                fort_id=r.fort_id,
+                fort_name=r.fort_name,
+                dominion_status=r.dominion_status,
+                as_of_event=PowerStatusEvent(
+                    id=r.event_id,
+                    year=r.year,
+                    event_date_raw=r.event_date_raw,
+                    title=r.title,
+                    text_asli=r.text_asli,
+                    source_document=r.source_document,
+                    provenance=ProvenanceInfo(
+                        status=prov["provenance_status"],
+                        label=prov["provenance_label"],
+                        tooltip=prov["provenance_tooltip"],
+                        researcher_review_required=prov["researcher_review_required"],
+                        multi_source_verified=prov["multi_source_verified"],
+                    ) if prov else None,
+                ),
+                cluster=r.cluster,
+                p_self_current_status=r.p_self_current_status,
+                dynamics_series=r.dynamics_series,
+                rmse=r.rmse,
+            ).model_dump()
+        )
     await cache_set(cache_key, payload)
     response.headers["X-Cache"] = "MISS"
     return payload
