@@ -1,0 +1,456 @@
+{
+  "schema_version": "0.2.0-nonproduction-mvp",
+  "case_id": "PAINAN_1663",
+  "status": "RESEARCH_ONLY_NONPRODUCTION",
+  "generated_from": "ATLAS_PAINAN_1663_RELATIONAL_MVP_IMPLEMENTATION_PLAN.md and the recovered PAINAN_1663_POWER_THEORY_PATRON_CLIENT_DEEP_DIVE.md / PAINAN_1663_POWER_THEORY_WORKING.csv / PAINAN_1663_PATRON_CLIENT_WORKING.csv / PAINAN_1663_POWER_CAUSAL_HYPOTHESIS_MATRIX.csv / ATLAS_POWER_THEORY_PATRON_CLIENT_ONTOLOGY_NOTE.md artifacts; no new corpus research was performed to construct this artifact.",
+  "authorization_notice": "NONPRODUCTION RESEARCH ARTIFACT ONLY. Not served through any API. Not read by any production code path. Not connected to Atlas, the database, or Graphify. No implementation authorization is granted or implied by this file's existence.",
+  "actors": [
+    {
+      "actor_id": "ACTOR_MUHAMMAD_SYAH_FACTION",
+      "label": "Muhammad Syah faction",
+      "actor_type": "RULING_FACTION",
+      "description": "Inderapura ruling house restoration claimant faction (Muhammad Syah, his father Raja Muzzaffar Syah as co-claimant, and son Mansur Syah as Batavia agent-signatory), backed by the 9-of-20 loyal menteri per Kathirithamby-Wells 1976 p.74.",
+      "named_individuals": [
+        "Muhammad Syah",
+        "Raja Muzzaffar Syah (father, co-claimant)"
+      ],
+      "source_document_ids": [
+        "KW1976_p74",
+        "linimasa_row_34",
+        "linimasa_row_35",
+        "linimasa_row_37"
+      ],
+      "identity_caveat": "Possible name-variant link to 'Sultan Mametcha'/'Radja Malafarcha' in linimasa_events.csv rows 34/44/45 is flagged by the recovered deep dive (causal hypothesis matrix, PT-H2) as a PLAUSIBLE, NOT INDEPENDENTLY CONFIRMED match. This artifact reuses that same caveat verbatim; it is not resolved here.",
+      "researcher_review_required": true,
+      "notes": "Kept distinct from Raja Adil faction, from Painan/Padang/Tiku signatories (excluded from this artifact's actor scope per frozen researcher decision), and from any generic 'Songypagouers confederation' aggregate label."
+    },
+    {
+      "actor_id": "ACTOR_RAJA_ADIL_FACTION",
+      "label": "Raja Adil faction",
+      "actor_type": "RULING_FACTION",
+      "description": "Rival internal Inderapura succession claimant, backed by the 11-of-20 defecting menteri per Kathirithamby-Wells 1976 p.74-75; held Menjuto independently until the 1665 VOC punitive expedition.",
+      "named_individuals": [
+        "Raja Adil"
+      ],
+      "source_document_ids": [
+        "KW1976_p74"
+      ],
+      "identity_caveat": null,
+      "researcher_review_required": false,
+      "notes": "Single-source (K-W 1976) for this faction's own conduct; no independent primary-corpus corroboration located among the verified rows for this task."
+    },
+    {
+      "actor_id": "ACTOR_VOC",
+      "label": "VOC (institution)",
+      "actor_type": "INSTITUTION",
+      "description": "Batavia-level VOC institution, distinct from Groenewegen as its field agent/negotiator.",
+      "named_individuals": [],
+      "source_document_ids": [
+        "linimasa_row_35",
+        "linimasa_row_37",
+        "linimasa_row_39",
+        "linimasa_row_42",
+        "linimasa_row_44",
+        "linimasa_row_45",
+        "KW1976_p74"
+      ],
+      "identity_caveat": null,
+      "researcher_review_required": false,
+      "notes": "Institution-level actor; VOC field agents Groenewegen and information-flow figures are modeled separately where individually named and source-traceable."
+    },
+    {
+      "actor_id": "ACTOR_ACEH_COURT",
+      "label": "Aceh court (or ambassadors)",
+      "actor_type": "INSTITUTION",
+      "description": "Aceh royal court and its ambassadors/representatives, treated as one institutional actor because no individually named Aceh ambassador is independently distinguished with a separately traceable mandate in the verified source rows for this task.",
+      "named_individuals": [],
+      "source_document_ids": [
+        "KW1976_p74",
+        "linimasa_row_36"
+      ],
+      "identity_caveat": null,
+      "researcher_review_required": false,
+      "notes": "row_36 (informer network) documents Aceh-side intelligence activity but is not used to ground any relation record in this artifact (see audit, Excluded Candidate Relations) because no relation type among the authorized seven captures an information-flow act."
+    },
+    {
+      "actor_id": "ACTOR_GROENEWEGEN",
+      "label": "Groenewegen (VOC commissioner/negotiator)",
+      "actor_type": "NAMED_BROKER",
+      "description": "Jan van Groenewegen: VOC resident formerly honored at Aceh's own court (linimasa row 26, 1660), later lead VOC negotiator with Muhammad Syah's faction (K-W 1976 p.74) and VOC-side signatory of the 27 Jul 1663 confederation instrument (linimasa row 37).",
+      "named_individuals": [
+        "Jan van Groenewegen"
+      ],
+      "source_document_ids": [
+        "linimasa_row_26",
+        "linimasa_row_35",
+        "linimasa_row_37",
+        "KW1976_p74"
+      ],
+      "identity_caveat": null,
+      "researcher_review_required": true,
+      "notes": "Included as a broker per researcher decision item 4 (named, source-traceable). researcher_review_required=true because the deep dive (§15) flags an unresolved misrepresentation-risk question: a broker with standing on both sides (Aceh court, 1660; VOC negotiator, 1662-63) could shape outcomes in ways neither principal fully observes, though no source documents him acting against either side's interest."
+    },
+    {
+      "actor_id": "ACTOR_MANSUR_SYAH",
+      "label": "Mansur Syah (agent-signatory)",
+      "actor_type": "NAMED_BROKER",
+      "description": "Muhammad Syah's son; traveled as his father's representative and signed at Batavia (Mar 1663) per Kathirithamby-Wells 1976 p.74.",
+      "named_individuals": [
+        "Mansur Syah"
+      ],
+      "source_document_ids": [
+        "KW1976_p74"
+      ],
+      "identity_caveat": null,
+      "researcher_review_required": true,
+      "notes": "researcher_review_required=true because PT-H9 (recovered causal hypothesis matrix) finds that whether Mansur Syah's Oct-1663-adjacent conduct reflects agent drift, versus the same principal (Muhammad Syah) acting further and independently, 'cannot be distinguished by the source' — reused verbatim, not re-argued, here."
+    }
+  ],
+  "treaties": [
+    {
+      "treaty_id": "painan_tractaat_1663",
+      "label": "Painan Tractaat 1663 (Songypagouers confederation instrument)",
+      "description": "Spans the Mar 1663 Batavia signing (Mansur Syah, per K-W 1976 p.74) and the 27 Jul 1663 Songypagouers confederation instrument (linimasa row 37, CD2 268; article text per linimasa row 35, source '1663 89'). The recovered deep dive's own chronology lists these as two dated entries; this artifact treats them as one treaty process for treaty_id purposes, per the deep dive's own description of a single '12-article text.' This bundling is MODERATE-confidence, not independently disambiguated further in this task.",
+      "source_document_ids": [
+        "linimasa_row_35",
+        "linimasa_row_37",
+        "KW1976_p74"
+      ],
+      "researcher_review_required": true
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "REL_REQUESTS_PROTECTION_FROM_MUHAMMAD_SYAH_FACTION__VOC",
+      "subject_actor_id": "ACTOR_MUHAMMAD_SYAH_FACTION",
+      "object_actor_id": "ACTOR_VOC",
+      "relation_type": "REQUESTS_PROTECTION_FROM",
+      "valid_from": "1662-11",
+      "valid_to": "1663-03",
+      "date_precision": "MONTH",
+      "event_ids": [
+        "linimasa_row_34"
+      ],
+      "treaty_id": "painan_tractaat_1663",
+      "source_document_ids": [
+        "KW1976_p74",
+        "linimasa_row_34"
+      ],
+      "source_passage_locator": "Kathirithamby-Wells 1976, Indonesia No.21, p.74 (flight to Salida, Nov 1662, seeking VOC assistance amid succession crisis); linimasa_events.csv row 34 (source '1663 92', event date 4 Nov 1662, reported Batavia 27 Mar 1663: 'Indrapoura (Malafarcha & Sultan Mametcha) ikut lepas dari Atjeh').",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "UNKNOWN_EFFECTIVE_CONTROL",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_PARTIALLY_SUPPORTED",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Row 34: 'Indrapoura (Malafarcha & Sultan Mametcha) ikut lepas dari Atjeh', dated 4 Nov 1662 (reported 27 Mar 1663). K-W 1976 p.74: Muhammad Syah and his father fled to Salida in Nov 1662 to seek VOC assistance amid an 11-of-20-menteri revolt backing Raja Adil.",
+      "historical_reconstruction": "Read together, these two independently-provenanced sources are consistent with Muhammad Syah's faction approaching VOC for backing in the same window as its documented exit from Aceh's authority. The exact request content (military backing? recognition? both?) is not itemized in either source at this stage — this is treated as a general protection request, not a fully specified bargain (the bargain's terms appear later, §R2/R3).",
+      "theoretical_annotation": "First-dimension power reading: local-actor agency in initiating contact with an external patron candidate, consistent with the deep dive's client-agency finding (§14) that this faction demonstrably chose among patrons rather than passively receiving protection.",
+      "public_display_summary": "Inderapura's ruling faction sought VOC support in 1662 amid an internal succession dispute.",
+      "notes": "claim_or_effective_control set to UNKNOWN_EFFECTIVE_CONTROL because a request, prior to any grant, does not itself assert or exercise a claim; this value is the closest fit within the 10-value controlled vocabulary, not a claim that control status is genuinely contested. researcher_review_required=true solely for the row-34 name-variant identity caveat carried on the Muhammad Syah faction actor record, not for this relation's own sourcing quality."
+    },
+    {
+      "relation_id": "REL_PROVIDES_PROTECTION_TO_VOC__MUHAMMAD_SYAH_FACTION",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_actor_id": "ACTOR_MUHAMMAD_SYAH_FACTION",
+      "relation_type": "PROVIDES_PROTECTION_TO",
+      "valid_from": "1663-03",
+      "valid_to": null,
+      "date_precision": "MONTH",
+      "event_ids": [
+        "linimasa_row_35",
+        "linimasa_row_42"
+      ],
+      "treaty_id": "painan_tractaat_1663",
+      "source_document_ids": [
+        "KW1976_p74",
+        "linimasa_row_35",
+        "linimasa_row_42"
+      ],
+      "source_passage_locator": "K-W 1976 p.74 (VOC support explicitly conditioned on, and aimed at, Muhammad Syah's restoration; exclusive pepper rights promised in exchange); linimasa row 35 (source '1663 89', arts.1-2 trade exclusivity/toll exemption); linimasa row 42 (source '1665 668', 27 Aug 1665, 'VOC dirikan factorij Padang, dukung Sultan Mametcha' — later corroborating evidence of continued VOC backing).",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CONTESTED_CONTROL",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_PARTIALLY_SUPPORTED",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "K-W 1976 p.74 states VOC support was conditional on Muhammad Syah's restoration, with exclusive pepper rights promised in exchange. Row 35 arts.1-2 text trade exclusivity and toll exemption. Row 42 (1665) records a VOC factorij established at Padang explicitly 'in support of' Sultan Mametcha.",
+      "historical_reconstruction": "VOC's offer of restoration backing, conditioned on commercial exclusivity, is treated as accepted at the Mar 1663 Batavia signing and reaffirmed by the continued VOC presence recorded through Aug 1665. No explicit termination of this relation is documented in the sources examined; valid_to is left open per the temporal-model default rather than inferred.",
+      "theoretical_annotation": "Directly instantiates the deep dive's own PWR03 finding: VOC held a formal, treaty-adjacent claim/commitment toward this faction but did not demonstrate durable effective control over the SAME actor's subsequent conduct (see REL_RECONCILES_WITH... below). Protection is explicitly not equated with sovereignty transfer, per the deep dive's own guard (§16).",
+      "public_display_summary": "VOC offered restoration backing to Muhammad Syah's faction in exchange for commercial terms; the durability of this backing is contested by later events.",
+      "notes": "commitment_credibility=PARTIALLY_CREDIBLE reuses the deep dive's own §17 finding verbatim ('VOC's ability to deliver promised backing: PARTIALLY_CREDIBLE'). researcher_review_required=true because exclusivity/durability is directly complicated by the Oct 1663 reconciliation (see REL_RECONCILES_WITH... and REL_MAINTAINS_PARALLEL_ALIGNMENT_WITH... below)."
+    },
+    {
+      "relation_id": "REL_REQUIRES_MONOPOLY_FROM_VOC__MUHAMMAD_SYAH_FACTION",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_actor_id": "ACTOR_MUHAMMAD_SYAH_FACTION",
+      "relation_type": "REQUIRES_MONOPOLY_FROM",
+      "valid_from": "1663-03",
+      "valid_to": null,
+      "date_precision": "MONTH",
+      "event_ids": [
+        "linimasa_row_35",
+        "linimasa_row_44",
+        "linimasa_row_45"
+      ],
+      "treaty_id": "painan_tractaat_1663",
+      "source_document_ids": [
+        "linimasa_row_35",
+        "KW1976_p74",
+        "linimasa_row_44",
+        "linimasa_row_45"
+      ],
+      "source_passage_locator": "linimasa row 35 arts.1-2 (source '1663 89', trade exclusivity and toll exemption); K-W 1976 p.74 (exclusive pepper rights condition); linimasa row 44 (source '1681 968', 1667 event recorded 1681, formal cession of Sillida & Pulau Cingkuak) and row 45 (CD2 385, 25 Jul 1667, same cession) as later corroborating escalation of VOC's commercial/territorial position.",
+      "provenance_status": "MULTI_SOURCE_VERIFIED",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "TREATY_OBLIGATION",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_PARTIALLY_SUPPORTED",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "SECOND_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Row 35 arts.1-2 explicitly text VOC trade exclusivity and toll exemption. K-W 1976 p.74 states exclusive pepper rights were the explicit exchange condition for restoration backing. Rows 44/45 (1667) record formal cession of Sillida and Pulau Cingkuak to VOC, again naming 'Sultan Mametchia (Indrapoura)' as a signatory party.",
+      "historical_reconstruction": "The monopoly condition is stated as a treaty obligation from the outset (Mar/Jul 1663) and is followed, four years later, by a further territorial cession that the deep dive's PT-H8 reads as part of a broader (contested, not deliberate-ratchet-confirmed) expansion pattern. This relation records the obligation and its later reinforcement; it does not itself resolve PT-H8's open question of whether this reflects a deliberate VOC program.",
+      "theoretical_annotation": "Second-dimension reading: the treaty's contractual FORM (12/8-article, Dutch-drafted) is itself a VOC-controlled agenda item continuing a pattern from five earlier VOC treaties (deep dive §6/PWR02) — whether local negotiators shaped specific article language is CANNOT_DETERMINE, not resolved by this relation record.",
+      "public_display_summary": "The 1663 treaty required trade exclusivity and toll exemption for VOC; later events (1667) extended VOC's commercial and territorial position.",
+      "notes": "claim_or_effective_control=TREATY_OBLIGATION deliberately distinguishes the STATED obligation from its effective enforcement, which is recorded separately (see REL_CLAIMS_JURISDICTION_OVER_VOC__MUHAMMAD_SYAH_FACTION below, claim_or_effective_control=CONTESTED_CONTROL). researcher_review_required=true both for the rows-44/45 Mametchia name-variant caveat (shared with the Muhammad Syah faction actor record) and because this record's valid_to is deliberately left open pending researcher decision on how far past 1667 the monopoly obligation should be considered still in force for MVP purposes."
+    },
+    {
+      "relation_id": "REL_NEGOTIATES_WITH_GROENEWEGEN__MUHAMMAD_SYAH_FACTION",
+      "subject_actor_id": "ACTOR_GROENEWEGEN",
+      "object_actor_id": "ACTOR_MUHAMMAD_SYAH_FACTION",
+      "relation_type": "NEGOTIATES_WITH",
+      "valid_from": "1662-11",
+      "valid_to": "1663-07-27",
+      "date_precision": "MONTH",
+      "event_ids": [
+        "linimasa_row_35",
+        "linimasa_row_37"
+      ],
+      "treaty_id": "painan_tractaat_1663",
+      "source_document_ids": [
+        "KW1976_p74",
+        "linimasa_row_35",
+        "linimasa_row_37"
+      ],
+      "source_passage_locator": "K-W 1976 p.74 (Groenewegen as lead VOC negotiator with Muhammad Syah's faction, 1662-63); linimasa row 35 (source '1663 89', 'VOC (koopman Groenewegen) & konfederasi Songypagouers'); linimasa row 37 (CD2 268, 27 Jul 1663, 'commandeur Jan van Groenewegen' as VOC-side signatory).",
+      "provenance_status": "MULTI_SOURCE_VERIFIED",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "UNKNOWN_EFFECTIVE_CONTROL",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "SECOND_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Groenewegen is independently named as VOC's negotiating/signing agent in both the primary treaty rows (35, 37) and in K-W's secondary narrative of the 1662-63 negotiation.",
+      "historical_reconstruction": "Groenewegen's negotiation role spans the Nov 1662 opening contact through the 27 Jul 1663 confederation instrument he signs for VOC's side; this record represents the negotiation relationship as a whole, not each individual session.",
+      "theoretical_annotation": "Deep dive §15 (Brokerage): Groenewegen is the clearest broker actor, personally resident at Aceh's own court in 1660 (row 26) before becoming VOC's lead negotiator here — raising an explicit, unresolved misrepresentation-risk question (a broker with standing on both sides could shape outcomes neither principal fully observes), not resolved by this record.",
+      "public_display_summary": "VOC's negotiator Groenewegen conducted the 1662-63 negotiations with Inderapura's ruling faction.",
+      "notes": "claim_or_effective_control set to UNKNOWN_EFFECTIVE_CONTROL because a negotiation relation, prior to and distinct from any resulting claim, does not itself assert jurisdiction or control; this is a schema-required field populated with the closest neutral value, not a substantive finding of contested control. researcher_review_required=true carries forward the broker misrepresentation-risk flag from the Groenewegen actor record."
+    },
+    {
+      "relation_id": "REL_NEGOTIATES_WITH_MANSUR_SYAH__VOC",
+      "subject_actor_id": "ACTOR_MANSUR_SYAH",
+      "object_actor_id": "ACTOR_VOC",
+      "relation_type": "NEGOTIATES_WITH",
+      "valid_from": "1663-03",
+      "valid_to": "1663-03",
+      "date_precision": "MONTH",
+      "event_ids": [],
+      "treaty_id": "painan_tractaat_1663",
+      "source_document_ids": [
+        "KW1976_p74"
+      ],
+      "source_passage_locator": "K-W 1976 p.74 (Mansur Syah, son of Muhammad Syah, travels as his father's representative and signs at Batavia, Mar 1663).",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "K-W 1976 p.74 (only source located in this task) states Mansur Syah signed at Batavia as his father's agent-representative.",
+      "historical_reconstruction": "This is treated as a single dated agency act (the Batavia signing), not a sustained negotiation relationship distinct from Groenewegen's own negotiation with the wider faction.",
+      "theoretical_annotation": "Deep dive §18 (Principal-Agent): whether Mansur Syah's own conduct, or the faction's later Oct 1663 conduct via his father, constitutes agent drift versus the same principal acting further independently 'cannot be distinguished by the source' (PT-H9, reused verbatim, not re-argued here).",
+      "public_display_summary": "Mansur Syah signed the treaty at Batavia on behalf of his father's faction.",
+      "notes": "Sourced exclusively from a secondary historiographical account (K-W 1976), with no corroborating primary-corpus row located among the verified rows for this task; per this artifact's explicit_or_inferred mapping rule (documented in vocabulary_notes below), this is recorded as OBSERVED_ACTION_AS_STRATEGY rather than EXPLICIT_STRATEGY. claim_or_effective_control=FORMAL_ACCEPTANCE because a signing act is precisely an instance of formal acceptance, distinct from any claim about effective compliance thereafter."
+    },
+    {
+      "relation_id": "REL_RECONCILES_WITH_MUHAMMAD_SYAH_FACTION__ACEH_COURT",
+      "subject_actor_id": "ACTOR_MUHAMMAD_SYAH_FACTION",
+      "object_actor_id": "ACTOR_ACEH_COURT",
+      "relation_type": "RECONCILES_WITH",
+      "valid_from": "1663-10",
+      "valid_to": null,
+      "date_precision": "MONTH",
+      "event_ids": [],
+      "treaty_id": "painan_tractaat_1663",
+      "source_document_ids": [
+        "KW1976_p74"
+      ],
+      "source_passage_locator": "K-W 1976 p.74 (Muhammad Syah's faction reconciles with Aceh ambassadors in Oct 1663, months after the VOC treaty, during Groenewegen's temporary absence).",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "UNKNOWN_EFFECTIVE_CONTROL",
+      "commitment_credibility": "LOW_CREDIBILITY",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "K-W 1976 p.74 (only source located in this task) states the reconciliation with Aceh ambassadors occurred in Oct 1663.",
+      "historical_reconstruction": "This is the single most important relation in this artifact: it is the direct counter-instance to any clean patron-substitution reading of the 1663 treaty for this actor, occurring only months after the VOC agreement.",
+      "theoretical_annotation": "Deep dive §13: for Inderapura specifically, this event is the strongest single piece of counterevidence against clean PATRON_SUBSTITUTION (PT-H5, CONTESTED) and the clearest support for PATRON_DIVERSIFICATION/STRATEGIC_HEDGING (PT-H6 SUPPORTED / PT-H7 PARTIALLY_SUPPORTED). Reconciliation is explicitly NOT treated as patron replacement (per researcher instruction not to equate reconciliation with replacement) — the concurrent VOC tie is recorded separately (see REL_MAINTAINS_PARALLEL_ALIGNMENT_WITH... below).",
+      "public_display_summary": "Months after the VOC treaty, the same faction also reconciled with Aceh; the two relationships were not mutually exclusive.",
+      "notes": "patron_client_classification=PATRON_CLIENT_NOT_TESTABLE (not PARTIALLY_SUPPORTED as DYAD01 carries) because DYAD01 in the recovered patron-client ledger evidences the PRE-1660 Aceh-negeri relationship broadly, not this specific 1663 reconciliation act; reusing DYAD01's classification here would overclaim. Sourced exclusively from K-W 1976; explicit_or_inferred set per this artifact's secondary-source mapping rule (see vocabulary_notes)."
+    },
+    {
+      "relation_id": "REL_MAINTAINS_PARALLEL_ALIGNMENT_WITH_MUHAMMAD_SYAH_FACTION__VOC",
+      "subject_actor_id": "ACTOR_MUHAMMAD_SYAH_FACTION",
+      "object_actor_id": "ACTOR_VOC",
+      "relation_type": "MAINTAINS_PARALLEL_ALIGNMENT_WITH",
+      "valid_from": "1663-10",
+      "valid_to": null,
+      "date_precision": "MONTH",
+      "event_ids": [],
+      "treaty_id": "painan_tractaat_1663",
+      "source_document_ids": [
+        "KW1976_p74"
+      ],
+      "source_passage_locator": "K-W 1976 p.74 ('the rulers planned to reopen negotiations with Groenewegen as soon as he returned' — stated concurrently with, not after, the Oct 1663 Aceh reconciliation).",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "MECHANISM_HYPOTHESIS",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "UNKNOWN_EFFECTIVE_CONTROL",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_CONTESTED",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "K-W 1976 p.74 (only source located in this task) states the rulers intended to reopen VOC negotiations upon Groenewegen's return, stated in the same passage as the Oct 1663 Aceh reconciliation.",
+      "historical_reconstruction": "This record is this artifact's operationalization of the new MAINTAINS_PARALLEL_ALIGNMENT_WITH relation type identified by the recovered ontology note (§0.20 of the MVP plan) — 'same actor maintains conflicting alignments simultaneously,' distinct from a succession contest.",
+      "theoretical_annotation": "Deep dive PT-H7 (STRATEGIC_HEDGING): the sequence (signing -> reconciliation -> intended resumption of VOC talks) is well-documented; whether it reflects DELIBERATE hedging strategy versus REACTIVE improvisation exploiting Groenewegen's temporary absence is explicitly NOT_TESTABLE on current evidence — this record does not resolve that question, only documents the parallel-alignment state itself.",
+      "public_display_summary": "The same faction kept a channel open to both VOC and Aceh at the same time, rather than choosing one over the other.",
+      "notes": "patron_client_classification=PATRON_CLIENT_CONTESTED (not SUPPORTED, not NOT_TESTABLE): this record is precisely what falsifies the exclusivity element of DYAD02's patron-client test in the recovered ledger ('exclusivity is directly falsified by the Oct 1663 reconciliation and the 1686 English defection'). commitment_credibility=PARTIALLY_CREDIBLE reuses the deep dive's own overall §17 summary finding, applied here to the relation that most directly embodies it. Explicitly does NOT equate parallel alignment with a switching/replacement event (see REL_RECONCILES_WITH... above for the distinct, separately-recorded reconciliation act)."
+    },
+    {
+      "relation_id": "REL_CLAIMS_JURISDICTION_OVER_VOC__MUHAMMAD_SYAH_FACTION",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_actor_id": "ACTOR_MUHAMMAD_SYAH_FACTION",
+      "relation_type": "CLAIMS_JURISDICTION_OVER",
+      "valid_from": "1663-07-27",
+      "valid_to": null,
+      "date_precision": "DAY",
+      "event_ids": [
+        "linimasa_row_35",
+        "linimasa_row_37",
+        "linimasa_row_39"
+      ],
+      "treaty_id": "painan_tractaat_1663",
+      "source_document_ids": [
+        "linimasa_row_35",
+        "linimasa_row_37",
+        "linimasa_row_39",
+        "KW1976_p74"
+      ],
+      "source_passage_locator": "linimasa row 37 (CD2 268, 27 Jul 1663, Songypagouers confederation instrument, VOC-side commandeur Jan van Groenewegen); row 35 (source '1663 89', arts.1-2 exclusivity/toll terms); row 39 (source '1664 560', 1664, VOC-ordered forced expulsion of Achinders from Indrapoura, enforcement evidence).",
+      "provenance_status": "MULTI_SOURCE_VERIFIED",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CONTESTED_CONTROL",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "SECOND_DIMENSION",
+        "RELATIONAL_AND_PRODUCTIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Row 37 records the confederation's formal exit from Aceh's authority into a VOC-negotiated instrument; row 35 texts the commercial-exclusivity terms of that instrument; row 39 records a 1664 VOC enforcement action (expulsion order) against Aceh's remaining presence at Indrapoura.",
+      "historical_reconstruction": "Read together, these three primary-pipeline rows document VOC asserting a claim over this faction's external political/commercial alignment (replacing Aceh's prior claim) and taking at least one concrete enforcement action toward it in 1664. This is a claim over external alignment/commercial conduct specifically, not a general territorial-administrative jurisdiction claim — the narrower scope is preserved deliberately, per researcher guard against overclaiming.",
+      "theoretical_annotation": "Directly reuses PWR03: 'VOC held a formal claim (treaty) but not demonstrated effective control over the same actor's subsequent conduct' — the Oct 1663 reconciliation (recorded separately above) is this record's own direct counterevidence, which is why claim_or_effective_control is CONTESTED_CONTROL rather than a control-affirming value despite HIGH evidence_strength for the claim's existence.",
+      "public_display_summary": "VOC's 1663 treaty asserted authority over this faction's external alignment; whether that authority was actually enforced afterward is contested by the sources.",
+      "notes": "researcher_review_required=true per the default branch of the governing instruction's item 12 (CLAIMS_JURISDICTION_OVER defaults to review-required unless a primary passage explicitly and unambiguously supports the claim's full scope; row 37/35's textual support is judged sufficient for the narrower external-alignment/commercial scope recorded here, but not unambiguous enough to waive review)."
+    },
+    {
+      "relation_id": "REL_CLAIMS_JURISDICTION_OVER_VOC__RAJA_ADIL_FACTION",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_actor_id": "ACTOR_RAJA_ADIL_FACTION",
+      "relation_type": "CLAIMS_JURISDICTION_OVER",
+      "valid_from": "1665-01",
+      "valid_to": null,
+      "date_precision": "MONTH",
+      "event_ids": [],
+      "treaty_id": "painan_tractaat_1663",
+      "source_document_ids": [
+        "KW1976_p74"
+      ],
+      "source_passage_locator": "K-W 1976 p.74 (Jan 1664 VOC reconnaissance of Raja Adil's disposition; 1665 VOC punitive expedition against Raja Adil, who had held Menjuto independently since 1662).",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "MECHANISM_HYPOTHESIS",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "K-W 1976 p.74 (only source located in this task) records VOC reconnaissance of Raja Adil in Jan 1664, followed by a punitive expedition in 1665.",
+      "historical_reconstruction": "This is the clearest coercive assertion of VOC authority documented against the rival faction specifically, distinct from and later than the treaty instrument itself; it is recorded as a claim exercised through military action, not a treaty-textual claim (no treaty text names Raja Adil).",
+      "theoretical_annotation": "Deep dive §18 (Principal-Agent): VOC's own Jan 1664 reconnaissance requirement before committing further force is treated there as a textbook incomplete-information condition — VOC is more nearly a PRINCIPAL seeking information about a THIRD PARTY (Raja Adil) than a principal monitoring its own agent. This record inherits that framing without re-arguing it.",
+      "public_display_summary": "VOC investigated and later moved militarily against Muhammad Syah's rival, Raja Adil, in the mid-1660s.",
+      "notes": "claim_or_effective_control=MILITARY_PRESENCE (not CONTESTED_CONTROL) because, unlike the Muhammad Syah faction relation above, an actual military expedition is the documented act here — a more concrete, if still not fully territorial-administrative, effective assertion. researcher_review_required=true per the default branch of item 12, and because this record is sourced exclusively from a secondary account with no primary-corpus corroboration among the verified rows for this task."
+    }
+  ],
+  "vocabulary_notes": {
+    "date_precision": {
+      "values_used": [
+        "YEAR",
+        "MONTH",
+        "DAY"
+      ],
+      "status": "NOT one of the frozen controlled vocabularies verified from ATLAS_POWER_RELATION_DATA_CONTRACT_DRAFT.md (that document references an existing 'event_date_precision' convention conceptually but does not enumerate fixed values, and no such column exists in the current linimasa_events.csv header). This is a narrow, self-documented, field-level convention introduced only for date-precision bookkeeping in this artifact, not a new value added to any of the seven frozen controlled vocabularies (provenance_status, evidence_strength, interpretive_status, claim_or_effective_control, explicit_or_inferred, patron_client_classification, commitment_credibility)."
+    },
+    "explicit_or_inferred_secondary_source_mapping": {
+      "rule": "Where a relation record's source_document_ids draws on at least one primary/independent-corpus source (a linimasa_events.csv row), explicit_or_inferred is set to EXPLICIT_STRATEGY when that source directly states the act. Where a relation record is sourced EXCLUSIVELY from a secondary historiographical account (Kathirithamby-Wells 1976, with no corroborating linimasa row located among the verified rows for this task), explicit_or_inferred is set to OBSERVED_ACTION_AS_STRATEGY, used here as this artifact's designated official equivalent for 'sourced from historiographical interpretation only' per researcher instruction item 13. No new value outside the four verified explicit_or_inferred values (EXPLICIT_STRATEGY | OBSERVED_ACTION_AS_STRATEGY | INFERRED_AVAILABLE_OPTION | COUNTERFACTUAL_NOT_ESTABLISHED) is introduced by this rule.",
+      "relations_using_secondary_only_mapping": [
+        "REL_NEGOTIATES_WITH_MANSUR_SYAH__VOC",
+        "REL_RECONCILES_WITH_MUHAMMAD_SYAH_FACTION__ACEH_COURT",
+        "REL_MAINTAINS_PARALLEL_ALIGNMENT_WITH_MUHAMMAD_SYAH_FACTION__VOC",
+        "REL_CLAIMS_JURISDICTION_OVER_VOC__RAJA_ADIL_FACTION"
+      ]
+    },
+    "claim_or_effective_control_for_non_jurisdictional_relation_types": {
+      "rule": "For relation types that are not themselves a jurisdiction/control assertion (e.g. REQUESTS_PROTECTION_FROM, NEGOTIATES_WITH prior to any resulting claim), claim_or_effective_control is populated with UNKNOWN_EFFECTIVE_CONTROL as the closest neutral value within the frozen 10-value vocabulary, to satisfy the field's mandatory-presence requirement (researcher instruction item 5) without asserting a substantive control finding the relation type does not itself support. This is a field-population convention, not a claim that control status is genuinely contested for these relations."
+    }
+  }
+}
