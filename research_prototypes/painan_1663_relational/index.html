@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painan 1663 Relational Research Prototype (NONPRODUCTION)</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+
+<header id="status-banner" role="banner" aria-label="Nonproduction status banner">
+  <p class="banner-line banner-line-1">RESEARCH PROTOTYPE</p>
+  <p class="banner-line banner-line-2">NONPRODUCTION</p>
+  <p class="banner-line banner-line-3">PAINAN 1663 RELATIONAL MVP</p>
+  <p class="banner-line banner-line-4">NOT CONNECTED TO THE PUBLIC ATLAS, API, DATABASE, OR GRAPHIFY</p>
+</header>
+
+<div id="load-status" role="status" aria-live="polite"></div>
+
+<nav id="view-nav" aria-label="Prototype views">
+  <button type="button" class="nav-btn" data-view="overview" aria-current="page">Overview</button>
+  <button type="button" class="nav-btn" data-view="actors">Actors</button>
+  <button type="button" class="nav-btn" data-view="timeline">Relation Timeline</button>
+  <button type="button" class="nav-btn" data-view="network">Relation Network</button>
+  <button type="button" class="nav-btn" data-view="claimcontrol">Claim vs Effective Control</button>
+  <button type="button" class="nav-btn" data-view="publiccopy">Public-Copy Preview</button>
+</nav>
+
+<main id="app-root">
+  <section id="view-overview" class="view" aria-labelledby="overview-heading"></section>
+  <section id="view-actors" class="view" hidden aria-labelledby="actors-heading"></section>
+  <section id="view-timeline" class="view" hidden aria-labelledby="timeline-heading"></section>
+  <section id="view-network" class="view" hidden aria-labelledby="network-heading"></section>
+  <section id="view-claimcontrol" class="view" hidden aria-labelledby="claimcontrol-heading"></section>
+  <section id="view-publiccopy" class="view" hidden aria-labelledby="publiccopy-heading"></section>
+</main>
+
+<footer id="app-footer">
+  <p>Reads exactly one file, read-only: <code>data/power_relations/painan_1663_relational_research_artifact.json</code>.
+  No API, database, Graphify, or production Atlas connection exists on this page.
+  Patron-client and power-theory content are Level 3 research annotations, not confirmed historical fact.</p>
+</footer>
+
+<script src="prototype.js"></script>
+</body>
+</html>
