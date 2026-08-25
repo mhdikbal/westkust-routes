@@ -163,6 +163,14 @@ scrawling/
 [ ] docker compose logs backend --tail 20 → tidak ada error
 ```
 
+**Catatan operasional — internal vs public path prefix:**
+
+- Route internal aplikasi (`frontend/map_app/urls.py`) memakai root-relative paths: `/`, `/riset/pemodelan/`, `/riset/pemodelan/panduan/`, `/linimasa/`, dsb — tanpa prefiks `/atlas/`.
+- Prefiks publik `/atlas/` diterapkan pada layer reverse proxy di depan `silida.org`, bukan di Nginx internal (`:8084`) atau di Django itu sendiri.
+- **Internal smoke test** (server/staging, langsung ke container) memakai path root-relative: `curl http://localhost:8084/`, `/riset/pemodelan/`, `/riset/pemodelan/panduan/`, `/linimasa/`.
+- **Public smoke test** memakai URL kanonis dengan prefiks: `https://silida.org/atlas/`, `https://silida.org/atlas/riset/pemodelan/`, dst.
+- HTTP 404 untuk `curl http://localhost:8084/atlas/...` (path internal dengan prefiks publik) adalah **expected behavior**, bukan regresi — jangan menandainya sebagai smoke-test gagal tanpa mengecek path root-relative atau URL publik kanonis terlebih dahulu.
+
 ---
 
 ## Workflow Mandatori
