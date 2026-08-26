@@ -1,0 +1,680 @@
+{
+  "schema_version": "0.1.0-ontology-v2-validation",
+  "ontology_contract_version": "V2_DRAFT (docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md, unmodified by this artifact)",
+  "case_id": "NATAL_1760_ONTOLOGY_VALIDATION_V1",
+  "status": "RESEARCH_ONLY_NONPRODUCTION",
+  "validation_case_status": "ONTOLOGY_VALIDATION_CASE_V1",
+  "authorization_notice": "RESEARCH-ONLY NONPRODUCTION ONTOLOGY VALIDATION ARTIFACT. NOT SERVED BY API. NOT READ BY ATLAS. NOT CONNECTED TO DATABASE. NOT CONNECTED TO GRAPHIFY. This artifact tests whether ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md can represent the Natal 1760 case; it does not modify that draft, the Painan artifact, or any prior research artifact.",
+  "frozen_source_scope": "Batch I9 CORE_I9 material only: CD6 traktat MXXVI p.210 (linimasa_row_110), CD6 traktat MXXXI p.223 (linimasa_row_111), the already-verified GM Deel13 corroboration (Phase B), docs/cd_resistance_signal_candidates.csv row 21, and the Batch I9 interpretive-ledger rows/audit section. No new historical context was re-derived for this artifact.",
+  "actors": [
+    {
+      "actor_id": "ACTOR_DATOS_BAZAER_RADJA_PUTTI_KATY",
+      "actor_type": "IndividualOfficeHolder",
+      "label": "Dato's-bazaer Radja-putti-katy",
+      "source_label_as_written": "Dato's-bazaer: Radj[a-putti-katy]",
+      "temporal_scope": "1760-03-06 to 1760-03-07 (documented act only)",
+      "source_document_ids": [
+        "linimasa_row_110",
+        "cd_resistance_signal_candidates_row21"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI, p.210 (buku 198-199); cd_resistance_signal_candidates.csv row 21 (CD6.pdf p.210)",
+      "identity_confidence": "HIGH for the name as written; role described as 'inheemse souvereinen' (indigenous sovereign), not independently verified beyond the instrument's own self-description",
+      "researcher_review_required": true,
+      "notes": "March 1760 signatory of the cession declaration. Kept distinct from all other Natal actors, per the hard rule against homogenization."
+    },
+    {
+      "actor_id": "ACTOR_SULTHAN_BAGINDO_MAHARADJA_LELO",
+      "actor_type": "IndividualOfficeHolder",
+      "label": "Sulthan Bagindo Maharadja-Lelo",
+      "source_label_as_written": "Sulthan Bagindo Maharadja-Lelo",
+      "temporal_scope": "1760-03-06 to 1760-03-07 (documented act only)",
+      "source_document_ids": [
+        "linimasa_row_110"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI, p.210 (buku 198-199)",
+      "identity_confidence": "HIGH for the name as written; POSSIBLE_SAME_ACTOR annotation attached (see notes) -- not merged",
+      "researcher_review_required": true,
+      "notes": "possible_same_actor: ACTOR_HOOFDREGENT_BAGINDA_MAHARADJA_LELLO (October 1760 signatory) -- title differs (Sulthan Bagindo vs. hoofdregent Baginda), name spelling differs (Maharadja-Lelo vs. Maharadja Lello). Per this task's explicit hard rule, these two actors are NOT merged; each retains its own actor_id, and this note records the possible-identity hypothesis without resolving it. Reused disposition from Batch I9's own explicit, unresolved flag on this exact question."
+    },
+    {
+      "actor_id": "ACTOR_HOOFDREGENT_BAGINDA_MAHARADJA_LELLO",
+      "actor_type": "IndividualOfficeHolder",
+      "label": "hoofdregent Baginda Maharadja Lello",
+      "source_label_as_written": "hoofdregent Baginda Maharadja Lello",
+      "temporal_scope": "1760-10-06 (documented act only)",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI, p.223 (buku 211-215)",
+      "identity_confidence": "HIGH for the name as written; POSSIBLE_SAME_ACTOR annotation attached, see notes -- not merged with ACTOR_SULTHAN_BAGINDO_MAHARADJA_LELO",
+      "researcher_review_required": true,
+      "notes": "possible_same_actor: ACTOR_SULTHAN_BAGINDO_MAHARADJA_LELO (March 1760 signatory). Kept as a fully distinct actor_id per the hard rule; the identity question is preserved as an open annotation, not resolved by merging or by asserting non-identity either."
+    },
+    {
+      "actor_id": "ACTOR_RADJA_DARAT",
+      "actor_type": "IndividualOfficeHolder",
+      "label": "radja Darat",
+      "source_label_as_written": "radja Darat",
+      "temporal_scope": "1760-10-06 (documented act only)",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI, p.223 (buku 211-215)",
+      "identity_confidence": "HIGH for the name as written; no prior or later appearance found in the frozen Batch I9 scope",
+      "researcher_review_required": false,
+      "notes": "October 1760 signatory, individually named, no title beyond 'radja'."
+    },
+    {
+      "actor_id": "ACTOR_SEVEN_PONGHOULOUS_NATAL",
+      "actor_type": "NamedCollective",
+      "label": "7 ponghoulous Natal",
+      "source_label_as_written": "7 ponghoulous Natal",
+      "temporal_scope": "1760-10-06 (documented act only)",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI, p.223 (buku 211-215)",
+      "identity_confidence": "MODERATE -- named by office and count, not individually by name",
+      "researcher_review_required": true,
+      "notes": "A bounded, source-described group (per Draft V2's Actor identity rule: 'an explicitly bounded, source-described group' is sufficient where no individual names survive). Modeled as NamedCollective per Draft V2's own entity decision, not as an undifferentiated 'Natal' actor."
+    },
+    {
+      "actor_id": "ACTOR_NATAL_REGENTS_COLLECTIVE_1693_1760",
+      "actor_type": "NamedCollective",
+      "label": "de gezamentlyke regenten van Natal (the collective regents of Natal)",
+      "source_label_as_written": "de gezamentlyke regenten van Natal",
+      "temporal_scope": "1693 to 1760 (the October 1760 treaty's own retrospective narrative span)",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI, p.223 -- the treaty's own retrospective preamble narrating events since 1693",
+      "identity_confidence": "LOW for continuity with any individually-named actor in this artifact -- this is the SOURCE'S OWN collective/institutional term for the historical-narrative portion (the 1693 treaty, the 1755 renewal, and the undated English-influence interval), used by the treaty's own drafters, not by this artifact's own choice to aggregate",
+      "researcher_review_required": true,
+      "notes": "ONTOLOGY STRESS-TEST NOTE: this actor exists ONLY to carry the relation(s) the source itself narrates collectively (the pre-1760 alliance history and the relapse to English influence). It is explicitly NOT asserted to be identical to ACTOR_DATOS_BAZAER_RADJA_PUTTI_KATY, ACTOR_SULTHAN_BAGINDO_MAHARADJA_LELO, ACTOR_HOOFDREGENT_BAGINDA_MAHARADJA_LELLO, ACTOR_RADJA_DARAT, or ACTOR_SEVEN_PONGHOULOUS_NATAL -- the source itself does not establish that continuity, and this artifact does not fabricate it. See NATAL_1760_ONTOLOGY_STRESS_TEST.csv test T-09 for the full discussion of this representational tension."
+    },
+    {
+      "actor_id": "ACTOR_VOC",
+      "actor_type": "Institution",
+      "label": "VOC (institution)",
+      "source_label_as_written": "de Hollandse Maatschappy / d'E. Comp[agnie]",
+      "temporal_scope": "throughout, distinct from its own individual agents (van Moschel, Senff)",
+      "source_document_ids": [
+        "linimasa_row_110",
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI p.210; CD6 traktat MXXXI p.223",
+      "identity_confidence": "HIGH",
+      "researcher_review_required": false,
+      "notes": "Institution-level actor, kept distinct from its individual agents per Draft V2's own Institution entity rule."
+    },
+    {
+      "actor_id": "ACTOR_ENGLISH",
+      "actor_type": "Institution",
+      "label": "the English (institutional, unnamed individuals)",
+      "source_label_as_written": "de Engelsen",
+      "temporal_scope": "undated (fort-building, pre-1760) to early 1760 (French capture)",
+      "source_document_ids": [
+        "linimasa_row_110",
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI p.210 (fort origin); CD6 traktat MXXXI p.223 (relapse narrative)",
+      "identity_confidence": "MODERATE -- no individual Englishman is named anywhere in the frozen Batch I9 material",
+      "researcher_review_required": true,
+      "notes": "No EIC-specific institutional label is used in the frozen source material examined in Batch I9 -- this artifact uses 'the English' (de Engelsen), the source's own term, and does NOT introduce an 'EIC' label the source itself does not supply."
+    },
+    {
+      "actor_id": "ACTOR_FRENCH",
+      "actor_type": "Institution",
+      "label": "French military force (institutional)",
+      "source_label_as_written": "een eskader van twee wel uitgeruste Franse schepen",
+      "temporal_scope": "early 1760 (capture) to March 1760 (pass-through transfer)",
+      "source_document_ids": [
+        "linimasa_row_110"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI p.210; cd_resistance_signal_candidates.csv row 21",
+      "identity_confidence": "HIGH",
+      "researcher_review_required": false,
+      "notes": "Kept distinct from d'Estaing (its commander) and Carpentier (the commandant installed to execute the transfer)."
+    },
+    {
+      "actor_id": "ACTOR_DESTAING",
+      "actor_type": "IndividualOfficeHolder",
+      "label": "Comte d'Estaing",
+      "source_label_as_written": "Charles Deodate d'Estaing de Thoulouse, grave van Estaing, marquis van Rerisse en Chateau-Renault, ondergraaf van Artois en Ravel, baron van Stuthun, brigadier van Zijn Majesteyts trouppes",
+      "temporal_scope": "early 1760",
+      "source_document_ids": [
+        "cd_resistance_signal_candidates_row21"
+      ],
+      "source_passage_locator": "CD6.pdf p.210, via docs/cd_resistance_signal_candidates.csv row 21",
+      "identity_confidence": "HIGH",
+      "researcher_review_required": false,
+      "notes": "French squadron commander; issues the 'Ordre' to Carpentier."
+    },
+    {
+      "actor_id": "ACTOR_CARPENTIER",
+      "actor_type": "IndividualOfficeHolder",
+      "label": "Fransen kapitein Carpentier",
+      "source_label_as_written": "den nieuwen commandant, den Fransen kapitein Carpentier",
+      "temporal_scope": "early-March 1760",
+      "source_document_ids": [
+        "linimasa_row_110",
+        "cd_resistance_signal_candidates_row21"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI p.210; cd_resistance_signal_candidates.csv row 21",
+      "identity_confidence": "HIGH",
+      "researcher_review_required": false,
+      "notes": "Executes d'Estaing's order; issues the 'Acte van Overgaaf' to the local sovereigns."
+    },
+    {
+      "actor_id": "ACTOR_VAN_MOSCHEL",
+      "actor_type": "IndividualOfficeHolder",
+      "label": "Johan Abraham van Moschel",
+      "source_label_as_written": "de heer Johan Abraham van Moschel",
+      "temporal_scope": "March 1760",
+      "source_document_ids": [
+        "linimasa_row_110"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI p.210",
+      "identity_confidence": "HIGH for the name; the 'resident Nias' element of this individual's title in linimasa_events.csv's own ruler_actor field is NOT independently explained in the frozen material and is flagged, not resolved",
+      "researcher_review_required": true,
+      "notes": "VOC recipient of the March cession. researcher_review_required carried forward verbatim from Batch I9's own unresolved flag on the 'resident Nias' title element."
+    },
+    {
+      "actor_id": "ACTOR_SENFF",
+      "actor_type": "IndividualOfficeHolder",
+      "label": "commandeur Christiaan Lodewijk Senff",
+      "source_label_as_written": "commandeur Christiaan Lodewijk Senff",
+      "temporal_scope": "October 1760 onward",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI p.223; independently corroborated by GM Deel13 (name match, per Batch I9's own already-verified Phase B finding, reused not re-derived)",
+      "identity_confidence": "HIGH -- MULTI_SOURCE_VERIFIED (CD6 + GM, exact name match)",
+      "researcher_review_required": false,
+      "notes": "VOC commandeur posted at Natal from October 1760; this is the artifact's single strongest effective-control evidence point."
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "LOCATION_FORT_NATAL",
+      "location_type": "Fort",
+      "label": "Fort Natal",
+      "source_label_as_written": "het gemelde fort Natal / dit fortje",
+      "notes": "The object of the claim/control tests in this artifact. Per the hard rule, this artifact never asserts control over 'all of Natal' -- every claim/control relation below targets this Fort entity specifically, not a broader territorial or population entity."
+    }
+  ],
+  "treaties": [
+    {
+      "treaty_id": "natal_march_1760_cession",
+      "label": "March 1760 cession chain (4 documents)",
+      "description": "Ordre (d'Estaing->Carpentier); Acte van Overgaaf (Carpentier->local sovereigns); acceptatie (local sovereigns); cessie + acceptatie (local sovereigns->VOC). Only document 4 (the cessie) is directly quoted in the frozen Batch I9 source material.",
+      "source_document_ids": [
+        "linimasa_row_110",
+        "cd_resistance_signal_candidates_row21"
+      ]
+    },
+    {
+      "treaty_id": "natal_october_1760_renewal",
+      "label": "October 1760 treaty renewal (CD6 traktat MXXXI)",
+      "description": "Renews the 1693/1755 relationship following the English-influence relapse; sets a capped, explicitly reciprocal toll rate.",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "REL_CONTROLS_FORT_ENGLISH_NATAL",
+      "subject_actor_id": "ACTOR_ENGLISH",
+      "object_id": "LOCATION_FORT_NATAL",
+      "relation_type": "CONTROLS_FORT",
+      "valid_from": null,
+      "valid_to": "1760-02",
+      "date_precision": "APPROXIMATE (English fort-building undated; loss dated only to 'begin 1760' -- French capture)",
+      "superseded_by": "REL_CONTROLS_FORT_FRENCH_NATAL",
+      "contradicted_by": null,
+      "observed_at": "1760-02 (per the compiler's own 'in de aanvang van 1760' framing)",
+      "open_ended": false,
+      "event_ids": [
+        "linimasa_row_110"
+      ],
+      "treaty_id": "natal_march_1760_cession",
+      "source_document_ids": [
+        "linimasa_row_110"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI p.210: 'het door de Engelsen op Natal gebouwde fortje'",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORT_CONTROL",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "The fort at Natal is described as English-built.",
+      "historical_reconstruction": "English control of the fort predates the documented 1760 events; no start date is given.",
+      "theoretical_annotation": "Represents 'English initial control' (task target item 1) as a bounded FORT_CONTROL relation, not a claim over Natal's wider territory or population.",
+      "public_display_summary": "The English built and held a fort at Natal before 1760.",
+      "notes": "No individual English officer is named anywhere in the frozen Batch I9 material; valid_from left null (undated) rather than fabricated."
+    },
+    {
+      "relation_id": "REL_CONTROLS_FORT_FRENCH_NATAL",
+      "subject_actor_id": "ACTOR_FRENCH",
+      "object_id": "LOCATION_FORT_NATAL",
+      "relation_type": "CONTROLS_FORT",
+      "valid_from": "1760-02",
+      "valid_to": "1760-03-07",
+      "date_precision": "APPROXIMATE start / exact end (per the March cession's own date)",
+      "superseded_by": "REL_CLAIMS_JURISDICTION_VOC_MARCH",
+      "contradicted_by": null,
+      "observed_at": "1760-02 to 1760-03-07",
+      "open_ended": false,
+      "event_ids": [
+        "linimasa_row_110"
+      ],
+      "treaty_id": "natal_march_1760_cession",
+      "source_document_ids": [
+        "linimasa_row_110",
+        "cd_resistance_signal_candidates_row21"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI p.210; cd_resistance_signal_candidates.csv row 21 (full document-chain detail)",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": false,
+      "source_statement_summary": "The French squadron captures the fort but, per the compiler's own account, could not hold it permanently ('daar hij het niet blijvend bezetten kon').",
+      "historical_reconstruction": "A brief, explicitly transitional French military presence, bounded by the source's own account of its own impermanence.",
+      "theoretical_annotation": "Represents 'pengambilalihan Prancis' (task target item 2) as a bounded, temporary MILITARY_PRESENCE, not a French sovereignty claim.",
+      "public_display_summary": "France captured the fort from the English in early 1760, but did not intend to hold it.",
+      "notes": "No French sovereignty claim is asserted anywhere in this artifact -- the source's own account explicitly frames French control as intentionally transitional."
+    },
+    {
+      "relation_id": "REL_RECOGNIZES_FRENCH_DATOS",
+      "subject_actor_id": "ACTOR_FRENCH",
+      "object_id": "ACTOR_DATOS_BAZAER_RADJA_PUTTI_KATY",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1760-03-06",
+      "valid_to": "1760-03-07",
+      "date_precision": "exact (day range)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1760-03-06",
+      "open_ended": false,
+      "event_ids": [
+        "linimasa_row_110"
+      ],
+      "treaty_id": "natal_march_1760_cession",
+      "source_document_ids": [
+        "linimasa_row_110",
+        "cd_resistance_signal_candidates_row21"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI p.210 (the 'Acte van Overgaaf' and 'acceptatie' documents)",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "RELATIONAL_AND_PRODUCTIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Carpentier (as France's agent) transfers the fort to the local sovereigns per d'Estaing's own order, receiving their acceptance.",
+      "historical_reconstruction": "France's own recognition of the local rulers' 'inheemse souvereinen' status, as the pass-through step before the onward cession to VOC.",
+      "theoretical_annotation": "Represents 'penyerahan formal melalui aktor lokal' (task target item 3) -- the local actors' own recognized status is the mechanism, not an incidental detail.",
+      "public_display_summary": "France formally handed the fort to local Natal rulers before it passed to the Dutch.",
+      "notes": "Object is Radja-putti-katy specifically; a parallel relation exists for Sulthan Bagindo Maharadja-Lelo (REL_RECOGNIZES_FRENCH_SULTHAN) -- not merged into one two-object relation, per this artifact's own no-homogenization discipline."
+    },
+    {
+      "relation_id": "REL_RECOGNIZES_FRENCH_SULTHAN",
+      "subject_actor_id": "ACTOR_FRENCH",
+      "object_id": "ACTOR_SULTHAN_BAGINDO_MAHARADJA_LELO",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1760-03-06",
+      "valid_to": "1760-03-07",
+      "date_precision": "exact (day range)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1760-03-06",
+      "open_ended": false,
+      "event_ids": [
+        "linimasa_row_110"
+      ],
+      "treaty_id": "natal_march_1760_cession",
+      "source_document_ids": [
+        "linimasa_row_110",
+        "cd_resistance_signal_candidates_row21"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI p.210",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "RELATIONAL_AND_PRODUCTIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "As REL_RECOGNIZES_FRENCH_DATOS, for the second named March signatory.",
+      "historical_reconstruction": "As REL_RECOGNIZES_FRENCH_DATOS.",
+      "theoretical_annotation": "As REL_RECOGNIZES_FRENCH_DATOS.",
+      "public_display_summary": "France formally handed the fort to local Natal rulers before it passed to the Dutch.",
+      "notes": "Kept as a separate relation record from REL_RECOGNIZES_FRENCH_DATOS, per this artifact's own no-homogenization discipline."
+    },
+    {
+      "relation_id": "REL_CLAIMS_JURISDICTION_VOC_MARCH",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "LOCATION_FORT_NATAL",
+      "relation_type": "CLAIMS_JURISDICTION_OVER",
+      "valid_from": "1760-03-06",
+      "valid_to": "1760-03-07",
+      "date_precision": "exact (day range)",
+      "superseded_by": "REL_CONTROLS_FORT_VOC_OCTOBER",
+      "contradicted_by": "REL_HESITATION_NOTE (see notes; not a formal relation)",
+      "observed_at": "1760-03-06",
+      "open_ended": true,
+      "event_ids": [
+        "linimasa_row_110"
+      ],
+      "treaty_id": "natal_march_1760_cession",
+      "source_document_ids": [
+        "linimasa_row_110",
+        "cd_resistance_signal_candidates_row21"
+      ],
+      "source_passage_locator": "CD6 traktat MXXVI p.210: '...opdat het gemelde fort Natal in eygendom aen de Hollandse Maatschappy toebehoore'",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "MECHANISM_HYPOTHESIS",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CLAIM",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "SECOND_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "The local sovereigns declare the fort shall belong 'in eygendom' (in ownership) to the Dutch Company.",
+      "historical_reconstruction": "A formal ownership claim over the fort specifically, not the wider Natal district or population.",
+      "theoretical_annotation": "Represents 'klaim VOC pada Maret 1760' (task target item 4) as CLAIM only -- explicitly NOT paired with any effective-control value for this same date, per the hard rule against a single VOC-controls-Natal-from-March relation.",
+      "public_display_summary": "In March 1760, local rulers declared that Fort Natal should belong to the VOC.",
+      "notes": "claim_or_effective_control is CLAIM, deliberately not CONTESTED_CONTROL or any control-implying value -- the documented VOC-side hesitation (see the standalone annotation record below) is evidence AGAINST even a contested-control reading at this date, since no VOC officer is shown attempting to exercise control at all in March."
+    },
+    {
+      "relation_id": "ANNOTATION_VOC_HESITATION_MARCH",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "VOC_INSTITUTIONAL_HESITATION_ANNOTATION",
+      "valid_from": "1760-03",
+      "valid_to": "1760-04",
+      "date_precision": "APPROXIMATE (undated within the compiler's own account, placed between the March cession and the eventual Batavia decision)",
+      "superseded_by": null,
+      "contradicted_by": "REL_CLAIMS_JURISDICTION_VOC_MARCH",
+      "observed_at": null,
+      "open_ended": true,
+      "event_ids": [],
+      "treaty_id": "natal_march_1760_cession",
+      "source_document_ids": [
+        "cd_resistance_signal_candidates_row21"
+      ],
+      "source_passage_locator": "cd_resistance_signal_candidates.csv row 21: 'Niettemin was men op Padang huiverig om de schenking aan te nemen, en liet de beslissing aan de Hoge Regering te Batavia'",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "UNKNOWN_EFFECTIVE_CONTROL",
+      "commitment_credibility": "LOW_CREDIBILITY",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "VOC's own Padang officials were 'huiverig' (hesitant) to accept the gift and deferred the decision to the High Government at Batavia.",
+      "historical_reconstruction": "VOC's own institutional uncertainty about accepting the March cession, prior to and distinct from any local conduct.",
+      "theoretical_annotation": "Represents 'keraguan pejabat VOC' (task target item 5). Modeled here as a self-referential annotation record (subject=object=ACTOR_VOC) rather than a directed relation, because this is an INSTITUTIONAL STATE (uncertainty), not an action with an external object -- see stress test T-06 for the full ontology-fit discussion of why no Draft V2 relation type cleanly represents 'hesitation.'",
+      "public_display_summary": "VOC's own officials in the region were initially unsure whether to accept the March 1760 transfer.",
+      "notes": "ONTOLOGY STRESS-TEST FINDING: no relation_type in Draft V2's frozen set directly represents an institution's own internal hesitation/uncertainty about a claim it has already nominally received. This record uses a self-referential (subject=object) pattern as a workaround, explicitly flagged as non-standard, not silently treated as a normal directed relation. See NATAL_1760_ONTOLOGY_STRESS_TEST.csv test T-06. provenance_status is CD_INDEPENDENT because this passage is the compiler's own editorial account, distinct from the treaty text itself -- corrected during validator run from an initial compound value that embedded this rationale directly in the controlled field; the bare token is used here and the rationale is kept in this notes field instead."
+    },
+    {
+      "relation_id": "REL_SWITCH_REGENTS_TO_ENGLISH",
+      "subject_actor_id": "ACTOR_NATAL_REGENTS_COLLECTIVE_1693_1760",
+      "object_id": "ACTOR_ENGLISH",
+      "relation_type": "SWITCHES_ALIGNMENT_TO",
+      "valid_from": null,
+      "valid_to": "1760-02",
+      "date_precision": "APPROXIMATE (undated interval between the 1755 renewal and early 1760)",
+      "superseded_by": "REL_SWITCH_REGENTS_TO_VOC_OCTOBER",
+      "contradicted_by": null,
+      "observed_at": null,
+      "open_ended": false,
+      "event_ids": [
+        "linimasa_row_111"
+      ],
+      "treaty_id": "natal_october_1760_renewal",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI p.223: 'gedeeltelijk door persuatiën en gedeeltelijk door drygementen van eenige Engelsen, die zig met geweld in haar district hebben terneer gezet'",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CONTESTED",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "UNKNOWN_EFFECTIVE_CONTROL",
+      "commitment_credibility": "LOW_CREDIBILITY",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "VOC's own October 1760 treaty text attributes the regents' diversion toward English influence to a MIX of persuasion and threats/force.",
+      "historical_reconstruction": "Represents 'relaps kepada Inggris' (task target item 6). Subject is the source's own collective 'regenten van Natal' term, NOT any of the individually-named March/October signatories -- see ACTOR_NATAL_REGENTS_COLLECTIVE_1693_1760's own notes.",
+      "theoretical_annotation": "Directly operationalizes 'consent, persuasion, force, dan constrained choice' (task target item 11): the compound VOC-side account explicitly prevents classifying this as either pure coercion or pure local choice.",
+      "public_display_summary": "Some time before 1760, English persuasion and force drew Natal's regents away from their VOC alliance.",
+      "notes": "explicit_or_inferred=OBSERVED_ACTION_AS_STRATEGY per this artifact's own secondary-source-only mapping convention (established in Batch I9), since only the October treaty's own retrospective clause documents this interval."
+    },
+    {
+      "relation_id": "REL_CONTROLS_FORT_VOC_OCTOBER",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "LOCATION_FORT_NATAL",
+      "relation_type": "CONTROLS_FORT",
+      "valid_from": "1760-10-06",
+      "valid_to": null,
+      "date_precision": "exact start, open end",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1760-10-06 (and independently, GM Deel13, reports dated 15 Oct/31 Dec 1760)",
+      "open_ended": true,
+      "event_ids": [
+        "linimasa_row_111"
+      ],
+      "treaty_id": "natal_october_1760_renewal",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI p.223; independently corroborated by GM Deel13 ('commandeur Christiaan Lodewijk Senff dat te Natal bezetten'), per Batch I9's own already-verified Phase B finding, reused not re-derived",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORT_CONTROL",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_PARTIALLY_SUPPORTED",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": false,
+      "source_statement_summary": "Commandeur Senff is posted at Natal from October 1760, independently confirmed by GM.",
+      "historical_reconstruction": "Represents 'penempatan commandeur Senff' (task target item 8) and the October 1760 EFFECTIVE presence, in contrast to March's CLAIM-only state.",
+      "theoretical_annotation": "This is the artifact's single strongest claim-vs-effective-control contrast: CLAIM (March, REL_CLAIMS_JURISDICTION_VOC_MARCH) superseded by FORT_CONTROL (October, this record) roughly 7 months later, with the intervening relapse (REL_SWITCH_REGENTS_TO_ENGLISH) never smoothed over.",
+      "public_display_summary": "From October 1760, a VOC commandant was posted at Fort Natal, independently confirmed by separate VOC administrative reports.",
+      "notes": "claim_or_effective_control is FORT_CONTROL specifically, NOT a broader EXERCISES_EFFECTIVE_CONTROL_OVER claim over all of Natal -- see stress test T-03 for why the broader relation was deliberately not instantiated."
+    },
+    {
+      "relation_id": "REL_SWITCH_REGENTS_TO_VOC_OCTOBER",
+      "subject_actor_id": "ACTOR_NATAL_REGENTS_COLLECTIVE_1693_1760",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "SWITCHES_ALIGNMENT_TO",
+      "valid_from": "1760-10-06",
+      "valid_to": null,
+      "date_precision": "exact start, open end",
+      "superseded_by": null,
+      "contradicted_by": "REL_SWITCH_REGENTS_TO_ENGLISH",
+      "observed_at": "1760-10-06",
+      "open_ended": true,
+      "event_ids": [
+        "linimasa_row_111"
+      ],
+      "treaty_id": "natal_october_1760_renewal",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI p.223: 'zoo hebben zy... opnieuw weeder een bondig contract aan te gaan'",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "TREATY_OBLIGATION",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_PARTIALLY_SUPPORTED",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Represents 'pembaruan traktat Oktober 1760' (task target item 7) as a restoration switch, formally contradicting the immediately-preceding English-alignment relation without erasing it.",
+      "historical_reconstruction": "The regents (per the treaty's own collective term) formally return to VOC alignment in October 1760, after the French expelled the English.",
+      "theoretical_annotation": "This relation's own contradicted_by field points to REL_SWITCH_REGENTS_TO_ENGLISH -- the relapse is represented, not smoothed over, per the hard rule.",
+      "public_display_summary": "In October 1760, Natal's regents entered a new treaty restoring their alliance with the VOC.",
+      "notes": "Same actor-identity caveat as REL_SWITCH_REGENTS_TO_ENGLISH: subject is the source's own collective term, not identical to the individually-named October signatories."
+    },
+    {
+      "relation_id": "REL_RECOGNIZES_VOC_HOOFDREGENT",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_HOOFDREGENT_BAGINDA_MAHARADJA_LELLO",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1760-10-06",
+      "valid_to": "1760-10-06",
+      "date_precision": "exact",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1760-10-06",
+      "open_ended": false,
+      "event_ids": [
+        "linimasa_row_111"
+      ],
+      "treaty_id": "natal_october_1760_renewal",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI p.223",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "RELATIONAL_AND_PRODUCTIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Commandeur Senff, on VOC's behalf, receives the October 1760 treaty from the named regents.",
+      "historical_reconstruction": "VOC's own recognition of the hoofdregent's signatory status.",
+      "theoretical_annotation": "One of three parallel October-signatory recognition relations (see REL_RECOGNIZES_VOC_RADJA_DARAT, REL_RECOGNIZES_VOC_PONGHOULOUS) -- kept separate, not merged into one multi-object relation.",
+      "public_display_summary": "The VOC formally recognized Natal's regents as treaty signatories in October 1760.",
+      "notes": "See ACTOR_HOOFDREGENT_BAGINDA_MAHARADJA_LELLO's own possible_same_actor annotation regarding the March signatory."
+    },
+    {
+      "relation_id": "REL_RECOGNIZES_VOC_RADJA_DARAT",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_RADJA_DARAT",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1760-10-06",
+      "valid_to": "1760-10-06",
+      "date_precision": "exact",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1760-10-06",
+      "open_ended": false,
+      "event_ids": [
+        "linimasa_row_111"
+      ],
+      "treaty_id": "natal_october_1760_renewal",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI p.223",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "RELATIONAL_AND_PRODUCTIVE"
+      ],
+      "researcher_review_required": false,
+      "source_statement_summary": "As REL_RECOGNIZES_VOC_HOOFDREGENT, for radja Darat.",
+      "historical_reconstruction": "As REL_RECOGNIZES_VOC_HOOFDREGENT.",
+      "theoretical_annotation": "As REL_RECOGNIZES_VOC_HOOFDREGENT.",
+      "public_display_summary": "The VOC formally recognized Natal's regents as treaty signatories in October 1760.",
+      "notes": "Kept as a separate relation record, per this artifact's own no-homogenization discipline."
+    },
+    {
+      "relation_id": "REL_RECOGNIZES_VOC_PONGHOULOUS",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_SEVEN_PONGHOULOUS_NATAL",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1760-10-06",
+      "valid_to": "1760-10-06",
+      "date_precision": "exact",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1760-10-06",
+      "open_ended": false,
+      "event_ids": [
+        "linimasa_row_111"
+      ],
+      "treaty_id": "natal_october_1760_renewal",
+      "source_document_ids": [
+        "linimasa_row_111"
+      ],
+      "source_passage_locator": "CD6 traktat MXXXI p.223",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "RELATIONAL_AND_PRODUCTIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "As above, for the 7 ponghoulous collectively.",
+      "historical_reconstruction": "As above.",
+      "theoretical_annotation": "As above.",
+      "public_display_summary": "The VOC formally recognized Natal's regents as treaty signatories in October 1760.",
+      "notes": "Object is a NamedCollective (bounded by count, not individual names) -- kept distinct from the individually-named signatories per Draft V2's own NamedCollective entity rule."
+    }
+  ],
+  "vocabulary_notes": {
+    "self_referential_annotation_pattern": "ANNOTATION_VOC_HESITATION_MARCH uses subject=object=ACTOR_VOC and a non-Draft-V2 relation_type ('VOC_INSTITUTIONAL_HESITATION_ANNOTATION') because no frozen relation type represents institutional hesitation. This is NOT a new controlled-vocabulary relation_type -- it is excluded from relation_type validation by the accompanying validator and is documented as an explicit, flagged workaround, per NATAL_1760_ONTOLOGY_STRESS_TEST.csv test T-06. No Draft V2 vocabulary was changed to accommodate it.",
+    "explicit_or_inferred_secondary_source_mapping": "Reused verbatim from Batch I9: OBSERVED_ACTION_AS_STRATEGY is used for relations sourced exclusively from a treaty's own retrospective narrative clause with no independent corroboration (REL_SWITCH_REGENTS_TO_ENGLISH).",
+    "collective_actor_disclosure": "ACTOR_NATAL_REGENTS_COLLECTIVE_1693_1760 is used only for the two SWITCHES_ALIGNMENT_TO relations describing the source's own collectively-narrated history; it is never used as the subject/object of any March or October signatory-specific relation (those use the 5 individually/collectively-bounded actors named in the task's own scope)."
+  }
+}
