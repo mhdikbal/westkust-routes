@@ -79,6 +79,13 @@ docs/thesis/colab/model3b_cd_simulator/tests/*
 !docs/thesis/colab/CROSS_CASE_ENTITY_DECISION_LEDGER.csv
 !docs/thesis/colab/CROSS_CASE_RELATION_DECISION_LEDGER.csv
 !docs/thesis/colab/CROSS_CASE_ANNOTATION_DECISION_LEDGER.csv
+!docs/thesis/colab/DATAVERSENL_PREVIOUS_HARVEST_HISTORY.csv
+!docs/thesis/colab/DATAVERSENL_LOCAL_DOWNLOAD_INVENTORY.csv
+!docs/thesis/colab/DATAVERSENL_RESEARCH_GAP_LEDGER.csv
+!docs/thesis/colab/DATAVERSENL_QUERY_MANIFEST.csv
+!docs/thesis/colab/DATAVERSENL_DISCOVERY_RESULTS.csv
+!docs/thesis/colab/DATAVERSENL_INCREMENTAL_DIFF.csv
+!docs/thesis/colab/DATAVERSENL_DOWNLOAD_ALLOWLIST_DRAFT.csv
 
 !docs/thesis/pilot_annotation/
 docs/thesis/pilot_annotation/*
@@ -102,6 +109,7 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/CROSS_CASE_POWER_ONTOLOGY_REVIEW.md
 !docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md
 !docs/thesis/pilot_annotation/CROSS_CASE_POWER_ONTOLOGY_VALIDATION_PLAN.md
+!docs/thesis/pilot_annotation/DATAVERSENL_HISTORY_GAP_AND_INCREMENTAL_HARVEST_AUDIT.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
