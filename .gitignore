@@ -75,6 +75,10 @@ docs/thesis/colab/model3b_cd_simulator/*
 !docs/thesis/colab/model3b_cd_simulator/tests/
 docs/thesis/colab/model3b_cd_simulator/tests/*
 !docs/thesis/colab/model3b_cd_simulator/tests/*.py
+!docs/thesis/colab/CROSS_CASE_POWER_ONTOLOGY_MATRIX.csv
+!docs/thesis/colab/CROSS_CASE_ENTITY_DECISION_LEDGER.csv
+!docs/thesis/colab/CROSS_CASE_RELATION_DECISION_LEDGER.csv
+!docs/thesis/colab/CROSS_CASE_ANNOTATION_DECISION_LEDGER.csv
 
 !docs/thesis/pilot_annotation/
 docs/thesis/pilot_annotation/*
@@ -95,6 +99,9 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/MODEL_3B_CD_FINAL_1000_RECOVERY_AUDIT.md
 !docs/thesis/pilot_annotation/ATLAS_PAINAN_1663_RELATIONAL_MVP_ARTIFACT_AUDIT.md
 !docs/thesis/pilot_annotation/ATLAS_PAINAN_1663_LOCAL_RELATIONAL_PROTOTYPE_AUDIT.md
+!docs/thesis/pilot_annotation/CROSS_CASE_POWER_ONTOLOGY_REVIEW.md
+!docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md
+!docs/thesis/pilot_annotation/CROSS_CASE_POWER_ONTOLOGY_VALIDATION_PLAN.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
