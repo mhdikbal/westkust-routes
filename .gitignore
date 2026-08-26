@@ -90,6 +90,11 @@ docs/thesis/colab/model3b_cd_simulator/tests/*
 !docs/thesis/colab/NATAL_1760_ONTOLOGY_STRESS_TEST.csv
 !docs/thesis/colab/TIKU_V3_ONTOLOGY_STRESS_TEST.csv
 !docs/thesis/colab/SILLIDA_V4_ONTOLOGY_STRESS_TEST.csv
+!docs/thesis/colab/POST_V1_V4_ONTOLOGY_FAILURE_INVENTORY.csv
+!docs/thesis/colab/POST_V1_V4_ONTOLOGY_FAILURE_CLUSTERS.csv
+!docs/thesis/colab/ATLAS_POWER_RELATION_ONTOLOGY_V2_1_CHANGESET_LEDGER.csv
+!docs/thesis/colab/ATLAS_POWER_RELATION_V2_1_REVALIDATION_MATRIX.csv
+!docs/thesis/colab/POST_V1_V4_RESEARCHER_DECISION_LEDGER.csv
 
 !docs/thesis/pilot_annotation/
 docs/thesis/pilot_annotation/*
@@ -118,6 +123,9 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/NATAL_1760_RELATIONAL_VALIDATION_ARTIFACT_AUDIT.md
 !docs/thesis/pilot_annotation/TIKU_V3_RELATIONAL_VALIDATION_ARTIFACT_AUDIT.md
 !docs/thesis/pilot_annotation/SILLIDA_V4_RELATIONAL_VALIDATION_ARTIFACT_AUDIT.md
+!docs/thesis/pilot_annotation/POST_V1_V4_ONTOLOGY_FAILURE_SYNTHESIS.md
+!docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_V2_1_CHANGESET_DRAFT.md
+!docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_V2_1_GENERALIZED_VALIDATOR_PLAN.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
