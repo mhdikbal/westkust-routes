@@ -14,11 +14,14 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 ARTIFACT_PATH = REPO / "data/power_relations/koto_tangah_destruction_cycle_relational_validation_artifact.json"
 
-FROZEN_FILES = [
+# --- Dependency classification for check 34 -----------------------------
+# SYNCED_FROZEN_DEPENDENCIES: committed to git, present on any clean checkout
+# of origin/main (local dev machine or the production server). Missing or
+# checksum-mismatched = FAIL. No wildcard directories -- explicit paths only.
+SYNCED_FROZEN_DEPENDENCIES = [
     REPO / "data/power_relations/painan_1663_relational_research_artifact.json",
     REPO / "data/power_relations/natal_1760_relational_validation_artifact.json",
     REPO / "docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md",
-    REPO / "docs/thesis/colab/MODEL_3B_COLONIAL_CATEGORY_AND_RESISTANCE_INTERPRETIVE_WORKING.csv",
     REPO / "research_prototypes/painan_1663_relational/index.html",
     REPO / "research_prototypes/painan_1663_relational/prototype.js",
     REPO / "research_prototypes/painan_1663_relational/prototype.css",
@@ -31,11 +34,10 @@ FROZEN_FILES = [
     REPO / "scripts/research_validators/validate_natal_1760_relational_artifact.py",
 ]
 
-BASELINE_SHA256 = {
+SYNCED_BASELINE_SHA256 = {
     str(REPO / "data/power_relations/painan_1663_relational_research_artifact.json"): "eeeeda8b368e255303c46dc245beb3c1179815d9f960cdff20b1ea59518b4bd7",
     str(REPO / "data/power_relations/natal_1760_relational_validation_artifact.json"): "afafe9f2985ef5e326514fcb8634d304f39a59c6f729abf1582d5221638ab07a",
     str(REPO / "docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md"): "f43b1f9fcee75e7a7271994905b676616470271f89dd99d62a6758f1c4b3cd37",
-    str(REPO / "docs/thesis/colab/MODEL_3B_COLONIAL_CATEGORY_AND_RESISTANCE_INTERPRETIVE_WORKING.csv"): "57ae2e16bd88eeaff3f055d3b0a188dbcea7ed51eb629fea2b7f03b1927469b8",
     str(REPO / "research_prototypes/painan_1663_relational/index.html"): "65e219d33e2410aa3113ad05664fc682276f996c4da089ecdac1d001f0663e78",
     str(REPO / "research_prototypes/painan_1663_relational/prototype.js"): "550c783d70419d7d83c22d314fadf74a1d456018a13c81363377b1a6f2196f1d",
     str(REPO / "research_prototypes/painan_1663_relational/prototype.css"): "2bcc702ef8b8d039b4151949882e5e355fee42f6168863d7097c96b4b006641f",
@@ -46,6 +48,23 @@ BASELINE_SHA256 = {
     str(REPO / "docs/thesis/colab/CROSS_CASE_ANNOTATION_DECISION_LEDGER.csv"): "b2fcf29724fa8be28efb366b6d7c634a2beca84d27b51ca9727c3924d89b8e8b",
     str(REPO / "scripts/research_validators/validate_painan_1663_relational_artifact.py"): "eca88fd8eb434f83b9506a7f9ebf732ee5f37de52acfffe4aa9ce878d945d625",
     str(REPO / "scripts/research_validators/validate_natal_1760_relational_artifact.py"): "a7ed12baf1069e33f9c3cbd3bc6c68e15150f1f1f6866fd84eb05147b658d805",
+}
+
+# LOCAL_ONLY_FROZEN_DEPENDENCIES: explicitly documented as gitignored,
+# never committed, nonproduction research working files. These are NOT
+# runtime dependencies of the frozen Koto Tangah artifact -- the artifact's
+# own relations/observations were built FROM this ledger's content and do
+# not read it again at validation time. On a checkout where the file is
+# absent (by design, e.g. a fresh server clone), its absence is reported as
+# NOT_APPLICABLE_ON_SERVER, never silently treated as a content PASS.
+LOCAL_ONLY_LEDGER_PATH = REPO / "docs/thesis/colab/MODEL_3B_COLONIAL_CATEGORY_AND_RESISTANCE_INTERPRETIVE_WORKING.csv"
+LOCAL_ONLY_LEDGER_SHA256 = "57ae2e16bd88eeaff3f055d3b0a188dbcea7ed51eb629fea2b7f03b1927469b8"
+LOCAL_ONLY_LEDGER_EXPECTED_ROWS = 79
+LOCAL_ONLY_LEDGER_VOCAB_CHECKS = {
+    "source_asymmetry": {"VOC_ONLY", "VOC_DOMINANT", "MIXED", "LOCAL_VOICE_PRESENT", "CANNOT_DETERMINE"},
+    "resistance_candidate": {"SUPPORTED", "PARTIALLY_SUPPORTED", "NOT_SUPPORTED", "NOT_TESTABLE"},
+    "interpretive_status": {"SOURCE_DESCRIPTION_ONLY", "MECHANISM_HYPOTHESIS", "PROCESS_TRACING_SUPPORTED", "CONTESTED", "CANNOT_DETERMINE"},
+    "evidence_strength": {"HIGH", "MODERATE", "LOW", "CANNOT_DETERMINE"},
 }
 
 MVP_CORE_RELATION = {
@@ -312,14 +331,67 @@ def main():
     # 33. no production integration (duplicate of check 3, kept per task's own 34-item list)
     check(33, "no production integration (status/notice confirm nonproduction)", data.get("status") == "RESEARCH_ONLY_NONPRODUCTION")
 
-    # 34. all prior checksums unchanged
-    unchanged = []
-    for p in FROZEN_FILES:
+    # 34A. all SYNCED (committed) frozen dependencies present and checksum-matched.
+    # Missing or mismatched here is always a genuine FAIL, on any environment.
+    missing_synced, mismatched_synced = [], []
+    for p in SYNCED_FROZEN_DEPENDENCIES:
+        if not p.exists():
+            missing_synced.append(p.name)
+            continue
         actual = hashlib.sha256(p.read_bytes()).hexdigest()
-        expected = BASELINE_SHA256[str(p)]
-        unchanged.append((p.name, actual == expected))
-    check(34, "all frozen prior artifacts/validators byte-unchanged vs. pre-recorded baseline checksums",
-          all(ok for _, ok in unchanged), str(unchanged))
+        if actual != SYNCED_BASELINE_SHA256[str(p)]:
+            mismatched_synced.append(p.name)
+    ok_34a = not missing_synced and not mismatched_synced
+    detail_34a = ("all committed frozen dependencies present and checksum-matched" if ok_34a
+                  else f"missing={missing_synced} checksum_mismatch={mismatched_synced}")
+
+    # 34B. the 79-row interpretive ledger is a LOCAL-ONLY, gitignored,
+    # nonproduction research artifact by explicit, long-standing project
+    # design -- it is never committed and is not expected to exist on a
+    # server checkout. Its absence there is NOT_APPLICABLE_ON_SERVER, not a
+    # silent content PASS: this validator never claims to have read ledger
+    # content it cannot see. When the file IS present (the intended research
+    # environment), its content is actually checked: row count, the four
+    # fixed-vocabulary fields, and its checksum against the pre-recorded
+    # baseline captured at V2 artifact construction time.
+    if not LOCAL_ONLY_LEDGER_PATH.exists():
+        status_34b = "NOT_APPLICABLE_ON_SERVER"
+        ok_34b = True
+        detail_34b = ("interpretive ledger is an explicitly documented local-only, gitignored, "
+                      "nonproduction artifact; content was validated in the research environment "
+                      "before the milestone commit; this check does not read ledger content on a "
+                      "checkout where the file is absent")
+    else:
+        raw = LOCAL_ONLY_LEDGER_PATH.read_bytes()
+        actual_hash = hashlib.sha256(raw).hexdigest()
+        hash_ok = actual_hash == LOCAL_ONLY_LEDGER_SHA256
+        import csv as _csv, io as _io
+        text_lines = [l for l in raw.decode("utf-8").splitlines(keepends=True) if not l.startswith("#")]
+        ledger_rows = list(_csv.reader(_io.StringIO("".join(text_lines))))
+        ledger_header, ledger_data = ledger_rows[0], ledger_rows[1:]
+        row_count_ok = len(ledger_data) == LOCAL_ONLY_LEDGER_EXPECTED_ROWS
+        col_idx = {name: i for i, name in enumerate(ledger_header)}
+        vocab_violations = []
+        for row_i, row in enumerate(ledger_data, 2):
+            for field, allowed in LOCAL_ONLY_LEDGER_VOCAB_CHECKS.items():
+                if field in col_idx and row[col_idx[field]] not in allowed:
+                    vocab_violations.append((row_i, field))
+        ok_34b = hash_ok and row_count_ok and len(vocab_violations) == 0
+        status_34b = "PASS_LOCAL" if ok_34b else "FAIL_LOCAL"
+        detail_34b = (f"rows={len(ledger_data)} (expected {LOCAL_ONLY_LEDGER_EXPECTED_ROWS}), "
+                      f"vocabulary_violations={len(vocab_violations)}, checksum_match={hash_ok}")
+
+    overall_ok_34 = ok_34a and ok_34b
+    overall_label_34 = ("PASS" if (status_34b == "PASS_LOCAL" and ok_34a) else
+                         "PASS_WITH_DOCUMENTED_LOCAL_ONLY_DEPENDENCY" if (status_34b == "NOT_APPLICABLE_ON_SERVER" and ok_34a) else
+                         "FAIL")
+    detail_34 = (f"Check 34A: {'PASS' if ok_34a else 'FAIL'} -- {detail_34a}. "
+                 f"Check 34B: {status_34b} -- {detail_34b}. "
+                 f"Check 34 overall: {overall_label_34} -- dependency policy satisfied "
+                 f"(34B on an environment where the ledger is absent validates POLICY COMPLIANCE, "
+                 f"not ledger content -- it never claims the ledger was read there).")
+    check(34, "dependency policy: synced frozen dependencies present+matched (34A), "
+              "local-only ledger policy-compliant (34B)", overall_ok_34, detail_34)
 
     report()
 
@@ -330,7 +402,10 @@ def report():
     for n, desc, ok, detail in results:
         status = "PASS" if ok else "FAIL"
         line = f"[{status}] check {n}: {desc}"
-        if not ok and detail:
+        # Check 34 always prints its 34A/34B sub-detail, pass or fail --
+        # the whole point of the scoped fix is that "PASS" alone must never
+        # be read as "the ledger was read on this environment."
+        if detail and (not ok or n == 34):
             line += f" -- {detail}"
         print(line)
     print(f"\n{passed}/{total} checks passed")

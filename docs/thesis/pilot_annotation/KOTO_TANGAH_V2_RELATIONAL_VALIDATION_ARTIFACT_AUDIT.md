@@ -151,6 +151,29 @@ KOTO_TANGAH_V2_ONTOLOGY_VALIDATION_PASS_WITH_LIMITATIONS
 
 No backend, frontend, API, database, migration, Atlas, Graphify, Docker, or Nginx file was touched this turn. No commit, push, or deploy was performed.
 
+## Validator Environment-Scope Correction (appended after V2 milestone freeze)
+
+> This section documents a scoped, non-substantive correction to the validator only, made after V2 was already committed and synced. It does not reopen, alter, or re-score any of the 3 genuine ontology failures, the 17 PASS / 3 FAIL stress-test result, or the final V2 decision recorded above.
+
+**Server failure observed:** after the Natal V1 milestone was separately pushed and server-synced, re-running `validate_koto_tangah_relational_artifact.py` on the production server crashed with `FileNotFoundError` on `docs/thesis/colab/MODEL_3B_COLONIAL_CATEGORY_AND_RESISTANCE_INTERPRETIVE_WORKING.csv`.
+
+**Root cause:** confirmed, via `git log --all` and `git cat-file -e origin/main:...`, that this 79-row interpretive ledger has never been committed to this repository at any point in its history and is not present in `origin/main`. It is gitignored by long-standing, explicit project design (the same convention repeatedly documented elsewhere in this project: the ledger is a local-only, nonproduction research working file, never meant to exist on a server checkout). All 13 other files the validator's old check 34 depended on were confirmed present and checksum-matched in `origin/main`. The failure was therefore never a Natal-dependency gap — it was the validator's own check 34 conflating "committed, server-synced dependencies" with "local-only, gitignored-by-design research dependencies" into a single existence requirement.
+
+**Correction made:** check 34 was split into two explicit, transparently-reported sub-checks, with no change to the artifact, the stress-test ledger, the ontology findings, or Draft V2:
+
+- **Check 34A** — `SYNCED_FROZEN_DEPENDENCIES`: the 13 files that are committed and expected on any clean checkout (Painan artifact/prototype, Natal V1 artifact, Draft V2, the three cross-case decision ledgers, the cross-case review and validation plan, and the Painan/Natal validators). Missing or checksum-mismatched here is always a genuine FAIL, on any environment — this guard was not weakened.
+- **Check 34B** — `LOCAL_ONLY_FROZEN_DEPENDENCIES`: exactly one explicitly-named file, the interpretive ledger. When present (the intended research environment), its row count (79), its four fixed-vocabulary fields (`source_asymmetry`, `resistance_candidate`, `interpretive_status`, `evidence_strength`), and its checksum are actually validated — this is not a free pass. When absent (a server checkout, by design), the result is `NOT_APPLICABLE_ON_SERVER`, never a silent content PASS; the validator's own printed detail for check 34 always states explicitly that 34B did not read ledger content in that case.
+
+No wildcard directory matching was used; both dependency lists are explicit, named paths. No hostname or environment-name check was used to decide server-vs-local — classification is based purely on (a) which list a file belongs to and (b) whether that file exists on disk.
+
+**Local validation result after the fix:** `docs/thesis/colab/MODEL_3B_COLONIAL_CATEGORY_AND_RESISTANCE_INTERPRETIVE_WORKING.csv` — 79 data rows (excluding header), 0 fixed-vocabulary violations, SHA-256 `57ae2e16bd88eeaff3f055d3b0a188dbcea7ed51eb629fea2b7f03b1927469b8` (matches the baseline recorded at V2 artifact construction time, unchanged throughout this whole project phase). Check 34A: PASS. Check 34B: `PASS_LOCAL`. Check 34 overall: PASS. Full validator run: **34/34 PASS**, unchanged from before the fix.
+
+**Expected server semantics after this fix is pushed and pulled:** Check 34A: PASS (all 13 synced dependencies now include Natal V1, already pushed separately). Check 34B: `NOT_APPLICABLE_ON_SERVER` (the ledger is correctly absent there, by design). Check 34 overall: PASS. The validator's own printed output will state this explicitly rather than implying "all frozen files exist on server," which would not be true and was never claimed.
+
+**Why this does not lower the evidentiary guard:** the fix narrows what check 34 asserts, it does not weaken any single assertion. Check 34A still requires exact presence and checksum match for every committed dependency — that guard is identical to before. Check 34B, when the ledger is actually available, now performs MORE verification than the prior single-checksum comparison (row count and per-field vocabulary conformance, not just a hash). The only behavioral change is that a file's *absence in an environment where it was never supposed to exist* is no longer conflated with *the same file's absence where it should exist* — both were previously scored identically as an unconditional FAIL/crash, which was the actual defect.
+
+**Unchanged by this correction:** the Koto Tangah artifact (`data/power_relations/koto_tangah_destruction_cycle_relational_validation_artifact.json`, SHA-256 `2cb6e44cb8fd9eb7b4160cb2efd7d5f244d3547a1becc09919eaab7d4faae1aa`), the stress-test ledger (17 PASS / 3 FAIL, same 3 test IDs: T-01, T-06, T-14), all ontology findings and historical interpretations in sections 1-33 above, and Draft V2 (SHA-256 `f43b1f9fcee75e7a7271994905b676616470271f89dd99d62a6758f1c4b3cd37`).
+
 ## 35. Final Readiness Decision
 
 ```text
