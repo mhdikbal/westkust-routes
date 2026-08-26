@@ -86,6 +86,7 @@ docs/thesis/colab/model3b_cd_simulator/tests/*
 !docs/thesis/colab/DATAVERSENL_DISCOVERY_RESULTS.csv
 !docs/thesis/colab/DATAVERSENL_INCREMENTAL_DIFF.csv
 !docs/thesis/colab/DATAVERSENL_DOWNLOAD_ALLOWLIST_DRAFT.csv
+!docs/thesis/colab/KOTO_TANGAH_V2_ONTOLOGY_STRESS_TEST.csv
 
 !docs/thesis/pilot_annotation/
 docs/thesis/pilot_annotation/*
@@ -110,6 +111,7 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md
 !docs/thesis/pilot_annotation/CROSS_CASE_POWER_ONTOLOGY_VALIDATION_PLAN.md
 !docs/thesis/pilot_annotation/DATAVERSENL_HISTORY_GAP_AND_INCREMENTAL_HARVEST_AUDIT.md
+!docs/thesis/pilot_annotation/KOTO_TANGAH_V2_RELATIONAL_VALIDATION_ARTIFACT_AUDIT.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
