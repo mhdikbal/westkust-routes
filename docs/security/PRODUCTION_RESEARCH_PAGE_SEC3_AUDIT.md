@@ -102,10 +102,68 @@ c3d2aedc53502a1f4ba5a9024cf71f06d9bdb44d1a83c7a163a538df62a26cbd  PRODUCTION_RES
 
 ---
 
+## 8. Addendum — Phase SEC-3A Targeted Closure (appended, does not alter §1–7 above or any original test row)
+
+> **SEC-3 evidence baseline:** `7c0621d512c8574df7b9ca041577a1080ac7e618`
+
+SEC-3A retested `SEC3-F-01` (duplicated-prefix behavior) against the **real** Django application (`westkust-routes-frontend:latest`, the same image production runs) and designed + prototyped `SEC3-F-02` (Cloudflare/trusted-proxy real-IP restoration). Full detail in `PRODUCTION_RESEARCH_PAGE_SEC3A_REAL_DJANGO_TEST_PLAN.md`, `PRODUCTION_RESEARCH_PAGE_SEC3A_REAL_DJANGO_TEST_RESULTS.csv`, `PRODUCTION_RESEARCH_PAGE_SEC3A_CLOUDFLARE_REAL_IP_DESIGN.md`, `PRODUCTION_RESEARCH_PAGE_SEC3A_REAL_IP_TEST_RESULTS.csv`, and `PRODUCTION_RESEARCH_PAGE_SEC3A_AUDIT.md`.
+
+```text
+SEC3-F-01 (§3.1 above): TARGETED_MITIGATION_VALIDATED
+  -- 20/20 real-Django tests PASS. The real Django app's own 404 handler,
+     not a synthetic fallback, rejects the duplicated-prefix path, with no
+     protected content in the body. This closes §3.1's open question.
+  -- The original SEC3-PREC-006/SEC3-PREC-007 PASS_WITH_LIMITATION rows in
+     PRODUCTION_RESEARCH_PAGE_SEC3_TEST_RESULTS.csv are UNCHANGED (per
+     instruction, this addendum does not modify that file). They are
+     considered SUPERSEDED_BY_SEC3A_DJANGO_RETEST as of this addendum --
+     recorded here, not by editing their status or notes cells.
+
+SEC3-F-02 (§3.3 above): OPEN_REQUIRES_TARGETED_RATE_LIMIT_RETEST (still open,
+  retitled by researcher adjudication to name exactly what remains)
+  -- Corrected scope: the real chain is Cloudflare -> a private, internal
+     load-balancer address (10.1.10.0/24, observed consistently as
+     10.1.10.126, classified only as PRIVATE_PROVIDER_INTERNAL_ADDRESS --
+     see SEC3-F-03 below) -> host Nginx -- not Cloudflare directly, as
+     originally framed. This is a genuine, previously-undocumented finding
+     from this turn's read-only inventory.
+  -- 10/12 real-IP/spoofing tests PASS cleanly (trusted-proxy design
+     complete; spoofed-header guards PASS; IPv4 PASS; IPv6 PASS; key
+     derivation distinguishes synthetic clients structurally). 2/12 (the
+     numeric rate-limit-threshold demonstration specifically) are
+     PASS_WITH_LIMITATION, isolated this turn to a rate-limiter environment
+     malfunction unrelated to the design (confirmed with an extreme control
+     case: rate=1r/m, no burst, still returned 200 on every request in this
+     sandbox).
+  -- Per the strict 12/12 closure rule, SEC3-F-02 is NOT marked
+     DESIGN_AND_PROTOTYPE_VALIDATED, PRODUCTION_RESOLVED, or PASS this turn.
+     The design itself (trust boundary, CIDR/trust-source lifecycle,
+     recommended rate-limit key) is complete; only a deterministic
+     clean-environment re-run of the two rate-limit tests (scoped as a
+     future, narrow SEC-3B turn) and the production-side provider
+     confirmation remain outstanding.
+
+SEC3-F-03 (new this turn): HOST_NGINX_IMMEDIATE_PEER_IS_PROVIDER_INTERNAL_LOAD_BALANCER
+  -- Observed immediate peer: 10.1.10.126. Classification:
+     PRIVATE_PROVIDER_INTERNAL_ADDRESS (evidence-bounded; no specific
+     hosting-provider identity is inferred or named). Host Nginx does not
+     directly observe a Cloudflare edge address; the trusted real-IP design
+     must model the actual two-hop chain, and Cloudflare CIDRs alone are
+     not sufficient for set_real_ip_from. No production configuration
+     change is authorized by this finding.
+
+SEC-DEC-11 (proposed): OPTION_A_APPROVED_WITH_LIMITATIONS -- recorded in
+  PRODUCTION_RESEARCH_PAGE_SEC3A_SECURITY_DECISION_ADDENDUM.md; the
+  existing decision-ledger schema was not modified, no row was added
+  silently (no SEC-DEC-11 row existed before this turn).
+```
+
+Cleanup for SEC-3A: all `sec3a_*` containers and the `sec3a_net` network removed, no test port (39084–39093) remains listening, all dummy credential material shredded, ephemeral workspace deleted and confirmed absent. Production `docker-compose.yml`, `silida.conf`, `nginx/nginx.conf`, backend, frontend, and database were not touched. Production port 8084 remains published and unauthenticated; no Basic Auth exists in production; no real account or credential was created.
+
 ## Final Status
 
 ```text
 PRODUCTION_RESEARCH_PAGE_SEC3_PRODUCTION_LIKE_PLAN_READY_FOR_REVIEW
 ```
 
-Security gate remains `NOT_PASSED`. Production implementation remains `NOT_AUTHORIZED`. Two `PASS_WITH_LIMITATION` findings (§3.1, §3.2) and one architecture question surfaced from real-config reading (§3.3) are carried forward as explicit SEC-4 preconditions, not silently resolved.
+Security gate remains `NOT_PASSED`. Production implementation remains `NOT_AUTHORIZED`. Two `PASS_WITH_LIMITATION` findings (§3.1, §3.2) and one architecture question surfaced from real-config reading (§3.3) are carried forward as explicit SEC-4 preconditions, not silently resolved. §3.1 (`SEC3-F-01`) is closed as of the SEC-3A addendum above; §3.3 (`SEC3-F-02`) remains open pending a clean-environment re-verification and the production-side provider confirmation.
