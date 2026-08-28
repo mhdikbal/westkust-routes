@@ -60,3 +60,39 @@ This test ran immediately after SEC2-T-038 (a 25-request burst against the same 
 ## 4. Overall Negative-Test Verdict
 
 15 of 16 researcher-specified categories passed cleanly or passed with a documented, non-blocking limitation. One category (rate-limit bypass attempt / observability) requires a short, low-effort retest before being considered fully validated. None of the findings in this report indicate the tested design fails closed anywhere it should fail closed — every fail-closed check that ran to completion (missing/unreadable htpasswd, invalid credentials, anonymous access on all 8 protected paths) confirmed the expected behavior.
+
+---
+
+## 5. Addendum — Phase SEC-2A Retest and Defense-in-Depth (appended, does not alter §1–4 above)
+
+> **SEC-2 evidence baseline:** `38120d250a2b629e86a6c66d0d4be7d0851117b5`
+
+### 5.1 §3.4 retest — SEC2-T-040 (rate-limit observability)
+
+The two-minute retest recommended in §3.4 was performed with a deterministic cooldown (Stage A–G, `SEC2A-RL-001..006`). With a clean rate-limit bucket, a 25-request anonymous burst produced **both** categories in a single run: `401 x 3` (the burst-capacity requests that reached the auth-check stage) and `503 x 22` (the requests that exceeded burst capacity). A measured 5.004s cooldown (against a ~1.5s configured recovery interval) was followed by a successful authorized request, confirming clean recovery. Result: **6/6 PASS**. The original T-040 `FAIL` cell is left untouched in the CSV as the historical record of the sequencing artifact; its `notes` field is annotated `SEC2A_STATUS: SUPERSEDED_BY_SEC2A_RETEST`.
+
+### 5.2 §3.3 follow-up — SEC2-T-030 (same-host loopback bypass)
+
+A second, independent prototype (`sec2a_outer` / `sec2a_inner`) was built to test whether adding `auth_basic` at an **inner** boundary — modeling the production `voc_nginx` layer — closes the gap described in §3.3. Twelve tests (`SEC2A-INNER-001..012`) covered anonymous/valid direct-loopback access to both a page and an API, valid/anonymous outer-to-inner access, unmapped-prefix bypass attempts, path-variation bypass attempts (no trailing slash, repeated slash, query string, encoded path, alternate Host header), missing/unreadable credential-store fail-closed behavior, protected-body leakage, and credential/Authorization leakage into logs. Result: **12/12 PASS**. Direct-loopback anonymous access, which previously succeeded unauthenticated (§3.3), now returns 401 with the inner boundary enabled; a rollback rehearsal (see the rollback-rehearsal addendum) isolated inner `auth_basic` as the specific, sufficient variable that closes the gap. Status: `MITIGATION_PROTOTYPE_VALIDATED` — not `PRODUCTION_RESOLVED`, since production still has no Basic Auth at either layer.
+
+### 5.3 Double-challenge assessment
+
+The normal valid browser-equivalent path (anonymous → 401 at outer → credential supplied once → 200) was tested end to end. The outer layer's proxy forwards the client's real `Authorization` header to the inner layer unmodified (not a synthetic trust header); the inner layer independently re-validates it against its own credential store. This was proven genuine — not blind trust — by pointing the outer proxy at an inner instance provisioned with a *different* password: the outer-valid request still received a 401 from the inner layer. Net result for the normal flow: **one** browser-visible authentication prompt, **no** second interactive challenge, **no** 401 loop, **no** redirect loop, **no** credential disclosure in logs.
+
+### 5.4 Full SEC-2A category list
+
+| # | Category | Test ID(s) | Result |
+|---|---|---|---|
+| 17 | Rate-limit retest, deterministic cooldown | SEC2A-RL-001–006 | PASS (6/6) |
+| 18 | Inner-boundary anonymous/valid direct-loopback | SEC2A-INNER-001–004 | PASS |
+| 19 | Inner-boundary outer-to-inner valid/anonymous | SEC2A-INNER-005–006 | PASS |
+| 20 | Alternate/unmapped prefix bypass (inner) | SEC2A-INNER-007 | PASS |
+| 21 | Inner path-variation bypass attempts | SEC2A-INNER-008 | PASS |
+| 22 | Missing credential store (inner) | SEC2A-INNER-009 | PASS (fail closed, 403) |
+| 23 | Unreadable credential store (inner) | SEC2A-INNER-010 | PASS (fail closed, 500) |
+| 24 | Protected-body leakage (inner, all unauthorized paths) | SEC2A-INNER-011 | PASS |
+| 25 | Credential/Authorization leakage in logs (rate-limit + inner suites) | SEC2A-RL-006, SEC2A-INNER-012 | PASS |
+
+### 5.5 Overall SEC-2A verdict
+
+18 of 18 new tests passed (6/6 rate-limit retest, 12/12 inner-boundary). No credential material, plaintext password, or Authorization header value appeared in any report or log. No protected body content was returned in any unauthorized response. The double-challenge risk identified as a concern going into this phase did not materialize in the tested topology. `SECURITY_ACCESS_CONTROL_GATE` remains `NOT_PASSED` — this phase validates a nonproduction mitigation prototype, not a production implementation.

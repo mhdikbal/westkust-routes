@@ -96,3 +96,22 @@ SEC2_NONPRODUCTION_PROTOTYPE_PASS
 ```
 
 Security gate remains `NOT_PASSED`. Production implementation remains `NOT_AUTHORIZED`.
+
+---
+
+## 7. Addendum — Phase SEC-2A (appended, does not alter §1–6 above)
+
+> **SEC-2 evidence baseline:** `38120d250a2b629e86a6c66d0d4be7d0851117b5`
+> **Parent security-planning baseline:** `e813192b590917a7f96b9e3ca7da5c8c9a907be8`
+
+SEC-2A reran the rate-limit sequence with a deterministic cooldown and built a second, independent ephemeral prototype (`sec2a_outer` / `sec2a_inner`, network `sec2a_net`, ports `127.0.0.1:28084`/`28085`) to validate defense-in-depth Basic Auth at an inner boundary. Full detail, all 18 new test rows, and the rollback rehearsal are in `PRODUCTION_RESEARCH_PAGE_SEC2A_DEFENSE_IN_DEPTH_ADDENDUM.md`.
+
+```text
+SEC2A rate-limit retest:   6/6 PASS (SEC2A-RL-001..006)
+SEC2A inner boundary:      12/12 PASS (SEC2A-INNER-001..012)
+T-040:                     SUPERSEDED_BY_SEC2A_RETEST (original FAIL cell preserved, not rewritten)
+T-030:                     MITIGATION_PROTOTYPE_VALIDATED (NOT PRODUCTION_RESOLVED)
+SECURITY_ACCESS_CONTROL_GATE: NOT_PASSED (unchanged)
+```
+
+Cleanup for SEC-2A: all `sec2a_*` containers and the `sec2a_net` network removed, no test port (28084–28089) remains listening, all dummy credential material shredded, ephemeral workspace directory deleted and confirmed absent. Production `docker-compose.yml`, `silida.conf`, `nginx/nginx.conf`, backend, frontend, and database were not touched. Production port 8084 remains published and unauthenticated; no Basic Auth exists in production; no real account or credential was created.

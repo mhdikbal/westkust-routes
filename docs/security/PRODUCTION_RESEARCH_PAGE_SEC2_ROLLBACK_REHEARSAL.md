@@ -37,3 +37,28 @@ At no point in this rehearsal was any of the following read, written, or restart
 ## 5. Conclusion
 
 Both reversible actions modeled by SEC-2 (Basic Auth block removal, port-binding restoration) were rehearsed successfully in isolation. This is a rehearsal of the *design* documented in `PRODUCTION_RESEARCH_PAGE_NETWORK_CONTAINMENT_PLAN.md` §2 (N1 rollback) and `PRODUCTION_RESEARCH_PAGE_BASIC_AUTH_TRANSITION_PLAN.md` §3 (Basic Auth rollback) — it demonstrates the *mechanism* works as designed in miniature; it does not itself constitute a production rollback test, which remains a Phase SEC-3+ activity against a production-like (not production) environment.
+
+---
+
+## 6. Addendum — Phase SEC-2A Rollback Rehearsal (appended, does not alter §1–5 above)
+
+> **SEC-2 evidence baseline:** `38120d250a2b629e86a6c66d0d4be7d0851117b5`
+
+A second, independent rehearsal was run against the SEC-2A defense-in-depth prototype (`sec2a_outer` / `sec2a_inner`) specifically to demonstrate that **inner `auth_basic` enforcement is the control that mitigates T-030** (same-host loopback bypass).
+
+| Step | Action | Result |
+|---|---|---|
+| 1 | Recorded pre-test config checksums (`sec2a_ws/inner/nginx.conf`, `sec2a_ws/outer/nginx.conf`) | RECORDED (session-local, deleted at cleanup) |
+| 2–3 | Confirmed outer + inner auth both active on the running prototype | outer anonymous → 401; inner direct-loopback anonymous → 401 |
+| 4 | Verified direct-loopback denial with inner auth active | 401 |
+| 5 | Reproduced the pre-mitigation (T-030) condition — a **disposable, separate** no-auth inner variant (`sec2a_inner_noauth_demo`), since the running container's config is a read-only bind mount and cannot be mutated in place | variant built on a new test-only port, main prototype untouched |
+| 6 | Demonstrated the loopback limitation returns when inner has no auth | direct-loopback anonymous → **200** (T-030 reproduced exactly) |
+| 7 | "Restored" inner auth — the main `sec2a_inner` container was never weakened; it remained the authenticated baseline throughout | n/a |
+| 8 | Confirmed direct-loopback denial returns on the authenticated inner | 401 |
+| 9 | Removed the disposable no-auth demo container | `docker rm -f sec2a_inner_noauth_demo` — confirmed removed |
+| 10 | Restored/retained the disposable baseline | `sec2a_inner` / `sec2a_outer` unchanged throughout, still the authenticated pair |
+| 11 | Verified public control routes remained accessible throughout | `/atlas/public/` → 200, `/public/` → 200 |
+| 12 | Deleted all dummy credential material | htpasswd files `chmod`-corrected then `shred -u`; entire `sec2a_ws` workspace `rm -rf`, confirmed absent |
+| 13 | Verified no protected data in temporary logs before wipe | redacted `sec2a_redacted` log format contains only `auth_present=0/1` and status; grep for `Basic `, `Authorization`, and the dummy username returned zero matches before the log files were deleted with the workspace |
+
+**Conclusion:** step 6 (200, unauthenticated success) vs. step 8 (401, denied) isolates a single variable — inner `auth_basic` presence — and proves it is the specific, sufficient control that closes the T-030 gap in this nonproduction prototype. This remains a design-level rehearsal; it is not a production rollback test.
