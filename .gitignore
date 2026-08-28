@@ -139,6 +139,7 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_V2_1_REVALIDATION_IMPLEMENTATION_MAP.csv
 !docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_V2_1_SYNTHETIC_FIXTURE_MANIFEST.csv
 !docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_V2_1_ARTIFACT_MIGRATION_AUDIT.md
+!docs/thesis/pilot_annotation/ATLAS_MULTI_CASE_POWER_RELATIONS_PROTOTYPE_AUDIT.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,

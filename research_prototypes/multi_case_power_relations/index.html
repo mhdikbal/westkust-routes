@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Case Power-Relation Research Prototype (NONPRODUCTION)</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+
+<header id="status-banner" role="banner" aria-label="Nonproduction status banner">
+  <p class="banner-line banner-line-1">RESEARCH PROTOTYPE</p>
+  <p class="banner-line banner-line-2">NONPRODUCTION</p>
+  <p class="banner-line banner-line-3">MULTI-CASE — PAINAN / NATAL / KOTO TANGAH / TIKU / SILLIDA (DRAFT V2.1)</p>
+  <p class="banner-line banner-line-4">NOT CONNECTED TO THE PUBLIC ATLAS, API, DATABASE, OR GRAPHIFY</p>
+</header>
+
+<div id="load-status" role="status" aria-live="polite"></div>
+
+<div id="case-switcher" role="tablist" aria-label="Case selector"></div>
+
+<nav id="view-nav" aria-label="Prototype views">
+  <button type="button" class="nav-btn" data-view="caseindex" aria-current="page">Case Index</button>
+  <button type="button" class="nav-btn" data-view="overview">Overview</button>
+  <button type="button" class="nav-btn" data-view="actors">Actors</button>
+  <button type="button" class="nav-btn" data-view="timeline">Relation Timeline</button>
+  <button type="button" class="nav-btn" data-view="network">Relation Network</button>
+  <button type="button" class="nav-btn" data-view="claimcontrol">Claim vs Effective Control</button>
+  <button type="button" class="nav-btn" data-view="v21additions">V2.1 Additions</button>
+  <button type="button" class="nav-btn" data-view="publiccopy">Public-Copy Preview</button>
+</nav>
+
+<main id="app-root">
+  <section id="view-caseindex" class="view" aria-labelledby="caseindex-heading"></section>
+  <section id="view-overview" class="view" hidden aria-labelledby="overview-heading"></section>
+  <section id="view-actors" class="view" hidden aria-labelledby="actors-heading"></section>
+  <section id="view-timeline" class="view" hidden aria-labelledby="timeline-heading"></section>
+  <section id="view-network" class="view" hidden aria-labelledby="network-heading"></section>
+  <section id="view-claimcontrol" class="view" hidden aria-labelledby="claimcontrol-heading"></section>
+  <section id="view-v21additions" class="view" hidden aria-labelledby="v21additions-heading"></section>
+  <section id="view-publiccopy" class="view" hidden aria-labelledby="publiccopy-heading"></section>
+</main>
+
+<footer id="app-footer">
+  <p>Reads exactly 5 files, read-only, all under <code>data/power_relations/migrated_v2_1/</code>.
+  No API, database, Graphify, or production Atlas connection exists on this page. Cases are never
+  merged into one shared graph — the case switcher moves between 5 independently-scoped artifacts.
+  Patron-client, power-theory, and V2.1 research-only entities (CommercialRight, RightModification,
+  CommandObservation, OperationParticipation) are Level 3 / Research-Only content, never confirmed
+  historical fact and never rendered as a graph edge.</p>
+</footer>
+
+<script src="prototype.js"></script>
+</body>
+</html>
