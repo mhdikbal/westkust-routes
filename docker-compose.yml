@@ -76,6 +76,7 @@ services:
       SALIDO_HDT_DATA_DIR: /app/data/salido_hdt_model_v0_4_1
       SALIDO_HDT_SCENARIO_DIR: /app/data/salido_solver_snapshot
       SALIDO_HDT_CACHE_DIR: /tmp/salido-hdt-cache
+      SQLITE_DB_PATH: /app/data/auth-db/db.sqlite3
     depends_on:
       - backend
     # SEC-1: port 8001 TIDAK di-publish ke host — akses hanya via nginx :8084
@@ -85,8 +86,9 @@ services:
     volumes:
       - ./docs/enclave/salido_hdt_model_v0_4_1:/app/data/salido_hdt_model_v0_4_1:ro
       - ./frontend/map_app/data/enclave_1682_solver_run:/app/data/salido_solver_snapshot:ro
+      - frontend_auth_db:/app/data/auth-db
     command: >
-      sh -c "python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8001"
+      sh -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8001"
 
   nginx:
     image: nginx:1.25-alpine
@@ -102,3 +104,4 @@ services:
 
 volumes:
   pgdata:
+  frontend_auth_db:

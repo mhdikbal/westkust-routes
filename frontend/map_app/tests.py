@@ -21,8 +21,9 @@ import os
 import re
 from pathlib import Path
 from unittest.mock import patch, MagicMock
-from django.test import SimpleTestCase, Client
+from django.test import SimpleTestCase, TestCase, Client
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 
 # atlas.js content — read once for tests that verify JS logic extracted from index.html (US-11)
 _ATLAS_JS_PATH = Path(__file__).parent / "static" / "map_app" / "js" / "atlas.js"
@@ -3003,3 +3004,36 @@ class Enclave1682ViewTest(SimpleTestCase):
                      "labour_productivity", "ore_per_person", "schoten_per_person",
                      "kapasitas pekerja", "produktivitas budak", "produktivitas pekerja"):
             self.assertNotIn(term, section)
+
+
+class AuthLoginLogoutTest(TestCase):
+    """Langkah 8 — auth infrastructure only, no route gating."""
+
+    def setUp(self):
+        self.client = Client()
+        User = get_user_model()
+        self.user = User.objects.create_user(username="peneliti", password="a-strong-test-password-123")
+
+    def test_login_page_get_returns_200(self):
+        response = self.client.get(reverse("login"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_login_wrong_credentials_does_not_authenticate(self):
+        response = self.client.post(reverse("login"), {"username": "peneliti", "password": "wrong"})
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+        self.assertContains(response, "salah")
+
+    def test_login_correct_credentials_authenticates_and_redirects(self):
+        response = self.client.post(
+            reverse("login"),
+            {"username": "peneliti", "password": "a-strong-test-password-123"},
+        )
+        self.assertRedirects(response, reverse("index"))
+        self.assertIn("_auth_user_id", self.client.session)
+
+    def test_logout_clears_session(self):
+        # Django 5.0's LogoutView only accepts POST (GET logout was removed for CSRF safety).
+        self.client.login(username="peneliti", password="a-strong-test-password-123")
+        self.assertIn("_auth_user_id", self.client.session)
+        response = self.client.post(reverse("logout"))
+        self.assertNotIn("_auth_user_id", self.client.session)
