@@ -109,7 +109,9 @@ LINIMASA_ERAS = [
 
 def index(request):
     """Main map page — VOC Trade Atlas."""
-    return render(request, "map_app/index.html")
+    return render(request, "map_app/index.html", {
+        "carto_basemap_key": os.getenv("CARTO_BASEMAP_KEY", ""),
+    })
 
 
 def riset_tema(request):

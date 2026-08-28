@@ -1221,6 +1221,7 @@
         integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
         crossorigin="anonymous"></script>
 
-<script src="{% static 'map_app/js/atlas.js' %}?v=5"></script>
+<script>window.CARTO_BASEMAP_KEY = "{{ carto_basemap_key|escapejs }}";</script>
+<script src="{% static 'map_app/js/atlas.js' %}?v=6"></script>
 </body>
 </html>

@@ -72,6 +72,7 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DEBUG: ${DEBUG:-False}
       API_BASE_URL: ${API_BASE_URL:-http://backend:8000}
+      CARTO_BASEMAP_KEY: ${CARTO_BASEMAP_KEY:-}
       SALIDO_HDT_DATA_DIR: /app/data/salido_hdt_model_v0_4_1
       SALIDO_HDT_SCENARIO_DIR: /app/data/salido_solver_snapshot
       SALIDO_HDT_CACHE_DIR: /tmp/salido-hdt-cache

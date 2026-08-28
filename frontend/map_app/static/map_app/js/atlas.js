@@ -375,7 +375,10 @@ function fortIcon(f, active) {
    ───────────────────────────────────────────────────────────────────────────── */
 function init() {
   map = L.map("map", { center: [-2.5, 103.0], zoom: 7, zoomControl: true });
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+  const cartoKey = (typeof window !== "undefined" && window.CARTO_BASEMAP_KEY) || "";
+  const tileUrl = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+    + (cartoKey ? "?key=" + encodeURIComponent(cartoKey) : "");
+  L.tileLayer(tileUrl, {
     attribution: "&copy; <a href='https://carto.com/'>CARTO</a> &copy; OpenStreetMap contributors",
     subdomains: "abcd", maxZoom: 19,
   }).addTo(map);
