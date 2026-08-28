@@ -95,6 +95,41 @@ e3d872fbb52ee1b57b82f570b06d8583a73b7be87e413a9dd6f946a1b869cf13  PRODUCTION_RES
 
 (This file's own checksum is not self-referential and is reported in the terminal summary.)
 
+## 9. Addendum — Phase SEC-3B Numeric Rate-Limit Retest (appended, does not alter §1–8 above or any original test row)
+
+> **SEC-3A evidence baseline:** `2864fc28d958194883355e999f111ff7aa4114e8`
+
+SEC-3B attempted to close `SEC3-F-02`'s two remaining limited results (`SEC3A-IP-007`, `SEC3A-IP-008`) using a deterministic, fresh-environment numeric retest. Full detail in `PRODUCTION_RESEARCH_PAGE_SEC3B_NUMERIC_RATE_LIMIT_PLAN.md`, `PRODUCTION_RESEARCH_PAGE_SEC3B_TEST_RESULTS.csv`, `PRODUCTION_RESEARCH_PAGE_SEC3B_RATE_LIMIT_ANALYSIS.md`, and `PRODUCTION_RESEARCH_PAGE_SEC3B_AUDIT.md`.
+
+```text
+Result: PRODUCTION_RESEARCH_PAGE_SEC3B_REQUIRES_REVIEW
+
+The required precondition test (SEC3B-CTRL-001 -- a brand-new zone, never
+previously used, with an intentionally extreme threshold of 1 request per
+minute and zero burst allowance) FAILED: 10/10 rapid sequential requests
+returned 200, zero rejected. Per SEC-3B's own instruction, this means the
+environment is invalid for interpreting IP-007/IP-008, and the twelve
+dependent tests were correctly left BLOCKED rather than fabricated.
+
+This RULES OUT the prior hypothesis that the SEC-3A limitation was specific
+to that session's accumulated state ("TEST_ENVIRONMENT_LIMITATION_REQUIRES_
+FRESH_STATE") -- the identical failure reproduces in a container that never
+previously existed. Corrected classification:
+NGINX_LIMIT_REQ_MODULE_NOT_ENFORCING_IN_THIS_SANDBOX_PLATFORM.
+
+SEC3-F-02 status: UNCHANGED -- OPEN_REQUIRES_TARGETED_RATE_LIMIT_RETEST.
+Not TARGETED_NUMERIC_RATE_LIMIT_MITIGATION_VALIDATED, not
+PRODUCTION_CONFIGURED, not PRODUCTION_RESOLVED.
+
+The SEC3A-IP-007/SEC3A-IP-008 result cells above remain PASS_WITH_LIMITATION,
+unmodified by SEC-3B.
+
+SEC3B_ENVIRONMENT_CONTROL_FAILED
+NO_VALID_SUPERSESSION_PRODUCED
+```
+
+Cleanup for SEC-3B: all `sec3b_*` and diagnostic `quick_sanity*` containers/networks removed, no test port remains listening, ephemeral workspace deleted and confirmed absent. Production `docker-compose.yml`, `silida.conf`, `nginx/nginx.conf`, backend, frontend, and database were not touched. Production port 8084 remains published and unauthenticated; no Basic Auth exists in production.
+
 ---
 
 ## Final Status
