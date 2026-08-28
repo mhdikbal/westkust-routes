@@ -130,6 +130,40 @@ NO_VALID_SUPERSESSION_PRODUCED
 
 Cleanup for SEC-3B: all `sec3b_*` and diagnostic `quick_sanity*` containers/networks removed, no test port remains listening, ephemeral workspace deleted and confirmed absent. Production `docker-compose.yml`, `silida.conf`, `nginx/nginx.conf`, backend, frontend, and database were not touched. Production port 8084 remains published and unauthenticated; no Basic Auth exists in production.
 
+## 10. Addendum — Phase SEC-3C Different-Host Retest (appended, does not alter §1–9 above or any original test row)
+
+> **SEC-3B evidence baseline:** `92b10685e32318a262a3c64762993482d77947a6`
+
+SEC-3C attempted a third retest of `SEC3-F-02`'s two remaining limited results, this time on a host intended to be different from SEC-3B's. Full detail in `PRODUCTION_RESEARCH_PAGE_SEC3C_DIFFERENT_HOST_PLAN.md`, `PRODUCTION_RESEARCH_PAGE_SEC3C_TEST_RESULTS.csv`, `PRODUCTION_RESEARCH_PAGE_SEC3C_RATE_LIMIT_ANALYSIS.md`, `PRODUCTION_RESEARCH_PAGE_SEC3C_ENVIRONMENT_AUDIT.md`, and `PRODUCTION_RESEARCH_PAGE_SEC3C_AUDIT.md`.
+
+```text
+Result: PRODUCTION_RESEARCH_PAGE_SEC3C_ENVIRONMENT_INVALID
+
+No genuinely different host was accessible to this session -- the same WSL2
+sandbox as SEC-3B was used (disclosed explicitly, not silently). Native
+Nginx (the preferred C1 option) was unavailable: no package installed, and
+`sudo apt-get install nginx` failed for lack of an interactive password.
+The C3 fallback (disposable container) reproduced the identical
+non-enforcement a third time, with a uniquely-named zone and a
+uniquely-marked response body: SEC3C-CTRL-004 (enforcement) and
+SEC3C-CTRL-005 (error-log record) both FAILED -- 10/10 requests returned
+200 against rate=1r/m no-burst, zero limiting events logged.
+
+Per the hard-stop rule, the 20 dependent IP-007/IP-008/spoofing tests were
+NOT run and are recorded BLOCKED.
+
+SEC3-F-02 status: UNCHANGED -- OPEN_REQUIRES_TARGETED_RATE_LIMIT_RETEST,
+now after three independent attempts (SEC-3A, SEC-3B, SEC-3C).
+
+The SEC3A-IP-007/SEC3A-IP-008 result cells above remain PASS_WITH_LIMITATION,
+unmodified by SEC-3C.
+
+SEC3C_ENVIRONMENT_INVALID
+NO_VALID_SUPERSESSION_PRODUCED
+```
+
+Cleanup for SEC-3C: `sec3c_ctrl` container and `sec3c_net` network removed, no test port remains listening, temporary workspace deleted and confirmed absent. Production unchanged.
+
 ---
 
 ## Final Status

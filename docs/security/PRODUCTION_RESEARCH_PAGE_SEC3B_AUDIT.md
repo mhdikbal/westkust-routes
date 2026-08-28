@@ -115,6 +115,21 @@ c9ae541df211de597185a279aa032162a2e05630cd0f20b5c5f3ff2a5796e6a3  PRODUCTION_RES
 
 ---
 
+## 10. Addendum — Phase SEC-3C Different-Host Retest (appended, does not alter §1–9 above or any original test row)
+
+> **SEC-3B result preserved as-is; not rewritten by SEC-3C.**
+
+SEC-3C attempted the recommended different-host retest. No genuinely different host was accessible to the session that ran it — this is disclosed in full in `PRODUCTION_RESEARCH_PAGE_SEC3C_DIFFERENT_HOST_PLAN.md` § 1. Native Nginx (preferred) was unavailable for lack of `sudo`; the container fallback, on the same underlying host as this SEC-3B run, reproduced the identical non-enforcement a third time. Full detail: `PRODUCTION_RESEARCH_PAGE_SEC3C_AUDIT.md`.
+
+```text
+SEC3C_ENVIRONMENT_INVALID
+NO_VALID_SUPERSESSION_PRODUCED
+```
+
+This SEC-3B turn's own `FAIL`/`BLOCKED` rows above remain exactly as recorded — SEC-3C does not supersede or rewrite them, it adds a third, independent, cross-referenced data point.
+
+---
+
 ## Final Status
 
 ```text
