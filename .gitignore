@@ -129,6 +129,7 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/PRD_ATLAS_POWER_RELATIONS_LONG_TERM_SCALE.md
 !docs/thesis/pilot_annotation/PRD_ATLAS_POWER_RELATIONS_RESEARCHER_ADJUDICATION_GUIDE.md
 !docs/thesis/pilot_annotation/PRD_ATLAS_POWER_RELATIONS_LONG_TERM_SCALE_AUDIT.md
+!docs/thesis/pilot_annotation/POST_V1_V4_COMPLETE_RESEARCHER_DECISION_AUDIT.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
