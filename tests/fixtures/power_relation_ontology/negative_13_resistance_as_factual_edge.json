@@ -1,0 +1,43 @@
+{
+  "actors": [
+    {
+      "actor_id": "ACTOR_A",
+      "actor_type": "Actor",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    },
+    {
+      "actor_id": "ACTOR_TARGET",
+      "actor_type": "Institution",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    },
+    {
+      "actor_id": "ACTOR_OBJECT",
+      "actor_type": "Institution",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "case_id": "SYNTH_RESISTANCE_TARGET",
+  "ontology_version": "V2.1",
+  "relations": [
+    {
+      "object_id": "ACTOR_OBJECT",
+      "relation_id": "REL_1",
+      "relation_type": "USES_MILITARY_FORCE_AGAINST",
+      "resistance_candidate": {
+        "public_status": "FACTUAL_EDGE",
+        "resistance_target_actor_id": "ACTOR_TARGET",
+        "value": "PARTIALLY_SUPPORTED"
+      },
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ],
+      "subject_actor_id": "ACTOR_A"
+    }
+  ]
+}

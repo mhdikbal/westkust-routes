@@ -1,0 +1,15 @@
+{
+  "actors": [
+    {
+      "actor_id": "ACTOR_A",
+      "actor_type": "Actor",
+      "mandate_scope": "",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "case_id": "SYNTH_UNBOUNDED_MANDATE",
+  "ontology_version": "V2.1",
+  "relations": []
+}

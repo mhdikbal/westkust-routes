@@ -1,0 +1,53 @@
+{
+  "actors": [
+    {
+      "actor_id": "ACTOR_COMMANDER",
+      "actor_type": "Institution",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    },
+    {
+      "actor_id": "ACTOR_COMMANDED",
+      "actor_type": "NamedCollective",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "case_id": "SYNTH_OPERATION_PARTICIPATION",
+  "command_observations": [
+    {
+      "ability_to_refuse": "NO",
+      "coercion_status": "COERCED",
+      "commanded_actor_id": "ACTOR_COMMANDED",
+      "commanding_actor_id": "ACTOR_COMMANDER",
+      "constrained_agency": "CONFIRMED",
+      "dependency_status": "structurally dependent, armed escort documented",
+      "observation_id": "CO_1",
+      "political_intent": "CANNOT_DETERMINE",
+      "public_status": "RESEARCH_ONLY",
+      "researcher_review_required": true,
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ],
+      "voice_availability": "ABSENT"
+    }
+  ],
+  "ontology_version": "V2.1",
+  "operation_participations": [
+    {
+      "command_observation_id": "CO_1",
+      "event_id": "SYN_EVENT_1",
+      "participant_actor_id": "ACTOR_COMMANDED",
+      "participation_id": "OP_1",
+      "public_status": "RESEARCH_ONLY",
+      "researcher_review_required": true,
+      "role_as_written": "\"gedwongen mede te trekken\" (source term preserved)",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "relations": []
+}

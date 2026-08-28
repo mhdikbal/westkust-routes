@@ -1,0 +1,53 @@
+{
+  "actors": [
+    {
+      "actor_id": "ACTOR_HOLDER",
+      "actor_type": "Actor",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    },
+    {
+      "actor_id": "ACTOR_GRANTOR",
+      "actor_type": "Institution",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "case_id": "SYNTH_RIGHT_MODIFICATION",
+  "commercial_rights": [
+    {
+      "commodity": "SYNTHETIC_COMMODITY",
+      "concerns_relation_type": "COLLECTS_TOLL_FROM",
+      "date_precision": "YEAR_ONLY",
+      "granting_actor_id": "ACTOR_GRANTOR",
+      "holder_actor_id": "ACTOR_HOLDER",
+      "public_status": "RESEARCH_ONLY",
+      "researcher_review_required": true,
+      "right_id": "CR_1",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ],
+      "valid_from": "1700"
+    }
+  ],
+  "ontology_version": "V2.1",
+  "relations": [],
+  "right_modifications": [
+    {
+      "acting_actor_id": "ACTOR_GRANTOR",
+      "action": "WAIVES",
+      "affected_actor_id": "ACTOR_HOLDER",
+      "date_precision": "YEAR_ONLY",
+      "modification_date": "1705",
+      "modification_id": "RM_1",
+      "public_status": "RESEARCH_ONLY",
+      "researcher_review_required": true,
+      "right_id": "CR_DOES_NOT_EXIST",
+      "source_document_ids": [
+        "SYN_DOC_2"
+      ]
+    }
+  ]
+}

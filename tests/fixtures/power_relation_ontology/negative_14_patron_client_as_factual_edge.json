@@ -1,0 +1,34 @@
+{
+  "actors": [
+    {
+      "actor_id": "ACTOR_A",
+      "actor_type": "Actor",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    },
+    {
+      "actor_id": "ACTOR_B",
+      "actor_type": "Institution",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "case_id": "SYNTH_MINIMAL_V2",
+  "ontology_version": "V2",
+  "relations": [
+    {
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "object_id": "ACTOR_B",
+      "provenance_status": "SYN_TEST",
+      "relation_id": "REL_1",
+      "relation_type": "PATRON_OF",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ],
+      "subject_actor_id": "ACTOR_A"
+    }
+  ]
+}

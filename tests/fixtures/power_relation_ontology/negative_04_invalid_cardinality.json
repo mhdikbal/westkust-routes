@@ -1,0 +1,15 @@
+{
+  "actors": [
+    {
+      "actor_id": "ACTOR_A",
+      "actor_type": "Actor",
+      "explicit_non_identity_with": "ACTOR_B",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "case_id": "SYNTH_BAD_CARDINALITY",
+  "ontology_version": "V2.1",
+  "relations": []
+}

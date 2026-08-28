@@ -1,0 +1,37 @@
+{
+  "actors": [
+    {
+      "actor_id": "ACTOR_A",
+      "actor_type": "Actor",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "case_id": "SYNTH_FULL_V2",
+  "locations": [
+    {
+      "location_id": "LOC_FORT_1",
+      "location_type": "Fort"
+    }
+  ],
+  "ontology_version": "V2",
+  "relations": [
+    {
+      "claim_or_effective_control": "FORT_CONTROL",
+      "evidence_strength": "STRONG",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "object_id": "LOC_FORT_1",
+      "open_ended": false,
+      "provenance_status": "SYN_TEST",
+      "relation_id": "REL_1",
+      "relation_type": "CONTROLS_FORT",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ],
+      "subject_actor_id": "ACTOR_A",
+      "valid_from": "1700",
+      "valid_to": "1710"
+    }
+  ]
+}

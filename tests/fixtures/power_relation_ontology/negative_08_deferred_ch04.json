@@ -1,0 +1,33 @@
+{
+  "actors": [
+    {
+      "actor_id": "ACTOR_A",
+      "actor_type": "Actor",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "case_id": "SYNTH_CH04_ATTEMPT",
+  "institutional_observations": [
+    {
+      "entity_type": "InstitutionalStateObservation",
+      "institution_id": "INST_1",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "ontology_version": "V2.1",
+  "relations": [
+    {
+      "object_id": "ACTOR_A",
+      "relation_id": "REL_1",
+      "relation_type": "NEGOTIATES_WITH",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ],
+      "subject_actor_id": "ACTOR_A"
+    }
+  ]
+}

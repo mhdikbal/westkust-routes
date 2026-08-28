@@ -1,0 +1,36 @@
+{
+  "actors": [
+    {
+      "actor_id": "ACTOR_A",
+      "actor_type": "Actor",
+      "explicit_non_identity_with": [],
+      "identity_continuity_status": "CANNOT_DETERMINE",
+      "mandate_scope": "NOT_TESTABLE",
+      "mandate_status": "CANNOT_DETERMINE",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "case_id": "SYNTH_ALL_CANNOT_DETERMINE",
+  "command_observations": [
+    {
+      "ability_to_refuse": "CANNOT_DETERMINE",
+      "coercion_status": "CANNOT_DETERMINE",
+      "commanded_actor_id": "ACTOR_A",
+      "commanding_actor_id": "ACTOR_A",
+      "constrained_agency": "CANNOT_DETERMINE",
+      "dependency_status": "CANNOT_DETERMINE",
+      "observation_id": "CO_1",
+      "political_intent": "CANNOT_DETERMINE",
+      "public_status": "RESEARCH_ONLY",
+      "researcher_review_required": true,
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ],
+      "voice_availability": "CANNOT_DETERMINE"
+    }
+  ],
+  "ontology_version": "V2.1",
+  "relations": []
+}
