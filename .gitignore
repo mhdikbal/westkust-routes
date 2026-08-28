@@ -133,6 +133,8 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/MODEL_3B_CD_V1_STATUS_ADDENDUM_RESEARCH_ONLY.md
 !docs/thesis/pilot_annotation/MODEL_3B_CD_V1_POSTMORTEM.md
 !docs/thesis/pilot_annotation/MODEL_3B_POST_PHASE_D_EPISTEMOLOGICAL_NOTE.md
+!docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_1_DRAFT.md
+!docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_V2_1_CONTRACT_DIFF.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
