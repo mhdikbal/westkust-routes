@@ -28,16 +28,36 @@
       "changeset_draft_recommendations"
     ]
   },
-  "supported_versions": ["V2", "V2.1"],
+  "supported_versions": [
+    "V2",
+    "V2.1"
+  ],
   "closed_relation_vocabulary": {
     "MVP_CORE_RELATION": [
-      "REQUESTS_PROTECTION_FROM", "PROVIDES_PROTECTION_TO", "REQUIRES_MONOPOLY_FROM", "NEGOTIATES_WITH",
-      "RECONCILES_WITH", "SWITCHES_ALIGNMENT_TO", "CLAIMS_JURISDICTION_OVER", "CLAIMS_COMMODITY_MONOPOLY",
-      "CONTESTS_SUCCESSION_WITH", "CONTESTS_RESOURCE_WITH", "RECOGNIZES_OFFICE_HOLDER",
-      "COLLECTS_TOLL_FROM", "LEASES_RESOURCE_TO", "USES_MILITARY_FORCE_AGAINST"
+      "REQUESTS_PROTECTION_FROM",
+      "PROVIDES_PROTECTION_TO",
+      "REQUIRES_MONOPOLY_FROM",
+      "NEGOTIATES_WITH",
+      "RECONCILES_WITH",
+      "SWITCHES_ALIGNMENT_TO",
+      "CLAIMS_JURISDICTION_OVER",
+      "CLAIMS_COMMODITY_MONOPOLY",
+      "CONTESTS_SUCCESSION_WITH",
+      "CONTESTS_RESOURCE_WITH",
+      "RECOGNIZES_OFFICE_HOLDER",
+      "COLLECTS_TOLL_FROM",
+      "LEASES_RESOURCE_TO",
+      "USES_MILITARY_FORCE_AGAINST"
     ],
-    "EXTENDED_RESEARCH_RELATION": ["EXERCISES_EFFECTIVE_CONTROL_OVER", "CONTROLS_FORT"],
-    "note": "V2.1 (commit b54c8a6, contract SS2) adds ZERO new relation_type values. Any artifact using a value outside these 16 fails UNAPPROVED_RELATION_TYPE."
+    "EXTENDED_RESEARCH_RELATION": [
+      "EXERCISES_EFFECTIVE_CONTROL_OVER",
+      "CONTROLS_FORT"
+    ],
+    "note": "V2.1 (commit b54c8a6, contract SS2) adds ZERO new relation_type values. The validator's own vocabulary covers all 18 values Draft V2 SS2 names as usable: the 14 MVP_CORE_RELATION, 2 EXTENDED_RESEARCH_RELATION, and 2 REQUIRES_MORE_EVIDENCE_RELATION (MAINTAINS_PARALLEL_ALIGNMENT_WITH, scoped by the contract to Painan's own use; APPOINTS_OFFICE_HOLDER, zero instances so far). CASE_SPECIFIC_ONLY and ANNOTATION_NOT_RELATION tier values remain excluded. Any artifact using a value outside these 18 fails UNAPPROVED_RELATION_TYPE.",
+    "REQUIRES_MORE_EVIDENCE_RELATION": [
+      "MAINTAINS_PARALLEL_ALIGNMENT_WITH",
+      "APPOINTS_OFFICE_HOLDER"
+    ]
   },
   "rules": [
     {
@@ -49,7 +69,10 @@
       "changeset_id": null,
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2", "V2.1"],
+      "supported_versions": [
+        "V2",
+        "V2.1"
+      ],
       "error_code": "MISSING_ONTOLOGY_VERSION",
       "remediation_category": "SCHEMA_FIX"
     },
@@ -62,7 +85,10 @@
       "changeset_id": null,
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2", "V2.1"],
+      "supported_versions": [
+        "V2",
+        "V2.1"
+      ],
       "error_code": "UNKNOWN_ONTOLOGY_VERSION",
       "remediation_category": "SCHEMA_FIX"
     },
@@ -75,7 +101,9 @@
       "changeset_id": "CH-03,CH-07",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "UNAUTHORIZED_EXTRA_FIELD",
       "remediation_category": "SCHEMA_FIX"
     },
@@ -88,7 +116,9 @@
       "changeset_id": "CH-03",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "INVALID_RIGHT_MODIFICATION_ACTION",
       "remediation_category": "VOCABULARY_FIX"
     },
@@ -101,7 +131,9 @@
       "changeset_id": "CH-07",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "INVALID_COERCION_STATUS",
       "remediation_category": "VOCABULARY_FIX"
     },
@@ -114,7 +146,9 @@
       "changeset_id": "CH-07",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "INVALID_ABILITY_TO_REFUSE",
       "remediation_category": "VOCABULARY_FIX"
     },
@@ -127,7 +161,9 @@
       "changeset_id": "CH-07",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "INVALID_VOICE_AVAILABILITY",
       "remediation_category": "VOCABULARY_FIX"
     },
@@ -140,20 +176,25 @@
       "changeset_id": "CH-07",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "INVALID_CONSTRAINED_AGENCY",
       "remediation_category": "VOCABULARY_FIX"
     },
     {
       "rule_id": "R-VOC-06",
       "class": "VOCABULARY_RULE",
-      "description": "relation_type on any relation must belong to the closed 16-value MVP_CORE_RELATION + EXTENDED_RESEARCH_RELATION vocabulary. Zero new values authorized by V2.1.",
+      "description": "relation_type on any relation must belong to the closed 18-value vocabulary Draft V2 SS2 names as usable (14 MVP_CORE_RELATION + 2 EXTENDED_RESEARCH_RELATION + 2 REQUIRES_MORE_EVIDENCE_RELATION, the latter narrowly scoped per the contract's own text). Zero new values authorized by V2.1.",
       "contract_section": "Draft V2.1 SS2 (UNCHANGED IN FULL); Draft V2 SS2",
       "decision_id": "DEC-04,DEC-09",
       "changeset_id": "CH-03,CH-07",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2", "V2.1"],
+      "supported_versions": [
+        "V2",
+        "V2.1"
+      ],
       "error_code": "UNAPPROVED_RELATION_TYPE",
       "remediation_category": "RELATION_TYPE_FIX"
     },
@@ -166,7 +207,9 @@
       "changeset_id": "CH-07",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "POLITICAL_INTENT_NOT_FREE_TEXT",
       "remediation_category": "VOCABULARY_FIX"
     },
@@ -179,20 +222,24 @@
       "changeset_id": "CH-01,CH-02",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "INVALID_NON_IDENTITY_CARDINALITY",
       "remediation_category": "SCHEMA_FIX"
     },
     {
       "rule_id": "R-CARD-02",
       "class": "CARDINALITY_RULE",
-      "description": "resistance_target_actor_id must be a single actor_id (string), never a list.",
+      "description": "resistance_target_actor_id must be a single actor_id (string), never a list. It is a SIBLING field directly on the relation, next to the existing resistance_candidate value -- never nested inside it (real artifacts store resistance_candidate as a bare descriptive string).",
       "contract_section": "Draft V2.1 SS4d",
       "decision_id": "DEC-08",
       "changeset_id": "CH-06",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "INVALID_RESISTANCE_TARGET_CARDINALITY",
       "remediation_category": "SCHEMA_FIX"
     },
@@ -205,7 +252,9 @@
       "changeset_id": "CH-03",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "ORPHAN_RIGHT_MODIFICATION_REFERENCE",
       "remediation_category": "REFERENCE_FIX"
     },
@@ -218,7 +267,9 @@
       "changeset_id": "CH-07",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "ORPHAN_OPERATION_PARTICIPATION_REFERENCE",
       "remediation_category": "REFERENCE_FIX"
     },
@@ -231,7 +282,9 @@
       "changeset_id": "CH-07",
       "enforcement": "AUTOMATED",
       "severity": "CRITICAL",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "CONSTRAINED_AGENCY_RELATION_COLLISION",
       "remediation_category": "SAFETY_FIX"
     },
@@ -244,7 +297,9 @@
       "changeset_id": "CH-01,CH-02",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "INVALID_NON_IDENTITY_REFERENCE",
       "remediation_category": "REFERENCE_FIX"
     },
@@ -257,20 +312,25 @@
       "changeset_id": null,
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2", "V2.1"],
+      "supported_versions": [
+        "V2",
+        "V2.1"
+      ],
       "error_code": "ORPHAN_RELATION_ENDPOINT",
       "remediation_category": "REFERENCE_FIX"
     },
     {
       "rule_id": "R-REF-06",
       "class": "REFERENCE_INTEGRITY_RULE",
-      "description": "resistance_target_actor_id must reference an existing actor_id in the artifact.",
+      "description": "resistance_target_actor_id (a sibling field on the relation, next to resistance_candidate) must reference an existing actor_id in the artifact.",
       "contract_section": "Draft V2.1 SS4d",
       "decision_id": "DEC-08",
       "changeset_id": "CH-06",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "ORPHAN_RESISTANCE_TARGET_REFERENCE",
       "remediation_category": "REFERENCE_FIX"
     },
@@ -283,7 +343,10 @@
       "changeset_id": null,
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2", "V2.1"],
+      "supported_versions": [
+        "V2",
+        "V2.1"
+      ],
       "error_code": "INVALID_TEMPORAL_RANGE",
       "remediation_category": "SCHEMA_FIX"
     },
@@ -296,7 +359,9 @@
       "changeset_id": "CH-01",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "UNBOUNDED_MANDATE_FIELD",
       "remediation_category": "SCHEMA_FIX"
     },
@@ -309,7 +374,9 @@
       "changeset_id": "CH-03,CH-07",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "MISSING_PROVENANCE",
       "remediation_category": "PROVENANCE_FIX"
     },
@@ -322,7 +389,9 @@
       "changeset_id": "CH-03,CH-07",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "MISSING_RESEARCHER_REVIEW_FLAG",
       "remediation_category": "PROVENANCE_FIX"
     },
@@ -335,20 +404,24 @@
       "changeset_id": "CH-03,CH-07",
       "enforcement": "AUTOMATED",
       "severity": "CRITICAL",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "RESEARCH_ONLY_BOUNDARY_VIOLATION",
       "remediation_category": "SAFETY_FIX"
     },
     {
       "rule_id": "R-RO-02",
       "class": "RESEARCH_ONLY_RULE",
-      "description": "Actor identity-continuity fields (mandate_status, mandate_scope, identity_continuity_status, explicit_non_identity_with) and resistance_candidate.resistance_target_actor_id: if a field-level public_status override is present it must equal RESEARCH_ONLY.",
+      "description": "Actor identity-continuity fields (mandate_status, mandate_scope, identity_continuity_status, explicit_non_identity_with) and the relation-level resistance_target_actor_id: if a public_status override (resistance_target_public_status for the latter) is present it must equal RESEARCH_ONLY.",
       "contract_section": "Draft V2.1 SS10",
       "decision_id": "DEC-16",
       "changeset_id": "CH-01,CH-02,CH-06",
       "enforcement": "AUTOMATED",
       "severity": "CRITICAL",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "RESEARCH_ONLY_BOUNDARY_VIOLATION",
       "remediation_category": "SAFETY_FIX"
     },
@@ -361,7 +434,9 @@
       "changeset_id": null,
       "enforcement": "AUTOMATED",
       "severity": "INFO",
-      "supported_versions": ["V2"],
+      "supported_versions": [
+        "V2"
+      ],
       "error_code": null,
       "remediation_category": "NONE"
     },
@@ -374,7 +449,9 @@
       "changeset_id": null,
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2"],
+      "supported_versions": [
+        "V2"
+      ],
       "error_code": "AMBIGUOUS_VERSION_DECLARATION",
       "remediation_category": "SCHEMA_FIX"
     },
@@ -387,7 +464,9 @@
       "changeset_id": "CH-04",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "DEFERRED_STRUCTURE_NOT_AUTHORIZED",
       "remediation_category": "EXCLUSION_FIX"
     },
@@ -400,7 +479,10 @@
       "changeset_id": "CH-05",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2", "V2.1"],
+      "supported_versions": [
+        "V2",
+        "V2.1"
+      ],
       "error_code": "REJECTED_STRUCTURE_NOT_AUTHORIZED",
       "remediation_category": "EXCLUSION_FIX"
     },
@@ -413,7 +495,9 @@
       "changeset_id": "CH-08",
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": "DEFERRED_STRUCTURE_NOT_AUTHORIZED",
       "remediation_category": "EXCLUSION_FIX"
     },
@@ -426,7 +510,9 @@
       "changeset_id": "CH-07",
       "enforcement": "REQUIRES_RESEARCHER_REVIEW",
       "severity": "REVIEW",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": null,
       "remediation_category": "RESEARCHER_REVIEW"
     },
@@ -439,7 +525,9 @@
       "changeset_id": "CH-01,CH-07",
       "enforcement": "REQUIRES_RESEARCHER_REVIEW",
       "severity": "REVIEW",
-      "supported_versions": ["V2.1"],
+      "supported_versions": [
+        "V2.1"
+      ],
       "error_code": null,
       "remediation_category": "RESEARCHER_REVIEW"
     },
@@ -452,7 +540,10 @@
       "changeset_id": null,
       "enforcement": "REQUIRES_RESEARCHER_REVIEW",
       "severity": "REVIEW",
-      "supported_versions": ["V2", "V2.1"],
+      "supported_versions": [
+        "V2",
+        "V2.1"
+      ],
       "error_code": null,
       "remediation_category": "RESEARCHER_REVIEW"
     }

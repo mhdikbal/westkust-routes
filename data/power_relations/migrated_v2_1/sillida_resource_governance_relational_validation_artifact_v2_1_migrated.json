@@ -1,0 +1,1070 @@
+{
+  "schema_version": "0.1.0-ontology-v2-validation",
+  "ontology_contract_version": "V2_DRAFT (docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md, unmodified by this artifact)",
+  "case_id": "SILLIDA_RESOURCE_GOVERNANCE_ONTOLOGY_VALIDATION_V4",
+  "status": "RESEARCH_ONLY_NONPRODUCTION",
+  "validation_case_status": "ONTOLOGY_VALIDATION_CASE_V4",
+  "authorization_notice": "RESEARCH-ONLY NONPRODUCTION ONTOLOGY VALIDATION ARTIFACT. NOT SERVED BY API. NOT READ BY ATLAS. NOT CONNECTED TO DATABASE. NOT CONNECTED TO GRAPHIFY. This artifact tests whether ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md can represent the Sillida/Salido resource-governance and constrained-agency case; it does not modify that draft, the Painan, Natal V1, Koto Tangah V2, or Tiku V3 artifacts, or any prior research artifact.",
+  "frozen_source_scope": "Batch I4 Sillida/Salido CORE material (rows 43, 44, 56, 64, 65, 87, 99) and Batch I8 Batang Capas rows 118 and 126 (Vogel 1690, pp.467/477) only; the interpretive-ledger rows and audit sections for both batches; already-frozen provenance and parent-episode artifacts. No new historical context was re-derived and no DataverseNL or GLOBALISE Places discovery was run for this artifact.",
+  "actors": [
+    {
+      "actor_id": "ACTOR_VOC",
+      "actor_type": "Institution",
+      "source_label": "d'E. Comp[agnie]",
+      "normalized_label": "VOC (institution)",
+      "valid_from": null,
+      "valid_to": null,
+      "date_precision": "institutional actor, no temporal bound",
+      "identity_confidence": "HIGH",
+      "mandate_status": "NOT_APPLICABLE (institution)",
+      "continuity_status": "NOT_APPLICABLE (institution)",
+      "faction_status": "NOT_APPLICABLE (institution)",
+      "source_document_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e",
+        "EVT-1681-CD3-269-1a96",
+        "EVT-1681-CD3-271-3780",
+        "EVT-1679-CD3-188-9ada",
+        "EVT-1737-CD5-271-dda1",
+        "EVT-1687-buku-vogel-1690-467-82b3",
+        "EVT-1687-buku-vogel-1690-477-154b",
+        "EVT-1698-CD4-146-421e"
+      ],
+      "source_passage_locator": "all CORE_I4/I8 rows",
+      "researcher_review_required": false,
+      "notes": "Institution-level actor, kept distinct from its individual commanders (Pits, Pit, Hurt, Boudens) per Draft V2's own Institution entity rule."
+    },
+    {
+      "actor_id": "ACTOR_SULTHAN_ACHMET_CHIA_BAJANG",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "sulthan Achmet Chia (Bajang) / Sulthan Achmet-chia",
+      "normalized_label": "Sulthan Achmet Chia of Bajang",
+      "valid_from": "1667-07-25",
+      "valid_to": "1681-02-27",
+      "date_precision": "exact (2 dated appearances, 14 years apart)",
+      "identity_confidence": "HIGH -- individually named in both the 1667 and 1681 instruments",
+      "mandate_status": "neighboring ruler of Bajang, jointly claiming authority to cede Sillida's own territory -- NOT a Sillida-native ruler",
+      "continuity_status": "same named individual across both dated appearances (1667, 1681)",
+      "faction_status": "acts jointly with Indrapura and Trosang's rulers, not merged into one collective actor",
+      "source_document_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e",
+        "EVT-1681-CD3-269-1a96"
+      ],
+      "source_passage_locator": "1681-corpus-tema-slim (row 43); CD2 p.385 (row 44); CD3 p.269 (row 64)",
+      "researcher_review_required": true,
+      "notes": "CENTRAL MANDATE TEST: this actor, together with ACTOR_SULTHAN_MAMET_CHIA_INDRAPURA and ACTOR_SULTHAN_BESAAR_TROSANG, cedes Sillida's OWN territory despite none of them being Sillida-native rulers -- the source itself never establishes the legal basis for this claimed authority. NOT merged with ACTOR_SULTHAN_NIAMOELIA_BAJANG (the 1679 Bajang ruler, a different named individual holding the same office 12 years earlier -- see that actor's own notes)."
+    },
+    {
+      "actor_id": "ACTOR_SULTHAN_MAMET_CHIA_INDRAPURA",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "sulthan Mamet Chia (Indrapoura)",
+      "normalized_label": "Sulthan Mamet Chia of Indrapura",
+      "valid_from": "1667-07-25",
+      "valid_to": "1681-02-27",
+      "date_precision": "exact (2 dated appearances)",
+      "identity_confidence": "HIGH",
+      "mandate_status": "neighboring ruler of Indrapura, jointly claiming authority to cede Sillida's own territory -- NOT a Sillida-native ruler",
+      "continuity_status": "same named individual across both appearances",
+      "faction_status": "acts jointly with Bajang and Trosang's rulers, kept as a separate actor record",
+      "source_document_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e",
+        "EVT-1681-CD3-269-1a96"
+      ],
+      "source_passage_locator": "same as ACTOR_SULTHAN_ACHMET_CHIA_BAJANG",
+      "researcher_review_required": true,
+      "notes": "Kept as a separate actor from Bajang's and Trosang's rulers per the no-homogenization discipline, despite acting jointly in both instruments."
+    },
+    {
+      "actor_id": "ACTOR_SULTHAN_BESAAR_TROSANG",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "radja van Trousang (1667) / Sulthan Besaar (Troesang) (1681)",
+      "normalized_label": "Sulthan Besaar / Radja of Trosang",
+      "valid_from": "1667-07-25",
+      "valid_to": "1681-02-27",
+      "date_precision": "exact (2 dated appearances)",
+      "identity_confidence": "MODERATE -- the 1667 instrument names him only by title ('radja van Trousang'); the 1681 instrument supplies the personal name 'Sulthan Besaar' -- treated as the same office-holder across both, though the name-title correspondence is not independently cross-verified",
+      "mandate_status": "neighboring ruler of Trosang, jointly claiming authority to cede Sillida's own territory -- NOT a Sillida-native ruler",
+      "continuity_status": "provisionally the same individual across both appearances, flagged for review given the title-only 1667 reference",
+      "faction_status": "acts jointly with Bajang and Indrapura's rulers, kept as a separate actor record",
+      "source_document_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e",
+        "EVT-1681-CD3-269-1a96"
+      ],
+      "source_passage_locator": "same as above",
+      "researcher_review_required": true,
+      "notes": "Third of the three external ceding rulers, per the task's own item 1."
+    },
+    {
+      "actor_id": "ACTOR_SILLIDA_REGENTS",
+      "actor_type": "NamedCollective",
+      "source_label": "Sillidase regenten / regenten Sillida",
+      "normalized_label": "Sillida's own regents (collective)",
+      "valid_from": "1679-04-18",
+      "valid_to": "1698-06-19",
+      "date_precision": "two dated appearances, 19 years apart",
+      "identity_confidence": "MODERATE -- named collectively as a fine-recipient (1679) and as a co-signatory relinquishing a toll right (1698), never individually",
+      "mandate_status": "UNKNOWN for the 1667/1681 cession moments (they are NOT parties to either instrument -- the ceding parties are three NEIGHBORING rulers); DOCUMENTED presence as a distinct local party only in 1679 (receiving a share of a fine) and 1698 (jointly relinquishing the salimoet toll right)",
+      "continuity_status": "NOT asserted to be a single persisting political body across 1667-1698 -- this artifact deliberately does not bridge the ABSENT 1667/1681 voice with the PRESENT 1679/1698 appearances into one continuous actor",
+      "faction_status": "NOT_APPLICABLE -- no internal faction structure is documented",
+      "source_document_ids": [
+        "EVT-1679-CD3-188-9ada",
+        "EVT-1698-CD4-146-421e"
+      ],
+      "source_passage_locator": "CD3 p.188 (row 56); CD4 p.146 (row 87)",
+      "researcher_review_required": true,
+      "notes": "CENTRAL ABSENCE-OF-VOICE TEST (task item 2): this actor is conspicuously ABSENT from both the 1667 initial cession and the 1681 reconfirmation of Sillida's own territory -- the ceding parties in both instruments are three neighboring rulers, never Sillida's own regents. This artifact does NOT invent a native-ruler actor to fill that gap, and does NOT assume the 1679/1698 regents are the same body that would have had standing in 1667/1681, since no source establishes that continuity either way."
+    },
+    {
+      "actor_id": "ACTOR_SULTHAN_SAMPOURNA_PAINAN",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "sulthan Sampourna alias radja Carbouw",
+      "normalized_label": "Sulthan Sampourna (Radja Carbouw) of Painan",
+      "valid_from": "1681-03-10",
+      "valid_to": "1681-03-10",
+      "date_precision": "exact",
+      "identity_confidence": "HIGH",
+      "mandate_status": "self-described 'vryheer ende wettig ervbesitter' (free-lord and lawful hereditary possessor) of his own negorij -- a directly-quoted local self-characterization of legitimate authority, in contrast to the Sillida cessions",
+      "continuity_status": "single dated appearance",
+      "faction_status": "NOT_APPLICABLE",
+      "source_document_ids": [
+        "EVT-1681-CD3-271-3780"
+      ],
+      "source_passage_locator": "CD3 p.271 (row 65)",
+      "researcher_review_required": false,
+      "notes": "Contrast case to the Sillida cessions: here the ceding party IS the land's own acknowledged ruler, illustrating that mine-adjacent land control does not follow one uniform authority pattern across this episode."
+    },
+    {
+      "actor_id": "ACTOR_SULTHAN_NIAMOELIA_BAJANG",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "sulthan Niamoelia (Bajangers)",
+      "normalized_label": "Sulthan Niamoelia of Bajang, 1679",
+      "valid_from": "1678",
+      "valid_to": "1679-04-18",
+      "date_precision": "approximate start (war dated 1678 per the peace treaty's own note), exact end (treaty date)",
+      "identity_confidence": "HIGH for the name; distinct office-holder from ACTOR_SULTHAN_ACHMET_CHIA_BAJANG (the 1667/1681 Bajang ruler)",
+      "mandate_status": "ruler of Bajang at the time of the 1678-79 gold-vein war with Sillida",
+      "continuity_status": "NOT merged with ACTOR_SULTHAN_ACHMET_CHIA_BAJANG -- a different named individual holds the same office (Bajang's ruler) 12 years apart; no succession chain is documented in the frozen material connecting the two",
+      "faction_status": "NOT_APPLICABLE",
+      "source_document_ids": [
+        "EVT-1679-CD3-188-9ada"
+      ],
+      "source_passage_locator": "CD3 p.188 (row 56)",
+      "researcher_review_required": true,
+      "notes": "OFFICE-HOLDER SUCCESSION TEST: same office (ruler of Bajang), two different named holders across the artifact's own timeline, deliberately not merged."
+    },
+    {
+      "actor_id": "ACTOR_RADJA_NANXATTI",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Radja Nanxatti, pongul van Kleyn Zillida",
+      "normalized_label": "Radja Nanxatti",
+      "valid_from": "1737-12-20",
+      "valid_to": null,
+      "date_precision": "exact start (lease date), open end (no later reference in this artifact's frozen scope)",
+      "identity_confidence": "HIGH",
+      "mandate_status": "pongul (sub-district headman) of Kleyn Zillida (Little Sillida), the negotiated lessee of the Salido mine's operation",
+      "continuity_status": "single dated appearance",
+      "faction_status": "NOT_APPLICABLE",
+      "source_document_ids": [
+        "EVT-1737-CD5-271-dda1"
+      ],
+      "source_passage_locator": "CD5 p.271 (row 99)",
+      "researcher_review_required": false,
+      "notes": "Becomes the practical operator of the Salido mine under lease, while VOC retains only a nominal sovereignty claim -- the artifact's central claim-vs-effective-control test case (task item 9)."
+    },
+    {
+      "actor_id": "ACTOR_RADJA_DOA_SELAS",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Radja doa Selas",
+      "normalized_label": "Radja doa Selas",
+      "valid_from": null,
+      "valid_to": "1687-01-27",
+      "date_precision": "undated mobilization, exact capture date",
+      "identity_confidence": "HIGH",
+      "mandate_status": "leader of an armed group from the Sapoelo Boabandaers confederation, characterized by VOC's own text as a 'renewed defector'",
+      "continuity_status": "single dated episode",
+      "faction_status": "leads his own armed followers, distinct from the Sapoelo Boabandaars confederation's own wider leadership (not modeled, out of this artifact's scope)",
+      "source_document_ids": [
+        "EVT-1687-buku-vogel-1690-467-82b3"
+      ],
+      "source_passage_locator": "Vogel, Ost-Indianische Reise-Beschreibung (1690), Teil II, p.467 (row 118)",
+      "researcher_review_required": true,
+      "notes": "resistance_candidate=PARTIALLY_SUPPORTED per the frozen ledger's own row-30 value, reused not re-derived -- kept STRICTLY SEPARATE from the armed enslaved company's own CANNOT_DETERMINE political-agency status (see ACTOR_ARMED_ENSLAVED_COMPANY_SILLIDA_MINE)."
+    },
+    {
+      "actor_id": "ACTOR_ARMED_ENSLAVED_COMPANY_SILLIDA_MINE",
+      "actor_type": "NamedCollective",
+      "source_label": "commandirte Sclaven (row 118) / Sillidaſen Tambangh...ausgemußterten und wohlbewehrten Sclaven (row 126)",
+      "normalized_label": "armed company of enslaved persons from the Sillida mine",
+      "valid_from": "1687-01-26",
+      "valid_to": "1687-02-27",
+      "date_precision": "exact (two dated deployments, one month apart)",
+      "identity_confidence": "MODERATE -- named by the source's own explicit, undiplomatically-preserved term ('Sclaven'/slaves), not individually",
+      "mandate_status": "NOT_APPLICABLE -- no representative mandate is claimed or documented; this is a coerced labor force deployed as an armed auxiliary, not a political actor with a claimed constituency",
+      "continuity_status": "same labor pool (the Sillida mine's existing coerced workforce) deployed in two dated operations one month apart; not asserted to persist as a stable 'company' beyond these two documented deployments",
+      "faction_status": "NOT_APPLICABLE -- no faction structure; command relationship to VOC only",
+      "source_document_ids": [
+        "EVT-1687-buku-vogel-1690-467-82b3",
+        "EVT-1687-buku-vogel-1690-477-154b"
+      ],
+      "source_passage_locator": "Vogel (1690), Teil II, pp.467, 477 (rows 118, 126)",
+      "researcher_review_required": true,
+      "notes": "CENTRAL CONSTRAINED-AGENCY TEST (task items 10-12). The frozen ledger itself (rows 118/126, field 42) treats this as a CALIBRATION CASE: military participation under colonial command is recorded as CANNOT_DETERMINE for political agency, strictly separated from Radja doa Selas's own resistance_candidate=PARTIALLY_SUPPORTED. This artifact reuses that finding verbatim, not re-derived. See the standalone OBS_CONSTRAINED_AGENCY observation and the stress-test ledger for the full representational-limit discussion (no Draft V2 relation type exists for 'commands a coerced armed company' without inventing the forbidden COMMANDS_SLAVE_COMPANY)."
+    },
+    {
+      "actor_id": "ACTOR_BATOE_BANNAW_REGENTS",
+      "actor_type": "NamedCollective",
+      "source_label": "Regenten zu Batoe bannaw",
+      "normalized_label": "Batoe Bannaw's regents",
+      "valid_from": null,
+      "valid_to": "1687-02-27",
+      "date_precision": "undated dispute, exact date of the expedition's conclusion",
+      "identity_confidence": "MODERATE -- named collectively, not individually",
+      "mandate_status": "disputing party in a trade-route-passage dispute with Songy Abou's traders; no representative mandate beyond this specific dispute is documented",
+      "continuity_status": "single dated episode; the source itself notes the settlement is 'not attributed to any continuing fort-roster entity'",
+      "faction_status": "NOT_APPLICABLE",
+      "source_document_ids": [
+        "EVT-1687-buku-vogel-1690-477-154b"
+      ],
+      "source_passage_locator": "Vogel (1690), Teil II, p.477 (row 126)",
+      "researcher_review_required": false,
+      "notes": "resistance_candidate=NOT_TESTABLE per the frozen ledger's own row-30 value -- no local-stated political target toward VOC survives; the dispute is with a third-party trading community, not documented as a grievance against VOC's own prior authority."
+    },
+    {
+      "actor_id": "ACTOR_SONGY_ABOU_TRADERS",
+      "actor_type": "NamedCollective",
+      "source_label": "Songy Abou ... Kauff-Leuthen",
+      "normalized_label": "Songy Abou's gold traders",
+      "valid_from": null,
+      "valid_to": "1687-02-27",
+      "date_precision": "undated ongoing trade, dispute resolved by the expedition's date",
+      "identity_confidence": "LOW-MODERATE -- named by place-of-origin term, not individually",
+      "mandate_status": "NOT_APPLICABLE -- a trading community, not a claimed political representative",
+      "continuity_status": "single dated episode",
+      "faction_status": "NOT_APPLICABLE",
+      "source_document_ids": [
+        "EVT-1687-buku-vogel-1690-477-154b"
+      ],
+      "source_passage_locator": "Vogel (1690), Teil II, p.477",
+      "researcher_review_required": false,
+      "notes": "The third party whose trade-route passage rights VOC intervenes militarily to protect -- kept as its own actor, not merged with Batoe Bannaw's regents (the opposing party) or with VOC."
+    },
+    {
+      "actor_id": "ACTOR_KOMISARIS_LAURENS_PIT",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "komisaris Laurens Pit",
+      "normalized_label": "Laurens Pit",
+      "valid_from": "1681-02-27",
+      "valid_to": "1681-03-10",
+      "date_precision": "exact (two dated instruments, 11 days apart)",
+      "identity_confidence": "HIGH",
+      "mandate_status": "VOC commissioner receiving both the 1681 Sillida-Cingkuak reconfirmation and the Painan self-cession",
+      "continuity_status": "same individual across both 1681 instruments",
+      "faction_status": "NOT_APPLICABLE (VOC agent)",
+      "source_document_ids": [
+        "EVT-1681-CD3-269-1a96",
+        "EVT-1681-CD3-271-3780"
+      ],
+      "source_passage_locator": "CD3 pp.269, 271",
+      "researcher_review_required": false,
+      "notes": "Kept distinct from ACTOR_COMMANDEUR_JACOB_JORISZEN_PITS (the 1667 recipient) -- likely, but not confirmed, a related or the same family/office lineage; not merged without verification."
+    },
+    {
+      "actor_id": "ACTOR_COMMANDEUR_JACOB_JORISZEN_PITS",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "commandeur Jacob Jorisz(en) Pits",
+      "normalized_label": "Jacob Joriszen Pits",
+      "valid_from": "1667-07-25",
+      "valid_to": "1667-07-25",
+      "date_precision": "exact",
+      "identity_confidence": "HIGH",
+      "mandate_status": "VOC commander receiving the 1667 Sillida-Cingkuak cession",
+      "continuity_status": "single dated appearance",
+      "faction_status": "NOT_APPLICABLE",
+      "source_document_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e"
+      ],
+      "source_passage_locator": "row 43/44",
+      "researcher_review_required": false,
+      "notes": "Not merged with ACTOR_KOMISARIS_LAURENS_PIT (1681) without independent verification of any family/office relationship."
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "LOCATION_SILLIDA",
+      "location_type": "negorij / territory",
+      "source_label": "Sillida / Salido (spelling variants)",
+      "notes": "The wider ceded territory (river Lompo north to Painan mountains south), kept distinct from LOCATION_SILLIDA_MINE (the specific gold-mining operation) per the task's own item 15 spatial-ambiguity guard."
+    },
+    {
+      "location_id": "LOCATION_SILLIDA_MINE",
+      "location_type": "gold mine (resource extraction site)",
+      "source_label": "het mijnwerk op Salido / Sillidase Tambangh",
+      "notes": "Kept distinct from LOCATION_SILLIDA (the wider territory) specifically to support the claim/effective-control separation in the 1737 lease (task item 9): territorial sovereignty and mine operation are shown by the source itself to be deliberately separable."
+    },
+    {
+      "location_id": "LOCATION_PULAU_CINGKUAK",
+      "location_type": "island",
+      "source_label": "'t eijland Chinco/Chinke (Pulau Cingkuak)",
+      "notes": "Ceded jointly with Sillida's territory in 1667; site of VOC's first fortified westkust lodge (built 1666, per the row's own note, even before the formal 1667 deed)."
+    },
+    {
+      "location_id": "LOCATION_PAINAN",
+      "location_type": "negorij / territory",
+      "source_label": "Pijnen / Peinen (Painan)",
+      "notes": "Kept distinct from LOCATION_SILLIDA -- ceded separately in 1681 by its own ruler, specifically for the overland route connecting the Sillida mine to coastal shipping access. Also the site of the 1687 Radja doa Selas mobilization."
+    },
+    {
+      "location_id": "LOCATION_SOENGAI_KEPAHIAN_GOLD_VEIN",
+      "location_type": "resource boundary (gold vein)",
+      "source_label": "Soengai Kepahian",
+      "notes": "The specific disputed gold-vein boundary between Bayang and Sillida (1678-79 war), later reconfirmed within Sillida's full territorial extent (1681). Kept distinct from LOCATION_SILLIDA_MINE as a boundary-specific resource object, per the task's own item 5."
+    },
+    {
+      "location_id": "LOCATION_BATOE_BANNAW",
+      "location_type": "settlement (destroyed 1687)",
+      "source_label": "Batoe Bannaw",
+      "notes": "Per the source's own note, 'not attributed to any continuing fort-roster entity' -- a settlement destroyed in the 1687 trade-route expedition, not otherwise tracked in this project."
+    }
+  ],
+  "commodities": [
+    {
+      "commodity_id": "COMMODITY_GOLD",
+      "source_label": "goud / gold",
+      "notes": "The Sillida/Salido mine's primary commodity throughout the artifact's span (1648-1740s); also the object of the Soengai Kepahian boundary dispute and the Songy Abou trade route."
+    }
+  ],
+  "instruments": [
+    {
+      "instrument_id": "INSTRUMENT_1667_SILLIDA_CINGKUAK_CESSION",
+      "instrument_type": "territorial cession deed",
+      "source_label": "Translaat opdragt van de negorije Sillida...aan den heer commandeur Jacob Jorisz Pits",
+      "date": "1667-07-25",
+      "parties_named_in_instrument": [
+        "ACTOR_SULTHAN_ACHMET_CHIA_BAJANG",
+        "ACTOR_SULTHAN_MAMET_CHIA_INDRAPURA",
+        "ACTOR_SULTHAN_BESAAR_TROSANG",
+        "ACTOR_VOC"
+      ],
+      "source_document_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e"
+      ],
+      "source_passage_locator": "1681-corpus-tema-slim (row 43); CD2 p.385 (row 44)",
+      "notes": "Two source-chain pipelines (translated re-copy vs. CD primary) describing the same instrument, mutually corroborating its existence and core terms."
+    },
+    {
+      "instrument_id": "INSTRUMENT_1681_SILLIDA_BOUNDARY_RECONFIRMATION",
+      "instrument_type": "boundary reconfirmation deed",
+      "source_label": "CD3 p.269 reconfirmation",
+      "date": "1681-02-27",
+      "parties_named_in_instrument": [
+        "ACTOR_SULTHAN_ACHMET_CHIA_BAJANG",
+        "ACTOR_SULTHAN_MAMET_CHIA_INDRAPURA",
+        "ACTOR_SULTHAN_BESAAR_TROSANG",
+        "ACTOR_VOC"
+      ],
+      "source_document_ids": [
+        "EVT-1681-CD3-269-1a96"
+      ],
+      "source_passage_locator": "CD3 p.269 (row 64)",
+      "notes": "Preemptive reconfirmation prompted by a newly-discovered gold vein, extending the full 1667 territorial boundary."
+    },
+    {
+      "instrument_id": "INSTRUMENT_1681_PAINAN_SELF_CESSION",
+      "instrument_type": "self-cession deed",
+      "source_label": "CD3 p.271 cession by sulthan Sampourna",
+      "date": "1681-03-10",
+      "parties_named_in_instrument": [
+        "ACTOR_SULTHAN_SAMPOURNA_PAINAN",
+        "ACTOR_VOC"
+      ],
+      "source_document_ids": [
+        "EVT-1681-CD3-271-3780"
+      ],
+      "source_passage_locator": "CD3 p.271 (row 65)",
+      "notes": "Voluntary self-cession by Painan's own acknowledged ruler, in contrast to the Sillida cessions."
+    },
+    {
+      "instrument_id": "INSTRUMENT_1679_BAYANG_SILLIDA_PEACE",
+      "instrument_type": "peace treaty / fine imposition",
+      "source_label": "CD3 p.188 peace treaty",
+      "date": "1679-04-18",
+      "parties_named_in_instrument": [
+        "ACTOR_SULTHAN_NIAMOELIA_BAJANG",
+        "ACTOR_SILLIDA_REGENTS",
+        "ACTOR_VOC"
+      ],
+      "source_document_ids": [
+        "EVT-1679-CD3-188-9ada"
+      ],
+      "source_passage_locator": "CD3 p.188 (row 56)",
+      "notes": "Ends the 1678 Bayang-Sillida gold-vein war; imposes a 1000-rijksdaalder fine, VOC's own share (600) exceeding Sillida's (200)."
+    },
+    {
+      "instrument_id": "INSTRUMENT_1737_SALIDO_MINE_LEASE",
+      "instrument_type": "commercial lease contract",
+      "source_label": "CD5 p.271 lease to Radja Nanxatti",
+      "date": "1737-12-20",
+      "parties_named_in_instrument": [
+        "ACTOR_RADJA_NANXATTI",
+        "ACTOR_VOC"
+      ],
+      "source_document_ids": [
+        "EVT-1737-CD5-271-dda1"
+      ],
+      "source_passage_locator": "CD5 p.271 (row 99)",
+      "notes": "400 rijksdaalder equipment-transfer fee plus 160 rijksdaalders/year rent, fixed gold price of 14 rijksdaalders/thail; VOC deliberately structures its exit as a lease, not a sale, specifically to preserve its sovereignty claim."
+    },
+    {
+      "instrument_id": "INSTRUMENT_1698_SALIMOET_RELINQUISHMENT",
+      "instrument_type": "fiscal-right relinquishment agreement",
+      "source_label": "CD4 p.146 salimoet relinquishment",
+      "date": "1698-06-19",
+      "parties_named_in_instrument": [
+        "ACTOR_SILLIDA_REGENTS",
+        "ACTOR_VOC"
+      ],
+      "source_document_ids": [
+        "EVT-1698-CD4-146-421e"
+      ],
+      "source_passage_locator": "CD4 p.146 (row 87)",
+      "notes": "Padang's and Sillida's regents jointly relinquish the ancient 'salimoet' toll right they had long enjoyed from VOC, tied to a renegotiated pepper price. This artifact models only Sillida's own regents; Padang's own parallel relinquishment is out of this artifact's frozen scope."
+    }
+  ],
+  "observations": [
+    {
+      "observation_id": "OBS_CONSTRAINED_AGENCY_ARMED_ENSLAVED_COMPANY",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_ARMED_ENSLAVED_COMPANY_SILLIDA_MINE",
+      "claim_or_effective_control": "ADMINISTRATIVE_CONTROL",
+      "observed_at": "1687-01-26 to 1687-02-27",
+      "event_ids": [
+        "EVT-1687-buku-vogel-1690-467-82b3",
+        "EVT-1687-buku-vogel-1690-477-154b"
+      ],
+      "source_document_ids": [
+        "EVT-1687-buku-vogel-1690-467-82b3",
+        "EVT-1687-buku-vogel-1690-477-154b"
+      ],
+      "source_passage_locator": "Vogel (1690), Teil II, pp.467, 477 (rows 118, 126)",
+      "provenance_status": "CD_INDEPENDENT (Vogel memoir tier), two independent dated deployments",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "perpetrator_status": "NOT_APPLICABLE -- this observation records a command/coercion relationship, not a perpetrated offense",
+      "uncertainty_note": "The armed enslaved company's own political intent, loyalty, voluntary collaboration, or resistance CANNOT_DETERMINE from the source -- their enslaved status and deployment under VOC command are both explicit and diplomatically preserved as written ('Sclaven'), but their own agency beyond that coerced deployment is undocumented. This is the artifact's central constrained-agency finding, reused directly from the frozen ledger's own field-25/42 treatment of rows 118 and 126 as a calibration case.",
+      "notes": "NO RELATION was created for this command relationship. Draft V2 provides no relation type for 'commands a coerced armed company' that is neither a fabricated new type (COMMANDS_SLAVE_COMPANY, forbidden) nor a mischaracterization via an existing type (ALLY_OF/VOLUNTARILY_SUPPORTS, both forbidden and both would misstate coercion as consent). ADMINISTRATIVE_CONTROL is used here only as the closest available claim_or_effective_control value for VOC's own command authority over the labor force's deployment -- it does NOT characterize the company's own political stance, which remains CANNOT_DETERMINE. See TIKU-style stress-test disclosure for the full representational-limit discussion."
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "REL_1667_RECOGNIZES_BAJANG",
+      "subject_actor_id": "ACTOR_SULTHAN_ACHMET_CHIA_BAJANG",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1667-07-25",
+      "valid_to": "1667-07-25",
+      "date_precision": "exact",
+      "superseded_by": "REL_1681_RECOGNIZES_BAJANG",
+      "contradicted_by": null,
+      "observed_at": "1667-07-25",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e"
+      ],
+      "instrument_id": "INSTRUMENT_1667_SILLIDA_CINGKUAK_CESSION",
+      "source_document_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e"
+      ],
+      "source_passage_locator": "1681-corpus-tema-slim (row 43); CD2 p.385 (row 44)",
+      "provenance_status": "CD_INDEPENDENT (row 43) / CD_PARTIAL (row 44), mutually corroborating",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY",
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Bajang's ruler, together with Indrapura's and Trosang's, formally cedes Sillida's full territory and Pulau Cingkuak to VOC.",
+      "historical_reconstruction": "Represents Sillida's 1667 cession (task item 1) as three separate RECOGNIZES_OFFICE_HOLDER relations, one per ceding ruler, since none can bind the others and the dyadic relation model requires separate records.",
+      "theoretical_annotation": "None of the three ceding rulers is a Sillida-native ruler -- the source itself never establishes the legal basis for their claimed authority to transfer Sillida's own territory. This is the artifact's central mandate-uncertainty finding.",
+      "public_display_summary": "In 1667, the rulers of three neighboring polities formally ceded Sillida's territory to the VOC.",
+      "notes": "claim_or_effective_control is FORMAL_ACCEPTANCE (a concluded, accepted deed), not a claim to durable control over Sillida's own population, per the task's own guard against equating territorial cession with full jurisdiction over residents."
+    },
+    {
+      "relation_id": "REL_1667_RECOGNIZES_INDRAPURA",
+      "subject_actor_id": "ACTOR_SULTHAN_MAMET_CHIA_INDRAPURA",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1667-07-25",
+      "valid_to": "1667-07-25",
+      "date_precision": "exact",
+      "superseded_by": "REL_1681_RECOGNIZES_INDRAPURA",
+      "contradicted_by": null,
+      "observed_at": "1667-07-25",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e"
+      ],
+      "instrument_id": "INSTRUMENT_1667_SILLIDA_CINGKUAK_CESSION",
+      "source_document_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e"
+      ],
+      "source_passage_locator": "1681-corpus-tema-slim (row 43); CD2 p.385 (row 44)",
+      "provenance_status": "CD_INDEPENDENT / CD_PARTIAL",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "As REL_1667_RECOGNIZES_BAJANG, for Indrapura's ruler.",
+      "historical_reconstruction": "Kept as a separate relation record, per the no-homogenization discipline.",
+      "theoretical_annotation": "Same mandate-uncertainty finding as the Bajang relation.",
+      "public_display_summary": "In 1667, Indrapura's ruler joined in ceding Sillida's territory to the VOC.",
+      "notes": "Two-actor, three-relation representation of one joint act."
+    },
+    {
+      "relation_id": "REL_1667_RECOGNIZES_TROSANG",
+      "subject_actor_id": "ACTOR_SULTHAN_BESAAR_TROSANG",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1667-07-25",
+      "valid_to": "1667-07-25",
+      "date_precision": "exact",
+      "superseded_by": "REL_1681_RECOGNIZES_TROSANG",
+      "contradicted_by": null,
+      "observed_at": "1667-07-25",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e"
+      ],
+      "instrument_id": "INSTRUMENT_1667_SILLIDA_CINGKUAK_CESSION",
+      "source_document_ids": [
+        "EVT-1667-1681-968-a987",
+        "EVT-1667-CD2-385-583e"
+      ],
+      "source_passage_locator": "1681-corpus-tema-slim (row 43); CD2 p.385 (row 44)",
+      "provenance_status": "CD_INDEPENDENT / CD_PARTIAL",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "As above, for Trosang's ruler.",
+      "historical_reconstruction": "Kept as a separate relation record.",
+      "theoretical_annotation": "Same mandate-uncertainty finding.",
+      "public_display_summary": "In 1667, Trosang's ruler joined in ceding Sillida's territory to the VOC.",
+      "notes": "Third of the three parallel 1667 cession relations."
+    },
+    {
+      "relation_id": "REL_1681_RECOGNIZES_BAJANG",
+      "subject_actor_id": "ACTOR_SULTHAN_ACHMET_CHIA_BAJANG",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1681-02-27",
+      "valid_to": "1681-02-27",
+      "date_precision": "exact",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1681-02-27",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1681-CD3-269-1a96"
+      ],
+      "instrument_id": "INSTRUMENT_1681_SILLIDA_BOUNDARY_RECONFIRMATION",
+      "source_document_ids": [
+        "EVT-1681-CD3-269-1a96"
+      ],
+      "source_passage_locator": "CD3 p.269 (row 64)",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY",
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "The 1667 cession is reconfirmed after a new gold vein is discovered, extending the same boundary.",
+      "historical_reconstruction": "Represents the 1681 preemptive boundary reconfirmation (task item 5) as its own dated relation, not an extension of the 1667 relation's own valid_to.",
+      "theoretical_annotation": "Same three external rulers as 1667 -- Sillida's own regents remain absent from this instrument too.",
+      "public_display_summary": "In 1681, the 1667 cession's boundary was formally reconfirmed to include a newly-discovered gold vein.",
+      "notes": "Kept as a separate relation from REL_1667_RECOGNIZES_BAJANG (linked via superseded_by) rather than extending that relation's own end date, so the 14-year gap and the discrete reconfirmation event both remain visible."
+    },
+    {
+      "relation_id": "REL_1681_RECOGNIZES_INDRAPURA",
+      "subject_actor_id": "ACTOR_SULTHAN_MAMET_CHIA_INDRAPURA",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1681-02-27",
+      "valid_to": "1681-02-27",
+      "date_precision": "exact",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1681-02-27",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1681-CD3-269-1a96"
+      ],
+      "instrument_id": "INSTRUMENT_1681_SILLIDA_BOUNDARY_RECONFIRMATION",
+      "source_document_ids": [
+        "EVT-1681-CD3-269-1a96"
+      ],
+      "source_passage_locator": "CD3 p.269",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "As above, for Indrapura's ruler.",
+      "historical_reconstruction": "Kept separate.",
+      "theoretical_annotation": "Same finding.",
+      "public_display_summary": "As above.",
+      "notes": "Second of three 1681 reconfirmation relations."
+    },
+    {
+      "relation_id": "REL_1681_RECOGNIZES_TROSANG",
+      "subject_actor_id": "ACTOR_SULTHAN_BESAAR_TROSANG",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1681-02-27",
+      "valid_to": "1681-02-27",
+      "date_precision": "exact",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1681-02-27",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1681-CD3-269-1a96"
+      ],
+      "instrument_id": "INSTRUMENT_1681_SILLIDA_BOUNDARY_RECONFIRMATION",
+      "source_document_ids": [
+        "EVT-1681-CD3-269-1a96"
+      ],
+      "source_passage_locator": "CD3 p.269",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "As above, for Trosang's ruler.",
+      "historical_reconstruction": "Kept separate.",
+      "theoretical_annotation": "Same finding.",
+      "public_display_summary": "As above.",
+      "notes": "Third of three 1681 reconfirmation relations."
+    },
+    {
+      "relation_id": "REL_1681_PAINAN_SELF_CESSION",
+      "subject_actor_id": "ACTOR_SULTHAN_SAMPOURNA_PAINAN",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "RECOGNIZES_OFFICE_HOLDER",
+      "valid_from": "1681-03-10",
+      "valid_to": "1681-03-10",
+      "date_precision": "exact",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1681-03-10",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1681-CD3-271-3780"
+      ],
+      "instrument_id": "INSTRUMENT_1681_PAINAN_SELF_CESSION",
+      "source_document_ids": [
+        "EVT-1681-CD3-271-3780"
+      ],
+      "source_passage_locator": "CD3 p.271 (row 65)",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": false,
+      "source_statement_summary": "Painan's own ruler voluntarily cedes his own negorij to secure the overland route linking the Sillida mine to the coast.",
+      "historical_reconstruction": "Direct contrast case to the Sillida cessions: here the ceding party is self-described and directly quoted as the land's own lawful possessor.",
+      "theoretical_annotation": "This is the only cession relation in this artifact with source_asymmetry=LOCAL_VOICE_PRESENT.",
+      "public_display_summary": "In 1681, Painan's own ruler voluntarily ceded land to secure access to the Sillida mine.",
+      "notes": "object_id remains ACTOR_VOC (not LOCATION_PAINAN) since this models the recognition/cession act itself, mirroring the other RECOGNIZES_OFFICE_HOLDER relations' own subject-to-VOC direction."
+    },
+    {
+      "relation_id": "REL_1679_CONTESTS_RESOURCE",
+      "subject_actor_id": "ACTOR_SULTHAN_NIAMOELIA_BAJANG",
+      "object_id": "ACTOR_SILLIDA_REGENTS",
+      "relation_type": "CONTESTS_RESOURCE_WITH",
+      "valid_from": "1678",
+      "valid_to": null,
+      "date_precision": "APPROXIMATE (war dated 1678 per the peace treaty's own retrospective note)",
+      "superseded_by": "INSTRUMENT_1679_BAYANG_SILLIDA_PEACE",
+      "contradicted_by": null,
+      "observed_at": "1678",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1679-CD3-188-9ada"
+      ],
+      "instrument_id": "INSTRUMENT_1679_BAYANG_SILLIDA_PEACE",
+      "source_document_ids": [
+        "EVT-1679-CD3-188-9ada"
+      ],
+      "source_passage_locator": "CD3 p.188 (row 56)",
+      "provenance_status": "CD_PARTIAL",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CONTESTED",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "CONTESTED_CONTROL",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Armed conflict erupts in 1678 between Bayang and Sillida over the Soengai Kepahian gold vein boundary.",
+      "historical_reconstruction": "Two determinable endpoints (Bajang's ruler and Sillida's regents) over a specific, named resource boundary -- satisfying the task's own two-endpoint requirement for this relation type.",
+      "theoretical_annotation": "VOC's own peace-treaty text labels Bayang's action 'bedrevene rebellie' (committed rebellion) despite the dispute being local-vs-local over a resource boundary, not an act against VOC's own authority -- this artifact records that framing as VOC's own classification (COLONIAL_PUNITIVE_CLASSIFICATION annotation), not as this artifact's own finding.",
+      "public_display_summary": "In 1678, Bayang and Sillida fought over a gold vein boundary.",
+      "notes": "This is the CENTRAL CALIBRATION CASE distinguishing RESOURCE_GOVERNANCE_CONFLICT from a resistance reading, reused directly from the frozen ledger's own field-42 finding."
+    },
+    {
+      "relation_id": "REL_1737_LEASES_MINE",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_RADJA_NANXATTI",
+      "relation_type": "LEASES_RESOURCE_TO",
+      "valid_from": "1737-12-20",
+      "valid_to": null,
+      "date_precision": "exact start, open end (no later reference in this artifact's frozen scope)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1737-12-20",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1737-CD5-271-dda1"
+      ],
+      "instrument_id": "INSTRUMENT_1737_SALIDO_MINE_LEASE",
+      "source_document_ids": [
+        "EVT-1737-CD5-271-dda1"
+      ],
+      "source_passage_locator": "CD5 p.271 (row 99)",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "COMMERCIAL_CONTROL",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": false,
+      "source_statement_summary": "VOC leases the loss-making Salido mine's operation to Radja Nanxatti for an equipment fee, annual rent, and a fixed gold purchase price.",
+      "historical_reconstruction": "Represents the PRACTICAL OPERATIONAL side of the 1737 exit as COMMERCIAL_CONTROL, deliberately separate from VOC's own retained sovereignty claim (see REL_1737_CLAIMS_JURISDICTION_MINE).",
+      "theoretical_annotation": "The lease is a deliberate legal-form choice (not a sale or abandonment) to separate economic operation from sovereignty retention -- the source's own explicit editorial framing, reused not re-derived.",
+      "public_display_summary": "In 1737, VOC leased the Salido mine's operation to a local leaseholder rather than selling it outright.",
+      "notes": "object_id is the actor (the lessee), not the location, since this relation represents the granted operational right specifically."
+    },
+    {
+      "relation_id": "REL_1737_CLAIMS_JURISDICTION_MINE",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "LOCATION_SILLIDA_MINE",
+      "relation_type": "CLAIMS_JURISDICTION_OVER",
+      "valid_from": "1737-12-20",
+      "valid_to": null,
+      "date_precision": "exact start, open end",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1737-12-20",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1737-CD5-271-dda1"
+      ],
+      "instrument_id": "INSTRUMENT_1737_SALIDO_MINE_LEASE",
+      "source_document_ids": [
+        "EVT-1737-CD5-271-dda1"
+      ],
+      "source_passage_locator": "CD5 p.271",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CLAIM",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": false,
+      "source_statement_summary": "VOC 'expressly maintained its sovereignty rights' over the mine even while leasing out its actual operation, per the CD compiler's own explicit editorial note.",
+      "historical_reconstruction": "THE artifact's central claim-vs-effective-control test (task item 9): sovereignty (CLAIM) and operational/commercial control (COMMERCIAL_CONTROL, see the paired lease relation) are deliberately separated by VOC's own stated institutional strategy, not conflated by this artifact.",
+      "theoretical_annotation": "This is the single most explicit, source-stated claim/control separation anywhere in this project's four validation cases -- the source itself names the distinction VOC intended.",
+      "public_display_summary": "In 1737, VOC kept a formal sovereignty claim over the Salido mine even after leasing out its practical operation.",
+      "notes": "Object is LOCATION_SILLIDA_MINE (not the lessee actor), since this relation represents the retained territorial/sovereignty claim specifically, paired with but distinct from REL_1737_LEASES_MINE."
+    },
+    {
+      "relation_id": "REL_1687_MILITARY_FORCE_SELAS",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_RADJA_DOA_SELAS",
+      "relation_type": "USES_MILITARY_FORCE_AGAINST",
+      "valid_from": "1687-01-26",
+      "valid_to": "1687-01-27",
+      "date_precision": "exact (2-day window)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1687-01-26",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1687-buku-vogel-1690-467-82b3"
+      ],
+      "instrument_id": null,
+      "source_document_ids": [
+        "EVT-1687-buku-vogel-1690-467-82b3"
+      ],
+      "source_passage_locator": "Vogel (1690), Teil II, p.467 (row 118)",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CONTESTED",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Radja doa Selas and his armed followers are lured to Sillida and captured by a VOC-organized force including the armed enslaved company from the Sillida mine.",
+      "historical_reconstruction": "Selas's own sustained armed mobilization is real behavioral evidence of continued organized opposition, but the specific act constituting VOC's own 'renewed defection' characterization is not itemized.",
+      "theoretical_annotation": "'aufs neue abtrünnig' (renewed defector) is recorded as VOC's own classificatory label (COLONIAL_PUNITIVE_CLASSIFICATION annotation), not adopted as this artifact's own characterization.",
+      "public_display_summary": "In January 1687, VOC forces captured Radja doa Selas and his followers at Sillida via a planned deception.",
+      "notes": "The armed enslaved company's own participation is NOT represented via this relation's own subject/object -- see OBS_CONSTRAINED_AGENCY for why no relation type can represent their command relationship without inventing forbidden vocabulary.",
+      "resistance_candidate": "PARTIALLY_SUPPORTED (for Radja doa Selas specifically, reused from the frozen ledger's own row-30 value; explicitly NOT extended to the armed enslaved company, whose own political agency is CANNOT_DETERMINE)"
+    },
+    {
+      "relation_id": "REL_1687_MILITARY_FORCE_BATOEBANNAW",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_BATOE_BANNAW_REGENTS",
+      "relation_type": "USES_MILITARY_FORCE_AGAINST",
+      "valid_from": "1687-02-26",
+      "valid_to": "1687-02-27",
+      "date_precision": "exact (2-day window)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1687-02-26",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1687-buku-vogel-1690-477-154b"
+      ],
+      "instrument_id": null,
+      "source_document_ids": [
+        "EVT-1687-buku-vogel-1690-477-154b"
+      ],
+      "source_passage_locator": "Vogel (1690), Teil II, p.477 (row 126)",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "LOW",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": false,
+      "source_statement_summary": "A multi-company VOC expedition, including the same Sillida-mine armed enslaved company, storms and destroys a fortified Batoe Bannaw position after its regents disputed Songy Abou traders' free passage.",
+      "historical_reconstruction": "VOC's own stated interest is protecting a THIRD PARTY's (Songy Abou's) trade route, not enforcing a prior bilateral obligation with Batoe Bannaw -- represented as a resource/trade-route dispute, not a rebellion.",
+      "theoretical_annotation": "The expedition's scale (3 German companies, 1 marine company, 4 Malay companies, 1 enslaved-company) is disproportionate to a simple trade dispute, per the source's own detail.",
+      "public_display_summary": "In February 1687, VOC forces destroyed Batoe Bannaw after its regents disputed a trade route.",
+      "notes": "resistance_candidate is NOT_TESTABLE, reused from the frozen ledger's own row-30 value -- no local-stated political target toward VOC survives.",
+      "resistance_candidate": "NOT_TESTABLE"
+    },
+    {
+      "relation_id": "REL_1687_CONTESTS_RESOURCE_TRADEROUTE",
+      "subject_actor_id": "ACTOR_BATOE_BANNAW_REGENTS",
+      "object_id": "ACTOR_SONGY_ABOU_TRADERS",
+      "relation_type": "CONTESTS_RESOURCE_WITH",
+      "valid_from": null,
+      "valid_to": "1687-02-27",
+      "date_precision": "approximate start (undated dispute), exact resolution date",
+      "superseded_by": "REL_1687_MILITARY_FORCE_BATOEBANNAW",
+      "contradicted_by": null,
+      "observed_at": "1687-02",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1687-buku-vogel-1690-477-154b"
+      ],
+      "instrument_id": null,
+      "source_document_ids": [
+        "EVT-1687-buku-vogel-1690-477-154b"
+      ],
+      "source_passage_locator": "Vogel (1690), Teil II, p.477",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "LOW",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "CONTESTED_CONTROL",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": false,
+      "source_statement_summary": "Batoe Bannaw's regents dispute free passage for Songy Abou's gold traders traveling to VOC's Padang comptoir.",
+      "historical_reconstruction": "The underlying inter-community resource/trade-route dispute, kept as its own relation distinct from VOC's own military intervention (REL_1687_MILITARY_FORCE_BATOEBANNAW).",
+      "theoretical_annotation": "Two determinable endpoints (Batoe Bannaw's regents and Songy Abou's traders) satisfy the task's own two-endpoint requirement.",
+      "public_display_summary": "Batoe Bannaw and Songy Abou's traders disputed passage rights for a gold trade route.",
+      "notes": "Neither party's own stated reasoning survives; VOC intervenes as a third party protecting Songy Abou's interest."
+    },
+    {
+      "relation_id": "REL_1698_COLLECTS_TOLL_SALIMOET",
+      "subject_actor_id": "ACTOR_SILLIDA_REGENTS",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "COLLECTS_TOLL_FROM",
+      "valid_from": null,
+      "valid_to": "1698-06-19",
+      "date_precision": "approximate start ('nearly endless number of years'), exact end (relinquishment date)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1698-06-19",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1698-CD4-146-421e"
+      ],
+      "instrument_id": "INSTRUMENT_1698_SALIMOET_RELINQUISHMENT",
+      "source_document_ids": [
+        "EVT-1698-CD4-146-421e"
+      ],
+      "source_passage_locator": "CD4 p.146 (row 87)",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "TREATY_OBLIGATION",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Sillida's regents, jointly with Padang's, had long enjoyed the hereditary 'salimoet' toll right from the Company, relinquished 19 June 1698 as part of a renegotiated pepper price.",
+      "historical_reconstruction": "Represents the LONG-STANDING toll right itself (Sillida's regents as beneficiary, per the source's own 'enjoyed from the Company' framing) via COLLECTS_TOLL_FROM, subject=regents, object=VOC -- the direction the source itself supports, not reversed.",
+      "theoretical_annotation": "The relinquishment ACT itself (task item 6) could not be represented as its own relation without inventing a new relation type -- see stress-test T-04-equivalent finding for this artifact.",
+      "public_display_summary": "For many years, Sillida's regents held a toll right from the VOC, which they relinquished in 1698.",
+      "notes": "RELATION_TYPE_FAILURE candidate, directly parallel to Tiku V3's own T-04 finding: no Draft V2 relation type represents a voluntary RIGHT RELINQUISHMENT distinct from the standing right itself; only the standing right (COLLECTS_TOLL_FROM) is represented, with valid_to marking its end."
+    }
+  ],
+  "vocabulary_notes": {
+    "relation_type_restraint": "No ENSLAVES, COMMANDS_SLAVE_COMPANY, ALLY_OF, VOLUNTARILY_SUPPORTS, REBELS_AGAINST, RESISTS, OWNS_TERRITORY, or TRANSFERS_SOVEREIGNTY relation type was created, per the explicit hard rule. Territorial cessions (1667/1681/1681-Painan) are represented via RECOGNIZES_OFFICE_HOLDER (the ceding ruler recognizing VOC's resulting authority), not a fabricated CEDES_TERRITORY_TO or TRANSFERS_SOVEREIGNTY type. The armed enslaved company's command relationship is represented ONLY as a standalone observation (OBS_CONSTRAINED_AGENCY_ARMED_ENSLAVED_COMPANY), never as a relation.",
+    "toll_relinquishment_relation_type_failure": "The 1698 salimoet relinquishment (task item 6) could not be represented as its own directed relation without either inventing a new relation type or reversing COLLECTS_TOLL_FROM's own direction to mean 'relinquishes.' This artifact represents only the standing toll right itself (subject=Sillida regents as beneficiary, object=VOC, per the source's own 'enjoyed from the Company' framing), with the relation's own valid_to marking the relinquishment date -- the relinquishment ACT itself is a disclosed representational gap, directly parallel to Tiku V3's own T-04 (toll EXEMPTION) finding and to this artifact's own claim/control separation logic.",
+    "constrained_agency_disclosure": "The armed enslaved company's own political agency (loyalty, voluntary collaboration, resistance) is recorded as CANNOT_DETERMINE throughout, strictly separated from Radja doa Selas's own resistance_candidate=PARTIALLY_SUPPORTED (a different actor in the same 1687 episode). No relation forces a political-stance value onto the coerced company.",
+    "actor_extension_fields_disclosure": "As in the Koto Tangah V2 and Tiku V3 artifacts, mandate_status/continuity_status/faction_status are descriptive bookkeeping fields not defined in Draft V2's own Identity Rules (section 4) -- reused here for consistency, not silently expanded further."
+  },
+  "ontology_version": "V2.1",
+  "commercial_rights": [
+    {
+      "right_id": "CR_SILLIDA_1698_SALIMOET_TOLL",
+      "holder_actor_id": "ACTOR_SILLIDA_REGENTS",
+      "granting_actor_id": "ACTOR_VOC",
+      "concerns_relation_type": "COLLECTS_TOLL_FROM",
+      "commodity": null,
+      "source_document_ids": [
+        "EVT-1698-CD4-146-421e"
+      ],
+      "source_passage_locator": "CD4 p.146 (row 87)",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "researcher_review_required": true,
+      "public_status": "RESEARCH_ONLY",
+      "valid_to": "1698-06-19",
+      "date_precision": "approximate start ('nearly endless number of years'), exact end (relinquishment date)",
+      "open_ended": true
+    }
+  ],
+  "right_modifications": [
+    {
+      "modification_id": "RM_SILLIDA_1698_RELEASES_SALIMOET",
+      "right_id": "CR_SILLIDA_1698_SALIMOET_TOLL",
+      "action": "RELEASES",
+      "acting_actor_id": "ACTOR_SILLIDA_REGENTS",
+      "affected_actor_id": "ACTOR_VOC",
+      "modification_date": "1698-06-19",
+      "date_precision": "exact",
+      "source_document_ids": [
+        "EVT-1698-CD4-146-421e"
+      ],
+      "source_passage_locator": "CD4 p.146 (row 87)",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "researcher_review_required": true,
+      "public_status": "RESEARCH_ONLY"
+    }
+  ],
+  "command_observations": [
+    {
+      "observation_id": "CO_SILLIDA_ARMED_ENSLAVED_COMPANY_1687",
+      "commanding_actor_id": "ACTOR_VOC",
+      "commanded_actor_id": "ACTOR_ARMED_ENSLAVED_COMPANY_SILLIDA_MINE",
+      "coercion_status": "COERCED",
+      "ability_to_refuse": "CANNOT_DETERMINE",
+      "dependency_status": "Deployed as armed labor under direct VOC command at the Sillida mine; enslaved status explicit in the source ('Sclaven').",
+      "voice_availability": "ABSENT",
+      "constrained_agency": "CONFIRMED",
+      "political_intent": "CANNOT_DETERMINE",
+      "source_document_ids": [
+        "EVT-1687-buku-vogel-1690-467-82b3",
+        "EVT-1687-buku-vogel-1690-477-154b"
+      ],
+      "source_passage_locator": "Vogel (1690), Teil II, pp.467, 477 (rows 118, 126)",
+      "provenance_status": "CD_INDEPENDENT (Vogel memoir tier), two independent dated deployments",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "researcher_review_required": true,
+      "public_status": "RESEARCH_ONLY",
+      "valid_from": "1687-01-26",
+      "valid_to": "1687-02-27",
+      "date_precision": "exact"
+    }
+  ],
+  "migration_notes": "CH-03 (DEC-04): CommercialRight+RightModification added for the 1698 salimoet toll relinquishment (REL_1698_COLLECTS_TOLL_SALIMOET's own source_statement_summary), action=RELEASES ('relinquished' maps to the closest of the 6 DEC-04 verbatim action values). The existing COLLECTS_TOLL_FROM relation is unchanged -- it represents the long-standing right itself; the new RightModification represents the 1698 act of giving it up. CH-07 (DEC-09/DEC-10): CommandObservation migrating the artifact's own pre-existing OBS_CONSTRAINED_AGENCY_ARMED_ENSLAVED_COMPANY observation into the formal structured fields. coercion_status=COERCED is directly supported by the source's explicit 'Sclaven' (enslaved) status; ability_to_refuse and political_intent are CANNOT_DETERMINE because the original observation's own uncertainty_note states the company's agency beyond coerced deployment is undocumented -- not inferred beyond what the source says. No relation was added between ACTOR_VOC and ACTOR_ARMED_ENSLAVED_COMPANY_SILLIDA_MINE (the original observation explicitly notes none was created), so the R-REF-03 safety-critical collision check passes by construction, not by omission."
+}

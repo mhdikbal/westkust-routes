@@ -1,0 +1,816 @@
+{
+  "schema_version": "0.1.0-ontology-v2-validation",
+  "ontology_contract_version": "V2_DRAFT (docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md, unmodified by this artifact)",
+  "case_id": "KOTO_TANGAH_DESTRUCTION_CYCLE_ONTOLOGY_VALIDATION_V2",
+  "status": "RESEARCH_ONLY_NONPRODUCTION",
+  "validation_case_status": "ONTOLOGY_VALIDATION_CASE_V2",
+  "authorization_notice": "RESEARCH-ONLY NONPRODUCTION ONTOLOGY VALIDATION ARTIFACT. NOT SERVED BY API. NOT READ BY ATLAS. NOT CONNECTED TO DATABASE. NOT CONNECTED TO GRAPHIFY. This artifact tests whether ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md can represent the Koto Tangah destruction-cycle case; it does not modify that draft, the Painan artifact, the Natal V1 artifact, or any prior research artifact.",
+  "frozen_source_scope": "Batch I10 CORE_I10 material only: buku-padang-1718 pp.237-238,92-93 (Yusri & Deddy Arsya 2024); Vogel, Ost-Indianische Reise-Beschreibung, Anhang p.715; CD3 traktat CDLXIII p.309; the independently-matching GM Deel 10 troop-count detail (already-verified, reused not re-derived); the Batch I10 interpretive-ledger rows and audit section; the already-frozen Phase B Parent-Episode Review grouping (EP-1670-1682-KOTOTANGAH-4XDESTRUCTIONCYCLE, EP-1705-1712-KOTOTANGAH-LOYALTYCONSOLIDATION). No new historical context was re-derived and no DataverseNL or other new-source discovery was run for this artifact.",
+  "parent_episodes": [
+    "EP-1670-1682-KOTOTANGAH-4XDESTRUCTIONCYCLE",
+    "EP-1705-1712-KOTOTANGAH-LOYALTYCONSOLIDATION"
+  ],
+  "actors": [
+    {
+      "actor_id": "ACTOR_VOC",
+      "actor_type": "Institution",
+      "source_label": "Kompeni / de Compagnie",
+      "normalized_label": "VOC (institution)",
+      "valid_from": null,
+      "valid_to": null,
+      "date_precision": "institutional actor, no temporal bound",
+      "identity_confidence": "HIGH",
+      "mandate_status": "NOT_APPLICABLE (institution)",
+      "continuity_status": "NOT_APPLICABLE (institution)",
+      "source_document_ids": [
+        "EVT-1660-buku-padang-1718-237-r30",
+        "EVT-1670-buku_padang_1718-238-5f54",
+        "EVT-1678-buku-vogel-1690-715-1a71",
+        "EVT-1682-CD3-309-b42a",
+        "EVT-1686-buku-vogel-1690-715-2972",
+        "EVT-1705-buku-padang-1718-238-c342",
+        "EVT-1712-buku-padang-1718-238-c777",
+        "EVT-1738-buku-padang-1718-92-r101",
+        "EVT-1755-buku-padang-1718-238-0727"
+      ],
+      "source_passage_locator": "buku-padang-1718 pp.237-238,92; Vogel Anhang p.715; CD3 traktat CDLXIII p.309 (all CORE_I10)",
+      "researcher_review_required": false,
+      "notes": "Institution-level actor, kept distinct from any individually-named VOC agent per Draft V2's own Institution entity rule. No individual VOC commander is named for 1660, 1665, 1670, 1678, 1686, 1705, 1712, 1737-38, or 1755 in the frozen material -- only 1682 (van Leene) names an individual."
+    },
+    {
+      "actor_id": "ACTOR_VAN_LEENE",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "komandan Joan van Leene",
+      "normalized_label": "Joan van Leene",
+      "valid_from": "1682-07-05",
+      "valid_to": "1682-07-05",
+      "date_precision": "exact",
+      "identity_confidence": "HIGH",
+      "mandate_status": "VOC commander receiving the ten envoys' submission, per CD3's own text",
+      "continuity_status": "single dated appearance in this artifact's frozen scope, not tracked across other years",
+      "source_document_ids": [
+        "EVT-1682-CD3-309-b42a"
+      ],
+      "source_passage_locator": "CD3 traktat CDLXIII, p.309 (buku 298)",
+      "researcher_review_required": false,
+      "notes": "The same van Leene figure appears elsewhere in this project's Barus material (EVT-1681-CD3-244-1165); this artifact does not assert or re-verify that cross-case identity, since it is out of the frozen Batch I10 scope for Koto Tangah."
+    },
+    {
+      "actor_id": "ACTOR_GOUVERNEUR_POUTI",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Gouverneur Pouti (per Vogel's Anhang account)",
+      "normalized_label": "Governor Pouti of Cotatenga",
+      "valid_from": null,
+      "valid_to": "1682",
+      "date_precision": "execution reported for 1682, exact date not given",
+      "identity_confidence": "MODERATE -- named only in Vogel's separate account, not independently cross-verified against CD3 for this specific claim",
+      "mandate_status": "described by Vogel as Cotatenga's own governor",
+      "continuity_status": "kept as a fully separate actor from ACTOR_TEN_ENVOYS_COTATENGA_1682 and from ACTOR_SIRE_NARRA (not modeled in this artifact -- Sillida-specific, out of Koto Tangah scope) per the explicit hard rule against merging Pouti with Sire Narra",
+      "source_document_ids": [
+        "EVT-1682-CD3-309-b42a"
+      ],
+      "source_passage_locator": "Vogel, Ost-Indianische Reise-Beschreibung, Anhang (c. lines 23433-23450 per the existing corpus note), referenced within EVT-1682-CD3-309-b42a field 26 -- not independently re-verified against the Vogel source directly by Batch I10, reused as-is",
+      "researcher_review_required": true,
+      "notes": "CD3 (primary, the pardon instrument) and Vogel (independent memoir tier, the execution report) describe apparently DIFFERENT specific acts for 1682 -- this artifact preserves them as parallel, non-confirmed-corroborating evidence, per the existing ledger's own explicit caution. Pouti's fate is not merged with the ten envoys' own pardon."
+    },
+    {
+      "actor_id": "ACTOR_TEN_ENVOYS_COTATENGA_1682",
+      "actor_type": "NamedCollective",
+      "source_label": "de thien geslagten van Cotatenga",
+      "normalized_label": "the ten lineages/envoys of Cotatenga (1682)",
+      "valid_from": "1682-07-05",
+      "valid_to": "1682-07-05",
+      "date_precision": "exact",
+      "identity_confidence": "MODERATE -- bounded by count (\"ten\"), not individually named",
+      "mandate_status": "submission/pardon-seeking delegation, per CD3's own text",
+      "continuity_status": "NOT asserted to be identical to ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755 -- kept as its own bounded, dated group; a possible_same_actor cross-reference is recorded in notes, not resolved",
+      "source_document_ids": [
+        "EVT-1682-CD3-309-b42a"
+      ],
+      "source_passage_locator": "CD3 traktat CDLXIII, p.309 (buku 298)",
+      "researcher_review_required": true,
+      "notes": "possible_same_actor: ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755 (the general coastal community referenced in 1660/1665/1670/1671/1705/1712/1755). This artifact does NOT merge the two -- CD3's own text bounds this group specifically as ten lineages/envoys performing one dated submission act, which is a narrower and more specific unit than the general population collective used elsewhere."
+    },
+    {
+      "actor_id": "ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755",
+      "actor_type": "NamedCollective",
+      "source_label": "penduduk Koto Tangah / para penghulu Koto Tangah / Koto Tangah (varying source phrasing across dated mentions)",
+      "normalized_label": "Koto Tangah coastal community (research construct)",
+      "valid_from": "1660",
+      "valid_to": "1755",
+      "date_precision": "APPROXIMATE -- spans the full range of dated mentions in the frozen CORE_I10 material",
+      "identity_confidence": "LOW-TO-MODERATE for continuity across the full span -- see continuity_status",
+      "mandate_status": "UNKNOWN -- no single named leadership body or mandate-holder is documented as persisting across 1660-1755; different mentions name different or no office-holders (unnamed population 1660/1670/1671/1712/1755; unnamed penghulu 1665; radja Poeti as a treaty signatory in 1680, out of this artifact's core scope)",
+      "continuity_status": "ASSUMED_FOR_ARTIFACT_CONSTRUCTION_NOT_SOURCE_CONFIRMED -- this is a RESEARCH CONSTRUCT bridging multiple source mentions of an unnamed or collectively-named population at the same location across a 95-year span, not a source-confirmed single persisting political community. researcher_review_required=true is set precisely because this continuity assumption is itself under stress-test (see KOTO_TANGAH_V2_ONTOLOGY_STRESS_TEST.csv test T-14).",
+      "source_document_ids": [
+        "EVT-1660-buku-padang-1718-237-r30",
+        "EVT-1665-buku-padang-1718-237-r43",
+        "EVT-1670-buku_padang_1718-238-5f54",
+        "EVT-1671-buku-padang-1718-238-r53",
+        "EVT-1705-buku-padang-1718-238-c342",
+        "EVT-1712-buku-padang-1718-238-c777",
+        "EVT-1755-buku-padang-1718-238-0727"
+      ],
+      "source_passage_locator": "buku-padang-1718, pp.237-238 (multiple dated passages)",
+      "researcher_review_required": true,
+      "notes": "Explicitly NOT identical to ACTOR_TEN_ENVOYS_COTATENGA_1682 (kept separate) or to ACTOR_BERGVOLKEREN_ULAKAN_KOTOTANGAH_1737_1738 (kept separate, different actor category per the source's own explicit distinction). This actor exists ONLY because the task's own required actor scope needs a single referent for relations spanning multiple dated mentions of an otherwise-unnamed population -- its own continuity across the span is the single largest ontology stress point in this artifact, not a settled fact.",
+      "identity_continuity_status": "ASSUMED_FOR_ARTIFACT_CONSTRUCTION_NOT_SOURCE_CONFIRMED -- formal Draft V2.1 (DEC-01/DEC-03) restatement of this actor's own pre-existing informal continuity_status field, added alongside it without altering the original. See continuity_status for the full prose rationale (95-year span, no single named leadership body persists)."
+    },
+    {
+      "actor_id": "ACTOR_RAJA_MINANGKABAU",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Raja Minangkabau",
+      "normalized_label": "Raja Minangkabau (named by title only)",
+      "valid_from": "1671-09-08",
+      "valid_to": "1671-09-08",
+      "date_precision": "exact (mediation act)",
+      "identity_confidence": "MODERATE -- named by title only, not individually, in this excerpt",
+      "mandate_status": "third-party external authority whose protest is credited with securing the exiled population's return, per the source's own account",
+      "continuity_status": "single dated appearance in this artifact's frozen scope",
+      "source_document_ids": [
+        "EVT-1671-buku-padang-1718-238-r53"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.238",
+      "researcher_review_required": false,
+      "notes": "The only row in Batch I10's core set where an outside, non-VOC, non-Acehnese authority is credited with directly intervening on Koto Tangah's behalf -- modeled as a Broker per Draft V2 section 1's own Broker role definition, attached to the NEGOTIATES_WITH relation below."
+    },
+    {
+      "actor_id": "ACTOR_PANGLIMA_PADANG_OFFICE",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Panglima Padang (office referenced generically)",
+      "normalized_label": "office of Panglima Padang (generic reference)",
+      "valid_from": null,
+      "valid_to": "1705",
+      "date_precision": "office referenced generically, specific 1705 office-holder not distinguished in this excerpt",
+      "identity_confidence": "LOW -- the specific 1705 office-holder (possibly Mara Laout, per the ledger's own uncertainty note) is not distinguished from the generic office reference in the excerpt examined",
+      "mandate_status": "claimed jurisdictional authority over Koto Tangah's harbor/mooring facilities, per the dispute's own framing -- contested, not conceded",
+      "continuity_status": "modeled as PoliticalOffice (office) per Draft V2 section 1, kept distinct from any specific named office-holder",
+      "source_document_ids": [
+        "EVT-1705-buku-padang-1718-238-c342"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.238",
+      "researcher_review_required": true,
+      "notes": "Per the hard rule against merging named office with office-holder: this actor represents the OFFICE, not a specific individual. The specific 1705 holder is not confirmed in the excerpt examined by Batch I10."
+    },
+    {
+      "actor_id": "ACTOR_BERGVOLKEREN_ULAKAN_KOTOTANGAH_1737_1738",
+      "actor_type": "NamedCollective",
+      "source_label": "Bergvolkeren (te Ulakan en Kota Tengah)",
+      "normalized_label": "mountain peoples (Bergvolkeren) of Ulakan and Koto Tangah",
+      "valid_from": "1737",
+      "valid_to": "1738",
+      "date_precision": "APPROXIMATE (source dates the destruction to 1737-1738)",
+      "identity_confidence": "MODERATE -- bounded by the source's own explicit category label (\"Bergvolkeren\"), not individually named",
+      "mandate_status": "NOT_APPLICABLE -- no political mandate is claimed or contested in this material; this is a resource-governance/commercial-monopoly enforcement action",
+      "continuity_status": "EXPLICITLY NOT MERGED with ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755 -- the source itself distinguishes 'mountain peoples' (Bergvolkeren) from the coastal community documented in the 1660-1712 rows; this artifact preserves that distinction per the hard rule",
+      "source_document_ids": [
+        "EVT-1738-buku-padang-1718-92-r101"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.92-93; independently matching GM-New(AutoRecovered).docx Deel 10, 1737-1743, GS 250 per the existing linimasa_events.csv note (reused, not re-verified)",
+      "researcher_review_required": true,
+      "notes": "MULTI_SOURCE_VERIFIED for the bare fact of the destruction (troop counts match across two independent sources), but the actor's own identity/continuity relative to the coastal Koto Tangah polity is a deliberate non-merge, per this batch's own explicit ACTOR-CONTINUITY CAUTION."
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "LOCATION_KOTO_TANGAH",
+      "location_type": "nagari territory / settlement (unresolved fort-vs-territory granularity, see stress test T-06)",
+      "source_label": "Koto Tangah / Cotatenga / Kotta-tengah (spelling variants across sources)",
+      "notes": "The frozen source material uses 'Refort Cotatenga' (Vogel) and plain 'Koto Tangah' (buku-padang-1718) without clearly distinguishing a fortified point from the wider nagari territory. This artifact models ONE location entity rather than fabricating a fort/territory split the sources do not themselves support -- logged as a stress-test finding (T-06), not silently resolved either way."
+    },
+    {
+      "location_id": "LOCATION_SALT_REFINERY_ULAKAN_KOTOTANGAH",
+      "location_type": "salt-production facility (object/asset, not a settlement)",
+      "source_label": "de zoutbranderijen (the salt refineries) at Ulakan and Kota Tengah",
+      "notes": "Kept as a distinct object from LOCATION_KOTO_TANGAH per the task's own location/object scope instruction -- represents the specific asset destroyed in 1737-1738, part of VOC's wider 1727-1760 salt-monopoly enforcement campaign, not the settlement itself."
+    },
+    {
+      "location_id": "LOCATION_PADANG",
+      "location_type": "settlement (context location)",
+      "source_label": "Padang",
+      "notes": "Referenced only as the site of Gouverneur Pouti's separately-reported 1682 execution (per Vogel); not otherwise a subject of this artifact's relations."
+    }
+  ],
+  "documentary_reports": [
+    {
+      "report_id": "DOCREPORT_VOGEL_ANHANG_P715",
+      "report_type": "DocumentaryReport (Draft V2 KEEP_RESEARCH_ONLY entity)",
+      "author": "Johann Wilhelm Vogel",
+      "title": "Ost-Indianische Reise-Beschreibung, Anhang",
+      "report_date": "c.1690 (retrospective memoir, written after all four described events)",
+      "describes_event_ids": [
+        "EVT-1670-buku_padang_1718-238-5f54",
+        "EVT-1678-buku-vogel-1690-715-1a71",
+        "EVT-1682-CD3-309-b42a",
+        "EVT-1686-buku-vogel-1690-715-2972"
+      ],
+      "quoted_passage_original": "dieses Refort Cotatenga ift A. 1670. 1678. 1682. und 1686. wegen ihres vielfältigen Meineydes durch der Niederländischen Ost-Indischen Compagnie Waffen gäntzlich ruinirt, nachmahls aber wieder zu Bundes-Genossen auf und angenommen worden",
+      "quoted_passage_translation": "this fort/place Cotatenga was, in the years 1670, 1678, 1682, and 1686, on account of their manifold perjury/oath-breaking, entirely ruined by the arms of the Dutch East India Company, but afterward again received and admitted as allies",
+      "source_passage_locator": "Vogel, Ost-Indianische Reise-Beschreibung (c.1690), Anhang, p.715 (buku 674-675)",
+      "classification": "VOC_ASSOCIATED_RETROSPECTIVE_CLASSIFICATION",
+      "provenance_status": "CD_INDEPENDENT (memoir tier, distinct from CD/archival primary and from buku-padang-1718 secondary-academic, per the existing Phase B Parent-Episode Review's own provenance assignment)",
+      "evidence_scope_note": "This single retrospective sentence is the SOLE evidentiary basis for 1678 and 1686 specifically (Vogel-only years). It provides CORROBORATING but not independently-dated confirmation for 1670 (which also has an earlier, independent buku-padang-1718/Valentijn source) and PARALLEL, non-confirmed-corroborating evidence for 1682 (which also has an independent CD3-primary pardon instrument describing an apparently different specific act). The report's own retrospective, single-clause, non-itemized framing of 'vielfältigen Meineydes' (manifold oath-breaking) covering all four years is NOT treated by this artifact as neutral proof that all four years shared one cause, one actor, or one classification.",
+      "researcher_review_required": true,
+      "notes": "Modeled as a distinct DocumentaryReport entity, per Draft V2 section 1's KEEP_RESEARCH_ONLY DocumentaryReport class and section 5's rule that a report's own date must be kept distinct from the event date(s) it describes -- report_date (c.1690) is recorded separately from each destruction year's own event date (1670/1678/1682/1686)."
+    }
+  ],
+  "observations": [
+    {
+      "observation_id": "OBS_1660_OFFICE_PRESENCE",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "LOCATION_KOTO_TANGAH",
+      "claim_or_effective_control": "CLAIM",
+      "observed_at": "1660",
+      "event_ids": [
+        "EVT-1660-buku-padang-1718-237-r30"
+      ],
+      "source_document_ids": [
+        "EVT-1660-buku-padang-1718-237-r30"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.237 (citing Kielstra)",
+      "provenance_status": "secondary_academic only, PROVENANCE_AMBIGUOUS",
+      "evidence_strength": "LOW",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "perpetrator_status": "not applicable -- office establishment, not a perpetrated act",
+      "uncertainty_note": "not established whether this reflects a formal claim, a bare commercial presence, or something else -- retained as the batch's own baseline/context observation, not tested as its own mechanism case",
+      "notes": "Baseline observation only. No relation record is built for this item -- see KOTO_TANGAH_V2_ONTOLOGY_STRESS_TEST.csv test T-01 for why forcing a Draft V2 relation_type onto a bare 'office opened' fact was rejected as overclaiming."
+    },
+    {
+      "observation_id": "OBS_1670_DESTRUCTION",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "LOCATION_KOTO_TANGAH",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "observed_at": "1670-03",
+      "event_ids": [
+        "EVT-1670-buku_padang_1718-238-5f54"
+      ],
+      "source_document_ids": [
+        "EVT-1670-buku_padang_1718-238-5f54"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.238 (citing Valentijn)",
+      "provenance_status": "PROVENANCE_AMBIGUOUS (secondary-academic, itself citing Valentijn; not independently cross-verified against a primary CD/Daghregister passage)",
+      "evidence_strength": "LOW",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "perpetrator_status": "no specific perpetrating VOC individual named; institutional VOC force only",
+      "uncertainty_note": "no specific local political goal, demand, or grievance is recorded on Koto Tangah's own side; VOC's own 'unfaithful nature' framing is recorded as VOC's characterization, not as an established local motive",
+      "notes": "DESTRUCTION YEAR 1 OF 4 in the Vogel-referenced sequence. claim_or_effective_control is MILITARY_PRESENCE, deliberately NOT a durable-control value -- per the hard rule, this observation does not infer that the March 1670 attack itself established lasting effective control (the population's subsequent exile and 1671 mediated return, per OBS_1671, is the next dated state)."
+    },
+    {
+      "observation_id": "OBS_1678_DESTRUCTION",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "LOCATION_KOTO_TANGAH",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "observed_at": "1678",
+      "event_ids": [
+        "EVT-1678-buku-vogel-1690-715-1a71"
+      ],
+      "source_document_ids": [
+        "EVT-1678-buku-vogel-1690-715-1a71"
+      ],
+      "source_passage_locator": "Vogel, Anhang, p.715",
+      "provenance_status": "CD_INDEPENDENT (Vogel memoir tier) -- SOLE source for 1678 specifically",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "perpetrator_status": "no individual VOC commander named for this specific year in Vogel's sentence",
+      "uncertainty_note": "CANNOT_DETERMINE for this specific year -- Vogel's single retrospective clause does not itemize what was disputed in 1678 as distinct from 1670/1682/1686",
+      "notes": "DESTRUCTION YEAR 2 OF 4. Vogel-only: no independent source for 1678 specifically was located in the frozen Batch I10 material (contrast 1670's independent Valentijn-cited source and 1682's independent CD3-primary instrument). evidence_strength is LOW, not equal to 1682's MODERATE, per the source-asymmetry guard."
+    },
+    {
+      "observation_id": "OBS_1682_DESTRUCTION_PARDON",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_TEN_ENVOYS_COTATENGA_1682",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "observed_at": "1682-07-05",
+      "event_ids": [
+        "EVT-1682-CD3-309-b42a"
+      ],
+      "source_document_ids": [
+        "EVT-1682-CD3-309-b42a"
+      ],
+      "source_passage_locator": "CD3 traktat CDLXIII, p.309 (buku 298)",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "perpetrator_status": "collective submission by the ten envoys; no individual perpetrator of an underlying offense is itemized in this instrument's own text",
+      "uncertainty_note": "the underlying prior offense that prompted the pardon-seeking is not itemized in this instrument's own quoted text",
+      "notes": "DESTRUCTION YEAR 3 OF 4, but UNLIKE 1678/1686 this year also has an INDEPENDENT CD3-primary instrument -- giving it comparatively stronger evidentiary grounding. This observation covers the collective pardon only; the separately-reported execution of Gouverneur Pouti is a SEPARATE observation (OBS_1682_POUTI_EXECUTION), not merged."
+    },
+    {
+      "observation_id": "OBS_1682_POUTI_EXECUTION",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_GOUVERNEUR_POUTI",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "observed_at": "1682",
+      "event_ids": [
+        "EVT-1682-CD3-309-b42a"
+      ],
+      "source_document_ids": [
+        "EVT-1682-CD3-309-b42a"
+      ],
+      "source_passage_locator": "Vogel, Anhang (c. lines 23433-23450 per the existing corpus note), referenced within EVT-1682-CD3-309-b42a's own field 26 -- not independently re-verified against the Vogel source directly by Batch I10",
+      "provenance_status": "CD_INDEPENDENT, UNCONFIRMED as the same episode as the CD3 pardon (OBS_1682_DESTRUCTION_PARDON)",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CONTESTED",
+      "perpetrator_status": "Pouti named as the individual target, per Vogel's separate account only; not independently cross-verified against CD3 for this specific claim",
+      "uncertainty_note": "whether Pouti's reported execution and the ten envoys' pardon are the same episode, a related episode, or two unconnected 1682 events is CANNOT_DETERMINE from the sources examined",
+      "notes": "Modeled as its own observation, distinct from OBS_1682_DESTRUCTION_PARDON, per the hard rule against treating leadership decapitation and community pardon as one uniform outcome. evidence_strength LOW (Vogel-only, unconfirmed), lower than the CD3-corroborated pardon's MODERATE."
+    },
+    {
+      "observation_id": "OBS_1686_DESTRUCTION",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "LOCATION_KOTO_TANGAH",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "observed_at": "1686",
+      "event_ids": [
+        "EVT-1686-buku-vogel-1690-715-2972"
+      ],
+      "source_document_ids": [
+        "EVT-1686-buku-vogel-1690-715-2972"
+      ],
+      "source_passage_locator": "Vogel, Anhang, p.715",
+      "provenance_status": "CD_INDEPENDENT (Vogel memoir tier) -- SOLE source for 1686 specifically",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "perpetrator_status": "no individual VOC commander named for this specific year in Vogel's sentence",
+      "uncertainty_note": "CANNOT_DETERMINE for this specific year, on the same basis as 1678",
+      "notes": "DESTRUCTION YEAR 4 OF 4. Vogel-only, same sentence and page as OBS_1678_DESTRUCTION. evidence_strength LOW, kept structurally identical in treatment to 1678 and structurally distinct from 1670 (independent earlier source) and 1682 (CD3-primary corroboration)."
+    },
+    {
+      "observation_id": "OBS_1712_COMPLIANCE",
+      "subject_actor_id": "ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755",
+      "object_id": "ACTOR_VOC",
+      "claim_or_effective_control": "EFFECTIVE_LOCAL_COMPLIANCE",
+      "observed_at": "1712",
+      "event_ids": [
+        "EVT-1712-buku-padang-1718-238-c777"
+      ],
+      "source_document_ids": [
+        "EVT-1712-buku-padang-1718-238-c777"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.238",
+      "provenance_status": "PROVENANCE_AMBIGUOUS (secondary academic source only)",
+      "evidence_strength": "LOW",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "perpetrator_status": "not applicable -- this is a compliance/support act, not a perpetrated offense",
+      "uncertainty_note": "the underlying motivation (genuine alignment vs. continued deterrence vs. shared antagonism toward Raja Johan) is CANNOT_DETERMINE from this excerpt",
+      "notes": "Represents 'dukungan militer tahun 1712' (task item 9) as an EFFECTIVE_LOCAL_COMPLIANCE observation, not a new relation_type. This is a LIMITED, single-dated compliance observation -- it is NOT treated as proof of continuous VOC control since 1686, per the hard rule against filling the 1686-1712 gap with an assumption of continuity."
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "REL_1665_REQUESTS_PROTECTION",
+      "subject_actor_id": "ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "REQUESTS_PROTECTION_FROM",
+      "valid_from": "1665",
+      "valid_to": "1665-12",
+      "date_precision": "APPROXIMATE (year given as 1665; Groenewegen's death dated 1 Dec 1665)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1665",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1665-buku-padang-1718-237-r43"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1665-buku-padang-1718-237-r43"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.237 (citing Radermacher)",
+      "provenance_status": "PROVENANCE_AMBIGUOUS (secondary_academic only, citing Radermacher; not cross-verified against CD/Daghregister)",
+      "evidence_strength": "LOW",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "TREATY_OBLIGATION",
+      "commitment_credibility": "LOW_CREDIBILITY",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Koto Tangah's penghulu reject Acehnese incitement following VOC agent Groenewegen's death and renew their protection-acceptance alliance with VOC.",
+      "historical_reconstruction": "Represents 1665 as a protection-acceptance renewal maintained through a succession-adjacent vulnerability, not a new alignment.",
+      "theoretical_annotation": "The source's own 'respect for our weapons' framing attributes the outcome to deterrence rather than affirmative loyalty -- this artifact records that framing as the source's own characterization, not as a neutral finding about local motivation.",
+      "public_display_summary": "In 1665, Koto Tangah's leaders renewed their protective alliance with the VOC rather than joining an incitement to attack.",
+      "notes": "claim_or_effective_control is TREATY_OBLIGATION (a standing protection relationship), not a stronger control value -- SWITCHES_ALIGNMENT_TO was considered and rejected since no actual switch occurred (alignment was maintained, not changed)."
+    },
+    {
+      "relation_id": "REL_1670_MILITARY_FORCE",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755",
+      "relation_type": "USES_MILITARY_FORCE_AGAINST",
+      "valid_from": "1670-03",
+      "valid_to": "1670-03",
+      "date_precision": "exact (month)",
+      "superseded_by": "REL_1671_RECONCILES",
+      "contradicted_by": null,
+      "observed_at": "1670-03",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1670-buku_padang_1718-238-5f54"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1670-buku_padang_1718-238-5f54"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.238 (citing Valentijn)",
+      "provenance_status": "PROVENANCE_AMBIGUOUS",
+      "evidence_strength": "LOW",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "VOC attacks Koto Tangah in March 1670 after the population is described as having 'cast off the burden of obedience'; the nagari's territory is seized and burned.",
+      "historical_reconstruction": "See OBS_1670_DESTRUCTION for the paired observation record. This relation represents the directed military action itself.",
+      "theoretical_annotation": "The 'unfaithful nature of the Sumatrans' framing is a generalized ethnic-character allegation, not an itemized breach -- recorded as VOC's own classificatory language, not adopted as fact.",
+      "public_display_summary": "In March 1670, VOC forces attacked and burned Koto Tangah.",
+      "notes": "claim_or_effective_control is MILITARY_PRESENCE, not any control-implying value -- the population's subsequent exile and 1671 mediated return (see REL_1671_NEGOTIATES/REL_1671_RECONCILES) demonstrate that the attack did not itself establish a durable settlement."
+    },
+    {
+      "relation_id": "REL_1671_NEGOTIATES",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755",
+      "relation_type": "NEGOTIATES_WITH",
+      "valid_from": "1671-09-08",
+      "valid_to": "1671-09-08",
+      "date_precision": "exact",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1671-09-08",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1671-buku-padang-1718-238-r53"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1671-buku-padang-1718-238-r53"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.238; cross-referenced by the source's own bibliography to Corpus Diplomaticum CCCXXXI (not independently re-verified by this artifact)",
+      "provenance_status": "secondary_academic (buku-padang-1718) with an UNVERIFIED cross-reference to a CD-catalogued instrument",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CLAIM",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "RELATIONAL_AND_PRODUCTIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Following the 1670 destruction and exile, Raja Minangkabau lodges a strong protest, brokering the population's permitted return and a new treaty.",
+      "historical_reconstruction": "Represents 'pengasingan dan pemulangan melalui mediasi Raja Minangkabau pada 1671' (task item 4) using Draft V2's own Broker role (section 1), attached to this NEGOTIATES_WITH relation.",
+      "theoretical_annotation": "Raja Minangkabau's mediation is treated as the mechanism, not merely background -- this is the only row in the frozen Batch I10 material where a non-VOC, non-Acehnese third party is credited with direct intervention.",
+      "public_display_summary": "In 1671, Raja Minangkabau's intervention led to a new negotiation restoring Koto Tangah's exiled population.",
+      "notes": "Broker: ACTOR_RAJA_MINANGKABAU. The source's own note states the restored alliance 'did not last long,' which this artifact represents via the temporal gap to REL_1678 rather than by extending this relation's valid_to.",
+      "broker_actor_id": "ACTOR_RAJA_MINANGKABAU"
+    },
+    {
+      "relation_id": "REL_1671_RECONCILES",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755",
+      "relation_type": "RECONCILES_WITH",
+      "valid_from": "1671-09-08",
+      "valid_to": null,
+      "date_precision": "exact start, open end (per the source's own note that the alliance did not last long, without a stated end date)",
+      "superseded_by": null,
+      "contradicted_by": "REL_1678_MILITARY_FORCE",
+      "observed_at": "1671-09-08",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1671-buku-padang-1718-238-r53"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1671-buku-padang-1718-238-r53"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.238",
+      "provenance_status": "secondary_academic (buku-padang-1718) with an UNVERIFIED CD cross-reference",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "TREATY_OBLIGATION",
+      "commitment_credibility": "LOW_CREDIBILITY",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "The 8 September 1671 treaty formally restores the alliance between VOC and Koto Tangah's returned population.",
+      "historical_reconstruction": "Directly tests claim versus effective control: destruction alone did not resolve the relationship -- restoration required third-party mediation and a new formal instrument.",
+      "theoretical_annotation": "The source's own explicit statement that 'this alliance too did not last long' is preserved via contradicted_by pointing to the 1678 destruction, rather than smoothed into an open-ended durable-alliance claim.",
+      "public_display_summary": "A 1671 treaty restored the alliance, though the source itself notes it did not endure.",
+      "notes": "commitment_credibility is LOW_CREDIBILITY specifically because the source itself flags the alliance's short duration -- this is not an inference this artifact adds independently."
+    },
+    {
+      "relation_id": "REL_1678_MILITARY_FORCE",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "LOCATION_KOTO_TANGAH",
+      "relation_type": "USES_MILITARY_FORCE_AGAINST",
+      "valid_from": "1678",
+      "valid_to": "1678",
+      "date_precision": "approximate (year only, per Vogel's single retrospective clause)",
+      "superseded_by": "REL_1682_RECONCILES_PARDON",
+      "contradicted_by": "REL_1671_RECONCILES",
+      "observed_at": "c.1690 (Vogel's own writing date, distinct from the 1678 event date)",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1678-buku-vogel-1690-715-1a71"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1678-buku-vogel-1690-715-1a71"
+      ],
+      "source_passage_locator": "Vogel, Anhang, p.715",
+      "provenance_status": "CD_INDEPENDENT (Vogel-only, SOLE source for this year)",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Per Vogel's retrospective sentence, Cotatenga was 'entirely ruined' by VOC arms in 1678, one of four listed years, then eventually readmitted as an ally.",
+      "historical_reconstruction": "See OBS_1678_DESTRUCTION for the paired observation record; this relation represents the directed action Vogel's clause attributes for this year specifically.",
+      "theoretical_annotation": "This is a DIFFERENT dated action from REL_1670_MILITARY_FORCE -- no shared cause, actor, or triggering event is asserted between 1670 and 1678 beyond both appearing in Vogel's own retrospective list.",
+      "public_display_summary": "In 1678, per a later Dutch memoir, VOC forces destroyed Koto Tangah again.",
+      "notes": "object_id is LOCATION_KOTO_TANGAH (not the coastal collective actor) because Vogel's sentence names no local actor for this specific year -- object choice reflects the source's own silence on who, specifically, was attacked."
+    },
+    {
+      "relation_id": "REL_1682_RECONCILES_PARDON",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_TEN_ENVOYS_COTATENGA_1682",
+      "relation_type": "RECONCILES_WITH",
+      "valid_from": "1682-07-05",
+      "valid_to": "1682-07-05",
+      "date_precision": "exact",
+      "superseded_by": "REL_1686_MILITARY_FORCE",
+      "contradicted_by": null,
+      "observed_at": "1682-07-05",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1682-CD3-309-b42a"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1682-CD3-309-b42a"
+      ],
+      "source_passage_locator": "CD3 traktat CDLXIII, p.309 (buku 298)",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "The ten envoys of Cotatenga submit to commandant van Leene seeking pardon; they are accepted in mercy and permitted to remain in their own land.",
+      "historical_reconstruction": "This is the strongest-evidenced of the four Vogel-listed destruction/readmission cycles for its readmission side, having an independent CD3-primary instrument rather than relying solely on Vogel's retrospective clause.",
+      "theoretical_annotation": "'in genade aangenome' (accepted in mercy) is itself a paternalistic framing of the pardon relationship, recorded as the instrument's own language, not adopted as neutral description.",
+      "public_display_summary": "In July 1682, Cotatenga's envoys were pardoned and permitted to remain in their territory.",
+      "notes": "This relation covers the collective pardon only. Gouverneur Pouti's separately-reported execution (OBS_1682_POUTI_EXECUTION) is not merged into this relation -- collective pardon and individual punitive execution are modeled as two DIFFERENT modes, per the hard rule."
+    },
+    {
+      "relation_id": "REL_1686_MILITARY_FORCE",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "LOCATION_KOTO_TANGAH",
+      "relation_type": "USES_MILITARY_FORCE_AGAINST",
+      "valid_from": "1686",
+      "valid_to": "1686",
+      "date_precision": "approximate (year only, per Vogel's single retrospective clause)",
+      "superseded_by": "REL_1705_RECONCILES",
+      "contradicted_by": "REL_1682_RECONCILES_PARDON",
+      "observed_at": "c.1690 (Vogel's own writing date)",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1686-buku-vogel-1690-715-2972"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1686-buku-vogel-1690-715-2972"
+      ],
+      "source_passage_locator": "Vogel, Anhang, p.715",
+      "provenance_status": "CD_INDEPENDENT (Vogel-only, SOLE source for this year)",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "explicit_or_inferred": "OBSERVED_ACTION_AS_STRATEGY",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Per Vogel's same retrospective sentence, Cotatenga was again 'entirely ruined' by VOC arms in 1686, the fourth listed year.",
+      "historical_reconstruction": "See OBS_1686_DESTRUCTION. Structurally identical treatment to REL_1678_MILITARY_FORCE (same sole source, same evidence tier).",
+      "theoretical_annotation": "No shared cause, actor, or classification is asserted between 1686 and 1670/1678/1682 beyond common appearance in Vogel's list.",
+      "public_display_summary": "In 1686, per the same later Dutch memoir, VOC forces destroyed Koto Tangah a fourth time.",
+      "notes": "This is the last of the 'four destruction years'; the next dated relation (1705) is 19 years later -- this artifact does not fill that 19-year gap with an assumed continuous-control state."
+    },
+    {
+      "relation_id": "REL_1705_CONTESTS_RESOURCE",
+      "subject_actor_id": "ACTOR_PANGLIMA_PADANG_OFFICE",
+      "object_id": "ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755",
+      "relation_type": "CONTESTS_RESOURCE_WITH",
+      "valid_from": null,
+      "valid_to": "1705",
+      "date_precision": "APPROXIMATE start (undated prior dispute), exact resolution date (1705)",
+      "superseded_by": "REL_1705_RECONCILES",
+      "contradicted_by": null,
+      "observed_at": "1705",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1705-buku-padang-1718-238-c342"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1705-buku-padang-1718-238-c342"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.238",
+      "provenance_status": "secondary_academic only (buku-padang-1718, itself citing a VOC-derived characterization)",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CONTESTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CONTESTED_CONTROL",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Recurring hostilities over Koto Tangah's refusal to acknowledge the Panglima Padang office's claimed authority over their own ship-moorings, ending only via an 1705 treaty.",
+      "historical_reconstruction": "A specific, itemized territorial-jurisdiction dispute (harbor/mooring authority), not a generic 'unrest' characterization -- the two determinable endpoints (the office and the coastal collective) satisfy the task's own requirement for this relation type.",
+      "theoretical_annotation": "The secondary source's own paraphrase uses 'dijinakkan' (tamed/domesticated) -- this artifact does not adopt that as a neutral description of what was, per the same source, a specific jurisdictional grievance.",
+      "public_display_summary": "Koto Tangah and the Panglima Padang's office disputed authority over harbor moorings for years before an 1705 treaty resolved it.",
+      "notes": "Two-endpoint requirement satisfied: ACTOR_PANGLIMA_PADANG_OFFICE and ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755."
+    },
+    {
+      "relation_id": "REL_1705_RECONCILES",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755",
+      "relation_type": "RECONCILES_WITH",
+      "valid_from": "1705",
+      "valid_to": "1705",
+      "date_precision": "approximate (year only)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1705",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1705-buku-padang-1718-238-c342"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1705-buku-padang-1718-238-c342"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.238",
+      "provenance_status": "secondary_academic only",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CONTESTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "TREATY_OBLIGATION",
+      "commitment_credibility": "LOW_CREDIBILITY",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "A 1705 treaty ends the recurring jurisdictional hostilities described in REL_1705_CONTESTS_RESOURCE.",
+      "historical_reconstruction": "Represents 'pembaruan hubungan atau traktat tahun 1705' (task item 8) as a formal obligation, not an automatic effective-control claim.",
+      "theoretical_annotation": "The secondary source's own 'truly tamed' framing is recorded as the source's own classification (see documentary/classification handling), not adopted as this artifact's own assessment.",
+      "public_display_summary": "A 1705 treaty formally ended the harbor-mooring dispute between Koto Tangah and Padang's authority.",
+      "notes": "claim_or_effective_control is TREATY_OBLIGATION, not EFFECTIVE_LOCAL_COMPLIANCE or any stronger value -- formal treaty conclusion is not treated as proof of durable compliance (the paired OBS_1712_COMPLIANCE observation, 7 years later, is the artifact's own next and separate compliance data point)."
+    },
+    {
+      "relation_id": "REL_1737_MILITARY_FORCE_SALT",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_BERGVOLKEREN_ULAKAN_KOTOTANGAH_1737_1738",
+      "relation_type": "USES_MILITARY_FORCE_AGAINST",
+      "valid_from": "1737",
+      "valid_to": "1738",
+      "date_precision": "APPROXIMATE (source dates the action to 1737-1738)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1737",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1738-buku-padang-1718-92-r101"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1738-buku-padang-1718-92-r101"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.92-93; independently matching GM Deel 10, 1737-1743, GS 250",
+      "provenance_status": "MULTI_SOURCE_VERIFIED",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "COMMERCIAL_CONTROL",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "A 26-European, 27-Bugis VOC force destroys salt refineries established by the Bergvolkeren of Ulakan and Koto Tangah, part of VOC's wider 1727-1760 salt-monopoly enforcement.",
+      "historical_reconstruction": "Represents 'penghancuran kilang garam 1737-1738' (task item 10) as a resource-governance/commercial-monopoly enforcement action, analytically distinct from the 1670-1686 loyalty-oath destruction cycle -- different actor category, different mechanism (commercial enforcement, not punitive reconquest).",
+      "theoretical_annotation": "This is the strongest-evidenced single action in this artifact (two independently-matching sources, exact troop-count agreement) yet involves the LOWEST actor-identity confidence for continuity with the earlier coastal polity -- evidence strength and actor-continuity confidence are explicitly decoupled here.",
+      "public_display_summary": "In 1737-1738, VOC forces destroyed salt refineries run by mountain peoples near Ulakan and Koto Tangah, enforcing its salt monopoly.",
+      "notes": "object_id is the Bergvolkeren actor, NOT LOCATION_KOTO_TANGAH and NOT the coastal collective -- per the explicit non-merge rule."
+    },
+    {
+      "relation_id": "REL_1737_CLAIMS_MONOPOLY",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "LOCATION_SALT_REFINERY_ULAKAN_KOTOTANGAH",
+      "relation_type": "CLAIMS_COMMODITY_MONOPOLY",
+      "valid_from": null,
+      "valid_to": "1738",
+      "date_precision": "open start (part of the wider, undated 1727-1760 monopoly claim), end at the destruction date",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1737",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1738-buku-padang-1718-92-r101"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1738-buku-padang-1718-92-r101"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.92-93",
+      "provenance_status": "MULTI_SOURCE_VERIFIED",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CLAIM",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": false,
+      "source_statement_summary": "VOC's destruction of the unauthorized refineries implies a claimed salt-production monopoly on this stretch of coast.",
+      "historical_reconstruction": "Represents the resource-governance/commodity dimension of the 1737-1738 action as its own relation, separate from the military-force relation.",
+      "theoretical_annotation": "The monopoly claim is inferred from the enforcement action itself (destroying a competing facility); no separate monopoly-grant instrument is quoted in this excerpt.",
+      "public_display_summary": "VOC claimed a monopoly over salt production on this coast, enforced by destroying unauthorized refineries.",
+      "notes": "claim_or_effective_control is CLAIM, since only the claim (via enforcement) is evidenced, not a documented grant instrument or toll-collection record."
+    },
+    {
+      "relation_id": "REL_1755_RENEWAL",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755",
+      "relation_type": "RECONCILES_WITH",
+      "valid_from": "1755",
+      "valid_to": "1755",
+      "date_precision": "approximate (year only)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1755",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1755-buku-padang-1718-238-0727"
+      ],
+      "parent_episode_id": null,
+      "source_document_ids": [
+        "EVT-1755-buku-padang-1718-238-0727"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.238",
+      "provenance_status": "PROVENANCE_AMBIGUOUS (secondary academic only; possibly a duplicate of a wider CD6 west-coast-renewal-campaign instrument, per the existing Phase B candidate finding, not confirmed)",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "TREATY_OBLIGATION",
+      "commitment_credibility": "LOW_CREDIBILITY",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "The pre-existing Koto Tangah-VOC contract is renewed in 1755 'to strengthen the bond of alliance.'",
+      "historical_reconstruction": "Represents 'pembaruan kontrak tahun 1755' (task item 11) as a formal renewal, explicitly NOT treated as proof of uninterrupted compliance across the 43-year gap since 1712.",
+      "theoretical_annotation": "This may be the SAME instrument as one of the ~30 negeri renewals in the wider CD6 west-coast campaign (per the existing Phase B duplicate-instrument candidate finding) -- this artifact does not resolve that open question.",
+      "public_display_summary": "In 1755, Koto Tangah's contract with the VOC was renewed.",
+      "notes": "claim_or_effective_control is TREATY_OBLIGATION, not effective-compliance -- the 43-year gap between OBS_1712_COMPLIANCE and this 1755 renewal is left as an open temporal gap, not filled with an assumed continuous-control narrative."
+    }
+  ],
+  "vocabulary_notes": {
+    "relation_type_restraint": "USES_MILITARY_FORCE_AGAINST is used for all four Vogel-referenced destruction years (1670/1678/1686 targeting LOCATION_KOTO_TANGAH or the coastal collective; 1682's Pouti execution targeting the individual actor). No DESTROYS, REPEATEDLY_COERCES, FAILS_TO_DETER, REBELS_AGAINST, OATH_BREAKER_OF, or SUBMITS_TO relation type was created, per the explicit hard rule. Where USES_MILITARY_FORCE_AGAINST could not fully capture an action's meaning (the 1660 office-opening and the 1712 compliance act), no relation was forced -- these are represented as standalone EffectiveControlObservation records instead, disclosed in KOTO_TANGAH_V2_ONTOLOGY_STRESS_TEST.csv.",
+    "mechanism_annotations_kept_as_free_text": "REPEATED_COERCION and FAILED_DETERRENCE appear only as free-text mechanism discussion within relation/observation 'notes' and 'theoretical_annotation' fields (reused verbatim from the frozen Batch I10 ledger's own field 38 values), never as a relation_type or a new controlled-vocabulary enumeration value.",
+    "documentary_report_separation": "The single Vogel retrospective sentence (DOCREPORT_VOGEL_ANHANG_P715) is modeled once as a DocumentaryReport entity and referenced by three observations/relations (1678, 1682-Pouti, 1686) via its own report_id conceptually -- its report_date (c.1690) is kept distinct from each event's own date throughout, per Draft V2 section 5.",
+    "actor_extension_fields_disclosure": "mandate_status and continuity_status are NOT fields defined anywhere in Draft V2's own Identity Rules (section 4) or Evidence Contract (section 6). This artifact adds them as descriptive bookkeeping fields on actor records only, to satisfy this validation task's own actor-construction requirement -- this is NOT a controlled-vocabulary change (no relation_type or annotation enumeration was touched) but is disclosed here and in the stress-test ledger as a schema-completeness question for future researcher decision, not silently treated as if Draft V2 already specifies these fields."
+  },
+  "ontology_version": "V2.1",
+  "migration_notes": "CH-01 (DEC-01/DEC-03): identity_continuity_status added to ACTOR_KOTOTANGAH_COASTAL_COLLECTIVE_1660_1755, formalizing its own already-existing informal continuity_status field (present since the original V1-V4 validation) under the Draft V2.1 field name. mandate_status was already present under its exact Draft V2.1 name and needed no change. No other CH-0x change applies to Koto Tangah (CH-04/FAIL-02 and CH-05/FAIL-03 are deferred/rejected, not migrated)."
+}

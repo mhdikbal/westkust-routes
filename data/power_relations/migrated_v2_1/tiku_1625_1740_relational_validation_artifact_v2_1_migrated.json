@@ -1,0 +1,801 @@
+{
+  "schema_version": "0.1.0-ontology-v2-validation",
+  "ontology_contract_version": "V2_DRAFT (docs/thesis/pilot_annotation/ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md, unmodified by this artifact)",
+  "case_id": "TIKU_1625_1740_ONTOLOGY_VALIDATION_V3",
+  "status": "RESEARCH_ONLY_NONPRODUCTION",
+  "validation_case_status": "ONTOLOGY_VALIDATION_CASE_V3",
+  "authorization_notice": "RESEARCH-ONLY NONPRODUCTION ONTOLOGY VALIDATION ARTIFACT. NOT SERVED BY API. NOT READ BY ATLAS. NOT CONNECTED TO DATABASE. NOT CONNECTED TO GRAPHIFY. This artifact tests whether ATLAS_POWER_RELATION_ONTOLOGY_CONTRACT_V2_DRAFT.md can represent the Tiku 1625-1740 case; it does not modify that draft, the Painan artifact, the Natal V1 artifact, the Koto Tangah V2 artifact, or any prior research artifact.",
+  "frozen_source_scope": "Batch I11 CORE_I11 material only: EVT-1625-1624_1629-223-r6, EVT-1641-1641-r11, EVT-1649-1649-r15, EVT-1662-1663-90-r33, EVT-1684-CD3-366-r70, EVT-1740-buku-padang-1718-93-r102, EVT-1694-gm-vol04-05-599-r126; the Batch I11 interpretive-ledger rows and audit section; already-frozen parent-episode and provenance artifacts. No new historical context was re-derived and no DataverseNL or GLOBALISE Places discovery was run for this artifact.",
+  "actors": [
+    {
+      "actor_id": "ACTOR_ACEH_COURT",
+      "actor_type": "Institution",
+      "source_label": "mahkota Achin / de Croon van Atchin",
+      "normalized_label": "Aceh court (institution)",
+      "valid_from": null,
+      "valid_to": null,
+      "date_precision": "institutional actor, no temporal bound",
+      "identity_confidence": "HIGH",
+      "mandate_status": "NOT_APPLICABLE (institution)",
+      "continuity_status": "NOT_APPLICABLE (institution)",
+      "faction_status": "NOT_APPLICABLE (institution, not a faction)",
+      "source_document_ids": [
+        "EVT-1641-1641-r11",
+        "EVT-1662-1663-90-r33"
+      ],
+      "source_passage_locator": "linimasa_events.csv row 11 (1641 toll grant, issued in the Aceh queen's own name); row 33 (Soureradja's own narrated origin account)",
+      "researcher_review_required": false,
+      "notes": "Institution-level sovereign actor, kept distinct from any individual Acehnese official or agent per Draft V2's own Institution entity rule and the Political Office guard."
+    },
+    {
+      "actor_id": "ACTOR_ACEH_MONOPOLY_OFFICIALS_1625",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Atchijnders (enforcing the pepper monopoly at Tiku)",
+      "normalized_label": "Acehnese monopoly-enforcement officials, 1625",
+      "valid_from": "1625-10",
+      "valid_to": "1625-12",
+      "date_precision": "exact (2-month window)",
+      "identity_confidence": "MODERATE -- named by role/collective term (\"Atchijnders\"), not individually",
+      "mandate_status": "enforcing Aceh's own claimed pepper monopoly at Tiku, per VOC's own complaint",
+      "continuity_status": "single dated appearance, not tracked across other years",
+      "faction_status": "NOT_APPLICABLE (agents of the Aceh court, not a local faction)",
+      "source_document_ids": [
+        "EVT-1625-1624_1629-223-r6"
+      ],
+      "source_passage_locator": "atjeh_trade_records, source_page 223 (also 233), book_page 210",
+      "researcher_review_required": false,
+      "notes": "Kept distinct from ACTOR_ACEH_COURT per the Political Office guard: these are enforcement agents, not the sovereign institution itself."
+    },
+    {
+      "actor_id": "ACTOR_VOC",
+      "actor_type": "Institution",
+      "source_label": "d'E. Comp[agnie] / de Hollandse Maatschappy",
+      "normalized_label": "VOC (institution)",
+      "valid_from": null,
+      "valid_to": null,
+      "date_precision": "institutional actor, no temporal bound",
+      "identity_confidence": "HIGH",
+      "mandate_status": "NOT_APPLICABLE (institution)",
+      "continuity_status": "NOT_APPLICABLE (institution)",
+      "faction_status": "NOT_APPLICABLE (institution)",
+      "source_document_ids": [
+        "EVT-1625-1624_1629-223-r6",
+        "EVT-1641-1641-r11",
+        "EVT-1649-1649-r15",
+        "EVT-1662-1663-90-r33",
+        "EVT-1684-CD3-366-r70",
+        "EVT-1740-buku-padang-1718-93-r102"
+      ],
+      "source_passage_locator": "all CORE_I11 rows",
+      "researcher_review_required": false,
+      "notes": "Institution-level actor, kept distinct from its individual agents (Groenewegen, van Leene, Sas) per Draft V2's own Institution entity rule."
+    },
+    {
+      "actor_id": "ACTOR_PANGLIMA_SOURERADJA",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Soureradja, panglima Ticco",
+      "normalized_label": "Panglima Soureradja",
+      "valid_from": "1662-06",
+      "valid_to": "1662-07",
+      "date_precision": "exact (2-month window)",
+      "identity_confidence": "HIGH -- individually named, with a first-person self-narrated account of his own office's origin",
+      "mandate_status": "an Aceh-recognized panglima office over Ticco per his own narrated account; his 1662 secession act is explicitly COLLECTIVE (\"kami bersama para pembesar dari 12 desa\"), not a unilateral personal decision -- see Mandate Analysis",
+      "continuity_status": "single dated episode (Jun-Jul 1662); no continuity asserted before or after within this artifact's frozen scope",
+      "faction_status": "acts jointly with, not merged into, ACTOR_PONGELOUS_12_DESA_TICCO_1662",
+      "source_document_ids": [
+        "EVT-1662-1663-90-r33"
+      ],
+      "source_passage_locator": "1663 corpus, source_page 90 (Batavia daghregister entry, 27 Mar 1663), GLOBALISE/Huygens translation pipeline",
+      "researcher_review_required": true,
+      "notes": "Office (panglima Ticco) kept distinct from the office-holder per the Political Office guard; the office's own Aceh-appointing/recognizing institution is ACTOR_ACEH_COURT, referenced not merged."
+    },
+    {
+      "actor_id": "ACTOR_PONGELOUS_12_DESA_TICCO_1662",
+      "actor_type": "NamedCollective",
+      "source_label": "pongelous 12 desa",
+      "normalized_label": "headmen of the 12 villages of Ticco, 1662",
+      "valid_from": "1662-06",
+      "valid_to": "1662-07",
+      "date_precision": "exact (2-month window)",
+      "identity_confidence": "MODERATE -- bounded by count (12), not individually named",
+      "mandate_status": "COLLECTIVE mandate jointly with Soureradja, per the source's own first-person plural framing (\"kami bersama...\"); the 12 villages are NOT individually named, so the exact membership set cannot be independently verified; the act binds only these 12 desa's own leadership, NOT confirmed to bind the whole of Tiku (Tiku's full extent is not established anywhere in the frozen material) -- see Mandate Analysis",
+      "continuity_status": "single dated episode (Jun-Jul 1662); NOT asserted to persist into or represent the 1684 ACTOR_TIKU_REGENTS_1684 actor",
+      "faction_status": "acts jointly with Soureradja; internal faction structure (if any) among the 12 desa is not documented",
+      "source_document_ids": [
+        "EVT-1662-1663-90-r33"
+      ],
+      "source_passage_locator": "1663 corpus, source_page 90",
+      "researcher_review_required": true,
+      "notes": "This is the artifact's central mandate test (task's own MANDATE TEST section). Deliberately NOT merged with ACTOR_TIKU_REGENTS_1684 (22 years later, a differently-described collective -- 'regenten Tycou'/'alle inwoonderen') despite both being Tiku-area collectives, per the actor-continuity guard.",
+      "identity_continuity_status": "NOT_TESTABLE -- single dated episode (Jun-Jul 1662); NOT asserted to persist into 1684",
+      "explicit_non_identity_with": [
+        {
+          "actor_id": "ACTOR_TIKU_REGENTS_1684",
+          "rationale": "Symmetric counterpart of ACTOR_TIKU_REGENTS_1684's own non-identity entry -- the 1662 pongelous act is not read as a predecessor identity to the 1684 regents/inhabitants collective."
+        }
+      ]
+    },
+    {
+      "actor_id": "ACTOR_GROENEWEGEN",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Groenewegen",
+      "normalized_label": "Groenewegen (VOC official)",
+      "valid_from": "1662-06",
+      "valid_to": "1662-07",
+      "date_precision": "exact (2-month window)",
+      "identity_confidence": "HIGH -- individually named; the same Groenewegen figure documented elsewhere in this project's Painan 1663 and Koto Tangah 1665 material (cross-case identity not re-verified here, out of this artifact's own frozen scope)",
+      "mandate_status": "VOC's own negotiating official, receiving the secession/protection request",
+      "continuity_status": "single dated appearance within this artifact's frozen scope",
+      "faction_status": "NOT_APPLICABLE (VOC agent, not a Tiku local faction)",
+      "source_document_ids": [
+        "EVT-1662-1663-90-r33"
+      ],
+      "source_passage_locator": "1663 corpus, source_page 90",
+      "researcher_review_required": false,
+      "notes": "BROKER ROLE TEST: Groenewegen meets the frozen broker-role criteria for this episode specifically -- he mediates access (receives the secession request), transmits negotiation (relays it toward a VOC decision), and exercises apparent principal-agent discretion as VOC's on-the-ground negotiator. Modeled as a role attribute on the relevant relation, not as a first-class Broker entity, per Draft V2 section 1."
+    },
+    {
+      "actor_id": "ACTOR_TIKU_REGENTS_1684",
+      "actor_type": "NamedCollective",
+      "source_label": "regenten Tycou ... alle inwoonderen",
+      "normalized_label": "Tiku's regents and inhabitants, 1684",
+      "valid_from": "1684-06-20",
+      "valid_to": "1684-06-21",
+      "date_precision": "exact (2-day window)",
+      "identity_confidence": "MODERATE -- described collectively (regents plus \"all inhabitants\"), not individually named",
+      "mandate_status": "the source's own text presents the regents and inhabitants as jointly seeking pardon; this is NOT the same mandate act as the 1662 secession and is not read as its continuation",
+      "continuity_status": "single dated episode (Jun 1684); explicitly NOT asserted to be the same collective as ACTOR_PONGELOUS_12_DESA_TICCO_1662, despite both being Tiku-area collectives 22 years apart",
+      "faction_status": "explicitly distinguished in the source's own text from ACTOR_PRO_ACEH_FACTION_1684, which is credited as the rebellion's trigger",
+      "source_document_ids": [
+        "EVT-1684-CD3-366-r70"
+      ],
+      "source_passage_locator": "CD3 traktat CDLXXV, p.366 (buku 356-359)",
+      "researcher_review_required": true,
+      "notes": "Second actor-continuity test case in this artifact (alongside the 1662/1684 non-merge above).",
+      "identity_continuity_status": "NOT_TESTABLE -- single dated episode (Jun 1684)",
+      "explicit_non_identity_with": [
+        {
+          "actor_id": "ACTOR_PONGELOUS_12_DESA_TICCO_1662",
+          "rationale": "Source text explicitly does not treat the 1684 regents/inhabitants as a continuation of the 1662 pongelous, despite both being Tiku-area collectives 22 years apart -- per this artifact's own pre-existing continuity_status prose on ACTOR_TIKU_REGENTS_1684 (\"explicitly NOT asserted to be the same collective as ACTOR_PONGELOUS_12_DESA_TICCO_1662\")."
+        }
+      ]
+    },
+    {
+      "actor_id": "ACTOR_PRO_ACEH_FACTION_1684",
+      "actor_type": "NamedCollective",
+      "source_label": "faksi Aceh",
+      "normalized_label": "pro-Aceh faction at Tiku, 1684",
+      "valid_from": null,
+      "valid_to": "1684-06",
+      "date_precision": "undated trigger, resolved by the June 1684 pardon",
+      "identity_confidence": "LOW -- named only by the source's own generic category term, not further identified",
+      "mandate_status": "NOT_APPLICABLE -- no claimed representative mandate is documented for this faction; it is credited only as the rebellion's instigating trigger",
+      "continuity_status": "single dated episode; not tracked across other years",
+      "faction_status": "explicitly a FACTION distinguished from the wider ACTOR_TIKU_REGENTS_1684 collective, per the source's own text -- the rebellion is not attributed to Tiku's community as a whole",
+      "source_document_ids": [
+        "EVT-1684-CD3-366-r70"
+      ],
+      "source_passage_locator": "CD3 traktat CDLXXV, p.366",
+      "researcher_review_required": true,
+      "notes": "Directly operationalizes the task's own hard rule against generalizing the pro-Aceh faction to the whole community."
+    },
+    {
+      "actor_id": "ACTOR_VAN_LEENE",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "commandeur Jan van Leene",
+      "normalized_label": "Jan van Leene",
+      "valid_from": "1684-06-20",
+      "valid_to": "1684-06-21",
+      "date_precision": "exact (2-day window)",
+      "identity_confidence": "HIGH",
+      "mandate_status": "VOC commander leading the subduing expedition and receiving the pardon plea",
+      "continuity_status": "the same van Leene documented at Koto Tangah 1682/1684 in Batch I10's material -- cross-case identity noted, not re-verified here, out of this artifact's own frozen scope",
+      "faction_status": "NOT_APPLICABLE (VOC agent)",
+      "source_document_ids": [
+        "EVT-1684-CD3-366-r70"
+      ],
+      "source_passage_locator": "CD3 traktat CDLXXV, p.366",
+      "researcher_review_required": false,
+      "notes": "Cross-referenced, not merged, with the Koto Tangah artifact's own ACTOR_VAN_LEENE record -- each case's own actor record stands independently per this project's no-premature-merge discipline."
+    },
+    {
+      "actor_id": "ACTOR_RAJA_IBRAHIM",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Raja Ibrahim, penghulu kepala",
+      "normalized_label": "Raja Ibrahim",
+      "valid_from": null,
+      "valid_to": "1740",
+      "date_precision": "office-holding period undated; killing dated to 1740",
+      "identity_confidence": "HIGH",
+      "mandate_status": "penghulu kepala (head headman) of Tiku, per the source",
+      "continuity_status": "single dated episode; office-holding start date not documented",
+      "faction_status": "rivalry with ACTOR_RAJA_KINALI, not framed as a pro-Aceh/pro-VOC faction split",
+      "source_document_ids": [
+        "EVT-1740-buku-padang-1718-93-r102"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.93",
+      "researcher_review_required": false,
+      "notes": "Alleged organizer of illegal salt refineries; killed by a local rival's men, not by VOC."
+    },
+    {
+      "actor_id": "ACTOR_RAJA_KINALI",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Raja Kinali",
+      "normalized_label": "Raja Kinali",
+      "valid_from": null,
+      "valid_to": "1740",
+      "date_precision": "undated except the 1740 killing attributed to his men",
+      "identity_confidence": "MODERATE -- individually named, but his own office/base is not detailed in the excerpt examined",
+      "mandate_status": "local rival; no claimed representative mandate documented",
+      "continuity_status": "single dated episode",
+      "faction_status": "rivalry with ACTOR_RAJA_IBRAHIM, not a pro-Aceh/pro-VOC faction",
+      "source_document_ids": [
+        "EVT-1740-buku-padang-1718-93-r102"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.93",
+      "researcher_review_required": true,
+      "notes": "No perpetrator ambiguity for the killing itself (attributed to his men), but his own motive is not documented -- CANNOT_DETERMINE whether the salt-monopoly conflict, a separate rivalry, or both drove the killing."
+    },
+    {
+      "actor_id": "ACTOR_SONTAN_MACONA",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Sontan Macona",
+      "normalized_label": "Sontan Macona",
+      "valid_from": "1740",
+      "valid_to": null,
+      "date_precision": "installed 1740, per the source's own note; open end (no later reference in this artifact's frozen scope)",
+      "identity_confidence": "MODERATE -- individually named, installation circumstances (by whom) not documented",
+      "mandate_status": "installed as Tiku's new penghulu kepala after Raja Ibrahim's withdrawal/killing; installing authority not identified in the excerpt examined -- not assumed to be VOC without confirmation",
+      "continuity_status": "single dated appearance (installation only)",
+      "faction_status": "not characterized as belonging to either the Ibrahim or Kinali faction",
+      "source_document_ids": [
+        "EVT-1740-buku-padang-1718-93-r102"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.93",
+      "researcher_review_required": true,
+      "notes": "Included per the task's own candidate list (\"Sontan Macona, bila sumber mendukung\") -- the source does name him, so he is instantiated; no RECOGNIZES_OFFICE_HOLDER relation is created for his installation since the installing party is not identified (would require fabricating a subject actor)."
+    },
+    {
+      "actor_id": "ACTOR_VAANDRIG_SAS",
+      "actor_type": "IndividualOfficeHolder",
+      "source_label": "Vaandrig Joannes Sas",
+      "normalized_label": "Vaandrig Joannes Sas",
+      "valid_from": "1693",
+      "valid_to": "1693-1695 (killing date, editorial estimate)",
+      "date_precision": "APPROXIMATE -- the killing date itself is an editorial estimate within the RGP compilation, explicitly flagged as such in the source",
+      "identity_confidence": "HIGH for the individual's identity; LOW for the date and circumstances of his death",
+      "mandate_status": "VOC resident at Priaman (not Tiku -- location and office are explicitly distinct in the source), killed at Tiku",
+      "continuity_status": "the same Sas who led the 1693 Nias/Airbangis/Barus expedition (out of this artifact's own frozen Tiku scope, not re-derived here)",
+      "faction_status": "NOT_APPLICABLE (VOC agent; no faction attribution possible for a killing with no identified perpetrator)",
+      "source_document_ids": [
+        "EVT-1694-gm-vol04-05-599-r126"
+      ],
+      "source_passage_locator": "Generale Missiven vol.05 (RGP Deel 5), editorial note appended to a 14 March 1693 entry",
+      "researcher_review_required": true,
+      "notes": "BROKER ROLE TEST: Sas's broker-qualifying actions (negotiation transmission, treaty mediation) occurred during his 1693 Nias/Airbangis/Barus expedition, which is OUT of this artifact's frozen Tiku-specific scope (belongs to Batch I1/I6). Within the Tiku-specific material itself, no broker-qualifying action by Sas is documented -- he appears here only as the victim of an unresolved killing. He is therefore NOT tagged with a broker role in this artifact, unlike Groenewegen."
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "LOCATION_TIKU",
+      "location_type": "trade port / commodity region (unresolved port-vs-territory granularity, see stress test)",
+      "source_label": "Tiku / Ticou / Ticco (spelling variants across sources)",
+      "notes": "The frozen material uses 'Tiku' inconsistently as a bare settlement name and, in the 1625 row, explicitly as a 'PELABUHAN/WILAYAH DAGANG' (trade port/commodity region) without clearly separating a port facility from the wider territory. This artifact models ONE location entity rather than fabricating a port/territory split the sources do not themselves clearly support -- directly parallel to the Koto Tangah artifact's own fort-vs-territory finding (T-06 there)."
+    }
+  ],
+  "commodities": [
+    {
+      "commodity_id": "COMMODITY_PEPPER",
+      "source_label": "peper / lada",
+      "notes": "Tiku's primary documented trade commodity across 1625, 1649, and implicitly 1641 (toll on shipping generally, not commodity-specific)."
+    },
+    {
+      "commodity_id": "COMMODITY_SALT",
+      "source_label": "zout / garam",
+      "notes": "The commodity at issue in the 1740 illegal-refining conflict; part of VOC's wider 1727-1760 salt-monopoly enforcement campaign documented elsewhere in this project (Koto Tangah/Ulakan 1738)."
+    }
+  ],
+  "instruments": [
+    {
+      "instrument_id": "INSTRUMENT_1641_TOLL_EXEMPTION",
+      "instrument_type": "unilateral Aceh crown grant (not a bilateral treaty)",
+      "source_label": "toll exemption reconfirmation for one VOC ship, issued by the Aceh queen",
+      "date": "1641-02/1641-03",
+      "parties_named_in_instrument": [
+        "ACTOR_ACEH_COURT"
+      ],
+      "source_document_ids": [
+        "EVT-1641-1641-r11"
+      ],
+      "source_passage_locator": "linimasa_events.csv row 11",
+      "notes": "Names Tiku jointly with Priaman, Indrapoura, and Padang in one clause; Tiku's own individually-specific terms, if any, are not separable from this joint text."
+    },
+    {
+      "instrument_id": "INSTRUMENT_1649_FIXED_PRICE_PEPPER_TREATY",
+      "instrument_type": "fixed-price commodity treaty",
+      "source_label": "Traktat harga-tetap: monopoli lada Tiku, Priaman, Indrapoura",
+      "date": "1649-11-06/1649-11-09",
+      "parties_named_in_instrument": [
+        "LOCATION_TIKU"
+      ],
+      "source_document_ids": [
+        "EVT-1649-1649-r15"
+      ],
+      "source_passage_locator": "linimasa_events.csv row 15",
+      "notes": "Full source text not independently re-read by Batch I11 beyond the title/date fields, per the row's own researcher_review_required flag; parties are named jointly (Tiku, Priaman, Indrapoura), not separable in the excerpt available."
+    },
+    {
+      "instrument_id": "INSTRUMENT_1684_PARDON_RECONCILIATION",
+      "instrument_type": "pardon/reconciliation instrument concluding a military action",
+      "source_label": "CD3 traktat CDLXXV 'Sumatra's Westkust'",
+      "date": "1684-06-20/1684-06-21",
+      "parties_named_in_instrument": [
+        "ACTOR_VOC",
+        "ACTOR_TIKU_REGENTS_1684"
+      ],
+      "source_document_ids": [
+        "EVT-1684-CD3-366-r70"
+      ],
+      "source_passage_locator": "CD3 traktat CDLXXV, p.366 (buku 356-359)",
+      "notes": ""
+    }
+  ],
+  "observations": [
+    {
+      "observation_id": "OBS_1693_1695_SAS_KILLING",
+      "subject_actor_id": "UNIDENTIFIED",
+      "object_id": "ACTOR_VAANDRIG_SAS",
+      "claim_or_effective_control": "UNKNOWN_EFFECTIVE_CONTROL",
+      "observed_at": "1693-1695 (editorial estimate)",
+      "event_ids": [
+        "EVT-1694-gm-vol04-05-599-r126"
+      ],
+      "source_document_ids": [
+        "EVT-1694-gm-vol04-05-599-r126"
+      ],
+      "source_passage_locator": "Generale Missiven vol.05 (RGP Deel 5), editorial note appended to a 14 March 1693 entry",
+      "provenance_status": "CD_INDEPENDENT tier (GM/RGP), but reported only via a LATER EDITORIAL note, not a contemporaneous report",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "perpetrator_status": "UNIDENTIFIED -- no perpetrator is named or characterized in the material examined",
+      "uncertainty_note": "No motive, political target, or local actor involvement is documented; the date itself is an editorial estimate explicitly flagged as such in the source. This is the artifact's single thinnest-evidenced item, retained as an explicit representational limit rather than omitted or fabricated.",
+      "notes": "No relation record was created for this event -- subject_actor_id is 'UNIDENTIFIED' (a literal placeholder value, not a modeled actor) precisely because no actor, mechanism, or political content can responsibly be assigned. See TIKU_V3_ONTOLOGY_STRESS_TEST.csv for the full discussion."
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "REL_1625_REQUIRES_MONOPOLY",
+      "subject_actor_id": "ACTOR_ACEH_MONOPOLY_OFFICIALS_1625",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "REQUIRES_MONOPOLY_FROM",
+      "valid_from": "1625-10",
+      "valid_to": "1625-12",
+      "date_precision": "exact (2-month window)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1625-10",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1625-1624_1629-223-r6"
+      ],
+      "instrument_id": null,
+      "source_document_ids": [
+        "EVT-1625-1624_1629-223-r6"
+      ],
+      "source_passage_locator": "atjeh_trade_records, source_page 223/233, book_page 210",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "COMMERCIAL_CONTROL",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Aceh's own monopoly enforcement restricts VOC's pepper trade volume at Tiku to 800 bahar in late 1625.",
+      "historical_reconstruction": "Represents Tiku's early (pre-1656) status as a pepper-trade region administered under Aceh's own monopoly -- economic pressure, not a Tiku-actor dispute.",
+      "theoretical_annotation": "No Tiku local actor's own conduct is documented in this passage; the dispute runs between VOC and Aceh, with Tiku as the site, per the source's own framing.",
+      "public_display_summary": "In 1625, Aceh's monopoly enforcement restricted VOC's pepper trade at Tiku.",
+      "notes": "Subject is the monopoly-enforcement officials, not the Aceh court directly, per the Political Office guard. No Tiku-local actor is a party to this relation."
+    },
+    {
+      "relation_id": "REL_1641_CLAIMS_JURISDICTION",
+      "subject_actor_id": "ACTOR_ACEH_COURT",
+      "object_id": "LOCATION_TIKU",
+      "relation_type": "CLAIMS_JURISDICTION_OVER",
+      "valid_from": "1641-02",
+      "valid_to": "1641-03",
+      "date_precision": "exact (2-month window)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1641-02",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1641-1641-r11"
+      ],
+      "instrument_id": "INSTRUMENT_1641_TOLL_EXEMPTION",
+      "source_document_ids": [
+        "EVT-1641-1641-r11"
+      ],
+      "source_passage_locator": "linimasa_events.csv row 11",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "LOW",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CLAIM",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY",
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "The Aceh queen personally issues a toll-exemption reconfirmation for VOC shipping at Tiku (among 4 named ports), demonstrating her own claimed administrative jurisdiction over Tiku's toll policy.",
+      "historical_reconstruction": "Represents Aceh's 1641 toll-policy claim over Tiku as CLAIM only -- no documented local Tiku-based official is named as administering this, and effective local compliance is not evidenced either way.",
+      "theoretical_annotation": "The grant is issued directly by the Aceh crown, not through a documented local Tiku-based intermediary -- this partially, not fully, answers whether Tiku was under an Aceh-appointed official.",
+      "public_display_summary": "In 1641, Aceh's crown claimed authority over toll policy at Tiku.",
+      "notes": "RELATION_TYPE_FAILURE candidate: the underlying act is a toll EXEMPTION (Aceh releasing VOC from a toll), not toll COLLECTION -- Draft V2 has no dedicated 'grants trade access/exemption' relation type (GRANTS_TRADE_ACCESS_TO is not in the frozen MVP_CORE set). This relation represents the standing jurisdictional claim the exemption presupposes, not the exemption act itself; see TIKU_V3_ONTOLOGY_STRESS_TEST.csv for the disclosed gap."
+    },
+    {
+      "relation_id": "REL_1649_CLAIMS_COMMODITY_MONOPOLY",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "COMMODITY_PEPPER",
+      "relation_type": "CLAIMS_COMMODITY_MONOPOLY",
+      "valid_from": "1649-11-06",
+      "valid_to": "1649-11-09",
+      "date_precision": "exact (4-day window)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1649-11-06",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1649-1649-r15"
+      ],
+      "instrument_id": "INSTRUMENT_1649_FIXED_PRICE_PEPPER_TREATY",
+      "source_document_ids": [
+        "EVT-1649-1649-r15"
+      ],
+      "source_passage_locator": "linimasa_events.csv row 15",
+      "provenance_status": "CANNOT_DETERMINE (full source text not independently re-read by Batch I11)",
+      "evidence_strength": "LOW",
+      "interpretive_status": "CANNOT_DETERMINE",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "COMMERCIAL_CONTROL",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "A fixed-price pepper monopoly treaty covering Tiku, Priaman, and Indrapoura jointly is concluded 6-9 Nov 1649.",
+      "historical_reconstruction": "Represents the 1649 treaty as a commercial obligation (COMMERCIAL_CONTROL), explicitly not a sovereignty claim, per the task's own framing.",
+      "theoretical_annotation": "The full treaty text was not independently re-examined by Batch I11; Tiku's own individually-specific terms, if any, are not separable from the joint instrument.",
+      "public_display_summary": "In 1649, a fixed-price pepper treaty was concluded covering Tiku and two other ports.",
+      "notes": "Object is the commodity, not a location or actor, per the location/commodity separation guard. Subject is provisionally ACTOR_VOC as the most likely monopoly-claiming party, though the full text was not re-verified -- flagged researcher_review_required."
+    },
+    {
+      "relation_id": "REL_1662_SWITCHES_SOURERADJA",
+      "subject_actor_id": "ACTOR_PANGLIMA_SOURERADJA",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "SWITCHES_ALIGNMENT_TO",
+      "valid_from": "1662-06",
+      "valid_to": "1662-07",
+      "date_precision": "exact (2-month window)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1662-06",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1662-1663-90-r33"
+      ],
+      "instrument_id": null,
+      "source_document_ids": [
+        "EVT-1662-1663-90-r33"
+      ],
+      "source_passage_locator": "1663 corpus, source_page 90 (Batavia daghregister, 27 Mar 1663)",
+      "provenance_status": "CD_INDEPENDENT (GLOBALISE/Huygens translation pipeline)",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CLAIM",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Panglima Soureradja, together with the pongelous of 12 desa, decides to secede from Aceh's crown and seek VOC protection, self-narrating Ticco's own historical origin under Aceh's authority.",
+      "historical_reconstruction": "Represents the 1662 secession as an alignment switch away from Aceh toward VOC, not as a 'whole Tiku' community action -- claim_or_effective_control is CLAIM, since VOC's own follow-through/acceptance is not detailed in this excerpt.",
+      "theoretical_annotation": "Soureradja's own first-person account traces Aceh's authority to a specific historical succession failure, not conquest -- this report preserves that self-narration rather than treating Aceh's prior authority as a bare given.",
+      "public_display_summary": "In 1662, panglima Soureradja sought to shift Ticco's allegiance from Aceh to the VOC.",
+      "notes": "No SECEDES_FROM relation type was created (forbidden); SWITCHES_ALIGNMENT_TO plus REQUESTS_PROTECTION_FROM (see next relation) jointly represent the act without inventing new vocabulary.",
+      "broker_actor_id": "ACTOR_GROENEWEGEN",
+      "resistance_candidate": "PARTIALLY_SUPPORTED (specifically as resistance-to-Aceh, NOT resistance-to-VOC; ANNOTATION MODEL NOTE: Draft V2's resistance_candidate field carries no explicit target-actor sub-field, so attaching this value to a relation whose OBJECT is VOC -- the alignment destination, not the resistance target -- requires this disambiguating note rather than a structured field; see stress test)",
+      "resistance_target_actor_id": "ACTOR_ACEH_COURT",
+      "resistance_target_public_status": "RESEARCH_ONLY"
+    },
+    {
+      "relation_id": "REL_1662_REQUESTS_PROTECTION_SOURERADJA",
+      "subject_actor_id": "ACTOR_PANGLIMA_SOURERADJA",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "REQUESTS_PROTECTION_FROM",
+      "valid_from": "1662-06",
+      "valid_to": "1662-07",
+      "date_precision": "exact (2-month window)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1662-06",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1662-1663-90-r33"
+      ],
+      "instrument_id": null,
+      "source_document_ids": [
+        "EVT-1662-1663-90-r33"
+      ],
+      "source_passage_locator": "1663 corpus, source_page 90",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CLAIM",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "RELATIONAL_AND_PRODUCTIVE"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Soureradja explicitly requests VOC protection (\"perlindungan orang-orang Belanda\") as part of the same 1662 act.",
+      "historical_reconstruction": "The explicit protection request satisfying the task's own 'only if explicit' condition for this relation type.",
+      "theoretical_annotation": "Pledges to expel resident Achinders within one month are recorded as Soureradja's own stated commitment, not confirmed as executed within this excerpt -- not modeled as a separate military-force relation to avoid asserting an unconfirmed action.",
+      "public_display_summary": "Soureradja requested VOC protection in 1662.",
+      "notes": "Broker: ACTOR_GROENEWEGEN (receives the request).",
+      "broker_actor_id": "ACTOR_GROENEWEGEN"
+    },
+    {
+      "relation_id": "REL_1662_SWITCHES_PONGELOUS",
+      "subject_actor_id": "ACTOR_PONGELOUS_12_DESA_TICCO_1662",
+      "object_id": "ACTOR_VOC",
+      "relation_type": "SWITCHES_ALIGNMENT_TO",
+      "valid_from": "1662-06",
+      "valid_to": "1662-07",
+      "date_precision": "exact (2-month window)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1662-06",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1662-1663-90-r33"
+      ],
+      "instrument_id": null,
+      "source_document_ids": [
+        "EVT-1662-1663-90-r33"
+      ],
+      "source_passage_locator": "1663 corpus, source_page 90",
+      "provenance_status": "CD_INDEPENDENT",
+      "evidence_strength": "HIGH",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CLAIM",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "The pongelous of 12 desa act jointly with Soureradja in the same 1662 secession/protection-seeking act.",
+      "historical_reconstruction": "Kept as a SEPARATE relation record from Soureradja's own, per the no-homogenization discipline, even though both parties act in the same episode.",
+      "theoretical_annotation": "The 12 desa are bounded by count only, not individually named -- the mandate's exact membership cannot be independently verified.",
+      "public_display_summary": "In 1662, the headmen of 12 Ticco villages joined Soureradja in seeking VOC protection.",
+      "notes": "Two-actor, two-relation representation of one joint act, per the dyadic relation model and no-homogenization discipline.",
+      "resistance_candidate": "PARTIALLY_SUPPORTED (resistance-to-Aceh specifically; same annotation-model caveat as REL_1662_SWITCHES_SOURERADJA)",
+      "resistance_target_actor_id": "ACTOR_ACEH_COURT",
+      "resistance_target_public_status": "RESEARCH_ONLY"
+    },
+    {
+      "relation_id": "REL_1684_MILITARY_FORCE",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_TIKU_REGENTS_1684",
+      "relation_type": "USES_MILITARY_FORCE_AGAINST",
+      "valid_from": "1683",
+      "valid_to": null,
+      "date_precision": "APPROXIMATE start (source dates the trigger to 1683, the pardon to Jun 1684)",
+      "superseded_by": "REL_1684_RECONCILES",
+      "contradicted_by": null,
+      "observed_at": "1683",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1684-CD3-366-r70"
+      ],
+      "instrument_id": null,
+      "source_document_ids": [
+        "EVT-1684-CD3-366-r70"
+      ],
+      "source_passage_locator": "CD3 traktat CDLXXV, p.366",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "MILITARY_PRESENCE",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "A pro-Aceh faction triggers rebellion at Tiku (1683); VOC forces, with allies, conquer/subdue Tiku before the June 1684 pardon.",
+      "historical_reconstruction": "The pro-Aceh faction's own triggering role is noted in this relation's theoretical_annotation, not modeled as its own separate USES_MILITARY_FORCE_AGAINST relation, since no distinct directed action by the faction alone (as opposed to the collective rebellion) is itemized in the source.",
+      "theoretical_annotation": "ACTOR_PRO_ACEH_FACTION_1684 is credited by the source as the trigger, but the military response and pardon are addressed to the wider ACTOR_TIKU_REGENTS_1684 collective, not to the faction alone -- this relation's object reflects that.",
+      "public_display_summary": "In 1683-84, VOC forces subdued a rebellion at Tiku triggered by a pro-Aceh faction.",
+      "notes": "claim_or_effective_control is MILITARY_PRESENCE, not a durable-control value, per the hard rule against '1684 subduing = final control.'"
+    },
+    {
+      "relation_id": "REL_1684_RECONCILES",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "ACTOR_TIKU_REGENTS_1684",
+      "relation_type": "RECONCILES_WITH",
+      "valid_from": "1684-06-20",
+      "valid_to": "1684-06-21",
+      "date_precision": "exact (2-day window)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1684-06-20",
+      "open_ended": false,
+      "event_ids": [
+        "EVT-1684-CD3-366-r70"
+      ],
+      "instrument_id": "INSTRUMENT_1684_PARDON_RECONCILIATION",
+      "source_document_ids": [
+        "EVT-1684-CD3-366-r70"
+      ],
+      "source_passage_locator": "CD3 traktat CDLXXV, p.366",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "PROCESS_TRACING_SUPPORTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "FORMAL_ACCEPTANCE",
+      "commitment_credibility": "PARTIALLY_CREDIBLE",
+      "patron_client_classification": "PATRON_CLIENT_CONTESTED",
+      "power_dimensions": [
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Tiku's regents and inhabitants collectively plead for and receive pardon, reconciled with VOC, 20-21 June 1684.",
+      "historical_reconstruction": "Represents the 1684 pardon as FORMAL_ACCEPTANCE, explicitly not a durable-control proof -- prior claims (1641, 1649, 1662) are shown by this very rebellion to have been imperfect.",
+      "theoretical_annotation": "'in genade... aangenomen ende versoent' is recorded as the instrument's own paternalistic framing, not adopted as this artifact's own neutral assessment.",
+      "public_display_summary": "In June 1684, Tiku's regents and inhabitants were pardoned and reconciled with the VOC.",
+      "notes": "patron_client_classification is CONTESTED rather than NOT_TESTABLE here specifically because punishment, pardon, and a standing prior relationship are all present -- but reciprocal service, personalization, and an exit option are not evidenced, so SUPPORTED is not reached either."
+    },
+    {
+      "relation_id": "REL_1740_CONTESTS_SUCCESSION",
+      "subject_actor_id": "ACTOR_RAJA_KINALI",
+      "object_id": "ACTOR_RAJA_IBRAHIM",
+      "relation_type": "CONTESTS_SUCCESSION_WITH",
+      "valid_from": null,
+      "valid_to": "1740",
+      "date_precision": "APPROXIMATE (undated rivalry, killing dated to 1740)",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1740",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1740-buku-padang-1718-93-r102"
+      ],
+      "instrument_id": null,
+      "source_document_ids": [
+        "EVT-1740-buku-padang-1718-93-r102"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.93",
+      "provenance_status": "secondary_academic (buku-padang-1718) only",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "CONTESTED",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "UNKNOWN_EFFECTIVE_CONTROL",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "FIRST_DIMENSION",
+        "AUTHORITY_AND_LEGITIMACY"
+      ],
+      "researcher_review_required": true,
+      "source_statement_summary": "Raja Kinali's men kill Raja Ibrahim, Tiku's penghulu kepala, amid a rivalry culminating in Sontan Macona's installation as the new penghulu kepala.",
+      "historical_reconstruction": "Represents the strongest local-agency case in this artifact: the resolution is by a NAMED LOCAL RIVAL, not by VOC or Aceh directly -- explicitly not reducible to colonial policy.",
+      "theoretical_annotation": "Whether the killing was motivated by the salt-monopoly conflict specifically, a separate personal/political rivalry, or both is CANNOT_DETERMINE from the source.",
+      "public_display_summary": "In 1740, a local rivalry between two Tiku leaders ended in one leader's killing.",
+      "notes": "No KILLS relation type was created (forbidden); CONTESTS_SUCCESSION_WITH represents the succession-relevant rivalry and its outcome without asserting a mechanism the source does not supply."
+    },
+    {
+      "relation_id": "REL_1740_CLAIMS_MONOPOLY_SALT",
+      "subject_actor_id": "ACTOR_VOC",
+      "object_id": "COMMODITY_SALT",
+      "relation_type": "CLAIMS_COMMODITY_MONOPOLY",
+      "valid_from": null,
+      "valid_to": "1740",
+      "date_precision": "open start (part of the wider, undated 1727-1760 monopoly claim), end at the 1740 discovery",
+      "superseded_by": null,
+      "contradicted_by": null,
+      "observed_at": "1740",
+      "open_ended": true,
+      "event_ids": [
+        "EVT-1740-buku-padang-1718-93-r102"
+      ],
+      "instrument_id": null,
+      "source_document_ids": [
+        "EVT-1740-buku-padang-1718-93-r102"
+      ],
+      "source_passage_locator": "buku-padang-1718, p.93",
+      "provenance_status": "secondary_academic only",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "claim_or_effective_control": "CLAIM",
+      "commitment_credibility": "NOT_TESTABLE",
+      "patron_client_classification": "PATRON_CLIENT_NOT_TESTABLE",
+      "power_dimensions": [
+        "STRUCTURAL_AND_ALLOCATIVE"
+      ],
+      "researcher_review_required": false,
+      "source_statement_summary": "Raja Ibrahim's illegal salt refineries at Antokan, Labuan, and Masang are discovered by Letnan Jordin, implying a standing VOC salt monopoly they violated.",
+      "historical_reconstruction": "Directly parallel to the Koto Tangah artifact's own 1737-38 salt-monopoly relation (different case, same commodity/mechanism pattern, not merged).",
+      "theoretical_annotation": "No enforcement/military action by VOC against Raja Ibrahim is documented -- only discovery. His killing is attributed to Raja Kinali's men, not to VOC. This artifact does not invent a VOC coercive relation the source does not supply.",
+      "public_display_summary": "VOC claimed a salt-production monopoly that Tiku-area refineries allegedly violated in 1740.",
+      "notes": "claim_or_effective_control is CLAIM, since enforcement beyond discovery is not documented in this excerpt."
+    }
+  ],
+  "vocabulary_notes": {
+    "relation_type_restraint": "No SECEDES_FROM, REBELS_AGAINST, SUBDUES, KILLS, PATRON_OF, CLIENT_OF, RESISTS, or CONTINUES_AS_SAME_ACTOR relation type was created, per the explicit hard rule. The 1662 secession is represented via SWITCHES_ALIGNMENT_TO + REQUESTS_PROTECTION_FROM; the 1740 killing via CONTESTS_SUCCESSION_WITH (the succession-relevant rivalry, not the killing act itself as a directed KILLS edge); the 1693-95 Sas killing via a standalone observation with no relation at all, since no actor/mechanism can responsibly be assigned.",
+    "toll_exemption_relation_type_failure": "The 1641 Aceh toll exemption for VOC shipping at Tiku could not be represented as its own directed relation without either inventing a new relation type (GRANTS_TRADE_ACCESS_TO, not in Draft V2's frozen MVP_CORE set) or misusing COLLECTS_TOLL_FROM to mean its own opposite (an exemption, not a collection). This artifact represents only the standing jurisdictional claim the exemption presupposes (CLAIMS_JURISDICTION_OVER), and logs the exemption-specific representational gap as RELATION_TYPE_FAILURE in the stress-test ledger.",
+    "resistance_candidate_target_ambiguity": "Draft V2's resistance_candidate field has no explicit target-actor sub-field. The 1662 PARTIALLY_SUPPORTED value is disambiguated via each relation's own notes as resistance-TO-ACEH specifically, even though the relation's OBJECT is VOC (the alignment destination). This is disclosed as a stress-test finding (candidate ANNOTATION_MODEL_FAILURE), not silently resolved by adding an undocumented field.",
+    "mandate_status_continuity_status_disclosure": "As in the Koto Tangah V2 artifact, mandate_status/continuity_status/faction_status are NOT fields Draft V2's own Identity Rules (section 4) define. They are added here as descriptive bookkeeping fields only, per this task's own explicit instruction to test whether Koto Tangah's T-14 (ACTOR_IDENTITY_FAILURE) recurs -- it does, and is logged again here (see stress test), not silently patched by extending Draft V2's actual controlled vocabulary.",
+    "patron_client_no_edge": "patron_client_classification appears only as a relation-level field (values used: PATRON_CLIENT_NOT_TESTABLE, PATRON_CLIENT_CONTESTED for the 1684 pardon specifically). No PATRON_OF/CLIENT_OF edge exists anywhere in this artifact."
+  },
+  "ontology_version": "V2.1",
+  "commercial_rights": [
+    {
+      "right_id": "CR_TIKU_1641_TOLL_EXEMPTION",
+      "holder_actor_id": "ACTOR_VOC",
+      "granting_actor_id": "ACTOR_ACEH_COURT",
+      "concerns_relation_type": "COLLECTS_TOLL_FROM",
+      "commodity": null,
+      "source_document_ids": [
+        "EVT-1641-1641-r11"
+      ],
+      "source_passage_locator": "linimasa_events.csv row 11",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "LOW",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "researcher_review_required": true,
+      "public_status": "RESEARCH_ONLY",
+      "valid_from": "1641-02",
+      "date_precision": "exact (2-month window)",
+      "open_ended": true
+    }
+  ],
+  "right_modifications": [
+    {
+      "modification_id": "RM_TIKU_1641_EXEMPTS_VOC_SHIPPING",
+      "right_id": "CR_TIKU_1641_TOLL_EXEMPTION",
+      "action": "EXEMPTS",
+      "acting_actor_id": "ACTOR_ACEH_COURT",
+      "affected_actor_id": "ACTOR_VOC",
+      "modification_date": "1641-02",
+      "date_precision": "exact (2-month window)",
+      "source_document_ids": [
+        "EVT-1641-1641-r11"
+      ],
+      "source_passage_locator": "linimasa_events.csv row 11",
+      "provenance_status": "CD_PRIMARY",
+      "evidence_strength": "LOW",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "explicit_or_inferred": "EXPLICIT_STRATEGY",
+      "researcher_review_required": true,
+      "public_status": "RESEARCH_ONLY"
+    }
+  ],
+  "migration_notes": "CH-01/CH-02 (DEC-01/DEC-02): identity_continuity_status + symmetric explicit_non_identity_with added to ACTOR_TIKU_REGENTS_1684 and ACTOR_PONGELOUS_12_DESA_TICCO_1662, formalizing the artifact's own pre-existing continuity_status prose stating they are NOT the same collective. CH-03 (DEC-04): CommercialRight+RightModification added for the 1641 Aceh toll-exemption reconfirmation for VOC shipping (source_statement_summary of REL_1641_CLAIMS_JURISDICTION), action=EXEMPTS. The existing REL_1641_CLAIMS_JURISDICTION relation (CLAIMS_JURISDICTION_OVER, unchanged) still separately represents Aceh's own jurisdictional claim; the new CommercialRight/RightModification pair represents the exemption ACT itself, which had no prior representable form. CH-06 (DEC-08): resistance_target_actor_id=ACTOR_ACEH_COURT added to both 1662 relations, formalizing prose already present in each relation's own resistance_candidate value (\"resistance-to-Aceh specifically\")."
+}

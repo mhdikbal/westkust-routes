@@ -35,7 +35,17 @@ MVP_CORE_RELATION = {
     "COLLECTS_TOLL_FROM", "LEASES_RESOURCE_TO", "USES_MILITARY_FORCE_AGAINST",
 }
 EXTENDED_RESEARCH_RELATION = {"EXERCISES_EFFECTIVE_CONTROL_OVER", "CONTROLS_FORT"}
-ALLOWED_RELATION_TYPES = MVP_CORE_RELATION | EXTENDED_RESEARCH_RELATION
+# Draft V2 SS2's own REQUIRES_MORE_EVIDENCE tier -- named, frozen relation_type values, narrowly
+# scoped by the contract's own text (MAINTAINS_PARALLEL_ALIGNMENT_WITH: "retained for Painan's own
+# use, not extended elsewhere without new evidence"; APPOINTS_OFFICE_HOLDER: zero clear instances
+# across 12 cases). Missing from this validator's vocabulary until real-artifact migration testing
+# surfaced Painan's own legitimate use of MAINTAINS_PARALLEL_ALIGNMENT_WITH -- a validator gap, not
+# an artifact defect. CASE_SPECIFIC_ONLY (CONTROLS_PORT, DISMISSES_OFFICE_HOLDER -- flagged by
+# Draft V2 itself as needing a subject-type correction) and ANNOTATION_NOT_RELATION
+# (IMPOSES_PUNITIVE_CLASSIFICATION_ON -- explicitly demoted, never a relation_type) are deliberately
+# NOT added: no real artifact uses them, and Draft V2 itself does not present them as ready for use.
+REQUIRES_MORE_EVIDENCE_RELATION = {"MAINTAINS_PARALLEL_ALIGNMENT_WITH", "APPOINTS_OFFICE_HOLDER"}
+ALLOWED_RELATION_TYPES = MVP_CORE_RELATION | EXTENDED_RESEARCH_RELATION | REQUIRES_MORE_EVIDENCE_RELATION
 
 RIGHT_MODIFICATION_ACTIONS = {"GRANTS", "WAIVES", "RELEASES", "REVOKES", "RENEWS", "EXEMPTS"}
 COERCION_STATUS_VALUES = {"FREE", "COERCED", "CANNOT_DETERMINE"}
@@ -172,9 +182,8 @@ def check_backward_compatibility(artifact, version, result):
                                      "explicit_non_identity_with")):
             present.append(f"actors[{actor.get('actor_id')}].<v2.1 field>")
     for rel in artifact.get("relations", []):
-        rc = rel.get("resistance_candidate")
-        if isinstance(rc, dict) and "resistance_target_actor_id" in rc:
-            present.append(f"relations[{rel.get('relation_id')}].resistance_candidate.resistance_target_actor_id")
+        if "resistance_target_actor_id" in rel:
+            present.append(f"relations[{rel.get('relation_id')}].resistance_target_actor_id")
     if present:
         result.add("R-BC-02", "ERROR", "AMBIGUOUS_VERSION_DECLARATION", "$",
                     f"ontology_version=V2 but V2.1-only constructs present: {present}")
@@ -189,7 +198,7 @@ def check_relation_types(artifact, result):
         if rt not in ALLOWED_RELATION_TYPES:
             result.add("R-VOC-06", "ERROR", "UNAPPROVED_RELATION_TYPE",
                         f"relations[{rel.get('relation_id')}].relation_type",
-                        f"relation_type={rt!r} is outside the closed 16-value V2/V2.1 vocabulary.")
+                        f"relation_type={rt!r} is outside the closed 18-value V2/V2.1 vocabulary.")
 
 
 def check_relation_endpoints(artifact, result):
@@ -283,26 +292,32 @@ def check_actors_v2_1(artifact, result):
 
 
 def check_resistance_candidate(artifact, result):
+    """resistance_target_actor_id (CH-06/DEC-08) is a SIBLING field directly on the
+    relation, next to the existing resistance_candidate value -- never nested inside
+    it. Real artifacts (e.g. Tiku) store resistance_candidate as a bare descriptive
+    string, and restructuring it into an object would violate DEC-13's 'no existing
+    annotation is renamed or redefined'. Fixed 2026 during real-artifact migration,
+    which is exactly when this shape mismatch (present since Phase V2.1-GV1's own
+    synthetic-fixture convention) first surfaced."""
     for rel in artifact.get("relations", []):
-        rc = rel.get("resistance_candidate")
-        if not isinstance(rc, dict):
+        if "resistance_candidate" not in rel:
             continue
-        target = rc.get("resistance_target_actor_id")
+        target = rel.get("resistance_target_actor_id")
         if target is None:
             continue
         if isinstance(target, list):
             result.add("R-CARD-02", "ERROR", "INVALID_RESISTANCE_TARGET_CARDINALITY",
-                        f"relations[{rel.get('relation_id')}].resistance_candidate.resistance_target_actor_id",
+                        f"relations[{rel.get('relation_id')}].resistance_target_actor_id",
                         "resistance_target_actor_id must be a single actor_id, not a list.")
             continue
         if target not in _actor_ids(artifact):
             result.add("R-REF-06", "ERROR", "ORPHAN_RESISTANCE_TARGET_REFERENCE",
-                        f"relations[{rel.get('relation_id')}].resistance_candidate.resistance_target_actor_id",
+                        f"relations[{rel.get('relation_id')}].resistance_target_actor_id",
                         f"references unknown actor_id={target!r}.")
-        pub = rc.get("public_status")
+        pub = rel.get("resistance_target_public_status")
         if pub is not None and pub in RESEARCH_ONLY_PROMOTED_VALUES:
             result.add("R-RO-02", "CRITICAL", "RESEARCH_ONLY_BOUNDARY_VIOLATION",
-                        f"relations[{rel.get('relation_id')}].resistance_candidate.public_status",
+                        f"relations[{rel.get('relation_id')}].resistance_target_public_status",
                         f"resistance_target_actor_id attempted promotion to {pub!r}.")
 
 
