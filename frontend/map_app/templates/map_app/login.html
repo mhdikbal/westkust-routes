@@ -9,7 +9,12 @@
   {% if form.errors %}
     <p>Username atau password salah.</p>
   {% endif %}
-  <form method="post" action="{% url 'login' %}">
+  {# No action= attribute: this app is served in production behind a path
+     prefix (/atlas/, /westkust/) that Django never sees (nginx strips it
+     before proxying), and host nginx's sub_filter only rewrites href=/src=,
+     never a form action=. Submitting to the current URL (no action) keeps
+     whatever prefix the browser is actually on. #}
+  <form method="post">
     {% csrf_token %}
     {{ form.username.label_tag }} {{ form.username }}
     {{ form.password.label_tag }} {{ form.password }}

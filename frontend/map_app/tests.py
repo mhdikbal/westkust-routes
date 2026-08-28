@@ -3023,6 +3023,18 @@ class AuthLoginLogoutTest(TestCase):
         response = self.client.get(reverse("login"))
         self.assertEqual(response.status_code, 200)
 
+    def test_login_form_action_is_relative_not_absolute(self):
+        """Production serves this app behind a path prefix (/atlas/, /westkust/) that
+        Django itself is unaware of (nginx strips it before proxying). Host nginx's
+        sub_filter only rewrites href=/src= in the HTML body, never a form's action=
+        attribute -- a hardcoded absolute action="/accounts/login/" silently drops the
+        prefix and 404s on submit in production. The form must omit action (or use
+        action="") so it submits to whatever URL the browser is currently viewing."""
+        response = self.client.get(reverse("login"))
+        content = response.content.decode("utf-8")
+        self.assertNotIn('action="/accounts/login/"', content)
+        self.assertNotIn("action='/accounts/login/'", content)
+
     def test_login_wrong_credentials_does_not_authenticate(self):
         response = self.client.post(reverse("login"), {"username": "peneliti", "password": "wrong"})
         self.assertFalse(response.wsgi_request.user.is_authenticated)
