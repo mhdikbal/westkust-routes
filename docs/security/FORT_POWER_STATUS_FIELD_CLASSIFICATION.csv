@@ -1,0 +1,19 @@
+field_path,current_layer,classification,frontend_consumer,ui_element,required_for_map,rendered_to_public,used_only_for_computation,removable_from_public_response,consequence_if_absent
+fort_id,none,UNUSED_BY_FRONTEND,none,none,false,false,false,true,none -- never read by atlas.js
+fort_name,Layer 1,PUBLIC_MAP_REQUIRED,atlas.js:788 FORT_COORDS[item.fort_name]; atlas.js:822 popup title,marker coordinate lookup + popup header,true,true,false,false,marker cannot be placed on map at all
+dominion_status,Layer 1,PUBLIC_MAP_REQUIRED,atlas.js:794-795 DOMINION_STATUS_COLORS/LABELS,marker flag color + popup status text,true,true,false,false,marker falls back to grey #999999 with no status label
+as_of_event.id,none,UNUSED_BY_FRONTEND,none,none,false,false,false,true,none -- never read by atlas.js
+as_of_event.year,Layer 2,PUBLIC_MAP_REQUIRED,atlas.js:826 popup meta line,popup meta (year + source),true,true,false,false,popup meta line shows a question mark instead of year (existing fallback already handles null)
+as_of_event.event_date_raw,none,UNUSED_BY_FRONTEND,none,none,false,false,false,true,none -- never read by atlas.js
+as_of_event.title,Layer 2,PUBLIC_COPY_REVIEW_REQUIRED,atlas.js:825 popup event line,popup event description,true,true,false,false,"popup loses its one-line event description; NOT yet confirmed as researcher-reviewed public-facing copy -- current value is the raw DB event title, not a vetted public label"
+as_of_event.text_asli,Layer 3,SOURCE_EXCERPT,none,none,false,false,false,true,none for the frontend (already unused); for research use this is the primary-source quotation itself
+as_of_event.source_document,Layer 3,RESEARCH_DETAIL,atlas.js:826 popup meta line,popup meta (source citation),false,true,false,true,popup meta line loses its source citation -- currently rendered publicly but is a research-detail field per the researcher's protected list
+as_of_event.provenance.status,Layer 3,PROVENANCE_DETAIL,atlas.js:625-633 provenanceBadgeHTML,provenance badge glyph+color selection,false,true,false,true,provenance badge disappears from popup (already fail-open/optional if provenance is null)
+as_of_event.provenance.label,Layer 3,PROVENANCE_DETAIL,atlas.js:632 provenanceBadgeHTML,provenance badge label text,false,true,false,true,provenance badge disappears from popup
+as_of_event.provenance.tooltip,Layer 3,PROVENANCE_DETAIL,atlas.js:630 provenanceBadgeHTML,provenance badge title attribute,false,true,false,true,provenance badge disappears from popup
+as_of_event.provenance.researcher_review_required,Layer 3,PROVENANCE_DETAIL,none,none,false,false,false,true,none -- backend model field exists; badge function never reads it
+as_of_event.provenance.multi_source_verified,Layer 3,PROVENANCE_DETAIL,none,none,false,false,false,true,none -- backend model field exists; badge function never reads it
+cluster,Layer 4,MODEL_DIAGNOSTIC,"atlas.js:801-802,814 CLUSTER_COLORS/LABELS + sparkline gate",cluster chip + icon pennant color + gates sparkline rendering,false,true,false,true,marker keeps plain dominion flag (pre-Model-5/6 look); popup loses cluster chip and sparkline entirely (sparkline is gated on clusterColor)
+p_self_current_status,Layer 4,MODEL_DIAGNOSTIC,atlas.js:805 dominionFlagIcon -> createFlagSVG dwell ring,stability ring around marker icon,false,true,false,true,marker icon loses its stability ring (already optional/conditional on typeof check)
+dynamics_series,Layer 4,MODEL_DIAGNOSTIC,atlas.js:814 buildSparklineSVG,popup sparkline chart,false,true,false,true,popup loses the dwell sparkline (already gated on clusterColor being present)
+rmse,Layer 4,MODEL_DIAGNOSTIC,none,none,false,false,false,true,none -- never read by atlas.js
