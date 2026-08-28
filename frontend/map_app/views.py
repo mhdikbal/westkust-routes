@@ -1,6 +1,7 @@
 import json
 import os
 import httpx
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import Http404
 
@@ -114,6 +115,7 @@ def index(request):
     })
 
 
+@login_required
 def riset_tema(request):
     """SNK-5 — Sankey tema-korpus (thesis-only, /riset/tema).
     Halaman statis: diagram & drill-down ditarik client-side dari /api/research
@@ -122,6 +124,7 @@ def riset_tema(request):
     return render(request, "map_app/riset_tema.html")
 
 
+@login_required
 def riset_petunjuk_arsip(request):
     """SPLIT-1 — Indeks katalog GLOBALISE (thesis-only, /riset/petunjuk-arsip).
     Dipisah dari /riset/tema (Dagh-register) karena GLOBALISE adalah metadata
@@ -133,6 +136,7 @@ def riset_petunjuk_arsip(request):
     return render(request, "map_app/riset_petunjuk_arsip.html")
 
 
+@login_required
 def riset_jaringan(request):
     """Network Graph Fase 1 — graf co-occurrence pelabuhan (thesis-only, /riset/jaringan).
     Halaman statis: graf force-directed & drill-down ditarik client-side dari
@@ -141,6 +145,7 @@ def riset_jaringan(request):
     return render(request, "map_app/riset_jaringan.html")
 
 
+@login_required
 def riset_atjeh(request):
     """Dagang Atjeh 1643-1644 — laporan dagang dari/ke Atjeh (thesis-only, /riset/atjeh-dagang).
     Halaman statis: tabel ditarik client-side dari /api/research/atjeh-trade (nginx
@@ -149,6 +154,7 @@ def riset_atjeh(request):
     return render(request, "map_app/riset_atjeh.html")
 
 
+@login_required
 def riset_pemodelan(request):
     """Dashboard Bokeh interaktif Model 2/3/5/6 (thesis-only, /riset/pemodelan).
     Beda dari riset_tema/riset_jaringan/riset_atjeh (client-side fetch JSON):
@@ -169,6 +175,7 @@ def riset_pemodelan(request):
     return render(request, "map_app/riset_pemodelan.html", context)
 
 
+@login_required
 def riset_pemodelan_panduan(request):
     """Halaman penjelas awam Model 3 + roadmap pemodelan (thesis-only,
     /riset/pemodelan/panduan). Reuse dashboard.hawkes.params dari endpoint
@@ -189,6 +196,7 @@ def riset_pemodelan_panduan(request):
     return render(request, "map_app/riset_pemodelan_panduan.html", context)
 
 
+@login_required
 def linimasa(request):
     """Linimasa suksesi kekuasaan Atjeh, Iskandar Muda -> Ratu -> Traktat
     Painan 1663 (thesis-only, top-level /linimasa). Fase 1 (docs/prd/prd-linimasa-
@@ -265,6 +273,7 @@ def port_detail(request, slug):
     return render(request, "map_app/port_detail.html", {"fort": fort})
 
 
+@login_required
 def riset_enclave_1682(request):
     """
     Enklave Tambang Salido 1682 — rekonstruksi sosial-teknis berbasis arsip VOC.

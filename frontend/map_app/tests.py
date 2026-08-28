@@ -30,6 +30,17 @@ _ATLAS_JS_PATH = Path(__file__).parent / "static" / "map_app" / "js" / "atlas.js
 ATLAS_JS = _ATLAS_JS_PATH.read_text(encoding="utf-8") if _ATLAS_JS_PATH.exists() else ""
 
 
+class LoggedInTestCase(TestCase):
+    """Langkah 9 -- shared base for tests against routes gated by @login_required."""
+
+    def setUp(self):
+        super().setUp()
+        self.client = Client()
+        User = get_user_model()
+        self.user = User.objects.create_user(username="peneliti-test")
+        self.client.force_login(self.user)
+
+
 class IndexViewStatusTest(SimpleTestCase):
     """Basic smoke tests — the page must load without error."""
 
@@ -931,7 +942,7 @@ class SeaLaneRoutingTest(SimpleTestCase):
 
 
 # ─── SNK-5: halaman Sankey tema-korpus (/riset/tema, thesis-only) ─────────────
-class RisetTemaViewTest(SimpleTestCase):
+class RisetTemaViewTest(LoggedInTestCase):
     """Halaman /riset/tema render statis; data ditarik client-side dari /api/research."""
 
     def test_returns_200(self):
@@ -969,7 +980,7 @@ class RisetTemaViewTest(SimpleTestCase):
 
 
 # ─── SPLIT-1: halaman Petunjuk Arsip GLOBALISE (/riset/petunjuk-arsip) ────────
-class RisetPetunjukArsipViewTest(SimpleTestCase):
+class RisetPetunjukArsipViewTest(LoggedInTestCase):
     """Halaman /riset/petunjuk-arsip render statis; data ditarik client-side dari
     /api/research?corpus_asal=globalise. Dipisah dari /riset/tema karena GLOBALISE
     adalah metadata katalog/finding-aid arsip, bukan narasi peristiwa -- lihat
@@ -1011,7 +1022,7 @@ class RisetPetunjukArsipViewTest(SimpleTestCase):
 
 
 # ─── Network Graph Fase 1: halaman jaringan pelabuhan (/riset/jaringan) ────────
-class RisetJaringanViewTest(SimpleTestCase):
+class RisetJaringanViewTest(LoggedInTestCase):
     """Halaman /riset/jaringan render statis; graf ditarik client-side dari
     /api/research/network-pelabuhan, drill dari /sankey-tema/rows. thesis-only."""
 
@@ -1044,7 +1055,7 @@ class RisetJaringanViewTest(SimpleTestCase):
 
 
 # ─── Dagang Atjeh 1643-1644 + 1631-1634: laporan dagang (/riset/atjeh-dagang) ──
-class RisetAtjehViewTest(SimpleTestCase):
+class RisetAtjehViewTest(LoggedInTestCase):
     """Halaman /riset/atjeh-dagang render statis; tabel ditarik client-side dari
     /api/research/atjeh-trade. thesis-only, bukti HARUS tampil jujur per pelabuhan
     -- lihat konteks percakapan: Barus tetap nihil bukti di 2 volume; Tiku/Pariaman/
@@ -1142,7 +1153,7 @@ class RisetAtjehViewTest(SimpleTestCase):
 
 
 # ─── Linimasa Suksesi Atjeh (top-level /linimasa) ────────────────────────────
-class LinimasaViewTest(SimpleTestCase):
+class LinimasaViewTest(LoggedInTestCase):
     """Halaman /linimasa render statis; linimasa ditarik client-side dari
     /api/research/linimasa. thesis-only, top-level route (BUKAN di bawah
     /riset/*) atas permintaan eksplisit user."""
@@ -1268,13 +1279,10 @@ MOCK_LINIMASA_META = {
 }
 
 
-class LinimasaSsrTest(SimpleTestCase):
+class LinimasaSsrTest(LoggedInTestCase):
     """Fase 1 (docs/prd/prd-linimasa-kronik-pantai-barat.md): konten utama harus
     terbaca tanpa JavaScript -- view SSR penuh dari httpx.get() sinkron
     (bukan fetch() client-side seperti riset_tema/riset_jaringan/riset_atjeh)."""
-
-    def setUp(self):
-        self.client = Client()
 
     @patch("map_app.views.httpx.get")
     def test_content_rendered_server_side(self, mock_get):
@@ -1358,7 +1366,7 @@ class LinimasaSsrTest(SimpleTestCase):
 
 
 # ─── Dashboard Bokeh pemodelan (/riset/pemodelan) ──────────────────────────
-class RisetPemodelanViewTest(SimpleTestCase):
+class RisetPemodelanViewTest(LoggedInTestCase):
     """Halaman /riset/pemodelan -- SSR httpx.get() sinkron ke
     /api/research/pemodelan-dashboard (pola sama LinimasaViewTest, BUKAN
     client-side fetch spt riset_tema/riset_jaringan/riset_atjeh), krn payload
@@ -1498,7 +1506,7 @@ class RisetPemodelanViewTest(SimpleTestCase):
         self.assertNotIn("defection cascade", html)
 
 
-class RisetPemodelanPanduanViewTest(SimpleTestCase):
+class RisetPemodelanPanduanViewTest(LoggedInTestCase):
     """Halaman /riset/pemodelan/panduan -- pola SSR sama persis
     riset_pemodelan(), reuse endpoint /api/research/pemodelan-dashboard
     supaya enam nilai statistik satu sumber kebenaran dgn halaman utama."""
@@ -1626,7 +1634,7 @@ class RisetPemodelanPanduanViewTest(SimpleTestCase):
         self.assertNotIn("Empat mekanisme historis", html)
 
 
-class NavbarPemodelanLinkTest(SimpleTestCase):
+class NavbarPemodelanLinkTest(LoggedInTestCase):
     """/atlas navbar & /linimasa further-reading section harus menautkan ke
     dashboard pemodelan baru (US menu baru, arahan MLOPS+frontend-design)."""
 
@@ -2500,11 +2508,8 @@ class EnclaveDataAdapterTest(SimpleTestCase):
         self.assertEqual([r.edge_id for r in r1.relations], sorted(r.edge_id for r in r1.relations))
 
 
-class Enclave1682ViewTest(SimpleTestCase):
+class Enclave1682ViewTest(LoggedInTestCase):
     """Tests for /riset/enclave-1682/ route (Phase 1C)."""
-
-    def setUp(self):
-        self.client = Client()
 
     def test_riset_enclave_1682_returns_200(self):
         """GET /riset/enclave-1682/ returns HTTP 200."""
@@ -3037,3 +3042,45 @@ class AuthLoginLogoutTest(TestCase):
         self.assertIn("_auth_user_id", self.client.session)
         response = self.client.post(reverse("logout"))
         self.assertNotIn("_auth_user_id", self.client.session)
+
+
+class GatedRouteRedirectsAnonymousTest(SimpleTestCase):
+    """Langkah 9 -- riset/* + linimasa require login; index/port_detail stay public."""
+
+    def _assert_redirects_to_login(self, url_name):
+        url = reverse(url_name)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("login"), response.url)
+
+    def test_riset_tema_redirects_anonymous(self):
+        self._assert_redirects_to_login("riset_tema")
+
+    def test_riset_petunjuk_arsip_redirects_anonymous(self):
+        self._assert_redirects_to_login("riset_petunjuk_arsip")
+
+    def test_riset_jaringan_redirects_anonymous(self):
+        self._assert_redirects_to_login("riset_jaringan")
+
+    def test_riset_atjeh_redirects_anonymous(self):
+        self._assert_redirects_to_login("riset_atjeh")
+
+    def test_riset_pemodelan_redirects_anonymous(self):
+        self._assert_redirects_to_login("riset_pemodelan")
+
+    def test_riset_pemodelan_panduan_redirects_anonymous(self):
+        self._assert_redirects_to_login("riset_pemodelan_panduan")
+
+    def test_riset_enclave_1682_redirects_anonymous(self):
+        self._assert_redirects_to_login("riset_enclave_1682")
+
+    def test_linimasa_redirects_anonymous(self):
+        self._assert_redirects_to_login("linimasa")
+
+    def test_index_stays_public(self):
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_port_detail_stays_public(self):
+        response = self.client.get(reverse("port_detail", kwargs={"slug": "nonexistent-slug"}))
+        self.assertNotEqual(response.status_code, 302)
