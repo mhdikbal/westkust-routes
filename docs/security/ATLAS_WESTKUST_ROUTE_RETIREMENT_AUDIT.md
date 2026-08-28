@@ -14,6 +14,21 @@ Target behavior: /westkust/<path>?<query> -> /atlas/<path>?<query>
 Production execution: NOT_AUTHORIZED
 ```
 
+### Six Implementation Decisions — Adjudicated
+
+The six remaining decisions listed in § 6 below were adjudicated by the researcher and recorded in `ATLAS_WESTKUST_ROUTE_RETIREMENT_DECISION_LEDGER.csv` and `ATLAS_WESTKUST_ROUTE_RETIREMENT_ADJUDICATION.md`:
+
+```text
+ROUTE-IMPL-DEC-01: APPROVED_WITH_LIMITATIONS  (redirect syntax: simple Nginx return-based 301)
+ROUTE-IMPL-DEC-02: APPROVED_WITH_LIMITATIONS  (static asset handling: audit-and-preserve-compatibility-first)
+ROUTE-IMPL-DEC-03: APPROVED                   (observation period: 30 days, review at Day 0/1/7/14/30)
+ROUTE-IMPL-DEC-04: DEFERRED                   (SEO infrastructure: separate milestone)
+ROUTE-IMPL-DEC-05: NOT_AUTHORIZED             (production execution)
+ROUTE-IMPL-DEC-06: REJECTED                   (Basic Auth bundling)
+```
+
+Redirect design direction is established by these decisions; the redirect itself remains **NOT_IMPLEMENTED**. Production execution remains **NOT_AUTHORIZED**. Basic Auth bundling with this route-retirement work is **rejected** — the two remain on independent authorization tracks. `SECURITY_ACCESS_CONTROL_GATE` remains **NOT_PASSED**. This adjudication does not modify the discovery findings (§ 2 of `ATLAS_WESTKUST_ROUTE_RETIREMENT_DISCOVERY.md`) or the dependency ledger rows (`ATLAS_WESTKUST_ROUTE_DEPENDENCY_LEDGER.csv`), both of which stand unchanged from the frozen baseline.
+
 ## 2. Phase 4 — Authentication Consequence (two stages)
 
 ### Transition stage
