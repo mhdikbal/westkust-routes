@@ -4,6 +4,17 @@
 > **Builds directly on**: `MODEL_3B_ROOT_CAUSE_AND_LITERATURE_COMPATIBILITY_AUDIT.md` (root-cause classification `RECOVERY_OBSERVATION_REGIME_MISMATCH`, §5 initial candidate sketch — this document supersedes that sketch in structure and completeness per the researcher's more detailed specification, while reusing every substantive finding from it rather than re-deriving).
 > **Authoritative root cause (not re-litigated here):** V1's recovery study validated a continuous-time, no-tie synthetic regime; the real 141-event corpus is year-only precision with extensive same-year ties requiring a fabricated deterministic jitter (`model3_hawkes_kaskade_event.py::jitter_ties`) to be fit at all. **Corrected conclusion**: the estimator failed a recovery test that does not represent the real data — not "Hawkes cannot be implemented." V1 remains `MODEL_VALIDATION_FAILURE` / `INFERENCE_NOT_AUTHORIZED`. The Hawkes family itself is `NOT_RULED_OUT`.
 
+> **Phase-0 outcome and tournament impact (researcher decision, 2026-08-29):**
+> ```text
+> M0 (count baseline):                  ELIGIBLE
+> M1 (V1 benchmark, non-authoritative): BENCHMARK_ONLY
+> M2 (MBPP interval-censored):          ELIGIBLE
+> M3 (Bayesian discrete-time):          ELIGIBLE
+> M4 (continuous-time, exact-date subset): EXCLUDED FOR CURRENT DATASET
+>   (EXCLUDED_INSUFFICIENT_PRECISE_SUBSET -- see §1a and the M4 section below)
+> ```
+> This is the correct conservative outcome, not a shortfall: it is preferable for M4 not to run at all than to produce continuous-time results built on a precision base that is mostly MEDIUM-confidence.
+
 ---
 
 ## 0. Do-Not List (binding for this document and any future execution turn)
@@ -39,9 +50,28 @@ Reuses this project's own partial implementation (`docs/thesis/colab/model3_mbpp
 
 A discrete self-exciting count process (e.g. INGARCH-family or discrete Hawkes) on annual bins, fit with weakly informative priors on excitation/branching-ratio parameters — chosen specifically because V1's Wald/MLE approach demonstrably miscalibrates at this n (postmortem: CI coverage 60-84% vs. 92.5-97.5% target for alpha/beta). No sub-year timestamp is ever required, so root causes #3/#4/#11 cannot recur by construction. Addresses #7 directly via informative priors rather than asymptotic intervals.
 
-### M4 — Continuous-time Hawkes on a verified exact-date subset (CONDITIONALLY_ELIGIBLE)
+### M4 — Continuous-time Hawkes on a verified exact-date subset (EXCLUDED_INSUFFICIENT_PRECISE_SUBSET)
 
-**Status: `CONDITIONALLY_ELIGIBLE`.** M4 is not "included" outright — it is eligible only after Guard A (§1a below) is satisfied. Any prior wording in this project's Model 3B documents describing M4 as simply "included" is superseded by this status.
+**Status: `EXCLUDED_INSUFFICIENT_PRECISE_SUBSET`, resolved by researcher decision (2026-08-29), superseding `CONDITIONALLY_ELIGIBLE`.** Guard A's completed manual Phase-0 audit (`MODEL_3B_PHASE0_DATE_PRECISION_LEDGER.csv`, 96/96 candidate rows classified, QA-verified against full `text_asli`) found `EXACT_EVENT_DATE` classification for 69 rows, but only **12 at HIGH confidence** (57 at MEDIUM, resting on genre-level inference rather than a directly-visible dateline). Applying the HIGH-only threshold this design document itself specified in advance (§ below, "roughly 30-40 events"), the researcher decision is:
+
+```text
+EXACT_EVENT_DATE total:        69
+  HIGH confidence:              12
+  MEDIUM confidence:            57
+M4 eligible subset:            12 (HIGH-confidence exact event dates only)
+M4 final eligibility:          EXCLUDED_INSUFFICIENT_PRECISE_SUBSET
+Reason: the verified HIGH-confidence subset (12) is below the prespecified
+  approximate minimum of 30-40 observations and is insufficient for
+  defensible continuous-time Hawkes recovery and estimation. HIGH and
+  MEDIUM confidence rows are deliberately NOT combined merely to satisfy
+  sample-size requirements -- that would defeat the purpose of the
+  confidence distinction this audit exists to preserve.
+MEDIUM-confidence rows (57): SENSITIVITY_ONLY_NOT_PRIMARY_M4 -- may be
+  reconsidered only under a future uncertainty-aware temporal model or an
+  explicit sensitivity design, never folded into M4's primary recovery test.
+```
+
+**M4 does not run in this tournament for the current dataset.** This is recorded as a scientific finding produced by the guard working as designed, not a design failure — see `MODEL_3B_PHASE0_AUDIT_SUMMARY.md` for the full 96-row audit trail, the 7 QA-approved reclassifications, and the `m4_eligibility_class` column added to the ledger (`M4_PRIMARY_ELIGIBLE` / `SENSITIVITY_ONLY_NOT_PRIMARY_M4` / `NOT_APPLICABLE_NON_EXACT`).
 
 **Precision audit performed as part of this design turn** (read-only, against `data/research/linimasa_events.csv`'s `event_date_raw` field — no model-fitting code run, no data modified):
 
@@ -69,8 +99,12 @@ If, after Guard A's dedicated manual audit, the genuinely-precise subset (`EXACT
 ### 1a. Guard A — Phase-0 Date Precision Guard (pre-execution, binding on M4)
 
 ```text
-GUARD STATUS: ACTIVE. M4 remains CONDITIONALLY_ELIGIBLE until this guard
-is satisfied by a completed, documented Phase-0 audit.
+GUARD STATUS: SATISFIED AND CLOSED (2026-08-29). Phase-0 audit completed:
+96/96 candidate rows classified and QA-verified against full text_asli
+(MODEL_3B_PHASE0_DATE_PRECISION_LEDGER.csv). Outcome: M4 EXCLUDED_
+INSUFFICIENT_PRECISE_SUBSET (HIGH-confidence EXACT_EVENT_DATE subset = 12,
+below the 30-40 floor). The guard did its job -- it produced a defensible
+exclusion decision, not a rubber-stamp inclusion.
 ```
 
 The regex first pass above (75/141 events, "apparent single exact day precision") is **candidate identification only** — it is not, and must never be represented as, final exact-event-date classification. It does not yet distinguish event-date from report-date, does not parse the 27 unclassified rows, and does not verify that "single exact day" entries are free of qualifying language (circa, approximately) that a stricter audit might reclassify.
@@ -281,6 +315,7 @@ IF MULTIPLE CANDIDATES PASS:
 
 ```text
 MODEL_3B_RECOVERY_TOURNAMENT_READY_FOR_RESEARCHER_DECISION
+MODEL_3B_PHASE0_DATE_PRECISION_AUDIT_COMPLETE_M4_EXCLUDED
 ```
 
-Nothing in this document authorizes execution of Phase 0 through Phase 4 above. Each phase requires its own separate, explicit researcher authorization before any code is written or run, per this session's standing discipline.
+Phase-0 (the date-precision guard) is now complete and closed, with M4 excluded from the current tournament as a researcher-adjudicated finding (see M4 section above and `MODEL_3B_PHASE0_AUDIT_SUMMARY.md`). Nothing in this document authorizes execution of the remaining tournament phases (M0/M2/M3 harness implementation, synthetic recovery runs) above. Each remaining phase requires its own separate, explicit researcher authorization before any code is written or run, per this session's standing discipline.

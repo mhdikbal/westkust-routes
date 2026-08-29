@@ -53,9 +53,9 @@
 
 ---
 
-## M4 — Continuous-time Hawkes on a verified exact-date subset (CONDITIONALLY_ELIGIBLE)
+## M4 — Continuous-time Hawkes on a verified exact-date subset (EXCLUDED_INSUFFICIENT_PRECISE_SUBSET)
 
-**Status: `CONDITIONALLY_ELIGIBLE`**, not "included." Gated by Guard A (Design doc §1a, "Phase-0 Date Precision Guard") — the 75/141 regex first-pass count is candidate identification only, not a completed classification. Only events an implementer has manually classified `EXACT_EVENT_DATE` (one of eight required classes: `EXACT_EVENT_DATE`, `EXACT_REPORT_DATE`, `DOCUMENT_DATE`, `ARRIVAL_OR_DEPARTURE_DATE`, `DATE_RANGE_BOUNDARY`, `MULTIPLE_DATES_AMBIGUOUS`, `INFERRED_DATE`, `CANNOT_DETERMINE`) may enter M4's synthetic generator or any future implementation. No date may be altered, no uncertainty resolved automatically, no document date treated as event date.
+**Status: `EXCLUDED_INSUFFICIENT_PRECISE_SUBSET`**, resolved by researcher decision (2026-08-29) — superseding the earlier `CONDITIONALLY_ELIGIBLE` status. Guard A's manual audit (Design doc §1a) completed: 96/96 candidate rows classified and QA-verified against full `text_asli` (`MODEL_3B_PHASE0_DATE_PRECISION_LEDGER.csv`). Result: `EXACT_EVENT_DATE` = 69 total, but only 12 at HIGH confidence (57 MEDIUM, resting on genre-level inference). Applying the prespecified HIGH-only threshold, 12 falls below the ~30-40 floor, so **M4 does not proceed for the current dataset**. HIGH and MEDIUM rows were deliberately not combined to reach the floor. The 57 MEDIUM rows are recorded `SENSITIVITY_ONLY_NOT_PRIMARY_M4` — reconsiderable only under a future uncertainty-aware temporal model, never folded into M4's primary recovery test. Everything below in this section (reusable code, net-new work, complexity) describes what M4's implementation *would have* required and remains historically informative, but is not scoped for near-term execution given the exclusion.
 
 **Reusable**: identical to M1 — `model3b_cd_simulator`'s existing `likelihood.py`/`kernel.py`/`simulate.py`, applied unchanged to a filtered subset of events rather than the full 141.
 
