@@ -144,6 +144,7 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/ATLAS_GRAPH_PROJECTION_READINESS_REVIEW.md
 !docs/thesis/pilot_annotation/ATLAS_GRAPH_PROJECTION_CONTRACT_FREEZE_AUDIT.md
 !docs/thesis/pilot_annotation/ATLAS_INTEGRATION_DECISION_REVIEW.md
+!docs/thesis/pilot_annotation/GRAPHIFY_AUTHORIZATION_AND_DISPOSABLE_PROJECTION_RESULT.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
