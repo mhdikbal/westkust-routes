@@ -51,3 +51,7 @@ Per this turn's own scope:
 ## 4. Status
 
 `GAP_ADJUDICATION_COMPLETE_LOCAL` — not committed, not pushed. Ready for the user to decide whether to commit these two ledger additions plus this note, before proceeding to Langkah 3 (Graph Projection Readiness Review).
+
+## 5. Resolution (2026-08-29)
+
+DEC-19's (a)/(b) choice has since been made: **option (b) selected** (remodel the two Tiku relations to carry commodity as an attribute, not as `object_id`). Full reasoning, evidence, and the exact scoped future change: `DEC19_TIKU_COMMODITY_ADJUDICATION_DECISION.md`. `POST_V1_V4_RESEARCHER_DECISION_LEDGER.csv` DEC-19 row and `ATLAS_POWER_RELATION_V2_1_REVALIDATION_IMPLEMENTATION_MAP.csv` REV-11 row updated accordingly. This section 2's text above (documenting the gap and both original candidate options) is left unmodified as the historical record of the open question; the decision itself lives in the new file, not as an edit here. Implementation of the remodeling remains NOT AUTHORIZED.
