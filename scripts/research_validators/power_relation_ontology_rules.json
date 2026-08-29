@@ -306,9 +306,9 @@
     {
       "rule_id": "R-REF-05",
       "class": "REFERENCE_INTEGRITY_RULE",
-      "description": "Every relation's subject_actor_id/object_id must reference an existing actor_id/location_id in the artifact (no orphan endpoints), generalized from the existing case-specific validators.",
+      "description": "Every relation's subject endpoint (subject_actor_id, universal) and object endpoint (object_id, the V2.1-standardized generic field; or object_actor_id, Painan's own pre-standardization field, validated strictly against actor_id only) must reference an existing actor_id/location_id in the artifact -- no orphan endpoints, no silently-skipped endpoints, no unapproved endpoint field name. CORRECTED 2026-08-29: the prior implementation read only object_id and silently never validated Painan's object_actor_id-shaped relations (9/9, all resolved correctly on manual inspection -- a validator gap, not a Painan data defect). A relation with object_id explicitly null AND a populated commodity attribute is a valid DEC-19-shaped unary claim (no second endpoint required); null without commodity, or any endpoint-shaped field name outside {subject_actor_id, object_id, object_actor_id}, fails deterministically.",
       "contract_section": "Draft V2 SS11; Draft V2.1 SS11",
-      "decision_id": null,
+      "decision_id": "DEC-19",
       "changeset_id": null,
       "enforcement": "AUTOMATED",
       "severity": "ERROR",
@@ -316,7 +316,11 @@
         "V2",
         "V2.1"
       ],
-      "error_code": "ORPHAN_RELATION_ENDPOINT",
+      "error_code": [
+        "ORPHAN_RELATION_ENDPOINT",
+        "MISSING_RELATION_ENDPOINT",
+        "UNAPPROVED_ENDPOINT_FIELD"
+      ],
       "remediation_category": "REFERENCE_FIX"
     },
     {

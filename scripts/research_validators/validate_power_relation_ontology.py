@@ -24,6 +24,7 @@ Usage:
 Exit code: 0 only if no ERROR/CRITICAL finding exists; 1 otherwise.
 """
 import json
+import re
 import sys
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
@@ -201,15 +202,113 @@ def check_relation_types(artifact, result):
                         f"relation_type={rt!r} is outside the closed 18-value V2/V2.1 vocabulary.")
 
 
+# Contract-approved relation-endpoint fields, grounded in actual evidence
+# (Draft V2/V2.1 text + all 6 migrated artifacts), not invented:
+#   subject_actor_id  -- universal; every one of the 6 artifacts uses this
+#                        exact name for the subject, no alias exists anywhere.
+#   object_id         -- the Draft V2.1-standardized generic object field;
+#                        used by Koto Tangah, Natal, Sillida, Tiku.
+#   object_actor_id   -- Painan's own pre-standardization field name, used on
+#                        all 9 of its relations, 0 exceptions. Contract-
+#                        grounded: Draft V2's own text (SS "future generalized
+#                        relation validator... should replicate every check
+#                        already proven in validate_painan_1663_relational_
+#                        artifact.py") names Painan's own case-specific
+#                        validator -- which uses object_actor_id -- as the
+#                        thing this generalized validator is supposed to
+#                        replicate, not diverge from.
+# object_location_id / subject_location_id / bare subject_id were checked
+# for and found nowhere: not in Draft V2, not in Draft V2.1, not in any of
+# the 6 migrated artifacts, not in any of the 5 legacy case-specific
+# validators. Not added here -- an endpoint field found nowhere in the
+# contract or the corpus is not "contract-approved," it would be invented.
+APPROVED_SUBJECT_FIELDS = {"subject_actor_id"}
+APPROVED_OBJECT_FIELDS = {"object_id", "object_actor_id"}
+_ENDPOINT_FIELD_SHAPE = re.compile(r"^(subject|object)[a-z_]*_id$", re.IGNORECASE)
+
+
 def check_relation_endpoints(artifact, result):
-    known = _actor_ids(artifact) | _location_ids(artifact)
+    actor_ids = _actor_ids(artifact)
+    location_ids = _location_ids(artifact)
+    known = actor_ids | location_ids
+
     for rel in artifact.get("relations", []):
-        for endpoint_key in ("subject_actor_id", "object_id"):
-            val = rel.get(endpoint_key)
-            if val is not None and val not in known:
+        rel_id = rel.get("relation_id")
+        path_base = f"relations[{rel_id}]"
+
+        # Any *_id key shaped like a subject/object endpoint that is not one
+        # of the two contract-approved names is rejected outright -- this
+        # would previously have silently been ignored (rel.get() on a typo'd
+        # or invented field name returns None and passed trivially).
+        for key in rel.keys():
+            if key in APPROVED_SUBJECT_FIELDS or key in APPROVED_OBJECT_FIELDS:
+                continue
+            if _ENDPOINT_FIELD_SHAPE.match(key):
+                result.add("R-REF-05", "ERROR", "UNAPPROVED_ENDPOINT_FIELD",
+                            f"{path_base}.{key}",
+                            f"{key!r} is not a contract-approved endpoint field "
+                            f"(approved: {sorted(APPROVED_SUBJECT_FIELDS | APPROVED_OBJECT_FIELDS)}).")
+
+        # Subject endpoint: always subject_actor_id, always required.
+        if "subject_actor_id" not in rel:
+            result.add("R-REF-05", "ERROR", "MISSING_RELATION_ENDPOINT",
+                        f"{path_base}.subject_actor_id",
+                        "relation has no subject_actor_id field at all.")
+        else:
+            subj = rel.get("subject_actor_id")
+            if subj is None:
+                result.add("R-REF-05", "ERROR", "MISSING_RELATION_ENDPOINT",
+                            f"{path_base}.subject_actor_id",
+                            "subject_actor_id is present but null.")
+            elif subj not in actor_ids:
                 result.add("R-REF-05", "ERROR", "ORPHAN_RELATION_ENDPOINT",
-                            f"relations[{rel.get('relation_id')}].{endpoint_key}",
-                            f"{endpoint_key}={val!r} does not reference a known actor_id/location_id.")
+                            f"{path_base}.subject_actor_id",
+                            f"subject_actor_id={subj!r} does not reference a known actor_id.")
+
+        # Object endpoint: exactly one of object_actor_id (Painan-shaped) or
+        # object_id (everyone else) is expected to be present as a key.
+        has_object_actor_id = "object_actor_id" in rel
+        has_object_id = "object_id" in rel
+
+        if has_object_actor_id:
+            val = rel.get("object_actor_id")
+            if val is None:
+                result.add("R-REF-05", "ERROR", "MISSING_RELATION_ENDPOINT",
+                            f"{path_base}.object_actor_id",
+                            "object_actor_id is present but null.")
+            elif val not in actor_ids:
+                # Deliberately checked against actor_ids ONLY, not the
+                # actor+location union -- an object_actor_id value that only
+                # happens to match a location_id must still fail, since the
+                # field name itself asserts the object is an actor.
+                result.add("R-REF-05", "ERROR", "ORPHAN_RELATION_ENDPOINT",
+                            f"{path_base}.object_actor_id",
+                            f"object_actor_id={val!r} does not reference a known actor_id.")
+        elif has_object_id:
+            val = rel.get("object_id")
+            commodity = rel.get("commodity")
+            if val is None:
+                if commodity is not None:
+                    # DEC-19-shaped unary claim (object_id explicitly null,
+                    # backed by a real `commodity` attribute): the relation
+                    # legitimately has no second endpoint node. Not an error.
+                    pass
+                else:
+                    # object_id is null but nothing justifies treating this
+                    # as a valid unary claim -- do not silently accept it.
+                    result.add("R-REF-05", "ERROR", "MISSING_RELATION_ENDPOINT",
+                                f"{path_base}.object_id",
+                                "object_id is null with no commodity attribute to justify "
+                                "a unary claim; a binary relation must have a resolvable object.")
+            elif val not in known:
+                result.add("R-REF-05", "ERROR", "ORPHAN_RELATION_ENDPOINT",
+                            f"{path_base}.object_id",
+                            f"object_id={val!r} does not reference a known actor_id/location_id.")
+        else:
+            # Neither object_id nor object_actor_id key present at all.
+            result.add("R-REF-05", "ERROR", "MISSING_RELATION_ENDPOINT",
+                        f"{path_base}.object_id/object_actor_id",
+                        "relation has no object_id or object_actor_id field at all.")
 
 
 def check_relation_temporal(artifact, result):

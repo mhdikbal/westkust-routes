@@ -1,0 +1,43 @@
+{
+  "case_id": "SYNTH_OBJECT_ACTOR_ID_STRICT",
+  "ontology_version": "V2.1",
+  "actors": [
+    {
+      "actor_id": "ACTOR_A",
+      "actor_type": "Actor",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    },
+    {
+      "actor_id": "SHARED_ID",
+      "actor_type": "Actor",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "locations": [
+    {
+      "location_id": "LOC_UNRELATED",
+      "location_type": "Location",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "REL_1",
+      "relation_type": "NEGOTIATES_WITH",
+      "subject_actor_id": "ACTOR_A",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "provenance_status": "SYN_TEST",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ],
+      "object_actor_id": "SHARED_ID"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "case_id": "SYNTH_MISSING_ENDPOINT",
+  "ontology_version": "V2.1",
+  "actors": [
+    {
+      "actor_id": "ACTOR_A",
+      "actor_type": "Actor",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ],
+  "locations": [],
+  "relations": [
+    {
+      "relation_id": "REL_1",
+      "relation_type": "NEGOTIATES_WITH",
+      "subject_actor_id": "ACTOR_A",
+      "evidence_strength": "MODERATE",
+      "interpretive_status": "SOURCE_DESCRIPTION_ONLY",
+      "provenance_status": "SYN_TEST",
+      "source_document_ids": [
+        "SYN_DOC_1"
+      ]
+    }
+  ]
+}

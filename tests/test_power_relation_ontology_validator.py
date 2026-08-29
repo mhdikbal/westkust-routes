@@ -41,6 +41,17 @@ EXPECTED_NEGATIVE_ERROR_CODES = {
     "negative_16_unknown_field_value.json": "INVALID_COERCION_STATUS",
     "negative_17_invalid_temporal_range.json": "INVALID_TEMPORAL_RANGE",
     "negative_18_unauthorized_extra_field.json": "UNAUTHORIZED_EXTRA_FIELD",
+    # Added for the R-REF-05 object_actor_id correction (2026-08-29):
+    # Painan's relations use object_actor_id, not object_id -- the prior
+    # check silently never validated them. See
+    # docs/thesis/pilot_annotation/GRAPHIFY_AUTHORIZATION_AND_DISPOSABLE_PROJECTION_RESULT.md.
+    "negative_19_missing_object_endpoint.json": "MISSING_RELATION_ENDPOINT",
+    "negative_20_object_actor_id_unresolved.json": "ORPHAN_RELATION_ENDPOINT",
+    "negative_21_object_location_id_unapproved_field.json": "UNAPPROVED_ENDPOINT_FIELD",
+    "negative_22_unknown_endpoint_alias.json": "UNAPPROVED_ENDPOINT_FIELD",
+    "negative_23_object_actor_id_cross_entity_collision.json": "ORPHAN_RELATION_ENDPOINT",
+    "negative_24_null_endpoint_without_commodity.json": "MISSING_RELATION_ENDPOINT",
+    "negative_25_binary_relation_incorrectly_treated_as_unary.json": "MISSING_RELATION_ENDPOINT",
 }
 
 
@@ -58,8 +69,8 @@ def _file_hash(path: Path) -> str:
 
 @pytest.fixture(scope="module", autouse=True)
 def fixtures_present():
-    assert len(POSITIVE_FIXTURES) == 10, f"expected 10 positive fixtures, found {len(POSITIVE_FIXTURES)}"
-    assert len(NEGATIVE_FIXTURES) == 18, f"expected 18 negative fixtures, found {len(NEGATIVE_FIXTURES)}"
+    assert len(POSITIVE_FIXTURES) == 15, f"expected 15 positive fixtures, found {len(POSITIVE_FIXTURES)}"
+    assert len(NEGATIVE_FIXTURES) == 25, f"expected 25 negative fixtures, found {len(NEGATIVE_FIXTURES)}"
 
 
 @pytest.mark.parametrize("fixture", POSITIVE_FIXTURES, ids=lambda p: p.name)
