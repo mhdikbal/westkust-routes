@@ -75,6 +75,13 @@ docs/thesis/colab/model3b_cd_simulator/*
 !docs/thesis/colab/model3b_cd_simulator/tests/
 docs/thesis/colab/model3b_cd_simulator/tests/*
 !docs/thesis/colab/model3b_cd_simulator/tests/*.py
+
+# Model 3B recovery-tournament harness (M0/M2/M3, implementation-only turn,
+# not yet run at real scale) — same policy as model3b_cd_simulator above:
+# only .py source/smoke-test modules tracked, __pycache__ ignored.
+!docs/thesis/colab/model3b_tournament_harness/
+docs/thesis/colab/model3b_tournament_harness/*
+!docs/thesis/colab/model3b_tournament_harness/*.py
 !docs/thesis/colab/CROSS_CASE_POWER_ONTOLOGY_MATRIX.csv
 !docs/thesis/colab/CROSS_CASE_ENTITY_DECISION_LEDGER.csv
 !docs/thesis/colab/CROSS_CASE_RELATION_DECISION_LEDGER.csv
