@@ -160,6 +160,12 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/MODEL_3B_RECOVERY_TOURNAMENT_EXECUTION_PROTOCOL.md
 !docs/thesis/pilot_annotation/MODEL_3B_PHASE0_DATE_PRECISION_LEDGER.csv
 !docs/thesis/pilot_annotation/MODEL_3B_PHASE0_AUDIT_SUMMARY.md
+!docs/thesis/pilot_annotation/MODEL_3B_PILOT_RECOVERY_DIAGNOSTIC_AUDIT.md
+!docs/thesis/pilot_annotation/MODEL_3B_M0_INTERVAL_COVERAGE_AUDIT.md
+!docs/thesis/pilot_annotation/MODEL_3B_M2_IDENTIFIABILITY_PROFILE.md
+!docs/thesis/pilot_annotation/MODEL_3B_M3_NULL_BOUNDARY_AUDIT.md
+!docs/thesis/pilot_annotation/MODEL_3B_GATE_AMENDMENT_PROPOSAL.md
+!docs/thesis/pilot_annotation/MODEL_3B_PILOT_GATE_CLASSIFICATION.csv
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
