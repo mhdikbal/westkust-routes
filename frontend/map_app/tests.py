@@ -3056,6 +3056,45 @@ class AuthLoginLogoutTest(TestCase):
         self.assertNotIn("_auth_user_id", self.client.session)
 
 
+class CSRFTrustedOriginsForProductionProxyTest(TestCase):
+    """Production serves this app behind a TLS-terminating reverse proxy in
+    front of silida.org; Django itself only ever sees the request arrive
+    over plain HTTP from the internal nginx hop, so it computes request.scheme
+    as "http". A modern browser's login POST always carries an Origin header
+    of "https://silida.org", and Django's CSRF middleware rejects the request
+    with REASON_BAD_ORIGIN (403 "CSRF verification failed. Request aborted.")
+    unless that exact origin is listed in CSRF_TRUSTED_ORIGINS -- the check is
+    an exact-string match against CSRF_TRUSTED_ORIGINS and does not depend on
+    SECURE_PROXY_SSL_HEADER being configured correctly end-to-end."""
+
+    def setUp(self):
+        self.client = Client(enforce_csrf_checks=True)
+        User = get_user_model()
+        self.user = User.objects.create_user(username="peneliti", password="a-strong-test-password-123")
+
+    def _login_post_with_origin(self, origin):
+        get_response = self.client.get(reverse("login"))
+        csrf_token = get_response.cookies["csrftoken"].value
+        return self.client.post(
+            reverse("login"),
+            {"username": "peneliti", "password": "a-strong-test-password-123", "csrfmiddlewaretoken": csrf_token},
+            HTTP_ORIGIN=origin,
+            HTTP_REFERER=f"{origin}/",
+        )
+
+    def test_https_silida_org_origin_is_trusted(self):
+        response = self._login_post_with_origin("https://silida.org")
+        self.assertNotEqual(
+            response.status_code, 403,
+            "login POST from the production origin (https://silida.org) must not be "
+            "rejected as a CSRF failure -- see CSRF_TRUSTED_ORIGINS in settings.py",
+        )
+
+    def test_www_silida_org_origin_is_trusted(self):
+        response = self._login_post_with_origin("https://www.silida.org")
+        self.assertNotEqual(response.status_code, 403)
+
+
 class GatedRouteRedirectsAnonymousTest(SimpleTestCase):
     """Langkah 9 -- riset/* + linimasa require login; index/port_detail stay public."""
 

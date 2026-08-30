@@ -79,3 +79,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+
+# Production sits behind a TLS-terminating reverse proxy in front of
+# silida.org; Django only ever sees the request arrive as plain HTTP from the
+# internal nginx hop, so request.scheme is "http" while the browser's Origin
+# header is "https://silida.org". Django's CSRF Origin check compares the two
+# exactly and rejects the mismatch (403 "CSRF verification failed") unless
+# the real origin is explicitly trusted here.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_TRUSTED_ORIGINS = [
+    o.strip()
+    for o in os.getenv("CSRF_TRUSTED_ORIGINS", "https://silida.org,https://www.silida.org").split(",")
+    if o.strip()
+]
