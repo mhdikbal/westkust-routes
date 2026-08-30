@@ -1,0 +1,3 @@
+decision_id,topic,candidate,mathematical_quantity,options,recommended_next_evidence,current_status,researcher_decision,implementation_blocking,execution_blocking,historical_fit_blocking,source_amendment,notes
+NUM-DEC-01,synthetic topic,M2,n,opt_a;opt_b,none,APPROVED_WITH_LIMITATIONS,opt_a,NO,NO,NO,PROPOSAL-SYN,synthetic fixture row
+NUM-DEC-02,synthetic topic,M3,tau,opt_a;opt_b,none,DEFERRED,none,NO,NO,NO,PROPOSAL-SYN,synthetic fixture row

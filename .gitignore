@@ -82,6 +82,21 @@ docs/thesis/colab/model3b_cd_simulator/tests/*
 !docs/thesis/colab/model3b_tournament_harness/
 docs/thesis/colab/model3b_tournament_harness/*
 !docs/thesis/colab/model3b_tournament_harness/*.py
+
+# Model 3B V2 Wave 1 specification-validation infrastructure (parser, schema
+# validator, applicability validator, immutable M3-blocker registry, and
+# their pytest scaffolding + synthetic fixtures) — same policy: only .py
+# source/test modules and .csv fixtures tracked, __pycache__ ignored.
+!docs/thesis/colab/model3b_spec_validator/
+docs/thesis/colab/model3b_spec_validator/*
+!docs/thesis/colab/model3b_spec_validator/*.py
+!docs/thesis/colab/model3b_spec_validator/tests/
+docs/thesis/colab/model3b_spec_validator/tests/*
+!docs/thesis/colab/model3b_spec_validator/tests/*.py
+!docs/thesis/colab/model3b_spec_validator/tests/fixtures/
+docs/thesis/colab/model3b_spec_validator/tests/fixtures/*
+!docs/thesis/colab/model3b_spec_validator/tests/fixtures/*.csv
+
 !docs/thesis/colab/CROSS_CASE_POWER_ONTOLOGY_MATRIX.csv
 !docs/thesis/colab/CROSS_CASE_ENTITY_DECISION_LEDGER.csv
 !docs/thesis/colab/CROSS_CASE_RELATION_DECISION_LEDGER.csv

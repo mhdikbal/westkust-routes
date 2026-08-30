@@ -1,0 +1,3 @@
+gate_id,version,candidate,model_equation_id,parameter_space,estimand,null_definition,applicability,mandatory_advisory_status,metric_name,metric_formula,denominator,threshold,threshold_status,threshold_provenance,failure_meaning,source_original_gate,source_amendment,implementation_status,notes
+GATE-SYN-DUP,V2,M2,SYN-EQ-1,0<=n<1,n,H0: n=0,APPLICABLE,MANDATORY,bias,synthetic,R_metric,0.05,RESOLVED,MATHEMATICAL_REQUIREMENT,candidate excluded,GATE-SYN,PROPOSAL-SYN,NOT_EXECUTED,synthetic fixture row
+GATE-SYN-DUP,V2,M2,SYN-EQ-1,0<=n<1,n,H0: n=0,APPLICABLE,MANDATORY,bias,synthetic,R_metric,0.05,RESOLVED,MATHEMATICAL_REQUIREMENT,candidate excluded,GATE-SYN,PROPOSAL-SYN,NOT_EXECUTED,duplicate gate_id -- must be flagged
