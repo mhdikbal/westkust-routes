@@ -120,6 +120,41 @@ docs/thesis/colab/model3b_spec_validator/tests/fixtures/*
 
 !docs/thesis/pilot_annotation/
 docs/thesis/pilot_annotation/*
+
+# Model 3B V2 milestone artifacts, reorganized under a dedicated subfolder
+# (housekeeping reorg) — same narrow-whitelist policy as elsewhere: only
+# .md/.csv content tracked per subfolder, cache/temp ignored.
+!docs/thesis/pilot_annotation/model3b_v2/
+docs/thesis/pilot_annotation/model3b_v2/*
+!docs/thesis/pilot_annotation/model3b_v2/README.md
+!docs/thesis/pilot_annotation/model3b_v2/specifications/
+docs/thesis/pilot_annotation/model3b_v2/specifications/*
+!docs/thesis/pilot_annotation/model3b_v2/specifications/*.md
+!docs/thesis/pilot_annotation/model3b_v2/specifications/*.csv
+!docs/thesis/pilot_annotation/model3b_v2/numerical_decisions/
+docs/thesis/pilot_annotation/model3b_v2/numerical_decisions/*
+!docs/thesis/pilot_annotation/model3b_v2/numerical_decisions/*.md
+!docs/thesis/pilot_annotation/model3b_v2/numerical_decisions/*.csv
+!docs/thesis/pilot_annotation/model3b_v2/reconciliation/
+docs/thesis/pilot_annotation/model3b_v2/reconciliation/*
+!docs/thesis/pilot_annotation/model3b_v2/reconciliation/*.md
+!docs/thesis/pilot_annotation/model3b_v2/reconciliation/*.csv
+!docs/thesis/pilot_annotation/model3b_v2/planning/
+docs/thesis/pilot_annotation/model3b_v2/planning/*
+!docs/thesis/pilot_annotation/model3b_v2/planning/*.md
+!docs/thesis/pilot_annotation/model3b_v2/planning/*.csv
+!docs/thesis/pilot_annotation/model3b_v2/evidence/
+docs/thesis/pilot_annotation/model3b_v2/evidence/*
+!docs/thesis/pilot_annotation/model3b_v2/evidence/*.md
+!docs/thesis/pilot_annotation/model3b_v2/evidence/*.csv
+!docs/thesis/pilot_annotation/model3b_v2/adjudication/
+docs/thesis/pilot_annotation/model3b_v2/adjudication/*
+!docs/thesis/pilot_annotation/model3b_v2/adjudication/*.md
+!docs/thesis/pilot_annotation/model3b_v2/adjudication/*.csv
+!docs/thesis/pilot_annotation/model3b_v2/manifests/
+docs/thesis/pilot_annotation/model3b_v2/manifests/*
+!docs/thesis/pilot_annotation/model3b_v2/manifests/*.md
+!docs/thesis/pilot_annotation/model3b_v2/manifests/*.csv
 !docs/thesis/pilot_annotation/EPISODE_ANNOTATION_TEMPLATE.md
 !docs/thesis/pilot_annotation/BARUS_EPISODE_DOSSIER_DRAFT.md
 !docs/thesis/pilot_annotation/INDERAPURA_EPISODE_DOSSIER_DRAFT.md
@@ -194,45 +229,6 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/MODEL_3B_FUTURE_GATE_APPLICABILITY_MATRIX.csv
 !docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_TEST_INVENTORY.csv
 !docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_IMPLEMENTATION_WAVES.md
-!docs/thesis/pilot_annotation/MODEL_3B_MATHEMATICAL_SPECIFICATION_V2.md
-!docs/thesis/pilot_annotation/MODEL_3B_RECOVERY_GATE_SPECIFICATION_V2.csv
-!docs/thesis/pilot_annotation/MODEL_3B_RECOVERY_PROTOCOL_V2.md
-!docs/thesis/pilot_annotation/MODEL_3B_FINAL_GATE_APPLICABILITY_MATRIX.csv
-!docs/thesis/pilot_annotation/MODEL_3B_V2_NUMERICAL_DECISION_LEDGER.csv
-!docs/thesis/pilot_annotation/MODEL_3B_NUM_DEC_01_M2_REPLICATION_DENOMINATOR_ADJUDICATION.md
-!docs/thesis/pilot_annotation/MODEL_3B_NUM_DEC_02_M2_UNCERTAINTY_ADJUDICATION.md
-!docs/thesis/pilot_annotation/MODEL_3B_NUM_DEC_03_M2_EXACT_NULL_ADJUDICATION.md
-!docs/thesis/pilot_annotation/MODEL_3B_NUM_DEC_04_M3_TAU_CALIBRATION_ADJUDICATION.md
-!docs/thesis/pilot_annotation/MODEL_3B_NUM_DEC_05_M3_PRIOR_MODEL_ODDS_ADJUDICATION.md
-!docs/thesis/pilot_annotation/MODEL_3B_NUM_DEC_06_M3_MARGINAL_LIKELIHOOD_ADJUDICATION.md
-!docs/thesis/pilot_annotation/MODEL_3B_NUM_DEC_07_M3_ROPE_ADJUDICATION.md
-!docs/thesis/pilot_annotation/MODEL_3B_NUM_DEC_08_RESOURCE_CEILING_ADJUDICATION.md
-!docs/thesis/pilot_annotation/MODEL_3B_GATE_V1_TO_V2_RECONCILIATION.csv
-!docs/thesis/pilot_annotation/MODEL_3B_V2_NUMERICAL_DECISION_DIGEST.md
-!docs/thesis/pilot_annotation/MODEL_3B_COMPLETE_NUMERICAL_DECISION_CONSISTENCY_AUDIT.md
-!docs/thesis/pilot_annotation/MODEL_3B_NUMERICAL_DECISION_DEPENDENCY_MATRIX.csv
-!docs/thesis/pilot_annotation/MODEL_3B_NUMERICAL_TEST_INVENTORY.csv
-!docs/thesis/pilot_annotation/WAVE_2_MATHEMATICAL_CONTRACT.md
-!docs/thesis/pilot_annotation/WAVE_2_IMPLEMENTATION_COMPONENT_MAP.md
-!docs/thesis/pilot_annotation/WAVE_2_SIMULATION_AND_COVERAGE_PLAN.md
-!docs/thesis/pilot_annotation/WAVE_2_M3_BLOCKER_CLOSURE_PROTOCOL.md
-!docs/thesis/pilot_annotation/WAVE_2_TAU_CALIBRATION_PREREGISTRATION.md
-!docs/thesis/pilot_annotation/WAVE_2_EXECUTION_MANIFEST_AND_STOP_RULES.md
-!docs/thesis/pilot_annotation/WAVE_2_OPEN_DECISION_LEDGER.csv
-!docs/thesis/pilot_annotation/WAVE_2_OPEN_DECISION_ADJUDICATION_MAP.md
-!docs/thesis/pilot_annotation/WAVE_2_OPEN_DECISION_BATCH_MATRIX.csv
-!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_LITERATURE_SEARCH_LOG.csv
-!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_EVIDENCE_LEDGER.csv
-!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_EVIDENCE_TO_OPTION_MATRIX.csv
-!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_MATHEMATICAL_EVIDENCE_REVIEW.md
-!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_ADJUDICATION_READINESS_REPORT.md
-!docs/thesis/pilot_annotation/WAVE_2_OD_005_DRAFT_ADJUDICATION.md
-!docs/thesis/pilot_annotation/WAVE_2_OD_006_DRAFT_ADJUDICATION.md
-!docs/thesis/pilot_annotation/WAVE_2_OD_015_DRAFT_PROCEDURAL_CONTRACT.md
-!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_DRAFT_RECONCILIATION.md
-!docs/thesis/pilot_annotation/WAVE_2_CROSS_DOCUMENT_CONSISTENCY_AUDIT.md
-!docs/thesis/pilot_annotation/WAVE_2_REQUIREMENT_DEPENDENCY_MATRIX.csv
-!docs/thesis/pilot_annotation/WAVE_2_FORMULA_SYMBOL_REGISTRY.csv
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
