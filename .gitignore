@@ -226,6 +226,10 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_EVIDENCE_TO_OPTION_MATRIX.csv
 !docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_MATHEMATICAL_EVIDENCE_REVIEW.md
 !docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_ADJUDICATION_READINESS_REPORT.md
+!docs/thesis/pilot_annotation/WAVE_2_OD_005_DRAFT_ADJUDICATION.md
+!docs/thesis/pilot_annotation/WAVE_2_OD_006_DRAFT_ADJUDICATION.md
+!docs/thesis/pilot_annotation/WAVE_2_OD_015_DRAFT_PROCEDURAL_CONTRACT.md
+!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_DRAFT_RECONCILIATION.md
 !docs/thesis/pilot_annotation/WAVE_2_CROSS_DOCUMENT_CONSISTENCY_AUDIT.md
 !docs/thesis/pilot_annotation/WAVE_2_REQUIREMENT_DEPENDENCY_MATRIX.csv
 !docs/thesis/pilot_annotation/WAVE_2_FORMULA_SYMBOL_REGISTRY.csv
