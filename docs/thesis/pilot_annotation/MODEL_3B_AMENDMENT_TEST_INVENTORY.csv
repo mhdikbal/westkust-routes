@@ -1,0 +1,122 @@
+test_id,candidate,source_proposal,description,implementation_status,uses_historical_data,conflicts_with_other_amendment
+M0-HESS-001,M0,PROPOSAL-01,Analytic or automatic-differentiation Hessian agrees with a trusted numerical full-Hessian implementation within a prespecified tolerance.,NOT_EXECUTED,NO,NONE_FOUND
+M0-HESS-002,M0,PROPOSAL-01,Cross-partials are symmetric within numerical tolerance.,NOT_EXECUTED,NO,NONE_FOUND
+M0-HESS-003,M0,PROPOSAL-01,Parameter order in the Hessian equals optimizer parameter order.,NOT_EXECUTED,NO,NONE_FOUND
+M0-HESS-004,M0,PROPOSAL-01,Correct sign convention is used (NLL-minimization: Cov=inverse(H_NLL)).,NOT_EXECUTED,NO,NONE_FOUND
+M0-HESS-005,M0,PROPOSAL-01,Covariance is finite and valid for an interior optimum.,NOT_EXECUTED,NO,NONE_FOUND
+M0-HESS-006,M0,PROPOSAL-01,"Near-singular Hessian produces an explicit diagnostic, not silent PASS.",NOT_EXECUTED,NO,NONE_FOUND
+M0-HESS-007,M0,PROPOSAL-01,Log-scale parameters (log_phi) are transformed using a documented Jacobian.,NOT_EXECUTED,NO,NONE_FOUND
+M0-HESS-008,M0,PROPOSAL-01,Fixed-seed oracle reproduces the corrected coverage result (this turn's n=60/93.3% oracle is the baseline to reproduce).,NOT_EXECUTED,NO,NONE_FOUND
+M0-HESS-009,M0,PROPOSAL-01,"Original point-estimate bias remains within the frozen gate (0.7-3.4% baseline, GATE-001/GATE-004).",NOT_EXECUTED,NO,NONE_FOUND
+M0-HESS-010,M0,PROPOSAL-01,No raw pilot output or historical data is modified.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-001,M2,PROPOSAL-02,n = alpha/beta is calculated consistently in simulator and estimator.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-002,M2,PROPOSAL-02,alpha = n * beta reproduces the intended kernel.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-003,M2,PROPOSAL-02,0 <= n < 1 is enforced without excluding exact n = 0.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-004,M2,PROPOSAL-02,objective profiling confirms n sensitivity separately from beta sensitivity.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-005,M2,PROPOSAL-02,fixed-n / varying-beta ridge diagnostic is reproducible.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-006,M2,PROPOSAL-02,varying-n / fixed-beta objective separation is reproducible.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-007,M2,PROPOSAL-02,n bias is computed using the exact preregistered formula.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-008,M2,PROPOSAL-02,n interval coverage is assessed with a valid uncertainty method.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-009,M2,PROPOSAL-02,predictive interval counts are calibrated.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-010,M2,PROPOSAL-02,alpha and beta diagnostics are reported without being misrepresented as identified historical quantities.,NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-011,M2,PROPOSAL-02,"all 1,000 replications per cell complete in a later authorized run.",NOT_EXECUTED,NO,NONE_FOUND
+M2-EST-012,M2,PROPOSAL-02,no historical data are used during synthetic recovery.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-001,M2,PROPOSAL-03,Cell list matches the approved versioned protocol.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-002,M2,PROPOSAL-03,Seed mapping is deterministic and unique.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-003,M2,PROPOSAL-03,One thousand planned replications are accounted for per cell.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-004,M2,PROPOSAL-03,"Attempted, completed, converged, boundary, and invalid counts reconcile.",NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-005,M2,PROPOSAL-03,No failed replication is silently replaced.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-006,M2,PROPOSAL-03,Metric denominators are explicitly recorded.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-007,M2,PROPOSAL-03,MCSE is reported for every rate and proportion gate.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-008,M2,PROPOSAL-03,Checkpoint and resume reproduce uninterrupted results.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-009,M2,PROPOSAL-03,Repeated execution with the same seed manifest is deterministic.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-010,M2,PROPOSAL-03,No historical data enter the recovery run.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-011,M2,PROPOSAL-03,No interim gate result changes the execution plan.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-012,M2,PROPOSAL-03,Raw outputs and summaries reconcile exactly.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-013,M2,PROPOSAL-03,All cells use the approved n-based primary estimand.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-014,M2,PROPOSAL-03,Original and amended gate versions remain separately traceable.,NOT_EXECUTED,NO,NONE_FOUND
+M2-SCALE-015,M2,PROPOSAL-03,Execution resource usage remains within the approved operational ceiling.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-001,M3,PROPOSAL-04,The null model represents n = 0 exactly.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-002,M3,PROPOSAL-04,The excitation model represents 0 < n < 1.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-003,M3,PROPOSAL-04,The excitation model reduces to the null model at n = 0 where nesting is claimed.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-004,M3,PROPOSAL-04,No epsilon clipping replaces the exact null.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-005,M3,PROPOSAL-04,Null simulations contain no excitation term.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-006,M3,PROPOSAL-04,The same baseline model is used under H0 and H1.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-007,M3,PROPOSAL-04,The same exposure and observation model is used under H0 and H1.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-008,M3,PROPOSAL-04,The same overdispersion convention is used under H0 and H1.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-009,M3,PROPOSAL-04,Prior-predictive simulation includes exact-null datasets.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-010,M3,PROPOSAL-04,Posterior or model-comparison output is finite under the exact null.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-011,M3,PROPOSAL-04,The implementation does not force positive n through initialization.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-012,M3,PROPOSAL-04,The implementation does not force positive n through prior support.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-013,M3,PROPOSAL-04,The null-state indicator is identifiable in synthetic data.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-014,M3,PROPOSAL-04,The exact-null test is reproducible under fixed seed.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-015,M3,PROPOSAL-04,Null and excitation output schemas are structurally consistent.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-016,M3,PROPOSAL-04,The implementation reports null-state probability separately from excitation magnitude.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-017,M3,PROPOSAL-04,The year-level observation regime is reproduced.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-018,M3,PROPOSAL-04,No historical data enter implementation validation.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-019,M3,PROPOSAL-04,M0 is excluded from excitation-null gates by applicability checks.,NOT_EXECUTED,NO,NONE_FOUND
+M3-NULL-020,M3,PROPOSAL-04,M2 is not silently assigned the M3 null solution.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-001,M3,PROPOSAL-05,Exact-null simulation returns valid model-comparison output.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-002,M3,PROPOSAL-05,Positive-excitation simulation returns valid model-comparison output.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-003,M3,PROPOSAL-05,Posterior probabilities sum to one.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-004,M3,PROPOSAL-05,Prior model odds are explicitly recorded.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-005,M3,PROPOSAL-05,Threshold calibration uses a separate seed set.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-006,M3,PROPOSAL-05,Final evaluation uses an unopened independent seed set.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-007,M3,PROPOSAL-05,Exact-null FPR is computed correctly.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-008,M3,PROPOSAL-05,Positive-scenario FNR is computed correctly.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-009,M3,PROPOSAL-05,MCSE is reported for FPR.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-010,M3,PROPOSAL-05,MCSE is reported for FNR.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-011,M3,PROPOSAL-05,Threshold satisfies FPR <= 0.05 across mandatory null scenarios.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-012,M3,PROPOSAL-05,Threshold does not eliminate all positive-signal power.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-013,M3,PROPOSAL-05,Weak-signal scenarios may produce INCONCLUSIVE.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-014,M3,PROPOSAL-05,Baseline changes are not systematically classified as excitation.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-015,M3,PROPOSAL-05,Observation-process variation is not systematically classified as excitation.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-016,M3,PROPOSAL-05,Episode dependence is included in calibration scenarios.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-017,M3,PROPOSAL-05,Missing and duplicate reporting scenarios are included.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-018,M3,PROPOSAL-05,Prior-odds sensitivity is reported.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-019,M3,PROPOSAL-05,Bayes-factor computation is numerically stable if used.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-020,M3,PROPOSAL-05,Magnitude estimation is reported conditional on M1.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-021,M3,PROPOSAL-05,No estimated n > 0 shortcut is used.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-022,M3,PROPOSAL-05,No lower-bound > 0 shortcut is used without exact-null model comparison.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-023,M3,PROPOSAL-05,M0 excitation gates remain not applicable.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-024,M3,PROPOSAL-05,M2 decision rule remains separately governed.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-025,M3,PROPOSAL-05,No historical data are used in calibration.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-026,M3,PROPOSAL-05,Repeated execution is deterministic under the same seed manifest.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-027,M3,PROPOSAL-05,Calibration and final evaluation outputs reconcile with raw replication rows.,NOT_EXECUTED,NO,NONE_FOUND
+M3-DEC-028,M3,PROPOSAL-05,Original 200/200 result remains preserved as historical pilot evidence.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-001,M0/M2/M3,PROPOSAL-06,All advisory gate IDs in the corrected 19-gate inventory are inventoried exactly once (superseding the originally-stated 21).,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-002,M0/M2/M3,PROPOSAL-06,Every gate declares its candidate.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-003,M0/M2/M3,PROPOSAL-06,Every gate declares its applicability domain.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-004,M0/M2/M3,PROPOSAL-06,Every applicable gate declares its estimand.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-005,M0/M2/M3,PROPOSAL-06,Every applicable gate declares its metric formula.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-006,M0/M2/M3,PROPOSAL-06,Every denominator is explicit.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-007,M0/M2/M3,PROPOSAL-06,Relative bias is not used when the true value is zero.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-008,M0/M2/M3,PROPOSAL-06,Not-applicable gates do not affect candidate verdicts.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-009,M0/M2/M3,PROPOSAL-06,Applicable but missing metrics block final completeness review.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-010,M0/M2/M3,PROPOSAL-06,Mandatory and advisory gates remain distinct.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-011,M0/M2/M3,PROPOSAL-06,Severe advisory failures trigger researcher review.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-012,M0/M2/M3,PROPOSAL-06,Threshold provenance is present for every threshold.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-013,M0/M2/M3,PROPOSAL-06,Diagnostic-only gates do not receive invented thresholds.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-014,M0/M2/M3,PROPOSAL-06,Raw replication rows reconcile with advisory summaries.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-015,M0/M2/M3,PROPOSAL-06,Failed optimization runs remain in denominators where prescribed.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-016,M0/M2/M3,PROPOSAL-06,MCSE is computed for rate and proportion metrics.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-017,M0/M2/M3,PROPOSAL-06,M0 excitation gates are rejected as not applicable.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-018,M0/M2/M3,PROPOSAL-06,M2 metrics use n as the primary estimand.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-019,M0/M2/M3,PROPOSAL-06,M3 decision metrics use the exact-null model comparison.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-020,M0/M2/M3,PROPOSAL-06,No historical data enter advisory-gate computation.,NOT_EXECUTED,NO,NONE_FOUND
+M3B-ADV-021,M0/M2/M3,PROPOSAL-06,Repeated calculation from identical raw output is deterministic.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-001,M3,PROPOSAL-07,Original GATE-031 remains present and unchanged in the frozen specification.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-002,M3,PROPOSAL-07,The amended specification marks GATE-031 retired for M3 V2 only.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-003,M3,PROPOSAL-07,Retirement has an explicit mathematical rationale.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-004,M3,PROPOSAL-07,"Retirement references Proposals 4, 5, and 7.",NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-005,M3,PROPOSAL-07,Replacement gate IDs are present.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-006,M3,PROPOSAL-07,Replacement gates collectively cover the original scientific purpose.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-007,M3,PROPOSAL-07,No replacement gate uses the invalid lower-bound > 0 rule.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-008,M3,PROPOSAL-07,Exact-null false-positive calibration remains mandatory.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-009,M3,PROPOSAL-07,Positive-excitation detection remains evaluated.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-010,M3,PROPOSAL-07,Conditional magnitude recovery remains separate from excitation existence.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-011,M3,PROPOSAL-07,Retirement does not affect M0 applicability.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-012,M3,PROPOSAL-07,Retirement does not alter M2 estimands.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-013,M3,PROPOSAL-07,The original pilot result remains reproducible.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-014,M3,PROPOSAL-07,No historical data enter replacement-gate calibration.,NOT_EXECUTED,NO,NONE_FOUND
+M3-G31-015,M3,PROPOSAL-07,No amended M3 run begins before replacement gates are frozen.,NOT_EXECUTED,NO,NONE_FOUND

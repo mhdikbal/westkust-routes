@@ -166,6 +166,19 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/MODEL_3B_M3_NULL_BOUNDARY_AUDIT.md
 !docs/thesis/pilot_annotation/MODEL_3B_GATE_AMENDMENT_PROPOSAL.md
 !docs/thesis/pilot_annotation/MODEL_3B_PILOT_GATE_CLASSIFICATION.csv
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_DECISION_LEDGER.csv
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_01_M0_ADJUDICATION.md
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_02_M2_ESTIMAND_ADJUDICATION.md
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_03_M2_FULL_SCALE_ADJUDICATION.md
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_04_M3_EXACT_NULL_ADJUDICATION.md
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_05_M3_DECISION_RULE_ADJUDICATION.md
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_06_ADVISORY_GATES_ADJUDICATION.md
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_07_M3_GATE031_RETIREMENT_ADJUDICATION.md
+!docs/thesis/pilot_annotation/MODEL_3B_COMPLETE_AMENDMENT_CONSISTENCY_AUDIT.md
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_DEPENDENCY_MATRIX.csv
+!docs/thesis/pilot_annotation/MODEL_3B_FUTURE_GATE_APPLICABILITY_MATRIX.csv
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_TEST_INVENTORY.csv
+!docs/thesis/pilot_annotation/MODEL_3B_AMENDMENT_IMPLEMENTATION_WAVES.md
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
