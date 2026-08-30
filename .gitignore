@@ -221,6 +221,11 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/WAVE_2_OPEN_DECISION_LEDGER.csv
 !docs/thesis/pilot_annotation/WAVE_2_OPEN_DECISION_ADJUDICATION_MAP.md
 !docs/thesis/pilot_annotation/WAVE_2_OPEN_DECISION_BATCH_MATRIX.csv
+!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_LITERATURE_SEARCH_LOG.csv
+!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_EVIDENCE_LEDGER.csv
+!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_EVIDENCE_TO_OPTION_MATRIX.csv
+!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_MATHEMATICAL_EVIDENCE_REVIEW.md
+!docs/thesis/pilot_annotation/WAVE_2_OD_005_006_015_ADJUDICATION_READINESS_REPORT.md
 !docs/thesis/pilot_annotation/WAVE_2_CROSS_DOCUMENT_CONSISTENCY_AUDIT.md
 !docs/thesis/pilot_annotation/WAVE_2_REQUIREMENT_DEPENDENCY_MATRIX.csv
 !docs/thesis/pilot_annotation/WAVE_2_FORMULA_SYMBOL_REGISTRY.csv
