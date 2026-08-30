@@ -212,6 +212,16 @@ docs/thesis/pilot_annotation/*
 !docs/thesis/pilot_annotation/MODEL_3B_COMPLETE_NUMERICAL_DECISION_CONSISTENCY_AUDIT.md
 !docs/thesis/pilot_annotation/MODEL_3B_NUMERICAL_DECISION_DEPENDENCY_MATRIX.csv
 !docs/thesis/pilot_annotation/MODEL_3B_NUMERICAL_TEST_INVENTORY.csv
+!docs/thesis/pilot_annotation/WAVE_2_MATHEMATICAL_CONTRACT.md
+!docs/thesis/pilot_annotation/WAVE_2_IMPLEMENTATION_COMPONENT_MAP.md
+!docs/thesis/pilot_annotation/WAVE_2_SIMULATION_AND_COVERAGE_PLAN.md
+!docs/thesis/pilot_annotation/WAVE_2_M3_BLOCKER_CLOSURE_PROTOCOL.md
+!docs/thesis/pilot_annotation/WAVE_2_TAU_CALIBRATION_PREREGISTRATION.md
+!docs/thesis/pilot_annotation/WAVE_2_EXECUTION_MANIFEST_AND_STOP_RULES.md
+!docs/thesis/pilot_annotation/WAVE_2_OPEN_DECISION_LEDGER.csv
+!docs/thesis/pilot_annotation/WAVE_2_CROSS_DOCUMENT_CONSISTENCY_AUDIT.md
+!docs/thesis/pilot_annotation/WAVE_2_REQUIREMENT_DEPENDENCY_MATRIX.csv
+!docs/thesis/pilot_annotation/WAVE_2_FORMULA_SYMBOL_REGISTRY.csv
 
 # Scan Dagh-register sumber primer (puluhan MB/volume) — dipakai sekali utk
 # sisir manual, ekstraksi hasilnya ada di data/research/*.csv + migrasi DB,
