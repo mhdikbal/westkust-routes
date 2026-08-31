@@ -155,6 +155,21 @@ docs/thesis/pilot_annotation/model3b_v2/adjudication/*
 docs/thesis/pilot_annotation/model3b_v2/manifests/*
 !docs/thesis/pilot_annotation/model3b_v2/manifests/*.md
 !docs/thesis/pilot_annotation/model3b_v2/manifests/*.csv
+
+# Painan–Indrapura Strategic History Lab planning artifacts (Phase G0) —
+# same narrow-whitelist policy as model3b_v2 above: only .md/.csv content
+# tracked per subfolder, everything else under the workstream stays ignored.
+!docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/
+docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/*
+!docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/planning/
+docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/planning/*
+!docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/planning/*.md
+!docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/planning/*.csv
+!docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/source_inventory/
+docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/source_inventory/*
+!docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/source_inventory/*.md
+!docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/source_inventory/*.csv
+
 !docs/thesis/pilot_annotation/EPISODE_ANNOTATION_TEMPLATE.md
 !docs/thesis/pilot_annotation/BARUS_EPISODE_DOSSIER_DRAFT.md
 !docs/thesis/pilot_annotation/INDERAPURA_EPISODE_DOSSIER_DRAFT.md
