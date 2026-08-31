@@ -93,6 +93,8 @@ This does not qualify as **B** (`RESOLVABLE_BY_CROSS_DOCUMENT_RECONCILIATION`) b
 
 Prepare a narrowly-scoped, non-numerical additive amendment proposal for `OD-005`'s `candidate_options` field in `WAVE_2_OPEN_DECISION_LEDGER.csv`, choosing explicitly between: (a) retiring `OPT-005-B`, leaving `OPT-005-A` (`AbsBias_c`) as the sole live candidate, or (b) replacing `OPT-005-B`'s text with a concretely-named formula for future evaluation. This recommendation is **not** an amendment — it identifies the next authorizable step, per the user's own stated intent ("jika membutuhkan amendment nonnumerik, kita buat rencana amendment aditif lebih dahulu").
 
+This recommendation is additively resolved by WAVE_2_OD_005_RETIREMENT_REVIEW_DECISION_DRAFT.md (outcome: APPROVED_WITH_LIMITATIONS_TO_RETIRE) and, at execution time, by WAVE_2_OD_005_EXACT_AMENDMENT_EXECUTION_SPECIFICATION.md. Retirement removes no existing requirement or test obligation; the eight OD005-AMD-001 through OD005-AMD-008 future tests remain PLANNED_ONLY until separately authorized execution.
+
 ## 15. Prohibited interpretation
 
 Do not treat this review as having already retired `OPT-005-B` or selected `AbsBias_c` as final. Do not treat the evidence package's "high silent-default risk" note as itself constituting an explicit frozen-source resolution — it is a risk observation, not a contract. Do not use this review to modify the ledger, the draft, or any frozen artifact.

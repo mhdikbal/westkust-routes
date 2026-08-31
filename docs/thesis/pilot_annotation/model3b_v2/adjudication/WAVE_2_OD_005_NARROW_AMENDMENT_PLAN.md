@@ -89,6 +89,8 @@ Everything in this plan is reversible: it created 4 new documentation files and 
 
 No amendment created. No ledger touched. Nothing staged or committed. This plan is a proposal for a future adjudication turn only.
 
+This plan's recommendation was reviewed and approved with limitations (WAVE_2_OD_005_RETIREMENT_REVIEW_DECISION_DRAFT.md, outcome APPROVED_WITH_LIMITATIONS_TO_RETIRE) and specified for execution (WAVE_2_OD_005_EXACT_AMENDMENT_EXECUTION_SPECIFICATION.md). Historical checksums of this plan and its sibling artifacts, as recorded at commit 9798e7efc840d9f8ff9bae497c3a47534295cbd4, remain immutable; any post-amendment checksum is a strictly additive provenance record computed after actual execution, never a replacement of the historical value.
+
 ---
 
 OD-005 final decision: WITHHELD

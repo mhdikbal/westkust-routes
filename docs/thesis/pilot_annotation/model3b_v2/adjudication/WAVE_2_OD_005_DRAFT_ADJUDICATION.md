@@ -58,6 +58,8 @@ Evidence supporting `AbsBias_c` (E-001, E-003) is not opposed by any source foun
 
 `DRAFT_CANDIDATE_SET_FOR_REVIEW`: the evidence package supports narrowing the live candidate set to `OPT-005-A` (`AbsBias_c`) as the substantively evidenced option, with `OPT-005-B` flagged for retirement-or-concretization rather than continued placeholder status. This is a **draft characterization of the evidence**, not a final selection — see §18.
 
+OPT-005-B's retirement-or-concretization question is resolved in favor of retirement: OPT-005-B is RETIRED_WITH_RATIONALE, per WAVE_2_OD_005_RETIREMENT_REVIEW_DECISION_DRAFT.md. This resolution does not modify n=alpha/beta, the conditional intensity, the log-likelihood, the full Hessian, R_attempted,c, R_valid,c, FailureRate_c, Coverage_c, or CoverAndValid_c. Historical inference remains NOT_AUTHORIZED, and Phase D remains DO NOT RERUN, independent of this resolution.
+
 ## 12. Limitations
 
 - No literature source directly states that `AbsBias_c` should be the *sole* exact-null metric versus reported alongside a second boundary-appropriate diagnostic (e.g. a signed-bias check) — this narrow residual question is not resolved here.

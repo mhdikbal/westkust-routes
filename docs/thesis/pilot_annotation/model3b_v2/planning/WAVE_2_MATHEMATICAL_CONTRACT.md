@@ -270,3 +270,5 @@ This document establishes contracts, not results. It does **not** claim: M0 fina
 | AC-M3-03 | M3 | Delta_BTI (bridge/TI agreement) | S3.7 | OPEN_REQUIRES_ADJUDICATION | NULL | none (OD-012) | n/a | MARGINAL_LIKELIHOOD_DISAGREEMENT | every model-comparison replication | YES |
 
 No `threshold_value` is populated anywhere in this registry — every row is `NULL` with `threshold_status=OPEN_REQUIRES_ADJUDICATION`, per instruction §21's explicit prohibition on guessed thresholds.
+
+**Prohibited interpretation (AC-M2-03, added per OD-005 retirement of OPT-005-B):** AC-M2-03's scope is AbsBias_c at the exact null only (OPT-005-A). OPT-005-B's retirement must not be read as redefining AC-M2-03's mathematical_object, threshold_status, or threshold_value; as modifying the conditional intensity lambda(t|H_t), the primary estimand n=alpha/beta, the log-likelihood ell(theta;Y), the full Hessian H(theta), J(theta_hat), or Var_hat(theta_hat); as modifying R_attempted,c=1000, R_valid,c, or FailureRate_c; as modifying Coverage_c; or as elevating CoverAndValid_c to a primary metric. AC-M2-03's threshold_value remains NULL and threshold_status remains OPEN_REQUIRES_ADJUDICATION.
