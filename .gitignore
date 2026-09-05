@@ -170,6 +170,14 @@ docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/source_inven
 !docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/source_inventory/*.md
 !docs/thesis/pilot_annotation/painan_indrapura_strategic_history_lab/source_inventory/*.csv
 
+# Computational Hermeneutics Systematic Literature Review artifacts —
+# same narrow-whitelist policy: only .md/.csv content tracked, everything
+# else under the workstream stays ignored.
+!docs/thesis/pilot_annotation/systematic_literature_review/
+docs/thesis/pilot_annotation/systematic_literature_review/*
+!docs/thesis/pilot_annotation/systematic_literature_review/*.md
+!docs/thesis/pilot_annotation/systematic_literature_review/*.csv
+
 !docs/thesis/pilot_annotation/EPISODE_ANNOTATION_TEMPLATE.md
 !docs/thesis/pilot_annotation/BARUS_EPISODE_DOSSIER_DRAFT.md
 !docs/thesis/pilot_annotation/INDERAPURA_EPISODE_DOSSIER_DRAFT.md

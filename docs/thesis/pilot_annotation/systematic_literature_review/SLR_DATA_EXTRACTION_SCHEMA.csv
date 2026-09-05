@@ -1,0 +1,23 @@
+field_id,field_name,field_definition,applicable_domains,data_type,example_values_or_taxonomy
+EXT-01,bibliographic_identity_and_publication_type,"full citation, DOI/ISBN/catalogue identifier where available, and publication type",ALL,text/categorical,"journal_article, book, book_chapter, PhD_thesis, preprint, conference_paper, grey_literature"
+EXT-02,disciplinary_domain,primary and secondary disciplinary framing of the study,ALL,categorical (multi-select),"hermeneutics/philosophy, digital_humanities, history, archival_science, computer_science/NLP, statistics, political_science/game_theory"
+EXT-03,corpus_source_type,"the kind of source material the study itself analyzes, if any","S2,S3,S4,S5,S6",categorical,"VOC_archive, EIC_archive, other_colonial_archive, literary_corpus, oral_history, none_theoretical_only"
+EXT-04,temporal_spatial_domain,time period and geographic scope of the study's own subject matter,"S2,S3,S4,S5,S6",text,"free text, e.g. '17th-century Southeast Asia', 'contemporary NLP benchmark'"
+EXT-05,research_question,the study's own stated research question(s),ALL,text,
+EXT-06,hermeneutic_framework,"named interpretive/hermeneutic theory invoked, if any","S1,S2",text,"e.g. Gadamer, Ricoeur, distant/close reading, none_stated"
+EXT-07,computational_method,"named computational or statistical method, if any","S2,S4,S5,S6",text,"e.g. Hawkes process, NER pipeline, ERGM, none_computational"
+EXT-08,observation_model,whether and how the study formally separates a latent process from its observed/recorded trace,"S3,S4,S5,S6",categorical,"EXPLICIT_FORMAL, IMPLICIT_DISCUSSED, NOT_ADDRESSED"
+EXT-09,unit_of_analysis,the study's unit of analysis,ALL,text,"e.g. document, event, actor-dyad, sentence, corpus-year"
+EXT-10,estimand_or_interpretive_target,what the study claims to estimate or interpret,ALL,text,
+EXT-11,denominator,"denominator used for any reported proportion/rate, if applicable","S4,S5,S6",text,"explicit denominator text, or NOT_APPLICABLE"
+EXT-12,validation_design,how (if at all) the study validates its method,"S2,S4,S5,S6",categorical,"SIMULATION_RECOVERY, HOLDOUT, EXPERT_ANNOTATION_AGREEMENT, NONE_STATED, NOT_APPLICABLE_THEORETICAL"
+EXT-13,uncertainty_representation,"how uncertainty is represented, if at all",ALL,categorical,"CONFIDENCE_INTERVAL, QUALITATIVE_HEDGE, BAYESIAN_POSTERIOR, NONE, NOT_APPLICABLE"
+EXT-14,provenance_model,"how source-to-claim provenance is tracked, if at all","S3,S4",categorical,"EXPLICIT_LINKAGE_SCHEMA, NARRATIVE_CITATION_ONLY, NOT_ADDRESSED"
+EXT-15,human_in_the_loop_role,"role of human judgment in the study's method, if any","S1,S2,S4",categorical,"CENTRAL, SUPERVISORY_SPOT_CHECK, ABSENT, NOT_APPLICABLE"
+EXT-16,treatment_of_ambiguity_and_plurality,how the study treats interpretive ambiguity/plurality of meaning,"S1,S2,S3",categorical,"REPRESENTED_EXPLICITLY, AVERAGED_AWAY, NOT_ADDRESSED"
+EXT-17,treatment_of_colonial_categories_and_silences,how the study treats colonial classification and archival silence,S3,categorical,"TREATED_AS_POSITIONED_OBSERVATION, TREATED_AS_NEUTRAL_FACT, NOT_APPLICABLE"
+EXT-18,identifiability_claims,whether/how the study addresses identifiability of its model,"S5,S6",categorical,"EXPLICIT_IDENTIFIABILITY_ANALYSIS, ASSUMED_WITHOUT_ANALYSIS, NOT_APPLICABLE"
+EXT-19,negative_result_handling,how the study treats null/negative/failed-validation results,"S5,S6",categorical,"REPORTED_AS_VALID_EVIDENCE, SUPPRESSED_OR_MINIMIZED, NOT_APPLICABLE"
+EXT-20,reproducibility_assets,"availability of code, data, or replication materials",ALL,categorical,"CODE_AND_DATA_AVAILABLE, CODE_ONLY, DATA_ONLY, NONE, NOT_APPLICABLE"
+EXT-21,limitations,limitations as stated by the study's own authors,ALL,text,
+EXT-22,relevance_to_project,"relevance to S1, Atlas, Model 3B, Hawkes, networks, game theory, or counterfactual work",ALL,categorical (multi-select),"S1_bibliographic_identity, Atlas_ontology, Model_3B_Hawkes_relevant(H_i^relevant), Model_3B_general, network_analysis, game_theory, counterfactual, none_directly"

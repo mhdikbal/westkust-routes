@@ -1,0 +1,9 @@
+domain_id,RQ1,RQ2,RQ3,RQ4,RQ5,RQ6,RQ7,row_sum_over_h,domain_covered_ge1
+D1_computational_hermeneutics,1,1,0,0,0,0,0,2,1
+D2_digital_humanities_computational_history,0,1,0,0,0,0,0,1,1
+D3_colonial_archive_criticism,0,0,1,0,0,0,0,1,1
+D4_historical_information_extraction_provenance,0,0,0,1,0,0,0,1,1
+D5_hawkes_temporal_event_modeling,0,0,0,0,1,1,0,2,1
+D6_network_game_theory_counterfactual,0,0,0,0,0,0,1,1,1
+column_sum_over_d,1,2,1,1,1,1,1,N/A,N/A
+question_covered_ge1,1,1,1,1,1,1,1,N/A,N/A
