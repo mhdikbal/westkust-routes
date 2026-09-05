@@ -1,0 +1,6 @@
+check,expected,observed,result
+script_still_unmodified_this_operation,identical to prior Branch B audit checksum,3bd763405eb43d8a1cce63ae3b7a3a23f38add485f5a01b0216413f2066ee608,PASS
+input_data_still_unmodified_this_operation,identical to prior Branch B audit checksum,d76bd609d7b4f234b1ffa40d6b108a469fb1c7979c216cd4f0c2c48c47dc8e25,PASS
+production_p_value_status,"must remain documentary-only, not corrected",displayed p<0.0001 is labeled NUMERICALLY_REPRODUCED_BUT_NOT_METHODOLOGICALLY_VALIDATED per Sec.11; no new p-value computed,PASS
+production_code_data_visual_unmodified,"no edits to model3_hawkes_kaskade_event.py, all_event_years.csv, hawkes_model_output.json, build_bokeh_dashboard.py, or riset_pemodelan.html",git diff --stat this operation shows zero changes to any of these paths,PASS
+no_fit_simulation_or_synthetic_event_this_operation,"0 fits, 0 simulations, 0 synthetic events, 0 false-Hawkes runs","0/0/0/0 -- this operation performed only adjudication, classification, literature search, and design documentation",PASS

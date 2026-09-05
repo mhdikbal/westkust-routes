@@ -1,0 +1,15 @@
+formula_id,domain,formula,classification,I,M,P,L,D,A_r_formula,provenance,limitation
+F-01,conditional intensity,lambda(t)=mu+sum alpha*exp(-beta(t-ti)),DIRECT_SECONDARY_SUPPORT_WITH_LIMITATIONS,1,1,1,1,1,1,Laub et al. 2024 Sec 2.3-2.4,"external preprint, not SLR-admitted"
+F-02,point-process log-likelihood,l(theta)=sum log(lambda(ti)) - int(lambda du),DIRECT_SECONDARY_SUPPORT_WITH_LIMITATIONS,1,1,1,1,1,1,Laub et al. 2024 general point-process likelihood construction,external preprint
+F-03,exponential Hawkes kernel,g(u)=alpha*exp(-beta*u),DIRECT_SECONDARY_SUPPORT_WITH_LIMITATIONS,1,1,1,1,1,1,Laub et al. 2024 Sec 2.3,external preprint
+F-04,branching ratio,eta=alpha/beta,DIRECT_SECONDARY_SUPPORT_WITH_LIMITATIONS,1,1,1,1,1,1,Laub et al. 2024 Sec 2.3-2.4,external preprint
+F-05,stability/subcriticality,eta<1 ; rho(A)<1 (multivariate),DIRECT_SECONDARY_SUPPORT_WITH_LIMITATIONS,1,1,1,1,1,1,Laub et al. 2024 Sec 2.10,external preprint
+F-06,half-life,t_1/2=ln(2)/beta,PROJECT_SPECIFIC_DESIGN_CHOICE,1,1,1,1,1,1,"elementary exponential-decay identity, no dedicated source required",trivial algebraic identity
+F-07,long-run intensity,"lambda_bar=mu/(1-eta), eta<1",DIRECT_SECONDARY_SUPPORT_WITH_LIMITATIONS,1,1,1,1,1,1,Laub et al. 2024 stationarity condition,external preprint
+F-08,time rescaling,"z_i=int(lambda_hat)du ~ Exp(1); u_i=1-exp(-z_i) ~ U(0,1)",DIRECT_SECONDARY_SUPPORT_WITH_LIMITATIONS,1,1,0,1,1,0,"Ogata (1988) JASA 83(401) -- correct primary reference identified this turn, exact page/theorem not yet confirmed","P_r gap: full text not fetched (residual blocker, see PP-02)"
+F-09,AIC,AIC=2k-2*loglik,PROJECT_SPECIFIC_DESIGN_CHOICE,1,1,1,1,1,1,"standard Akaike information criterion, well-known general statistics identity",none
+F-10,BIC,BIC=k*log(n)-2*loglik,PROJECT_SPECIFIC_DESIGN_CHOICE,1,1,1,1,1,1,standard Schwarz information criterion,none
+F-11,recovery bias,Bias(theta_hat)=mean(theta_hat_b - theta),PROJECT_SPECIFIC_DESIGN_CHOICE,1,1,1,1,1,1,standard Monte Carlo evaluation statistic,not yet applicable -- no recovery run has occurred (H-05)
+F-12,RMSE,RMSE(theta_hat)=sqrt(mean((theta_hat_b-theta)^2)),PROJECT_SPECIFIC_DESIGN_CHOICE,1,1,1,1,1,1,standard Monte Carlo evaluation statistic,not yet applicable -- no recovery run has occurred (H-05)
+F-13,interval coverage,Coverage_r=mean(1[theta_r in CI_r_b]),PROJECT_SPECIFIC_DESIGN_CHOICE,1,1,1,1,1,1,standard Monte Carlo evaluation statistic,not yet applicable -- no recovery run has occurred (H-05)
+F-14,false-positive rate,FPR_d=mean(1[Hawkes retained | eta_true=0]),PROJECT_SPECIFIC_DESIGN_CHOICE,1,1,1,1,1,1,bespoke anti-cocoklogi falsification design for this project,not yet applicable -- no false-Hawkes battery has run (H-07)

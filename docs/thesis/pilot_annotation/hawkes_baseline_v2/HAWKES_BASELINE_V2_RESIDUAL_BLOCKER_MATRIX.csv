@@ -1,0 +1,9 @@
+factor,value_before,value_after,driver,corrective_action
+G_G7,0,0,"H-05 FAIL (design specified, not executed), H-08 FAIL (unchanged, out of scope)","Execute the now-specified distinct V2 recovery design and pass >=0.80 (H-05); obtain a separate, explicit historical-inference authorization decision (H-08). Both are standalone future operations."
+D_distinct,NOT_EVALUABLE,1,Recovery Distinction Matrix: all 8 components (D_E..D_0) confirmed distinct from Phase D,none required -- resolved this operation
+P_141,0,0,"G_dedup=0 (2/6 dedup cases still REQUIRES_FOLIO_OR_SOURCE_CHECK: DEDUP-05 Koto Tangah 1755, DEDUP-06 Bayang GM/CD3 cross-check)","Locate the CD6 individual-treaty folio for Koto Tangah (DEDUP-05) and cross-check the RGP-cited 'Corpus III, nr. D' against the existing CD3 corpus (DEDUP-06). Narrow, well-defined next steps, down from the original 6+32 blocker set."
+F_SLR,0,0,13/14 formulas now pass A_r^formula (up from 10/14); F-08 time-rescaling theorem still fails P_r,Obtain full text of Ogata (1988) JASA 83(401) to confirm exact section/theorem provenance for the time-rescaling theorem
+O_obs,1,1,Exposure contract recomputed fresh: CD covers full 1600-1784 range with explicit provenance,none required
+E_epi,1,1,Event-type/episode feasibility recomputed: established with limitations (M6 remains NOT_FEASIBLE),none required
+I_guard,1,1,DEP-06 remains unambiguous,none required
+G_V2_preauth,0,0,G_G7=0 alone zeroes the product regardless of the other 5 factors,See G_G7 corrective actions above -- H-05 execution and H-08 separate authorization are the two remaining structural blockers

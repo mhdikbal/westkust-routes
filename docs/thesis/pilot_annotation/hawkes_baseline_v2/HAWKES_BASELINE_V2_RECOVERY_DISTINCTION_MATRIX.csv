@@ -1,0 +1,9 @@
+component,phase_d,v2_proposed,distinct
+D_E estimand,Model-selection accuracy across M0-M6 competing formulations (AIC-based),"Direct parameter bias/RMSE/coverage for mu, alpha, beta under the single M2 specification, plus boundary-null test calibration",1
+D_G data-generating process,Synthetic Hawkes+null mixture generated via model3b_cd_simulator across multiple model families,"Synthetic Hawkes+null generated directly at the M2 exponential-kernel level, with date-precision jittering matched to the actual 141-event precision distribution (72 exact/21 interval/16 year/10 month/22 unresolved) rather than a stylized simulator",1
+D_O observation process,No O(t) exposure model used at all,"At least one synthetic arm explicitly incorporates the CD document-density series (full 1600-1784 range, see exposure contract) as a covariate",1
+D_T date-uncertainty mechanism,Uniform jitter_ties() applied only to same-year ties,"Per-precision-class perturbation: EXACT_DAY unperturbed, MONTH_ONLY perturbed within month, YEAR_ONLY within year, DATE_INTERVAL within recorded [L_i,U_i] bounds, UNRESOLVED excluded or separately flagged",1
+D_S source-exposure mechanism,No source-family-specific exposure weighting,Exposure contract distinguishes CD (full-range) from GM/Daghregister (partial-range) source families explicitly,1
+D_C comparator suite,M0-M6 AIC-based model-selection accuracy comparison,Comparison narrowed to the MODEL_COMPARISON_WITHOUT_ASYMPTOTIC_P_VALUE boundary-null-safe procedure specifically (Sec.11 recommendation),1
+D_R recovery criteria,"Model-selection accuracy threshold (>=0.80), found to fail at 15.6-19.2%","Parameter-level RMSE/coverage thresholds for mu, alpha, beta individually -- a different statistical target than selection accuracy",1
+D_0 Phase D not rerun,n/a,"No Phase D code, simulator, or result reused or modified; V2 design is additive and separate",1

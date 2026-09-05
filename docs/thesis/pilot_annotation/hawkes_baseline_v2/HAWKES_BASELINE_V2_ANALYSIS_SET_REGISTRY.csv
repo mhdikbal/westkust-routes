@@ -1,0 +1,8 @@
+analysis_set_id,n,inclusion_rule,exclusion_reason,denominator_source,primary_or_sensitivity
+AS0_FULL_CORPUS,141,all coded events,none,all_event_years.csv / provenance working CSV,reference (not itself primary)
+AS1_PROVENANCE_CLEARED,95,"provenance_status in {CD_PRIMARY, CD_INDEPENDENT, MULTI_SOURCE_VERIFIED}",excludes 32 PROVENANCE_AMBIGUOUS + 14 CD_PARTIAL events,"provenance_status column, this operation's remediation pass",candidate primary set
+AS2_EXACT_EVENT_DATES,72,event_date_precision=exact_day,excludes 69 events with month/year/interval/unknown precision,event_date_precision column,sensitivity
+AS3_INTERVAL_ELIGIBLE,119,"event_date_precision in {exact_day,month,year,range,month_or_range}",excludes 22 events with blank/unknown precision (UNRESOLVED),event_date_precision column,sensitivity
+AS4_ONE_EVENT_PER_PARENT_EPISODE,85,"1 representative event per distinct parent_episode_id, plus all standalone (no-episode) events kept individually",collapses 56 additional same-episode events (80 episode-linked events -> 24 episode representatives + 61 standalone = 85),parent_episode_id column,sensitivity
+AS5_EXCLUDE_UNRESOLVED_DEDUP,139,"exclude the 2 events still flagged REQUIRES_FOLIO_OR_SOURCE_CHECK in dedup adjudication (DEDUP-05, DEDUP-06)",2 events pending folio/source cross-check,HAWKES_BASELINE_V2_DEDUP_ADJUDICATION.csv,candidate primary set
+AS6_EXCLUDE_VOC_ONLY_CLASSIFICATIONS,141,NOT_EVALUABLE -- no VOC_category_if_present or equivalent column exists in the current 37-column schema,"schema does not carry this classification; 0 events excluded because the criterion cannot be applied, not because none qualify",MODEL_3B_EVENT_SOURCE_PROVENANCE_WORKING.csv column list,NOT_EVALUABLE
