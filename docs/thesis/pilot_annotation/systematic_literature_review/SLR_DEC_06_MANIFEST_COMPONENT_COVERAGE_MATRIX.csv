@@ -1,0 +1,10 @@
+component_id,component_name,track,planned_candidate_count,candidate_ids,coverage_status,current_actual_evidence_support,execution_status
+K6-01,concepts,TRACK_A,3,EV-DEC06-A-01;EV-DEC06-A-03;EV-DEC06-A-05,COVERED: 3 Track A candidate(s) planned,0,PLANNED_ONLY
+K6-02,variants,TRACK_A,1,EV-DEC06-A-01,COVERED: 1 Track A candidate(s) planned,0,PLANNED_ONLY
+K6-03,translations,TRACK_A,1,EV-DEC06-A-04,COVERED: 1 Track A candidate(s) planned,0,PLANNED_ONLY
+K6-04,syntax,TRACK_B,13,EV-DEC06-B-01;EV-DEC06-B-02;EV-DEC06-B-03;EV-DEC06-B-04;EV-DEC06-B-05;EV-DEC06-B-06;EV-DEC06-B-07;EV-DEC06-B-08;EV-DEC06-B-09;EV-DEC06-B-10;EV-DEC06-B-11;EV-DEC06-B-12;EV-DEC06-B-13,COVERED: 13 Track B candidates map to the 42 applicable family-source pairs (see SLR_DEC_06_FINITE_EVIDENCE_CANDIDATE_MANIFEST.csv notes fields for exact pair-level mapping); no syntax row promoted; N_verified=0 unchanged,0,PLANNED_ONLY
+K6-05,filters,TRACK_A,1,EV-DEC06-A-02,COVERED: 1 Track A candidate(s) planned,0,PLANNED_ONLY
+K6-06,risk,TRACK_A,2,EV-DEC06-A-01;EV-DEC06-A-05,COVERED: 2 Track A candidate(s) planned,0,PLANNED_ONLY
+K6-07,seed checking,TRACK_A,1,EV-DEC06-A-06,COVERED: 1 Track A candidate(s) planned,0,PLANNED_ONLY
+K6-08,versioning,TRACK_A,1,EV-DEC06-A-07,COVERED: 1 Track A candidate(s) planned,0,PLANNED_ONLY
+K6-09,reporting,TRACK_A,2,EV-DEC06-A-02;EV-DEC06-A-03,COVERED: 2 Track A candidate(s) planned,0,PLANNED_ONLY
