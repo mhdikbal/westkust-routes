@@ -1,0 +1,8 @@
+precision_class,n_events,pct_of_141,source_column
+EXACT_DAY,72,51.1,event_date_precision (raw value mapped per instruction Sec.12 classes)
+MONTH_ONLY,10,7.1,event_date_precision (raw value mapped per instruction Sec.12 classes)
+YEAR_ONLY,16,11.3,event_date_precision (raw value mapped per instruction Sec.12 classes)
+INTERVAL,21,14.9,event_date_precision (raw value mapped per instruction Sec.12 classes)
+DOCUMENT_DATE_PROXY,0,0.0,event_date_precision (raw value mapped per instruction Sec.12 classes)
+INFERRED_DATE,0,0.0,event_date_precision (raw value mapped per instruction Sec.12 classes)
+UNRESOLVED,22,15.6,event_date_precision (raw value mapped per instruction Sec.12 classes)

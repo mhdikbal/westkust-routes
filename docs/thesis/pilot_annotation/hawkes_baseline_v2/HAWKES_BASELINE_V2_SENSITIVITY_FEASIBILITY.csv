@@ -1,0 +1,15 @@
+arm,status,notes
+FULL_POOLED,FEASIBLE,Already reproduced this turn (mu=0.2573 alpha=0.4207 beta=0.6215); blocked from further use by G_V2_model=0
+EXACT_DATES_ONLY,FEASIBLE_WITH_LIMITATIONS,"72/141 events have exact_day precision; n drops substantially, may underpower MLE"
+DATE_INTERVAL_PERTURBATION,FEASIBLE_WITH_LIMITATIONS,21/141 events are INTERVAL precision; requires an EXPLORATORY_SENSITIVITY_CHOICE-labeled perturbation design (F-10)
+EPISODE_EARLIEST,FEASIBLE_WITH_LIMITATIONS,Only 80/141 events have parent_episode_id; 61 standalone events need a defined earliest-of-1 rule
+EPISODE_LATEST,FEASIBLE_WITH_LIMITATIONS,Same denominator caveat as EPISODE_EARLIEST
+ONE_EVENT_PER_PARENT_EPISODE,FEASIBLE_WITH_LIMITATIONS,"24 distinct episodes cover 80 events; collapsing would drop n from 141 to ~85, may underpower"
+LEAVE_ONE_SOURCE_FAMILY_OUT,FEASIBLE_WITH_LIMITATIONS,CD carries 71/141 events (HHI=0.30); removing CD alone drops n by half
+LEAVE_ONE_MAJOR_SOURCE_OUT,FEASIBLE_WITH_LIMITATIONS,Same as above; source concentration is real and material
+LEAVE_ONE_PERIOD_OUT,FEASIBLE,184-year range (1600-1784) can be partitioned into decades without denominator ambiguity
+EVENT_TYPE_STRATIFIED,NOT_FEASIBLE,Smallest event_type class (suksesi) has only n=4; too sparse for a stratified MLE arm
+EXCLUDE_VOC_ONLY_CLASSIFICATIONS,NOT_EVALUABLE,No VOC_category_if_present column found in the working provenance CSV; classification not present in current schema
+EXPOSURE_ADJUSTED,FEASIBLE_WITH_LIMITATIONS,Candidate E(t) series exist (CD/GM/Daghregister) but only CD covers the full 1600-1784 range without gaps
+INHOMOGENEOUS_BASELINE,NOT_FEASIBLE,"Requires H-02 (O(t) model specification), which is NOT_EVALUABLE"
+ALTERNATIVE_KERNEL,FEASIBLE_WITH_LIMITATIONS,"Requires H-07 null-battery to distinguish kernel choice from overfitting, not yet run"

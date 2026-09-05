@@ -156,6 +156,15 @@ docs/thesis/pilot_annotation/model3b_v2/manifests/*
 !docs/thesis/pilot_annotation/model3b_v2/manifests/*.md
 !docs/thesis/pilot_annotation/model3b_v2/manifests/*.csv
 
+# Exploratory Hawkes Baseline V2 audit outputs — same narrow-whitelist
+# policy as model3b_v2 above: only .md/.csv/.png content tracked, everything
+# else under the workstream stays ignored.
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/
+docs/thesis/pilot_annotation/hawkes_baseline_v2/*
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_*.md
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_*.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/hawkes_v2_*.png
+
 # Painan–Indrapura Strategic History Lab planning artifacts (Phase G0) —
 # same narrow-whitelist policy as model3b_v2 above: only .md/.csv content
 # tracked per subfolder, everything else under the workstream stays ignored.

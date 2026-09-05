@@ -1,0 +1,142 @@
+event_id,event_date,event_date_precision,event_type,parent_episode_id,primary_source_collection,source_count_unique,provenance_status,deduplication_review_required,researcher_review_required
+EVT-1600-CD1-47-72aa,Desember 1600,UNRESOLVED_BLANK,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1607-CD1-74-8bac,17 Januari 1607,UNRESOLVED_BLANK,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1625-1624_1629-212-a59d,29 September 1625,UNRESOLVED_BLANK,diplomasi,EP-1625-VOC-JURISDICTION-CLAIM-AND-WITHDRAWAL,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1625-1624_1629-213-6b13,29 September 1625,UNRESOLVED_BLANK,administratif,EP-1625-VOC-JURISDICTION-CLAIM-AND-WITHDRAWAL,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1625-1624_1629-223-5efb,Okt-Des 1625 (2x kejadian),UNRESOLVED_BLANK,konflik,NONE,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1632-1631_1634-140-9368,10 Desember 1632,UNRESOLVED_BLANK,administratif,NONE,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1636-1636-264-ce0f,24 Sep 1636 (lapor 12 Okt 1636),UNRESOLVED_BLANK,administratif,NONE,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1637-1637-99-f729,10-12 Maret 1637,UNRESOLVED_BLANK,suksesi,NONE,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1641-CD1-371-c3a4,15 Februari 1641,UNRESOLVED_BLANK,suksesi,EP-1641-RATU-ATJEH-SUCCESSION,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1641-CD1-372-8322,Februari-Maret 1641,UNRESOLVED_BLANK,administratif,EP-1641-RATU-ATJEH-SUCCESSION,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1644-1643_1644-61-3fbd,21-23 Maret 1644,UNRESOLVED_BLANK,suksesi,NONE,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1647-1647_1648-22-38cc,"Des 1647 (surat, tanggal persis tak disebut)",UNRESOLVED_BLANK,diplomasi,NONE,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1648-1647_1648-94-362c,sebelum Mei 1648,UNRESOLVED_BLANK,administratif,NONE,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1649-CD1-555-4193,6 & 9 November 1649,UNRESOLVED_BLANK,perjanjian,EP-1649-1650-VOC-ATJEH-MONOPOLY-TREATIES,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1650-CD1-564-c4b0,15 Agustus 1650,UNRESOLVED_BLANK,perjanjian,EP-1649-1650-VOC-ATJEH-MONOPOLY-TREATIES,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1655-CD2-94-d138,7 Desember 1655,UNRESOLVED_BLANK,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1656-1656_1657-101-3243,15 Des 1656 (lapor 28 Jan 1657),UNRESOLVED_BLANK,konflik,EP-1656-1657-VOC-ATJEH-WAR-SILLIDA,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1657-1656_1657-101-8536,28 Jan 1657,UNRESOLVED_BLANK,konflik,EP-1656-1657-VOC-ATJEH-WAR-SILLIDA,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1657-1656_1657-131-fa7d,6 Feb 1657,UNRESOLVED_BLANK,administratif,EP-1656-1657-VOC-ATJEH-WAR-SILLIDA,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1657-1656_1657-171-ae4f,Mei 1657,UNRESOLVED_BLANK,konflik,EP-1656-1657-VOC-ATJEH-WAR-SILLIDA,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1657-1656_1657-196-c73e,pertengahan 1657,month_or_range,administratif,EP-1656-1657-VOC-ATJEH-WAR-SILLIDA,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1659-1659-65-19f3,ult. Jan-Mar 1659,range,konflik,EP-1656-1657-VOC-ATJEH-WAR-SILLIDA,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1659-1659-111-baa6,26 Mei 1659,exact_day,perjanjian,EP-1659-VOC-ATJEH-PEACE,unverified,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1659-CD2-168-27ad,20 Juni 1659,exact_day,perjanjian,EP-1659-VOC-ATJEH-PEACE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1660-1661-570-cdde,14 Okt 1660 (lapor 27 Jan 1661),exact_day,diplomasi,NONE,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1660-CD2-179-8ceb,8 Agustus 1660,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1660-CD2-184-a8b3,16 Agustus 1660,exact_day,administratif,EP-1660-CD2-INDRAPOURA-JURISDICTION-AND-GIFTS,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1660-CD2-182-95cf,16 Agustus 1660,exact_day,diplomasi,EP-1660-CD2-INDRAPOURA-JURISDICTION-AND-GIFTS,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1660-buku_padang_1718-237-78b0,1660,year,administratif,NONE,secondary_academic,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1661-1661-593-b897,~1657-1661 (lapor Des 1661),range,konflik,NONE,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1661-1661-594-06f1,Des 1661,month,konflik,NONE,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1662-1663-90-52b5,Jun-Jul 1662 (lapor 27 Mar 1663),range,konflik,EP-1662-1663-SONGYPAGOUERS-SECESSION,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1662-1663-92-3145,4 November 1662 (dilaporkan Batavia 27 Maret 1663),exact_day,konflik,EP-1662-1663-SONGYPAGOUERS-SECESSION,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1663-1663-89-5869,1662-1663 (lapor 27 Mar 1663),range,perjanjian,EP-1662-1663-SONGYPAGOUERS-SECESSION,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1663-1663-93-1af4,27-28 Maret 1663,range,konflik,EP-1662-1663-SONGYPAGOUERS-SECESSION,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1663-CD2-268-8198,27 Juli 1663,exact_day,perjanjian,EP-1662-1663-SONGYPAGOUERS-SECESSION,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1664-1664-540-aefa,8 Januari 1664,exact_day,konflik,EP-1664-1665-ACEH-EXPULSION-CAMPAIGN,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1664-1664-560-725f,1664,year,administratif,EP-1664-1665-ACEH-EXPULSION-CAMPAIGN,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1664-1664-564-dfed,14 Desember 1664,exact_day,konflik,EP-1664-1665-ACEH-EXPULSION-CAMPAIGN,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1665-1665-648-a0c7,10-13 Januari 1665,range,konflik,EP-1664-1665-ACEH-EXPULSION-CAMPAIGN,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1665-1665-668-5c28,27 Agustus 1665,exact_day,perjanjian,NONE,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1665-buku_padang_1718-237-0a69,1665,year,diplomasi,NONE,secondary_academic,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1667-1681-968-a987,1667 (dicatat ulang 10 Juni 1681),year,perjanjian,EP-1667-SILLIDA-CINGKUAK-SURRENDER,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1667-CD2-385-583e,25 Juli 1667,exact_day,perjanjian,EP-1667-SILLIDA-CINGKUAK-SURRENDER,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1668-CD2-399-dc97,29 April 1668,exact_day,perjanjian,EP-1668-1681-BARUS-SECESSION-AND-CONSOLIDATION,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1668-CD2-426-244e,1668,year,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1668-CD2-426-3321,14 Juli 1668,exact_day,diplomasi,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1670-buku_padang_1718-238-5f54,Maret 1670,month,konflik,NONE,secondary_academic,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1671-CD2-449-1d39,1 Agustus 1671,exact_day,administratif,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1671-CD2-454-306d,8 & 10 September 1671,exact_day,administratif,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1671-CD2-459-2aea,6 Desember 1671,exact_day,perjanjian,EP-1671-1678-PRIAMAN-ACEH-RELAPSE-CYCLE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1671-buku_padang_1718-238-d7c8,8 September 1671,exact_day,perjanjian,NONE,secondary_academic,1,PROVENANCE_AMBIGUOUS,not_flagged,true
+EVT-1672-CD2-476-34e0,19 Maret 1672,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1673-CD2-498-f351,5 Januari 1673,exact_day,administratif,EP-1668-1681-BARUS-SECESSION-AND-CONSOLIDATION,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1678-CD3-171-d8b8,22 September 1678,exact_day,perjanjian,EP-1671-1678-PRIAMAN-ACEH-RELAPSE-CYCLE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1679-CD3-188-9ada,18 April 1679,exact_day,perjanjian,NONE,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1679-CD3-208-e635,20 November 1679,exact_day,perjanjian,EP-1668-1681-BARUS-SECESSION-AND-CONSOLIDATION,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1680-CD3-230-4cb1,24 Juli - 8 Agustus 1680,range,perjanjian,EP-1680-LAURENS-PIT-PACIFICATION-CAMPAIGN,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1680-CD3-231-2c30,29 Agustus 1680,exact_day,perjanjian,EP-1680-LAURENS-PIT-PACIFICATION-CAMPAIGN,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1681-1681-971-dae1,10 Juni 1681,exact_day,perjanjian,EP-1668-1681-BARUS-SECESSION-AND-CONSOLIDATION,Daghregister,1,CD_INDEPENDENT,not_flagged,false
+EVT-1681-CD3-239-27a2,1 Januari 1681,exact_day,perjanjian,EP-1668-1681-BARUS-SECESSION-AND-CONSOLIDATION,CD,1,CD_PRIMARY,true,true
+EVT-1681-CD3-244-1165,27 Januari - 31 Maret 1681,range,konflik,EP-1668-1681-BARUS-SECESSION-AND-CONSOLIDATION,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1681-CD3-263-fde8,12 Februari 1681,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1681-CD3-269-1a96,27 Februari 1681,exact_day,perjanjian,EP-1667-SILLIDA-CINGKUAK-SURRENDER,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1681-CD3-271-3780,10 Maret 1681,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1682-CD3-301-add0,17 Maret 1682,exact_day,perjanjian,EP-1671-1678-PRIAMAN-ACEH-RELAPSE-CYCLE,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1682-CD3-309-b42a,5 Juli 1682,exact_day,administratif,NONE,CD,1,CD_PRIMARY,true,true
+EVT-1684-CD3-365-7f5b,19-20 Juni 1684,range,konflik,EP-1684-PRIAMAN-TIKU-CAMPAIGN,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1684-CD3-366-27bc,20-21 Juni 1684,range,konflik,EP-1684-PRIAMAN-TIKU-CAMPAIGN,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1685-CD3-399-bfad,30 November - 2 Desember 1685,range,perjanjian,EP-1680-LAURENS-PIT-PACIFICATION-CAMPAIGN,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1686-buku_vogel_1690-722-2078,Anno 1686,year,konflik,NONE,independent_primary_memoir,1,CD_INDEPENDENT,true,true
+EVT-1687-CD3-436-b331,23 Januari 1687,exact_day,diplomasi,NONE,CD,1,CD_PRIMARY,true,true
+EVT-1689-CD3-490-9ab5,23 Januari 1689,exact_day,administratif,EP-1671-1678-PRIAMAN-ACEH-RELAPSE-CYCLE,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1690-CD3-547-cce7,18 Oktober 1690,exact_day,suksesi,EP-1668-1681-BARUS-SECESSION-AND-CONSOLIDATION,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1693-CD4-24-3bed,22 Januari 1693,exact_day,perjanjian,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1693-CD4-28-25a0,29 Januari 1693,exact_day,perjanjian,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1693-CD4-35-f372,23 Maret 1693,exact_day,konflik,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1693-CD4-40-0ecc,31 Maret 1693,range,administratif,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1693-CD4-44-09eb,3 April 1693,exact_day,perjanjian,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1693-CD4-48-3e44,15 April 1693,exact_day,perjanjian,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1693-CD4-51-063c,26 April 1693,exact_day,perjanjian,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1693-CD4-55-95a5,2 Mei 1693,exact_day,perjanjian,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1693-CD4-59-3300,3 Mei 1693,exact_day,perjanjian,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1693-CD4-61-8c0b,3 Mei 1693,exact_day,perjanjian,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,CD,1,CD_PARTIAL,not_flagged,true
+EVT-1694-CD4-81-8780,12 Maret - 5 April 1694,range,konflik,EP-1694-BAROS-CIVILWAR-RESTRUCTURING,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1694-CD4-93-0dad,5 April 1694,exact_day,perjanjian,EP-1694-BAROS-CIVILWAR-RESTRUCTURING,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1698-CD4-146-421e,19 Juni 1698,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1698-CD4-152-3c4b,1 Oktober 1698,exact_day,administratif,NONE,CD,1,CD_PRIMARY,false,true
+EVT-1705-CD4-248-fb99,13 Agustus 1705,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1705-buku-padang-1718-238-c342,1705,year,perjanjian,EP-1705-1712-KOTO-TANGAH-LOYALTY-CONSOLIDATION,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true
+EVT-1707-CD4-274-b83c,17 Mei 1707,exact_day,diplomasi,NONE,CD,1,CD_PRIMARY,false,true
+EVT-1707-CD4-276-8287,8 Juni 1707,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1712-CD4-399-8883,19 Maret 1712,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1712-buku-padang-1718-238-c777,1712,year,konflik,EP-1705-1712-KOTO-TANGAH-LOYALTY-CONSOLIDATION,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true
+EVT-1716-CD4-487-ca42,21 Maret 1716,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1716-CD4-493-a32f,Maret 1716,month,administratif,NONE,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1727-CD5-26-5907,11 Maret 1727,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1731-CD5-108-0f5b,22 Maret 1731,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1737-CD5-271-dda1,20 Desember 1737,exact_day,administratif,NONE,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1738-buku-padang-1718-92-35fb,~1737-1738 (tak presisi),range,konflik,NONE,GM,1,CD_INDEPENDENT,false,true
+EVT-1740-buku-padang-1718-93-0c74,akhir 1740,year,konflik,NONE,GM,1,CD_INDEPENDENT,false,true
+EVT-1741-CD5-330-472f,21 Oktober 1741,exact_day,konflik,NONE,CD,1,CD_PARTIAL,false,true
+EVT-1751-buku-padang-1718-93-9efa,1751,year,administratif,NONE,GM,1,CD_INDEPENDENT,false,true
+EVT-1755-CD6-42-a16a,2 Februari 1755,exact_day,perjanjian,EP-1755-WESTKUST-RENEWAL-CAMPAIGN,CD,1,CD_PRIMARY,false,false
+EVT-1755-CD6-47-2daa,5 Februari 1755,exact_day,perjanjian,EP-1755-WESTKUST-RENEWAL-CAMPAIGN,CD,1,CD_PRIMARY,false,false
+EVT-1755-CD6-62-868c,15 Februari 1755,exact_day,perjanjian,EP-1755-WESTKUST-RENEWAL-CAMPAIGN,CD,1,CD_PRIMARY,false,false
+EVT-1755-buku-padang-1718-238-0727,1755,year,perjanjian,NONE,secondary_academic,1,PROVENANCE_AMBIGUOUS,true,true
+EVT-1759-buku-padang-1718-94-eec0,4 Desember 1759,exact_day,administratif,EP-1759-1760-SALT-MONOPOLY-REIMPOSITION,GM,1,CD_INDEPENDENT,false,true
+EVT-1760-CD6-210-53b2,6-7 Maret 1760,range,konflik,EP-1760-NATAL-ANGLO-FRENCH-VOC-TRANSFER,CD,1,CD_PARTIAL,false,true
+EVT-1760-CD6-223-cedc,6 Oktober 1760,exact_day,perjanjian,EP-1760-NATAL-ANGLO-FRENCH-VOC-TRANSFER,CD,1,CD_PARTIAL,false,true
+EVT-1760-buku-padang-1718-94-4d0e,25 Maret 1760,exact_day,administratif,EP-1759-1760-SALT-MONOPOLY-REIMPOSITION,GM,1,CD_INDEPENDENT,false,true
+EVT-1763-CD6-239-9efe,5 Juni 1763,exact_day,perjanjian,NONE,CD,1,CD_PRIMARY,not_flagged,false
+EVT-1767-CD6-301-cb4b,19 Juli 1767,exact_day,konflik,NONE,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1775-CD6-404-a460,23 Januari 1775,exact_day,administratif,NONE,CD,1,CD_PRIMARY,not_flagged,true
+EVT-1678-buku-vogel-1690-715-1a71,"Anno 1678 (dlm daftar 1670,1678,1682,1686)",year,konflik,EP-KOTOTANGAH-4X-DESTRUCTION-CYCLE-1670-1686,independent_primary_memoir,1,CD_INDEPENDENT,false,false
+EVT-1686-buku-vogel-1690-715-2972,"Anno 1686 (dlm daftar 1670,1678,1682,1686)",year,konflik,EP-KOTOTANGAH-4X-DESTRUCTION-CYCLE-1670-1686,independent_primary_memoir,1,CD_INDEPENDENT,false,true
+EVT-1686-buku-vogel-1690-458-fa01,1 September 1686,exact_day,konflik,EP-1686-BATANG-CAPAS-RECAPTURE,independent_primary_memoir,2,MULTI_SOURCE_VERIFIED,false,true
+EVT-1687-buku-vogel-1690-467-82b3,26-27 Januari 1687,range,konflik,NONE,independent_primary_memoir,1,CD_INDEPENDENT,false,false
+EVT-1687-buku-vogel-1690-543-c3df,sekitar 10 Juli 1687 (hari setelah 9 Juli),range,administratif,NONE,independent_primary_memoir,1,CD_INDEPENDENT,false,false
+EVT-1686-eic-bl-ior-g35-198-171c,18/22 September 1686,range,konflik,EP-1686-BATANG-CAPAS-RECAPTURE,independent_primary_archival,1,CD_INDEPENDENT,false,true
+EVT-1676-gm-vol04-05-101-7181,Juni 1676,month,konflik,NONE,GM,1,CD_INDEPENDENT,false,true
+EVT-1687-gm-vol04-05-162-a6b1,22 December 1687,exact_day,perjanjian,NONE,GM,1,CD_INDEPENDENT,true,true
+EVT-1688-gm-vol04-05-162-a0a4,"~1688 (rumor, tanggal tak presisi)",unknown,konflik,NONE,GM,1,CD_INDEPENDENT,false,true
+EVT-1683-gm-vol04-05-600-a6fd,31 december 1683 (lapor),exact_day,konflik,NONE,GM,1,CD_INDEPENDENT,false,false
+EVT-1694-gm-vol04-05-599-ac7e,"~1693-1695 (tak presisi, catatan editorial RGP)",unknown,konflik,EP-1693-SAS-EXPEDITION-AIRBANGIS-NIAS,GM,1,CD_INDEPENDENT,false,true
+EVT-1687-buku-vogel-1690-477-154b,26-27 Februari 1687,range,konflik,EP-1686-1687-RECONQUEST-POST-MAMETCHIA-DEFECTION,independent_primary_memoir,1,CD_INDEPENDENT,false,false
+EVT-1687-buku-vogel-1690-545-3f44,April-Mei 1687,month,konflik,EP-1686-1687-RECONQUEST-POST-MAMETCHIA-DEFECTION,independent_primary_memoir,1,CD_INDEPENDENT,false,false
+EVT-1602-lancaster-1601-1603-1-c28a,November 1602 (berangkat dari Priaman 26 Nov),month,administratif,NONE,independent_primary_memoir,1,CD_INDEPENDENT,false,false
+EVT-1781-kathirithamby-1965-314-6c8a,16 Agustus 1781 (koreksi dari 10 Agst),exact_day,konflik,EP-1781-EIC-CAPTURE-PADANG-WESTKUST,independent_primary_archival,2,MULTI_SOURCE_VERIFIED,false,true
+EVT-1781-botham-letter-1781-1-d154,17 Agustus 1781 (koreksi dari 19 Agst),exact_day,konflik,EP-1781-EIC-CAPTURE-PADANG-WESTKUST,independent_primary_archival,2,MULTI_SOURCE_VERIFIED,false,true
+EVT-1781-botham-letter-1781-1-5a01,"Okt 1781 (subordinat, surat Botham 12 Okt 1781)",month,administratif,EP-1781-EIC-CAPTURE-PADANG-WESTKUST,independent_primary_archival,1,CD_INDEPENDENT,false,false
+EVT-1781-botham-letter-1781-1-5333,"Okt 1781 (subordinat, surat Botham 12 Okt 1781)",month,administratif,EP-1781-EIC-CAPTURE-PADANG-WESTKUST,independent_primary_archival,1,CD_INDEPENDENT,false,true
+EVT-1782-kathirithamby-1965-318-9273,Maret 1782,month,konflik,NONE,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true
+EVT-1783-kathirithamby-1965-320-2db5,Juni 1783,month,administratif,NONE,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true
+EVT-1784-kathirithamby-1965-320-b7b8,1784-1785,range,perjanjian,NONE,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true
+EVT-1750-kathirithamby-1965-246-ffbe,5 Jan 1750 (dilaporkan Madras),exact_day,diplomasi,EP-1750-1773-MINANGKABAU-EIC-OVERTURES,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true
+EVT-1767-kathirithamby-1965-246-3f3e,1767 (diulang 1772),year,diplomasi,EP-1750-1773-MINANGKABAU-EIC-OVERTURES,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true
+EVT-1772-kathirithamby-1965-246-2ab5,1772,year,diplomasi,EP-1750-1773-MINANGKABAU-EIC-OVERTURES,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true
+EVT-1773-kathirithamby-1965-247-2969,10 Des 1773,exact_day,administratif,EP-1750-1773-MINANGKABAU-EIC-OVERTURES,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true
+EVT-1685-kathirithamby-1965-364-49e5,29 Sep 1685,exact_day,administratif,NONE,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true
+EVT-1714-kathirithamby-1965-364-5008,1714,year,administratif,NONE,secondary_academic,1,PROVENANCE_AMBIGUOUS,false,true

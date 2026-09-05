@@ -1,0 +1,9 @@
+check,expected,observed,result,checksum
+script_unmodified,git diff clean against HEAD,git diff --stat returned empty; script byte-identical to tracked version,PASS,3bd763405eb43d8a1cce63ae3b7a3a23f38add485f5a01b0216413f2066ee608
+input_data_unmodified,data/export/all_event_years.csv unchanged,git status clean for this path,PASS,d76bd609d7b4f234b1ffa40d6b108a469fb1c7979c216cd4f0c2c48c47dc8e25
+n_reconciles,n=141,n=141,PASS,n/a
+mu_reproduces,mu=0.2572771222649274 (production JSON),mu=0.2572771222649274,PASS,n/a
+alpha_reproduces,alpha=0.42069911993090653 (production JSON),alpha=0.42069911993090653,PASS,n/a
+beta_reproduces,beta=0.621538620786892 (production JSON),beta=0.621538620786892,PASS,n/a
+branching_ratio_eta,"eta=alpha/beta, currently displayed as 0.677 (rounded)",eta=0.6769,PASS,n/a
+LR_test_boundary_null_validity,"LR test df=2 chi-square reference assumes an interior null; eta=0 is a parameter-space BOUNDARY (alpha=0 boundary of [1e-4,5])",reported p_value=0.0 using standard chi2(df=2); this reference distribution is very likely invalid at a boundary null per standard LR-test-on-boundary theory (Self & Liang 1987-type mixture-chi-square correction would be needed),METHODOLOGICAL_DEFECT_FLAGGED,n/a
