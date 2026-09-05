@@ -1,0 +1,2 @@
+contradiction_id,evidence_id_a,evidence_id_b,component,conflicting_rule_a,conflicting_rule_b,applicability_difference,possible_reconciliation_boundary,status,notes
+NONE,N/A,N/A,N/A,N/A,N/A,N/A,N/A,NO_CONTRADICTION_FOUND_AMONG_10_ADMISSIBLE_TRACK_A_ITEMS_THIS_TURN,"A pairwise review of all 10 admissible Track A evidence items was performed; no two items were found to prescribe materially incompatible rules for the same component. This is a documented negative finding, not an unperformed check. Future evidence collection may still surface contradictions."

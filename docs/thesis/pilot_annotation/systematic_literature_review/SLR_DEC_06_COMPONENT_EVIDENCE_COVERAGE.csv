@@ -1,0 +1,10 @@
+component_id,component_name,track,supporting_evidence_ids,N_k_support,S_k_covered,residual_gap
+K6-01,concepts,TRACK_A,EV-DEC06-EVID-01;EV-DEC06-EVID-10,2,1,NONE
+K6-02,variants,TRACK_A,EV-DEC06-EVID-02,1,1,NONE
+K6-03,translations,TRACK_A,EV-DEC06-EVID-04,1,1,"Support found is general Cochrane language-restriction guidance, not a dedicated cross-language term-equivalence-verification method; residual methodological gap remains for the exact discovery objective."
+K6-04,syntax,TRACK_B,see SLR_DEC_06_PROVIDER_SYNTAX_VERIFICATION_MATRIX.csv,32,1,32/42 applicable pairs fully verified from official documentation; 8 partially verified; 2 not found (DHQ) - see matrix for exact pair-level status.
+K6-05,filters,TRACK_A,EV-DEC06-EVID-05,1,1,NONE
+K6-06,risk,TRACK_A,EV-DEC06-EVID-03;EV-DEC06-EVID-10,2,1,NONE
+K6-07,seed checking,TRACK_A,EV-DEC06-EVID-08,1,1,NONE
+K6-08,versioning,TRACK_A,EV-DEC06-EVID-09,1,1,NONE
+K6-09,reporting,TRACK_A,EV-DEC06-EVID-05;EV-DEC06-EVID-06;EV-DEC06-EVID-07,3,1,NONE
