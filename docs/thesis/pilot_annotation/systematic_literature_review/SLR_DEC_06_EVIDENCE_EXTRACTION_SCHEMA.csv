@@ -1,0 +1,17 @@
+field_name,field_type,field_description,execution_status
+evidence_id,string,"Unique identifier for a future collected evidence item, e.g. EV-DEC06-001. Not yet assigned to any record.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+evidence_class,enumerated,"One of the eight classes defined in SLR_DEC_06_EVIDENCE_GAP_PLAN.md Sec.5.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+title,string,"Exact title of the evidence item as published by its issuing body.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+issuing_body_or_authors,string,"The organization, standard-issuing body, or named author(s) responsible for the item.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+publication_or_update_date,string,"Publication or most recent update date of the item, as stated by the issuing body.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+official_or_bibliographic_url,string,"Official URL or bibliographic locator for the item. Must resolve to the issuing body's own publication, not a third-party summary.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+source_authority,string,"Basis for treating the issuing body as authoritative for this evidence class (e.g. standard-setting body, peer-reviewed venue, official provider documentation).",SCHEMA_ONLY_NO_RECORDS_POPULATED
+supported_dec06_component,enumerated,"One or more of the nine K_6 components (concepts, variants, translations, syntax, filters, risk, seed checking, versioning, reporting) this item supports.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+exact_section_or_location,string,"Exact section, page, or anchor within the item supporting the specific methodological claim used.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+methodological_rule,string,"The specific methodological rule or recommendation extracted from the item, stated precisely.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+applicability_boundary,string,"The scope within which the rule applies (e.g. discipline, language, database type) and where it does not apply.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+limitation,string,"Stated or inferred limitation of the item's applicability to this SLR's context.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+conflict_or_competing_guidance,string,"Reference to any other admissible evidence item that prescribes a materially incompatible rule for the same component (see C_abk in SLR_DEC_06_EVIDENCE_GAP_PLAN.md Sec.13), or NONE_FOUND.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+admissibility_gate,formula_result,"Computed value of A_j^evidence = 1[I_j=M_j=D_j=P_j=L_j=1] per SLR_DEC_06_EVIDENCE_GAP_PLAN.md Sec.6, with each sub-indicator's basis stated.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+verification_status,enumerated,"One of: NOT_YET_DISCOVERED | DISCOVERED_PENDING_ADMISSIBILITY_REVIEW | ADMISSIBLE | INADMISSIBLE_WITH_REASON. No row in this turn may be anything other than the schema-definition state below.",SCHEMA_ONLY_NO_RECORDS_POPULATED
+notes,string,"Free-text notes, including any researcher-review flags.",SCHEMA_ONLY_NO_RECORDS_POPULATED
