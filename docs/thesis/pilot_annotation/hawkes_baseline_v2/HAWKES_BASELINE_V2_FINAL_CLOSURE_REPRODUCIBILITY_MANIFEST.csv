@@ -1,0 +1,24 @@
+check,expected,observed,result
+production_hawkes_script_unmodified,identical to prior remediation-audit checksum 3bd763405eb43d8a1cce63ae3b7a3a23f38add485f5a01b0216413f2066ee608,3bd763405eb43d8a1cce63ae3b7a3a23f38add485f5a01b0216413f2066ee608,PASS
+authoritative_working_csv_unmodified,zero diff to docs/thesis/colab/MODEL_3B_EVENT_SOURCE_PROVENANCE_WORKING.csv,sha256=8a93667b88543f9eb8905b0168d62dd6450395b99de96c31ab962be1f9d59528; git status shows no modification,PASS
+H05_evidence_artifact_unmodified,identical to prior checksum f874580223e8e0b1c86126d3a68f19f56bed8b0aad8c876f4b8372cb62ecdc34,f874580223e8e0b1c86126d3a68f19f56bed8b0aad8c876f4b8372cb62ecdc34,PASS
+H08_evidence_artifact_unmodified,lines 556-561 Sec.9.1 byte-identical to prior reads,re-read verbatim this operation; text identical,PASS
+CD6_pdf_source_used_read_only,no write to docs/cd/CD6.pdf,sha256=ad1441914ee52b8362dc94033866deeded030a8d2264d0f549e29c2900c09c9d; git status shows no modification,PASS
+CD3_pdf_source_used_read_only,no write to docs/cd/CD3.pdf,sha256=716c216cc6963a66f894888bbd4c95630a0e736ab86f0f74d6807d0851311f7c; git status shows no modification,PASS
+phase_D_rerun_count,0,0,PASS
+hawkes_fit_count,0,0,PASS
+poisson_fit_count,0,0,PASS
+synthetic_event_generation_count,0,0,PASS
+simulation_recovery_execution_count,0,0,PASS
+false_hawkes_battery_execution_count,0,0,PASS
+corrected_p_value_computed,false,false (CORRECTED_P_VALUE=NOT_COMPUTED),PASS
+current_production_p_value_status_preserved,NUMERICALLY_REPRODUCED_BUT_NOT_METHODOLOGICALLY_VALIDATED,unchanged verbatim,PASS
+V2A_authorization_artifact_created,false,false,PASS
+V2B_authorization_artifact_created,false,false,PASS
+conditional_authorization_files_created,false (G_V2_preauth=0),"HAWKES_BASELINE_V2_MODELING_AUTHORIZATION_DECISION.md and HAWKES_BASELINE_V2_FUTURE_COMPUTATION_MANIFEST.csv not created",PASS
+placeholder_authorization_artifact_created,false,false,PASS
+production_visualization_or_json_output_modified,false,"no writes to hawkes_model_output.json, riset_pemodelan build artifacts, or build_bokeh_dashboard.py",PASS
+dedup_locator_invented,false,"both locators (CD6 Contractenboek XVII no.25; CD3 Document D) retrieved by direct full-text extraction of existing repository PDFs, not invented",PASS
+ten_core_outputs_created,10,10,PASS
+two_conditional_outputs_created,0 (gated on G_V2_preauth=1),0,PASS
+csv_serialization_defect_first_write_pass,none,"PRE_FREEZE_SERIALIZATION_DEFECT_CORRECTED_AND_REVALIDATED: initial write of 6 of the 8 core CSVs contained unquoted commas inside multi-clause cells, producing ragged rows on csv.reader round-trip; files had not yet been staged/frozen when the defect was found; all 6 were rewritten via csv.writer with correct quoting and re-validated (consistent column counts, zero bad rows) before this manifest was finalized; not a substantive data change, only a serialization correction",PASS
