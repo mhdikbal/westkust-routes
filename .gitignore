@@ -164,6 +164,53 @@ docs/thesis/pilot_annotation/hawkes_baseline_v2/*
 !docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_*.md
 !docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_*.csv
 !docs/thesis/pilot_annotation/hawkes_baseline_v2/hawkes_v2_*.png
+# V2-A residual-validation-and-H05 operation (checkpoint: R1/R2 completion) —
+# exact-path negations only, scoped to the approved 10-output manifest plus
+# the minimum code set actually imported by R1/R2 (verified by import-graph
+# inspection, not assumed from filename). Everything else in this directory
+# (scratch, pilot, failed-attempt, superseded, cache) stays ignored.
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_RESIDUAL_VALIDATION_REPORT.md
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_H05_OPERATIONALIZATION_DECISION.md
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_ONTOLOGY_CAUSAL_BOUNDARY.md
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_RESIDUAL_INDEPENDENCE_RESULTS.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_BOOTSTRAP_CALIBRATION_MANIFEST.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_BOOTSTRAP_CALIBRATION_RESULTS.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_H05_SEMANTIC_DECOMPOSITION.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_FINAL_COMPLETION_GATE.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_RESIDUAL_VALIDATION_DEFECT_LEDGER.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_RESIDUAL_VALIDATION_REPRODUCIBILITY_MANIFEST.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/v2a_validation_engine.py
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/v2a_designs.py
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/r1_residual_independence.py
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/r2_bootstrap_calibration.py
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/r2_targeted_crossprocess_check.py
+# reclassified this checkpoint via transitive-dependency and unique-provenance
+# review (not tracked automatically): v2a_full_study.py and
+# rerun_recovery_family.py are the actual generating code for the active
+# recovery-row dataset (v2a_full_study_recovery_rows.json) that R1/R2 read;
+# HAWKES_BASELINE_V2A_COMPLETION_AUDIT.md holds the frozen R1 lag/multiplicity
+# policy text found nowhere else. v2a_coverage_addon.py and v2a_analysis.py
+# are tracked below as transitive, field-level reproducibility dependencies
+# (they generate se_*/coverage_*/delta2/mean_deltaAIC values quoted verbatim
+# in an already-tracked report); every other v2a_*.json/csv not explicitly
+# negated below remains ignored -- not required by R1/R2, not unignored by a
+# blanket rule.
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/v2a_full_study.py
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/rerun_recovery_family.py
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/v2a_full_study_recovery_rows.json
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_BOOTSTRAP_CALIBRATION_ROWS.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_COMPLETION_AUDIT.md
+# reclassified again this checkpoint via transitive field-level provenance
+# (RPG-02): v2a_coverage_addon.py and v2a_analysis.py generate se_*/coverage_*
+# and delta2/mean_deltaAIC/rate_label values that are directly quoted in the
+# already-tracked HAWKES_BASELINE_V2_CHECKPOINT5_REVISED_RECONCILIATION.md,
+# even though today's R1/R2 scripts never read those fields. Their own inputs
+# (the D1-D6 FPR-family rows and the original full-study run metadata, both
+# cited by the same tracked report) become C2 for the same reason.
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/v2a_coverage_addon.py
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/v2a_analysis.py
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/v2a_full_study_fpr_rows.json
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/v2a_full_study_meta.json
 
 # Painan–Indrapura Strategic History Lab planning artifacts (Phase G0) —
 # same narrow-whitelist policy as model3b_v2 above: only .md/.csv content
