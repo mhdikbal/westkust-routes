@@ -1,0 +1,16 @@
+field,value
+G_V2B_preauth_formula,1[H05=PASS AND P_analysis=1 AND F_SLR=1 AND O_obs=1 AND E_epi=1 AND I_guard=1 AND B_historical=1 AND B_PhaseD=1]
+H05_state_input,H05_NOT_EVALUABLE_REQUIRES_RESEARCHER_REVIEW
+P_analysis,1
+F_SLR,"1 (F-08=DIRECT_PRIMARY_SUPPORT_ESTABLISHED via Brown, Barbieri, Ventura, Kass & Frank 2002, Neural Computation 14(2):325-346, Sec.2.1, pp.329-331, eq.2.8/2.16/2.17; corroborated by the identical citation already in v2a_validation_engine.py's time_rescaling_residuals() docstring; F_R=14, F_A=14. Ogata 1988 remains BIBLIOGRAPHIC_IDENTITY_CONFIRMED / EXACT_F08_LOCATOR_NOT_INDEPENDENTLY_VERIFIED but this no longer fails F-08 or F_SLR)"
+O_obs,1
+E_epi,1
+I_guard,1
+B_historical,"1 (H_08_historical=0, i.e. historical inference remains not-authorized)"
+B_PhaseD,"1 (N_PhaseD_rerun=0, confirmed by mtime/hash checks this and prior operations)"
+G_V2B_preauth,0 = 0*1*1*1*1*1*1*1 (H05 term is the sole false factor)
+PRIMARY_V2B_BLOCKER,H05_NOT_EVALUABLE
+F_SLR_current_blocker,"NO -- F_SLR=1, resolved, not a current blocker"
+V2B_execution_count,0
+V2B_authorization_created,0
+final_V2B_status,BLOCKED

@@ -1,0 +1,36 @@
+field,value
+baseline_commit,e60f7ed14c6bd14d71eb4da5cd82e95b8fb00379
+baseline_verified,local HEAD = origin/main = e60f7ed14c6bd14d71eb4da5cd82e95b8fb00379
+new_computation_this_operation,"0 (source recovery, semantic decomposition, and candidate audit only; no fitting, simulation, bootstrap, or residual computation)"
+frozen_datasets_modified,0
+PRE_FREEZE_FSLR_STATE_INCONSISTENCY_CORRECTED,"yes -- corrected F_SLR from 0 to 1; F-08=DIRECT_PRIMARY_SUPPORT_ESTABLISHED via Brown, Barbieri, Ventura, Kass & Frank (2002), Neural Computation 14(2):325-346, Sec.2.1 pp.329-331 eq.2.8/2.16/2.17"
+F-08,DIRECT_PRIMARY_SUPPORT_ESTABLISHED
+F_R,14
+F_A,14
+F_SLR,1
+G_H05_semantic,0
+defined_H05_semantic_components,2/10
+sum_A_o_oper,0 (all 8 candidates O1-O8 inadmissible)
+G_H05_operational,0
+H05_decision,H05_NOT_EVALUABLE_REQUIRES_RESEARCHER_REVIEW
+H05_REASON_1,AUTHORITATIVE_RECOVERY_ACCURACY_CRITERION_NOT_OPERATIONALIZED (role: PRIMARY_SEMANTIC_BLOCKER)
+H05_REASON_2,RESIDUAL_VALIDATION_COMPLETED (role: COMPLETED_REQUIREMENT_NOT_A_BLOCKER)
+H05_REASON_3,D2_PRESPECIFICATION_PROVENANCE_NOT_RECOVERED (role: EVIDENCE_DOMAIN_LIMITATION)
+C_H05,0
+G_V2A_complete,0
+G_V2B_preauth,"0 = 0*1*1*1*1*1*1*1 (H05 term is the sole false factor; F_SLR=1, not a blocker)"
+PRIMARY_V2B_BLOCKER,H05_NOT_EVALUABLE
+PROSPECTIVE_AMENDMENT_STATUS,PROSPECTIVE_GOVERNANCE_AMENDMENT_ARCHITECTURE_PROPOSED
+AMENDMENT_ADOPTED,NO
+AMENDMENT_OPERATIONAL,NO
+RETROSPECTIVE_APPLICATION_TO_FROZEN_V2A,PROHIBITED
+PROFILE_CATEGORY_CRITERIA,PENDING_INDEPENDENT_METHOD_AND_GOVERNANCE_SPECIFICATION
+G_causal,0
+G_ontology,0
+historical_corpus_fit_count,0
+new_simulation_count,0
+new_bootstrap_count,0
+V2B_execution_count,0
+PhaseD_rerun_count,0
+secret_scan_result,clean (grep for common credential patterns across all 7 files after correction: 0 genuine matches)
+csv_schema_validation,"all 5 CSVs re-parsed with Python csv.reader after correction; consistent column counts per row, 0 malformed rows"

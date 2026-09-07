@@ -370,3 +370,12 @@ validation_summary.json
 run_metadata.json
 docs/enclave/scans/
 ~$*.docx
+
+# Hawkes V2-A H-05 governance decision package
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_H05_AUTHORITATIVE_SOURCE_LEDGER.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_H05_SEMANTIC_CONTRACT.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_H05_OPERATIONALIZATION_CANDIDATES.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_H05_GOVERNANCE_AMENDMENT_PROPOSAL.md
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_H05_FINAL_RESEARCHER_DECISION.md
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_V2B_READINESS_DECISION.csv
+!docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2A_H05_REPRODUCIBILITY_MANIFEST.csv
