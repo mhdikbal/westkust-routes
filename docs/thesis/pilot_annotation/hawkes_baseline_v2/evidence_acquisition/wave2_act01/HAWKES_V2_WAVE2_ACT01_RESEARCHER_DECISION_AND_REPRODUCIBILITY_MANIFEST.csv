@@ -1,0 +1,66 @@
+row_id,section,key,value
+1,DECISION_PACKAGE,decision_id,DEDUP06-WAVE2-GRANULARITY-AND-EPISODE
+2,DECISION_PACKAGE,question_1,"H-F (parent episode): should an explicit, source-grounded episode-assignment rule be authored to test whether Document D and Document Dl (and their corresponding coded-row representation) constitute one parent episode? Options: AUTHOR_RULE_NOW | DEFER | REJECT_EPISODE_GROUPING"
+3,DECISION_PACKAGE,question_1_answer,DEFER_EPISODE_RULE
+4,DECISION_PACKAGE,question_2,"H-G (coding granularity): given that the coded row's actor field conflates Document D's twelve Bayang regents with Document Dl's Radja Itam (two distinct instruments), what should happen to the coded row? Options: SPLIT_INTO_TWO_ROWS | KEEP_AS_IS_WITH_DOCUMENTED_CAVEAT | AUTHOR_EPISODE_RULE_FIRST | DEFER"
+5,DECISION_PACKAGE,question_2_answer,KEEP_CODED_ROW_FROZEN_WITH_DOCUMENTED_CAVEAT_PENDING_GRANULARITY_RULE
+6,DECISION_PACKAGE,decision_date,2026-09-09
+7,DECISION_PACKAGE,non_retroactivity_reminder,"Whatever is decided, this operation did not split, merge, delete, or rewrite the coded row, and did not mutate AS86. Any change to the coded row or corpus requires a separate, explicitly authorized operation."
+8,DECISION_PACKAGE,dedup06_status_reminder,"DEDUP-06 remains UNRESOLVED. G_DEDUP06 = 1[R=1 AND Q=1 AND C=1 AND A=1] = 0. R=1, Q=1, C=0 (H-F and H-G remain live/open), A=1 (researcher accepts RETAIN_AS_OPEN_PENDING_PROSPECTIVE_GRANULARITY_RULE -- acceptance of keeping the case open under caveat, NOT acceptance of DEDUP-06 closure)."
+57,DECISION_PACKAGE,H-F_RESEARCHER_DECISION,DEFER_EPISODE_RULE
+58,DECISION_PACKAGE,H-G_RESEARCHER_DECISION,KEEP_CODED_ROW_FROZEN_WITH_DOCUMENTED_CAVEAT_PENDING_GRANULARITY_RULE
+59,DECISION_PACKAGE,DEDUP06_RESEARCHER_DECISION,RETAIN_AS_OPEN_PENDING_PROSPECTIVE_GRANULARITY_RULE
+60,DECISION_PACKAGE,R,1
+61,DECISION_PACKAGE,Q,1
+62,DECISION_PACKAGE,C,0
+63,DECISION_PACKAGE,A,1
+64,DECISION_PACKAGE,G_DEDUP06,"1[R=1 AND Q=1 AND C=1 AND A=1] = 0"
+65,DECISION_PACKAGE,effective_boundary_clarification,"Researcher acceptance (A=1) applies only to the decision to retain the case open under the stated caveat. It is NOT acceptance of DEDUP-06 closure, NOT a promotion of R-O4, and NOT a mutation of AS86 or the coded row."
+9,REPRODUCIBILITY,generated_utc,2026-09-09T14:40:50Z
+10,REPRODUCIBILITY,authoritative_head,f8af5ca8faeae19cdc040f6ea811d0b2bd532cb9
+11,REPRODUCIBILITY,input_file,docs/cd/CD3.pdf
+12,REPRODUCIBILITY,input_sha256,716c216cc6963a66f894888bbd4c95630a0e736ab86f0f74d6807d0851311f7c
+13,REPRODUCIBILITY,input_file,docs/thesis/GM/xml/05/p0162.xml
+14,REPRODUCIBILITY,input_sha256,0e0796c5ad09ae8be582ee248637f8bdc1cdadf3fb2808cb83d0565ce1720ad8
+15,REPRODUCIBILITY,input_file,docs/thesis/colab/MODEL_3B_EVENT_SOURCE_PROVENANCE_WORKING.csv
+16,REPRODUCIBILITY,input_sha256,8a93667b88543f9eb8905b0168d62dd6450395b99de96c31ab962be1f9d59528
+17,REPRODUCIBILITY,input_file,data/research/linimasa_events.csv
+18,REPRODUCIBILITY,input_sha256,ebca46d15ab1706ed040ae58206048bde5fc53576606d2dedff363fde9b5278b
+19,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_EVENT_PROVENANCE_AUDIT.csv
+20,REPRODUCIBILITY,input_sha256,40c3affe6c8a431273fb4d20e10f0b1ddfe4350b2870722c9691bb4ed5b39f0c
+21,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave2_act01/HAWKES_V2_WAVE2_ACT01_RETRIEVAL_MASTER_REPORT.md
+22,REPRODUCIBILITY,output_sha256,48485272a9d32a897caf3734b7af1ddf0ca3dfc01860fc9ec07a45dbcb0caae9
+23,REPRODUCIBILITY,output_bytes,18231
+24,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave2_act01/HAWKES_V2_WAVE2_ACT01_SOURCE_PROVENANCE_LEDGER.csv
+25,REPRODUCIBILITY,output_sha256,ca1e37684c0feaac5890a279dfdc0148bc5b93be626341dea77001fb6f219dc8
+26,REPRODUCIBILITY,output_bytes,2096
+27,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave2_act01/HAWKES_V2_WAVE2_ACT01_ABDUCTIVE_ADJUDICATION_MATRIX.csv
+28,REPRODUCIBILITY,output_sha256,4b181e24783f7640b2ef5a83b196ba6f628ede7082494389e09d9f0ce5558d2d
+29,REPRODUCIBILITY,output_bytes,5329
+30,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave2_act01/HAWKES_V2_WAVE2_ACT01_RESEARCHER_DECISION_AND_REPRODUCIBILITY_MANIFEST.csv
+31,REPRODUCIBILITY,output_sha256,[SELF-REFERENTIAL -- a file cannot contain its own post-write hash; reported in terminal checkpoint only]
+32,REPRODUCIBILITY,output_bytes,[SELF-REFERENTIAL -- see terminal checkpoint]
+33,FROZEN_STATE,DEDUP-06,UNRESOLVED
+34,FROZEN_STATE,G_DEDUP06,0
+35,FROZEN_STATE,R-O4,FAIL
+36,FROZEN_STATE,AS86,FROZEN_UNCHANGED
+37,FROZEN_STATE,D1_prior,NOT_EVALUABLE
+38,FROZEN_STATE,G_seg_prospective,"1, prospective only"
+39,FROZEN_STATE,G_ontology,0
+40,FROZEN_STATE,G_causal,0
+41,FROZEN_STATE,G_reconsider_future,0
+42,FROZEN_STATE,Hawkes_fitting,SUSPENDED
+43,FROZEN_STATE,Hawkes_visualization,SUSPENDED
+44,FROZEN_STATE,V2-B,BLOCKED
+45,FROZEN_STATE,Phase_D,CLOSED / MUST NOT BE RERUN
+46,FROZEN_STATE,SERVER_SYNC,NOT_EXECUTED
+47,FROZEN_STATE,PRODUCTION_DEPLOYMENT,NOT_EXECUTED
+48,GUARDRAIL_CONFIRMATION,N_unauthorized_mutations,0
+49,GUARDRAIL_CONFIRMATION,files_created,4
+50,GUARDRAIL_CONFIRMATION,files_modified,0
+51,GUARDRAIL_CONFIRMATION,committed_files_edited,0
+52,GUARDRAIL_CONFIRMATION,cd3_pdf_modified_or_copied,0
+53,GUARDRAIL_CONFIRMATION,coded_row_split_merged_deleted_rewritten,0
+54,GUARDRAIL_CONFIRMATION,parent_episode_asserted_without_rule,0
+55,GUARDRAIL_CONFIRMATION,external_sources_retrieved_this_output_set,0
+56,GUARDRAIL_CONFIRMATION,git_operations_performed,0
