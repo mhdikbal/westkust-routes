@@ -1,0 +1,62 @@
+row_id,section,key,value
+1,DECISION_PACKAGE,decision_id,ACT10-SEG-PROTOCOL-ACCEPTANCE
+2,DECISION_PACKAGE,question,"Does the researcher accept HAWKES_V2_PROSPECTIVE_PROPOSITION_SEGMENTATION_PROTOCOL.md (R=1 rule / E=1 examples / U=1 ambiguity policy, all confirmed present in Wave 1) as the governing segmentation rule for future proposition-typing work in this workstream?"
+3,DECISION_PACKAGE,options,"ACCEPT_PROSPECTIVELY | REVISE_PROSPECTIVELY | DEFER"
+4,DECISION_PACKAGE,researcher_decision,ACCEPT_PROSPECTIVELY
+5,DECISION_PACKAGE,decision_date,2026-09-09
+6,DECISION_PACKAGE,A_10,1
+7,DECISION_PACKAGE,G_seg_prospective,"1[R=1 AND E=1 AND U=1 AND A=1] = 1"
+8,DECISION_PACKAGE,effective_boundary,"Applies prospectively from this adjudication forward to future proposition-typing work governed by this protocol only. Does not re-segment or re-type the already-produced epistemic-object ledger. Does not validate ontology or historical truth."
+9,DECISION_PACKAGE,non_retroactivity_reminder,"D1_prior remains NOT_EVALUABLE (protocol Section 6), unchanged by this decision."
+10,DECISION_PACKAGE,secondary_note_dedup06,"Not a decision item for this package -- informational only. Wave 1 Section 2.3 found that 'Corpus III, nr. D' is a verbatim editorial cross-reference in docs/thesis/GM/xml/05/p0162.xml (line 987), attached to the same passage as EVT-1687-gm-vol04-05-162-a6b1, and that the series is plausibly 'Corpus Diplomaticum Neerlando-Indicum, Vol. III' by analogy to a sibling citation in data/research/linimasa_events.csv row 82. This narrows a future ACT-01 retrieval target; it does not resolve DEDUP-06 and requires no researcher decision in this package. Status: DEDUP06_DOSSIER_ERRATUM_RECORDED_IN_WAVE1 -- the committed dossier at evidence_acquisition/HAWKES_V2_DEDUP06_RETRIEVAL_DOSSIER.md is NOT edited; this note is the additive record. G_DEDUP06 remains 1[R=1 AND Q=1 AND C=1 AND A=1] = 0 (R, retrieval of the external object, is not set by this finding)."
+11,REPRODUCIBILITY,generated_utc,2026-09-09T13:51:50Z
+12,REPRODUCIBILITY,updated_utc,2026-09-09T00:00:00Z
+13,REPRODUCIBILITY,authoritative_head,985ebe786af5767161ff5864a01c1173ba3e7f35
+14,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_DEDUP_ADJUDICATION.csv
+15,REPRODUCIBILITY,input_sha256,cd72024e6de77d3f51b7c91273fd175d421c4d77a06103c0d70b5fe524299bf0
+16,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_DEDUP06_ABDUCTIVE_MATRIX.csv
+17,REPRODUCIBILITY,input_sha256,3d287bc4ad850b696c1c6778764cba183b2d7fdcd8c2923ef089abdd3be84e3f
+18,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/HAWKES_V2_DEDUP06_RETRIEVAL_DOSSIER.md
+19,REPRODUCIBILITY,input_sha256,104c7c5e51fd623b8806dd23441170c1817d6f9fbb19192f36253e416e15424f
+20,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/HAWKES_V2_CLAIM_EVIDENCE_DEPENDENCY_LEDGER.csv
+21,REPRODUCIBILITY,input_sha256,4d14af6d85a20c402b8141f1de3e78c51934b947b15eb955d12eadf6a27fdf48
+22,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/HAWKES_V2_SOURCE_FAMILY_OPPORTUNITY_MAP.csv
+23,REPRODUCIBILITY,input_sha256,dda0388d8e6bb466a63f676baed83cd55c349f683a67aede43cb02adf64ffd49
+24,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/HAWKES_V2_DATE_SEMANTICS_PROTOCOL.md
+25,REPRODUCIBILITY,input_sha256,f1dbc8212ff8f623e2e3b0273c99c932db34875c3460d1ad93a10fcf8f57ae32
+26,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/HAWKES_V2_PROSPECTIVE_PROPOSITION_SEGMENTATION_PROTOCOL.md
+27,REPRODUCIBILITY,input_sha256,115d0f74538df7e25f0ddc6ff5b7d26d727f2e4a4bd903a44932d4b63c33d6d3
+28,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/HAWKES_V2_EVIDENCE_ACQUISITION_MASTER_REPORT.md
+29,REPRODUCIBILITY,input_sha256,4a41d796b76e2ec71d5318e8f8c03565111fc812280fb33c216daa392ba8d570
+30,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_DUPLICATE_CORROBORATION_RELATIONS.csv
+31,REPRODUCIBILITY,input_sha256,55f647766a5729a8ee141fb75821719fbee6ebd58322473c5ce6aeb0abf86e01
+32,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_DIALECTICAL_CLAIM_MATRIX.csv
+33,REPRODUCIBILITY,input_sha256,c9f5a714b0b7a5b15014e7e131187d6da9841a9bbb34c260400d3b7465941bbd
+34,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_RO1_RO10_GATE_MATRIX.csv
+35,REPRODUCIBILITY,input_sha256,33ec463005e8d7860d7c3f591012808bb09647e0f079c97ebc2d52bd062e3f0e
+36,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_DATE_SEMANTICS.csv
+37,REPRODUCIBILITY,input_sha256,c3c67f9fc5bbe182316fc52fb0a124c4cfc256aa5f3a33215bc109ca09640262
+38,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_EVENT_PROVENANCE_AUDIT.csv
+39,REPRODUCIBILITY,input_sha256,40c3affe6c8a431273fb4d20e10f0b1ddfe4350b2870722c9691bb4ed5b39f0c
+40,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_DATE_UNCERTAINTY_LEDGER.csv
+41,REPRODUCIBILITY,input_sha256,38032e1b38955fc180efda017b17342cd5632539eb06f4f36e37e213ae941c1d
+42,REPRODUCIBILITY,input_file,docs/thesis/GM/xml/05/p0162.xml
+43,REPRODUCIBILITY,input_sha256,0e0796c5ad09ae8be582ee248637f8bdc1cdadf3fb2808cb83d0565ce1720ad8
+44,REPRODUCIBILITY,input_file,data/research/linimasa_events.csv
+45,REPRODUCIBILITY,input_sha256,ebca46d15ab1706ed040ae58206048bde5fc53576606d2dedff363fde9b5278b
+46,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave1/HAWKES_V2_WAVE1_INTERNAL_EVIDENCE_VERIFICATION_REPORT.md
+47,REPRODUCIBILITY,output_sha256,1684bdfde3f437c542ef874a5b6e6c00f72485c7efb1d8080ebf22841ea081b7
+48,REPRODUCIBILITY,output_bytes,16914
+49,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave1/HAWKES_V2_WAVE1_CITATION_DATE_PROVENANCE_LEDGER.csv
+50,REPRODUCIBILITY,output_sha256,576f4fd6a41d07a70834f9ac37e449ac2c3a604d4335826dbb6aca7a788fe035
+51,REPRODUCIBILITY,output_bytes,9921
+52,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave1/HAWKES_V2_WAVE1_RESEARCHER_DECISION_AND_REPRODUCIBILITY_MANIFEST.csv
+53,REPRODUCIBILITY,output_sha256,[SELF-REFERENTIAL -- a file cannot contain its own post-write hash; final self-hash reported in the terminal report only]
+54,REPRODUCIBILITY,output_bytes,[SELF-REFERENTIAL -- see terminal report]
+55,GUARDRAIL_CONFIRMATION,N_unauthorized_mutations,0
+56,GUARDRAIL_CONFIRMATION,N_false_convergence,0
+57,GUARDRAIL_CONFIRMATION,files_created,3
+58,GUARDRAIL_CONFIRMATION,files_modified,3
+59,GUARDRAIL_CONFIRMATION,files_modified_note,"All 3 modifications are within the Wave 1 authorized set itself (CSV-quoting fix to the ledger, row_id key column plus ACT-10 decision fields in this manifest, Section 4 update in the report) -- no file outside the 3-path allowlist was touched"
+60,GUARDRAIL_CONFIRMATION,git_operations_performed,0
+61,GUARDRAIL_CONFIRMATION,external_sources_retrieved,0
