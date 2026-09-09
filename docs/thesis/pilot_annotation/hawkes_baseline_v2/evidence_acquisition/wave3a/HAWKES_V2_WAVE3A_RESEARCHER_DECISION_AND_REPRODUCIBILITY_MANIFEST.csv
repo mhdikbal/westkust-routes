@@ -1,0 +1,181 @@
+row_id,section,key,value
+1,DECISION_PACKAGE,decision_id,WAVE3A-GRAN-PARENT-ACT07-ACCEPTANCE
+2,DECISION_PACKAGE,question_1,"Does the researcher accept the prospective granularity rule (Gamma_i, G_atomic, G_split, G_single) as designed? Options: ACCEPT_PROSPECTIVELY | REVISE_PROSPECTIVELY | DEFER"
+3,DECISION_PACKAGE,question_1_answer,REVISE_PROSPECTIVELY
+4,DECISION_PACKAGE,question_2,"Does the researcher accept the prospective parent-episode rule (M_ie, G_episode) as designed? Options: ACCEPT_PROSPECTIVELY | REVISE_PROSPECTIVELY | DEFER"
+5,DECISION_PACKAGE,question_2_answer,REVISE_PROSPECTIVELY
+6,DECISION_PACKAGE,question_3,"Does the researcher authorize a future, separately bounded ACT-07 execution (external archival-opportunity retrieval)? Options: AUTHORIZE_FUTURE_EXECUTION | DEFER | REJECT"
+7,DECISION_PACKAGE,question_3_answer,DEFER
+8,DECISION_PACKAGE,question_4,"TEST-03 finding: should the EP-1668-1681-BARUS-SECESSION-AND-CONSOLIDATION 7-member grouping be audited against the accepted parent-episode rule once A_parent=1? Options: AUDIT_ON_ACCEPTANCE | DEFER_PENDING_ACCEPTED_RULE | NOT_PRIORITIZED"
+9,DECISION_PACKAGE,question_4_answer,DEFER_PENDING_ACCEPTED_RULE
+10,DECISION_PACKAGE,question_5,"TEST-02 finding: should the MULTI_SOURCE_VERIFIED tagging convention be reviewed project-wide? Options: REVIEW_CONVENTION | REQUIRED_BUT_NOT_EXECUTED | NOT_PRIORITIZED"
+11,DECISION_PACKAGE,question_5_answer,REQUIRED_BUT_NOT_EXECUTED
+12,DECISION_PACKAGE,decision_date,2026-09-09
+13,DECISION_PACKAGE,non_retroactivity_reminder,"Whatever is decided, this operation did not mutate AS86, split/merge/delete any coded row, or resolve DEDUP-06. Wave 1 and Wave 2 outputs were not reopened or edited."
+14,DECISION_PACKAGE,GRANULARITY_RULE_DECISION,REVISE_PROSPECTIVELY
+15,DECISION_PACKAGE,PARENT_EPISODE_RULE_DECISION,REVISE_PROSPECTIVELY
+16,DECISION_PACKAGE,ACT07_EXECUTION_DECISION,DEFER
+17,DECISION_PACKAGE,TEST03_EPISODE_AUDIT,DEFER_PENDING_ACCEPTED_RULE
+18,DECISION_PACKAGE,MULTI_SOURCE_VERIFIED_PROJECT_WIDE_REVIEW,REQUIRED_BUT_NOT_EXECUTED
+19,DECISION_PACKAGE,revision_reasons,"(1) all five original cases produced UNRESOLVED_GRANULARITY; (2) this safely prevents premature closure but did not yet demonstrate operational discrimination; (3) P_applicable(original)=0/5 meant the rule classified no test case beyond unresolved; (4) N_premature=0 was necessary but weak given universal non-closure; (5) actor-name normalization was untested; (6) colonial-category naturalization in J_i remained unresolved; (7) documentary-survival bias lay outside the original test domain; (8) ACT-07 remained design-only with no execution-ready candidate"
+20,GATES,G_gran_design,1
+21,GATES,G_parent_design,1
+22,GATES,A_gran,0
+23,GATES,A_parent,0
+24,GATES,G_gran_accepted,"G_gran_design x A_gran = 1 x 0 = 0"
+25,GATES,G_parent_accepted,"G_parent_design x A_parent = 1 x 0 = 0"
+26,GATES,G_ACT07_design,"1[Q=1 AND D=1 AND F=1 AND C=1 AND B=1] = 1"
+27,GATES,G_ACT07_execute,"G_ACT07_design x L x A; A=0; G_ACT07_execute = 0"
+28,GATES,N_premature,0
+29,GATES,N_unsupported,0
+30,GATES,G_demonstration,"1[N_nonunresolved_evidence_classes>=1(=1) AND N_unresolved_preserved>=1(=7) AND N_unsupported=0] = 1"
+31,GATES,G_demonstration_qualification,LIMITED_OPERATIONAL_DEMONSTRATION
+32,GATES,G_demonstration_non_implications,"G_demonstration=1 does NOT imply: G_gran_accepted=1; G_parent_accepted=1; G_ontology=1; G_causal=1; G_reconsider_future=1; CORPUS_MUTATION_AUTHORIZED"
+33,GATES,OVERFIT_TO_DEDUP06_EXAMPLE,PARTIAL_MITIGATION_NOT_PROOF
+34,GATES,G_single_cross_report,"SUPERSEDED (Wave 3B): corrected via Omega_ij report-to-occurrence compatibility gate -- see GATES rows below for G_same_design/G_closure_demo"
+35,GATES,STRESS01_SELECTION_RISK,TARGET_CONGRUENT_SELECTION_DISCLOSED
+36,GATES,STRESS01_INDEPENDENT_VALIDATION_VALUE,LIMITED
+37,ESTIMANDS,N_original,5
+38,ESTIMANDS,N_stress,3
+39,ESTIMANDS,N_all,8
+40,ESTIMANDS,P_unresolved_original,5/5 = 1
+41,ESTIMANDS,P_evidence_applicable,"1/8 = 0.125 (numerator = STRESS-03 only, the sole non-EVIDENCE_UNRESOLVED case)"
+42,ESTIMANDS,P_authorized_action,0/8 = 0
+43,ESTIMANDS,P_open,"2/2 = 1 (denominator = TEST-05 and STRESS-02, the two cases blocked on a NOT_EVALUABLE identity component)"
+44,ACTOR_NORMALIZATION_AUDIT,diplomatic_form,"the exact form in Botham's primary letter (the Governor is not named in the quoted primary excerpt)"
+45,ACTOR_NORMALIZATION_AUDIT,normalized_form,Heerskerch
+46,ACTOR_NORMALIZATION_AUDIT,normalized_form_source,"Kathirithamby 1965 secondary thesis, p.314"
+47,ACTOR_NORMALIZATION_AUDIT,primary_document_cross_verification,NOT_AVAILABLE
+48,ACTOR_NORMALIZATION_AUDIT,collision_risk,UNRESOLVED
+49,ACTOR_NORMALIZATION_AUDIT,alternative_readings,RETAINED
+49b,ACTOR_NORMALIZATION_AUDIT,authoritative_actor_identity,NOT_ESTABLISHED
+50,COLONIAL_CATEGORY_AUDIT,event_type_assessed,konflik
+51,COLONIAL_CATEGORY_AUDIT,category_class,PROJECT_NORMALIZED_LABEL
+52,COLONIAL_CATEGORY_AUDIT,source_text_terms,"'surrender', 'summoned', 'expedition' (Botham's primary letter) -- never 'konflik'"
+53,COLONIAL_CATEGORY_AUDIT,promotion_status,"NOT promoted into a source-native term or neutral historical ontology"
+54,REPRODUCIBILITY,generated_utc,2026-09-09T15:15:01Z
+55,REPRODUCIBILITY,revised_utc,2026-09-09T16:00:00Z
+56,REPRODUCIBILITY,authoritative_head,3184e14e8183f9a93a34496f0bf3e4ebea568e58
+57,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_EVENT_PROVENANCE_AUDIT.csv
+58,REPRODUCIBILITY,input_sha256,40c3affe6c8a431273fb4d20e10f0b1ddfe4350b2870722c9691bb4ed5b39f0c
+59,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_DATE_SEMANTICS.csv
+60,REPRODUCIBILITY,input_sha256,c3c67f9fc5bbe182316fc52fb0a124c4cfc256aa5f3a33215bc109ca09640262
+61,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_PARENT_EPISODE_MEMBERSHIP.csv
+62,REPRODUCIBILITY,input_sha256,a69cafdd19f53592a0e27231154f57485b91deb2a20e1ecae7885f9b81ffb1ba
+63,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_DEDUP_ADJUDICATION.csv
+64,REPRODUCIBILITY,input_sha256,cd72024e6de77d3f51b7c91273fd175d421c4d77a06103c0d70b5fe524299bf0
+65,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_EXPOSURE_INFORMATION_REQUIREMENTS.csv
+66,REPRODUCIBILITY,input_sha256,cb88c50257adebafd93069d908ccafba4325b717982715d60b945d22ed6d6a8f
+67,REPRODUCIBILITY,input_file,data/research/linimasa_events.csv
+68,REPRODUCIBILITY,input_sha256,ebca46d15ab1706ed040ae58206048bde5fc53576606d2dedff363fde9b5278b
+69,REPRODUCIBILITY,input_file,docs/bsb10468472.txt
+70,REPRODUCIBILITY,input_sha256,6e8e79211948d77c99ed1c6f3142c46b796e093450d8a61d9dfdfa0cba464bd5
+71,REPRODUCIBILITY,input_file,docs/BL_IOR_G_35_198.txt
+72,REPRODUCIBILITY,input_sha256,ebf89b084e52d16b8c932c5c4b0c94635fa663f542c57bed4d7bf50f095f41e4
+73,REPRODUCIBILITY,input_file,docs/thesis/GM/xml/05/p0599.xml
+74,REPRODUCIBILITY,input_sha256,55346bc9b7d1c78aaf8827a196865395209bf2cbf1f9302af5b52202f1ba16b5
+75,REPRODUCIBILITY,input_file,docs/EIC_alternatif.json
+76,REPRODUCIBILITY,input_sha256,fcb8a02751d45f28072987a19216eafa9c267deb8e6b30d0027cdf97ff9bda4e
+77,REPRODUCIBILITY,input_file,docs/36.txt
+78,REPRODUCIBILITY,input_sha256,0df9c63ca078266d6529dce8e6856db4cf636baea00d13d01b86d8c7606bef96
+79,REPRODUCIBILITY,input_file,docs/Surat-Berita-Penangkapan-Kempen.rtf
+80,REPRODUCIBILITY,input_sha256,89f0d418f194268a5f8b435d531f784d69533da6debde125eefe48ff9c7278a2
+81,REPRODUCIBILITY,input_file,docs/HenryBotham
+82,REPRODUCIBILITY,input_sha256,b631a3e4a25b9eaf8087220b4abb509143d63be96c1e7f0fd24256c366e66e6f
+83,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave3a/HAWKES_V2_PROSPECTIVE_GRANULARITY_AND_PARENT_EPISODE_PROTOCOL.md
+84,REPRODUCIBILITY,output_sha256,3e9ff17bf42ed3194d5c07f0b771eb2116e53a37b01f4cfd64dcb6e985f1eee0
+85,REPRODUCIBILITY,output_bytes,35511
+86,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave3a/HAWKES_V2_GRANULARITY_RULE_NONMUTATING_TEST_LEDGER.csv
+87,REPRODUCIBILITY,output_sha256,8f9d6f12a1ac0f7f95af6eecb4064799d6abf2d719f3bfc3d0f375732ea99137
+88,REPRODUCIBILITY,output_bytes,24714
+89,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave3a/HAWKES_V2_ACT07_ARCHIVAL_OPPORTUNITY_DESIGN.csv
+90,REPRODUCIBILITY,output_sha256,311c4722cd101b6aa131295c82dc74ad6f15efdcf5f4b7658a2e503537287948
+91,REPRODUCIBILITY,output_bytes,7555
+92,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave3a/HAWKES_V2_WAVE3A_RESEARCHER_DECISION_AND_REPRODUCIBILITY_MANIFEST.csv
+93,REPRODUCIBILITY,output_sha256,[SELF-REFERENTIAL -- reported in terminal checkpoint only]
+94,REPRODUCIBILITY,output_bytes,[SELF-REFERENTIAL -- see terminal checkpoint]
+95,FROZEN_STATE,DEDUP-06,UNRESOLVED
+96,FROZEN_STATE,G_DEDUP06,0
+97,FROZEN_STATE,R-O4,FAIL
+98,FROZEN_STATE,AS86,FROZEN_UNCHANGED
+99,FROZEN_STATE,D1_prior,NOT_EVALUABLE
+100,FROZEN_STATE,G_seg_prospective,"1, prospective only"
+101,FROZEN_STATE,G_ontology,0
+102,FROZEN_STATE,G_causal,0
+103,FROZEN_STATE,G_reconsider_future,0
+104,FROZEN_STATE,Hawkes_fitting,SUSPENDED
+105,FROZEN_STATE,Hawkes_visualization,SUSPENDED
+106,FROZEN_STATE,V2-B,BLOCKED
+107,FROZEN_STATE,Phase_D,CLOSED / MUST NOT BE RERUN
+108,FROZEN_STATE,Wave2_RQCA,"(R,Q,C,A)=(1,1,0,1), G_DEDUP06=0 -- frozen, not reopened"
+109,FROZEN_STATE,SERVER_SYNC,NOT_EXECUTED
+110,FROZEN_STATE,PRODUCTION_DEPLOYMENT,NOT_EXECUTED
+111,GUARDRAIL_CONFIRMATION,N_unauthorized_mutations,0
+112,GUARDRAIL_CONFIRMATION,files_created_this_revision,0
+113,GUARDRAIL_CONFIRMATION,files_modified_this_revision,4
+114,GUARDRAIL_CONFIRMATION,files_modified_note,"All 4 modifications are within the Wave 3A authorized set itself (protocol .md revised, test ledger +2 columns +3 stress rows, ACT-07 CSV +1 column, this manifest) -- no fifth file created, no file outside the 4-path allowlist touched"
+115,GUARDRAIL_CONFIRMATION,committed_wave1_wave2_files_edited,0
+116,GUARDRAIL_CONFIRMATION,corpus_or_AS86_mutated,0
+117,GUARDRAIL_CONFIRMATION,coded_row_split_merged_deleted_rewritten,0
+118,GUARDRAIL_CONFIRMATION,corpus_diplomaticum_searched_or_retrieved,0
+119,GUARDRAIL_CONFIRMATION,act07_data_retrieved,0
+120,GUARDRAIL_CONFIRMATION,act05_executed,0
+121,GUARDRAIL_CONFIRMATION,git_operations_performed,0
+122,WAVE3B_REVISION,revision_date_utc,2026-09-09T16:30:00Z
+123,WAVE3B_REVISION,reevaluation_objects,"STRESS-01 (corrected), HOLDOUT-01, HOLDOUT-02"
+124,WAVE3B_REVISION,N_reevaluation_objects,3
+125,WAVE3B_ESTIMANDS,N_pairs_assessed,6
+126,WAVE3B_ESTIMANDS,N_supports_same_occurrence_mapping,3
+127,WAVE3B_ESTIMANDS,N_compatible_but_textually_dependent,1
+127b,WAVE3B_ESTIMANDS,N_conflicts_with_same_occurrence_mapping,2
+127c,WAVE3B_ESTIMANDS,N_unresolved_for_same_occurrence_mapping,0
+127d,WAVE3B_ESTIMANDS,pair_count_reconciliation,"3+1+2+0=6 (reconciles)"
+128,WAVE3B_ESTIMANDS,P_same_nonunresolved,"6/6 = 1.00 (CORRECTED reading: proportion of pairs reaching ANY decisive category -- support, dependent-compatible, or conflict; NOT a claim of universal same-occurrence support)"
+129,WAVE3B_ESTIMANDS,P_support,3/6 = 0.500
+129b,WAVE3B_ESTIMANDS,P_dependent_compatible,1/6 = 0.1667
+130,WAVE3B_ESTIMANDS,P_conflict,2/6 = 0.3333
+130b,WAVE3B_ESTIMANDS,P_unresolved,0/6 = 0.000
+131,WAVE3B_ESTIMANDS,P_conflict_preservation,"1/1 = 1.00 (Padang's 17-vs-18-Aug date conflict preserved as CONFLICTING for 2 of 3 pairs; the third pair's date agreement correctly attributed to textual dependence, not independent confirmation)"
+132,WAVE3B_ESTIMANDS,P_boundary,1/4 = 0.25
+133,WAVE3B_ESTIMANDS,N_unsupported,0
+134,WAVE3B_ESTIMANDS,G_closure_demo,1
+135,WAVE3B_ESTIMANDS,G_closure_demo_qualification,LIMITED_RULE_BEHAVIOR_DEMONSTRATION
+136,WAVE3B_ESTIMANDS,G_closure_demo_non_implications,"Does NOT imply: ontology validity; historical truth; corpus readiness; model readiness; researcher acceptance"
+137,WAVE3B_RESULTS,STRESS-01,EVIDENCE_SUPPORTS_SAME_OCCURRENCE_MAPPING
+138,WAVE3B_RESULTS,HOLDOUT-01,"EVIDENCE_CONFLICTS_WITH_SAME_OCCURRENCE_MAPPING (dominant, 2 of 3 pairs); (Botham,Harries) pair corrected to EVIDENCE_COMPATIBLE_WITH_SAME_OCCURRENCE_BUT_TEXTUALLY_DEPENDENT"
+138b,WAVE3B_RESULTS,HOLDOUT-01_boundary_reason,EVENT-DATE AND ACT-DATE RECONCILIATION REMAINS UNRESOLVED ACROSS REPORTS
+138c,WAVE3B_RESULTS,HOLDOUT-01_19aug_treatment,"J_19Aug=FLEET_ARRIVAL, excluded from surrender-date vector; conflict is 17-vs-18-Aug only, never 17-vs-18-vs-19"
+139,WAVE3B_RESULTS,HOLDOUT-02,EXISTING_PARENT_EPISODE_NOT_EVIDENCE_READY_UNDER_PROSPECTIVE_RULE
+140,WAVE3B_RESULTS,HOLDOUT-02_B_ie_Cingkuak,1
+141,WAVE3B_RESULTS,HOLDOUT-02_B_ie_Padang,"0 (date-role state CONFLICTING)"
+142,WAVE3B_RESULTS,HOLDOUT-02_B_ie_Pariaman,"0 (Oct 1781 is Botham's dispatch/letter date, not an independently established event date)"
+143,WAVE3B_RESULTS,HOLDOUT-02_B_ie_AirHaji,"0 (location identity itself 'diduga'/suspected, unconfirmed, in addition to the date-proxy problem)"
+144,WAVE3B_RESULTS,HOLDOUT-02_non_implications,"Does NOT mean: the episode definitely did not exist; the four entries are historically unrelated; parent_episode_id must be deleted; every child must become standalone"
+145,WAVE3B_RESULTS,all_authorized_corpus_actions,NO_CORPUS_ACTION_AUTHORIZED
+146,WAVE3B_GATES,G_gran_design,1
+147,WAVE3B_GATES,G_parent_design,1
+148,WAVE3B_GATES,G_same_design,1
+149,WAVE3B_GATES,A_gran,"1 (ACCEPT_PROSPECTIVELY_WITH_LIMITS, 2026-09-09)"
+150,WAVE3B_GATES,A_parent,"1 (ACCEPT_PROSPECTIVELY_WITH_LIMITS, 2026-09-09)"
+151,WAVE3B_GATES,A_same,"1 (ACCEPT_PROSPECTIVELY_WITH_LIMITS, 2026-09-09)"
+152,WAVE3B_GATES,G_gran_accepted,"G_gran_design x A_gran = 1 x 1 = 1"
+153,WAVE3B_GATES,G_parent_accepted,"G_parent_design x A_parent = 1 x 1 = 1"
+154,WAVE3B_GATES,G_same_accepted,"G_same_design x A_same = 1 x 1 = 1"
+154b,WAVE3B_GATES,acceptance_scope_reminder,"Authorizes future prospective rule use ONLY. Does NOT authorize: corpus mutation; retrospective recoding; DEDUP-06 closure; R-O4 promotion; Hawkes fitting; ACT-07 execution; ontology validation; causal inference."
+155,WAVE3B_GATES,ACT07_EXECUTION_DECISION,DEFER
+156,WAVE3B_GATES,G_ACT07_design,1
+157,WAVE3B_GATES,G_ACT07_execute,0
+158,WAVE3B_GATES,final_status,RULE_PACKAGE_READY_FOR_RESEARCHER_ACCEPTANCE_DECISION
+159,WAVE3B_GATES,anti_loop_note,"This is the final planned methodology stress-test pass; no further test expansion is proposed after this checkpoint"
+160,WAVE3B_GUARDRAIL,corpus_row_changed,0
+161,WAVE3B_GUARDRAIL,AS86_changed,0
+162,WAVE3B_GUARDRAIL,parent_episode_id_changed,0
+163,WAVE3B_GUARDRAIL,wave1_or_wave2_edited,0
+164,WAVE3B_GUARDRAIL,fifth_file_created,0
+165,WAVE3B_GUARDRAIL,git_operations_performed,0
+166,FINAL_ACCEPTANCE_DECISION,decision_options,"ACCEPT_PROSPECTIVELY_WITH_LIMITS | REVISE_AND_FREEZE_AS_NONVALIDATING_DESIGN | DEFER"
+167,FINAL_ACCEPTANCE_DECISION,recommended_decision,ACCEPT_PROSPECTIVELY_WITH_LIMITS
+168,FINAL_ACCEPTANCE_DECISION,recommendation_conditional_on,"all validation gates (G_CSV=1, G_CSV_semantic pending invariant 7, G_hash=1) -- NOT applied automatically"
+169,FINAL_ACCEPTANCE_DECISION,final_acceptance_decision,ACCEPT_PROSPECTIVELY_WITH_LIMITS
+170,FINAL_ACCEPTANCE_DECISION,decision_date,2026-09-09
+171,FINAL_ACCEPTANCE_DECISION,recommendation_scope_if_accepted,"authorizes future prospective rule use only; does NOT authorize corpus mutation, retrospective recoding, DEDUP-06 closure, R-O4 promotion, Hawkes fitting, ACT-07 execution, ontology validation, or causal inference"
