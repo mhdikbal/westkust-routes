@@ -1,0 +1,49 @@
+entry_id,category,name,formula_or_definition,acceptance_limitation,legacy_status_noncanonical,canonical_status
+DIAG-01,diagnostic,Time-rescaling exponential QQ,z_i=integral_{t_{i-1}}^{t_i} lambda_hat(s)ds ~approx~ Exponential(1),No single p-value may accept the model,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-02,diagnostic,Time-rescaling uniform QQ,"u_i=1-e^(-z_i) ~approx~ Uniform(0,1)",Same as DIAG-01,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-03,diagnostic,Kolmogorov-Smirnov statistic,KS test on transformed residuals u_i,"Report with stated limitations, not as a sole accept/reject rule",DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-04,diagnostic,Autocorrelation of transformed residuals,ACF(u_i),N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-05,diagnostic,Cumulative residual plot,cumulative sum of (z_i - 1),N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-06,diagnostic,Residual checks by period/source-family,stratified DIAG-01..05,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-07,diagnostic,Index of dispersion,D = S_Y^2 / Y_bar over prespecified bins,D>1 does not uniquely imply self-excitation,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-08,diagnostic,Fano-factor multi-width sensitivity,D computed at multiple prespecified bin widths,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-09,diagnostic,Empirical survival function of waiting times,S_W(w) = P(W>w),N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-10,diagnostic,Coefficient of variation,CV = sigma_W / mu_W,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-11,diagnostic,Burstiness statistic,B = (sigma_W - mu_W) / (sigma_W + mu_W),B>0 is not proof of Hawkes excitation,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-12,diagnostic,AIC (secondary only),AIC = 2k - 2*ell(theta_hat),Not a substitute for out-of-sample score,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-13,diagnostic,BIC (secondary only),BIC = k*log(n) - 2*ell(theta_hat),Same as DIAG-12; report ambiguous effective-n limitation if dependent event times,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-14,diagnostic,Count-forecast MAE (future authorized use only),MAE=(1/J)*sum|N_j-N_hat_j|,"Evaluates prediction under observed corpus, not historical truth",DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-15,diagnostic,Count-forecast RMSE (future authorized use only),RMSE=sqrt((1/J)*sum(N_j-N_hat_j)^2),Same as DIAG-14,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+DIAG-16,diagnostic,Predictive interval coverage (future authorized use only),Coverage=(1/J)*sum 1[N_j in PI_j],Same as DIAG-14,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-01,sensitivity_arm,Exact-day subset,restrict to EVENT_DATE-role exact-day rows only,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-02,sensitivity_arm,Lower-bound dates,use l_i for all rows with bounds,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-03,sensitivity_arm,Upper-bound dates,use u_i for all rows with bounds,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-04,sensitivity_arm,Interval-censored treatment,explicit interval-censored likelihood,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-05,sensitivity_arm,Proxy-date exclusion,exclude PROXY_DATE-role rows,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-06,sensitivity_arm,Source-family leave-out,refit excluding each source family in turn,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-07,sensitivity_arm,Parent-episode child representation,each child event as its own row,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-08,sensitivity_arm,Parent-episode earliest-date representation,one row per episode at earliest child date,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-09,sensitivity_arm,Parent-episode latest-date representation,one row per episode at latest child date,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-10,sensitivity_arm,Unresolved-granularity exclusion,exclude rows with EVIDENCE_UNRESOLVED granularity classification,N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-11,sensitivity_arm,Alternative baselines,constant vs piecewise-constant vs covariate-driven mu(t),N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+SENS-12,sensitivity_arm,Alternative kernels,exponential vs sum-of-exponentials vs power-law (HWK-01..03),N/A,DESIGN_ONLY_NOT_REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-01,stop_condition,Nonpositive fitted intensity,lambda_hat(t)<=0 for any t in window,N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-02,stop_condition,Optimizer failure across starts,no convergence across all prespecified starting values,N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-03,stop_condition,Branching-ratio instability,eta outside registered stability domain (e.g. eta>=1),N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-04,stop_condition,Parameter on imposed bound,theta_hat at a declared bound,N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-05,stop_condition,Singular/unusable uncertainty estimate,Hessian singular or CI unusable,N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-06,stop_condition,Material time-rescaling diagnostic failure,DIAG-01..06 fail materially,N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-07,stop_condition,No predictive improvement,Delta_LS <= 0 vs best comparator,N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-08,stop_condition,Conclusion reversal under sensitivity,sign/interpretation of primary estimand reverses across SENS-01..12,N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-09,stop_condition,Circular or provenance-incomplete exposure,any exposure covariate fails R_E(m),N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-10,stop_condition,Corpus-hash mismatch,registered corpus hash != hash used in fit,N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-11,stop_condition,Undisclosed denominator shift,"any N_v, N_children, or N_pairs changes without disclosure",N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-12,stop_condition,Prohibited model relabeled as diagnostic,e.g. calling a fitted forecast a 'diagnostic scoring',N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+STOP-13,stop_condition,Causal language from fit alone,"any statement of historical causation derived only from eta, AIC, BIC, or p-value",N/A,REGISTERED,DESIGN_ACCEPTED_NOT_EXECUTION_READY
+TERM-01,terminal_status,FIT_COMPUTATION_FAILED,N/A,N/A,ALLOWED,NOT_APPLICABLE
+TERM-02,terminal_status,FIT_DIAGNOSTICS_FAILED,N/A,N/A,ALLOWED,NOT_APPLICABLE
+TERM-03,terminal_status,FIT_NOT_BETTER_THAN_COMPARATOR,N/A,N/A,ALLOWED,NOT_APPLICABLE
+TERM-04,terminal_status,FIT_SENSITIVE_TO_CORPUS_CONSTRUCTION,N/A,N/A,ALLOWED,NOT_APPLICABLE
+TERM-05,terminal_status,FIT_EXPLORATORY_ONLY,N/A,N/A,ALLOWED,NOT_APPLICABLE
+TERM-06,terminal_status,FIT_ACCEPTABLE_FOR_OBSERVED_CORPUS_PREDICTION,N/A,N/A,ALLOWED,NOT_APPLICABLE
+TERM-07,terminal_status,HAWKES_VALIDATED,N/A,Never used,PROHIBITED,PROHIBITED

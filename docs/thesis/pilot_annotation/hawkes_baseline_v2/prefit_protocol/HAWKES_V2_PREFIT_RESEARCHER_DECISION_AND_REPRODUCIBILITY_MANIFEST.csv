@@ -1,0 +1,93 @@
+row_id,section,key,value
+1,GATES,G_reconsider,1[G_corpus=1 AND G_gran_application=1 AND G_date=1 AND G_observation=1 AND G_exposure_decision=1 AND G_comparators_accepted=1 AND G_primary_model_accepted=1 AND G_estimands_accepted=1 AND G_diagnostics_accepted=1 AND G_sensitivity_accepted=1 AND G_stop_accepted=1 AND A_reconsider=1] = 0 (0 AND 0 AND 0 AND 1 AND 0 AND 1 AND 1 AND 1 AND 1 AND 1 AND 1 AND 0 = 0)
+2,GATES,G_reconsider_components,G_corpus=0; G_gran_application=0; G_date=0; G_observation=1; G_exposure_decision=0; G_comparators_accepted=1; G_primary_model_accepted=1; G_estimands_accepted=1; G_diagnostics_accepted=1; G_sensitivity_accepted=1; G_stop_accepted=1; A_reconsider=0
+3,GATES,G_fit_m,1[G_reconsider=1 AND corpus_hash=registered AND model_m=registered AND optimizer_m=registered AND seed_m=registered AND output_path_m=registered AND stop_conditions_m=registered] = 0 for all m
+4,GATES,G_corpus_v,0
+5,GATES,G_causal,0
+6,GATES,G_ontology,0
+7,FROZEN_STATE,Hawkes_fitting,SUSPENDED
+8,FROZEN_STATE,Hawkes_visualization,SUSPENDED
+9,FROZEN_STATE,G_reconsider_future,0
+10,FROZEN_STATE,DEDUP-06,UNRESOLVED
+11,FROZEN_STATE,G_DEDUP06,0
+12,FROZEN_STATE,R-O4,FAIL
+13,FROZEN_STATE,AS86,FROZEN_UNCHANGED
+14,FROZEN_STATE,ACT07_EXECUTION_DECISION,DEFER
+15,FROZEN_STATE,G_ACT07_execute,0
+16,FROZEN_STATE,V2-B,BLOCKED
+17,FROZEN_STATE,Phase_D,CLOSED / MUST NOT BE RERUN
+18,FROZEN_STATE,G_gran_accepted,"1, prospective use with limits"
+19,FROZEN_STATE,G_parent_accepted,"1, prospective use with limits"
+20,FROZEN_STATE,G_same_accepted,"1, prospective use with limits"
+21,DENOMINATORS,AS86_primary_events,86
+22,DENOMINATORS,provenance_audit_rows,141
+23,DENOMINATORS,source_objects,9
+24,DENOMINATORS,denominator_conflation_check,AS86 != 141; confirmed distinct throughout this operation's outputs
+25,RESEARCHER_DECISIONS_REQUIRED,decision_1,Authorize a bounded ACT-07 acquisition operation (external archival-opportunity retrieval)? Options: AUTHORIZE | DEFER | REJECT
+26,RESEARCHER_DECISIONS_REQUIRED,decision_2,Authorize a bounded corpus-remediation operation applying the accepted Wave 3B prospective rules to the 141-row table (or a declared subset) to produce an immutable model-input corpus version? Options: AUTHORIZE | DEFER | REJECT
+27,RESEARCHER_DECISIONS_REQUIRED,decision_3,Authorize date-role application (assign explicit r_i per the 10-role taxonomy) to the 141-row table or a declared subset? Options: AUTHORIZE | DEFER | REJECT
+28,RESEARCHER_DECISIONS_REQUIRED,decision_4,"Once G_corpus, G_gran_application, and G_date are each 1, authorize model reconsideration (set G_reconsider=1)? Options: AUTHORIZE | DEFER | REJECT"
+29,RESEARCHER_DECISIONS_REQUIRED,decision_5,"After G_reconsider=1, authorize a specific registered fit (model_m, optimizer, seed, output path, stop conditions)? Options: AUTHORIZE | DEFER | REJECT"
+30,REPRODUCIBILITY,generated_utc,2026-09-10T00:01:46Z
+31,REPRODUCIBILITY,authoritative_head,2e12f68dbac609c9e50145ad86e7fb6051c11080
+32,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_EVENT_PROVENANCE_AUDIT.csv
+33,REPRODUCIBILITY,input_sha256,40c3affe6c8a431273fb4d20e10f0b1ddfe4350b2870722c9691bb4ed5b39f0c
+34,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_DATE_UNCERTAINTY_LEDGER.csv
+35,REPRODUCIBILITY,input_sha256,38032e1b38955fc180efda017b17342cd5632539eb06f4f36e37e213ae941c1d
+36,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_PARENT_EPISODE_MEMBERSHIP.csv
+37,REPRODUCIBILITY,input_sha256,a69cafdd19f53592a0e27231154f57485b91deb2a20e1ecae7885f9b81ffb1ba
+38,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/HAWKES_V2_SOURCE_FAMILY_OPPORTUNITY_MAP.csv
+39,REPRODUCIBILITY,input_sha256,dda0388d8e6bb466a63f676baed83cd55c349f683a67aede43cb02adf64ffd49
+40,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave3a/HAWKES_V2_PROSPECTIVE_GRANULARITY_AND_PARENT_EPISODE_PROTOCOL.md
+41,REPRODUCIBILITY,input_sha256,f15fa2f2cfae678806405c95dede135163969d3e9c3fdc2804d28dd0731401c8
+42,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/evidence_acquisition/wave3a/HAWKES_V2_ACT07_ARCHIVAL_OPPORTUNITY_DESIGN.csv
+43,REPRODUCIBILITY,input_sha256,311c4722cd101b6aa131295c82dc74ad6f15efdcf5f4b7658a2e503537287948
+44,REPRODUCIBILITY,input_file,"backend/build_bokeh_dashboard.py (read-only, NOT modified -- production dependency inventoried only)"
+45,REPRODUCIBILITY,input_sha256,d13e1de03c6c0c7607819b446fcfefab5819045218c96edd1302f8750ae82020
+46,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/prefit_protocol/HAWKES_V2_PREFIT_MATHEMATICAL_AND_STATISTICAL_CONTRACT.md
+47,REPRODUCIBILITY,output_sha256,0b773ee45d48d268ae065c275e98665f7e65e17f75642472fcd4889ca6e955da
+48,REPRODUCIBILITY,output_bytes,20478
+49,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/prefit_protocol/HAWKES_V2_PREFIT_READINESS_AND_DENOMINATOR_LEDGER.csv
+50,REPRODUCIBILITY,output_sha256,65d3a0371e0ec266b3cc248a459173d13054119aa5f733aeb4effdb88d24b05e
+51,REPRODUCIBILITY,output_bytes,5434
+52,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/prefit_protocol/HAWKES_V2_MODEL_FAMILY_AND_ESTIMAND_REGISTRY.csv
+53,REPRODUCIBILITY,output_sha256,f4302abb44e36adc2d77230b136233b50defed15131ae00c67f2ae55595ccc5a
+54,REPRODUCIBILITY,output_bytes,3514
+55,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/prefit_protocol/HAWKES_V2_DIAGNOSTIC_SENSITIVITY_AND_STOP_RULES.csv
+56,REPRODUCIBILITY,output_sha256,1fd42fad257b02c7b4b16748babb77f7adda9083d2bb889298926c02d51cfb29
+57,REPRODUCIBILITY,output_bytes,5957
+58,REPRODUCIBILITY,output_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/prefit_protocol/HAWKES_V2_PREFIT_RESEARCHER_DECISION_AND_REPRODUCIBILITY_MANIFEST.csv
+59,REPRODUCIBILITY,output_sha256,SELF_REFERENTIAL_EXTERNAL_HASH_REQUIRED
+60,REPRODUCIBILITY,output_bytes,SELF_REFERENTIAL_EXTERNAL_HASH_REQUIRED
+61,GUARDRAIL_CONFIRMATION,N_unauthorized_mutations,0
+62,GUARDRAIL_CONFIRMATION,files_created,5
+63,GUARDRAIL_CONFIRMATION,corpus_or_AS86_mutated,0
+64,GUARDRAIL_CONFIRMATION,model_fit_executed,0
+65,GUARDRAIL_CONFIRMATION,likelihood_computed_from_historical_data,0
+66,GUARDRAIL_CONFIRMATION,forecast_produced,0
+67,GUARDRAIL_CONFIRMATION,simulation_or_phase_d_rerun,0
+68,GUARDRAIL_CONFIRMATION,bootstrap_performed,0
+69,GUARDRAIL_CONFIRMATION,calibration_performed,0
+70,GUARDRAIL_CONFIRMATION,plots_created,0
+71,GUARDRAIL_CONFIRMATION,frontend_or_api_modified,0
+72,GUARDRAIL_CONFIRMATION,gitignore_modified,0
+73,GUARDRAIL_CONFIRMATION,git_operations_performed,0
+74,GUARDRAIL_CONFIRMATION,act07_executed,0
+75,GUARDRAIL_CONFIRMATION,corpus_diplomaticum_retrieved,0
+76,RESEARCHER_DECISIONS_RECORDED,PREFIT_CONTRACT_DECISION,ACCEPT_AS_DESIGN_CONTRACT_WITH_EXECUTION_GATES_CLOSED
+77,RESEARCHER_DECISIONS_RECORDED,COMPARATOR_REGISTRY_DECISION,ACCEPT_AS_DESIGN_ONLY
+78,RESEARCHER_DECISIONS_RECORDED,MODEL_FAMILY_REGISTRY_DECISION,ACCEPT_PRIMARY_EXPONENTIAL_HAWKES_AS_DESIGN_ONLY
+79,RESEARCHER_DECISIONS_RECORDED,ALTERNATIVE_HAWKES_REGISTRY_DECISION,NOT_ACCEPTED_REQUIRES_SEPARATE_JUSTIFICATION
+80,RESEARCHER_DECISIONS_RECORDED,ESTIMAND_REGISTRY_DECISION,ACCEPT_AS_DESIGN_ONLY
+81,RESEARCHER_DECISIONS_RECORDED,DIAGNOSTIC_REGISTRY_DECISION,ACCEPT_AS_DESIGN_ONLY
+82,RESEARCHER_DECISIONS_RECORDED,SENSITIVITY_REGISTRY_DECISION,ACCEPT_AS_DESIGN_ONLY
+83,RESEARCHER_DECISIONS_RECORDED,STOP_RULE_REGISTRY_DECISION,ACCEPT_AS_DESIGN_ONLY
+84,RESEARCHER_DECISIONS_RECORDED,ACT07_EXECUTION_DECISION,DEFER
+85,RESEARCHER_DECISIONS_RECORDED,MODEL_RECONSIDERATION_DECISION,NOT_AUTHORIZED
+86,RESEARCHER_DECISIONS_RECORDED,MODEL_FIT_DECISION,NOT_AUTHORIZED
+87,GRAPHIFY_DISCOVERY,G_graphify_discovery,1
+88,GRAPHIFY_DISCOVERY,P_graph_coverage,0/13 = 0
+89,GRAPHIFY_DISCOVERY,G_graph_fresh,"0 (graph built at 5bd1f9f, HEAD=2e12f68)"
+90,GRAPHIFY_DISCOVERY,G_graph_usable_for_current_package,0
+91,GRAPHIFY_DISCOVERY,status_token,GRAPHIFY_VERIFIED_AVAILABLE_NOT_RUN_STALE_GRAPH_ZERO_CURRENT_PACKAGE_COVERAGE
+92,GRAPHIFY_DISCOVERY,GRAPHIFY_REBUILD_DECISION,DEFER_UNTIL_SCOPED_LOCAL_DETERMINISTIC_INGESTION_IS_AVAILABLE
