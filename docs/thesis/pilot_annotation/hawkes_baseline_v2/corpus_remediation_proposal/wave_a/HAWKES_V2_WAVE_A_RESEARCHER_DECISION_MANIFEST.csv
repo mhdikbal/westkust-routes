@@ -1,0 +1,68 @@
+row_id,section,key,value
+1,DENOMINATORS,N_audit,141
+2,DENOMINATORS,N_B_metadata,"118 (METADATA_LEVEL_CANDIDATE_UNIVERSE, not a completed rule application or model-input denominator)"
+3,DENOMINATORS,N_A,9 (union of D=6 dedup-flagged and M=3 multi-source rows; overlap=0)
+4,DENOMINATORS,N_dependency_rows,3 (EVT-1686-eic-bl-ior-g35-198-171c; EVT-1781-botham-letter-1781-1-5a01; EVT-1781-botham-letter-1781-1-5333)
+5,SOURCE_AVAILABILITY,PRIMARY_SOURCE_AVAILABLE_AND_ON_TOPIC,2
+6,SOURCE_AVAILABILITY,PRIMARY_SOURCE_AVAILABLE_BUT_CONTENT_CONFLICTING,3
+7,SOURCE_AVAILABILITY,PRIMARY_SOURCE_UNAVAILABLE_WITH_DEPENDENCY_AVAILABLE,1
+8,SOURCE_AVAILABILITY,PRIMARY_SOURCE_UNAVAILABLE_NO_DEPENDENCY,2
+9,SOURCE_AVAILABILITY,CITATION_OBJECT_MISMATCH,1
+10,SOURCE_AVAILABILITY,SUM_CHECK,2+3+1+2+1=9 = N_A
+11,ESTIMANDS,P_A,9/118 = 0.0763 (Wave A scope proportion of the metadata-level candidate universe)
+12,ESTIMANDS,P_source,"6/9 = 0.667 (rows with at least one exact local source locator located, on-topic or conflicting -- counts AVAILABLE_AND_ON_TOPIC + AVAILABLE_BUT_CONTENT_CONFLICTING)"
+13,ESTIMANDS,P_Gamma_complete,"0/9 (no row has all seven Gamma_i components at SATISFIED; the closest, row 1 and row 8, each have exactly one non-SATISFIED component)"
+14,ESTIMANDS,P_date_assessed,"7/9 (all rows except the 2 wholly source-unavailable Vogel rows had their sources inspected for date role, even where the result is NOT_EVALUABLE or a mismatch)"
+15,ESTIMANDS,P_date_ready (G_date=1),"1/9 (row 1, GM/D/Dl, date only)"
+16,ESTIMANDS,P_eligible (G_eligible_proposal=1),0/9
+17,ESTIMANDS,P_open,9/9 (all insufficient-evidence rows retained unresolved; none closed)
+18,ESTIMANDS,binomial_note,"No inferential binomial test performed on any of the above; descriptive proportions only, per G_binomial,q=0 for all candidates"
+19,GATES_ROW1_OBJECT_LEVEL,G_date_document_D,1
+20,GATES_ROW1_OBJECT_LEVEL,G_date_document_Dl,1
+21,GATES_ROW1_OBJECT_LEVEL,G_date_coded_row,1
+22,GATES_ROW1_OBJECT_LEVEL,G_identity_coded_row,0
+23,GATES_ROW1_OBJECT_LEVEL,G_unit_coded_row,0
+24,GATES_ROW1_OBJECT_LEVEL,G_eligible_coded_row_proposal,0
+25,GATES_ROW1_OBJECT_LEVEL,note,Date readiness (G_date_coded_row=1) does not erase unresolved event-unit identity (G_identity_coded_row=0); G_eligible remains 0
+26,WAVE_A_GATES,G_scope_A,1
+27,WAVE_A_GATES,G_source_A,"0 (P_source=0.667, not 1 -- reported as partial, not falsely set to 1)"
+28,WAVE_A_GATES,G_application_A,0 (blocked by G_source_A=0)
+29,WAVE_A_GATES,G_proposal_A,"0 (blocked by G_application_A=0); N_silent_mutations=0, N_unsupported_closures=0, N_denominator_shifts=0"
+30,FROZEN_STATE,DEDUP-06,UNRESOLVED
+31,FROZEN_STATE,G_DEDUP06,0
+32,FROZEN_STATE,R-O4,FAIL
+33,FROZEN_STATE,DEDUP-06_recommendation,"PROPOSE_COMPOUND_GM_REPORT_MAPPED_TO_TWO_SEPARATE_CHILD_OCCURRENCES_UNDER_ONE_SHARED_PARENT_EPISODE (proposal requiring researcher adjudication, not a corpus edit)"
+34,FROZEN_STATE,G_corpus,0
+35,FROZEN_STATE,G_reconsider,0
+36,FROZEN_STATE,G_fit_m,0 for every model
+37,FROZEN_STATE,AS86,FROZEN_UNCHANGED
+38,FROZEN_STATE,141-row_table,UNCHANGED
+39,CORPUS_MUTATION_AUTHORIZATION,all_9_primary_rows,NOT_AUTHORIZED
+40,CORPUS_MUTATION_AUTHORIZATION,candidate_model_input_corpus_file,NOT_CREATED (not authorized)
+41,GUARDRAIL_CONFIRMATION,corpus_or_AS86_mutated,0
+42,GUARDRAIL_CONFIRMATION,141_row_table_mutated,0
+43,GUARDRAIL_CONFIRMATION,model_fit_executed,0
+44,GUARDRAIL_CONFIRMATION,act07_executed,0
+45,GUARDRAIL_CONFIRMATION,graphify_rebuilt,0
+46,GUARDRAIL_CONFIRMATION,frontend_or_api_modified,0
+47,GUARDRAIL_CONFIRMATION,gitignore_modified,0
+48,GUARDRAIL_CONFIRMATION,git_staged_committed_pushed,0 (explicitly deferred to a separate researcher adjudication step)
+49,GUARDRAIL_CONFIRMATION,sixth_output_created,0
+50,GUARDRAIL_CONFIRMATION,files_created,5
+51,RESEARCHER_DECISIONS_REQUIRED,decision_1,Authorize a future non-mutating corpus-edit PROPOSAL splitting EVT-1687-gm-vol04-05-162-a6b1 into a D-anchored and Dl-anchored child under a shared parent? Options: AUTHORIZE | DEFER | REJECT
+52,RESEARCHER_DECISIONS_REQUIRED,decision_2,"Authorize re-derivation of the true source citations for EVT-1681-CD3-239-27a2, EVT-1682-CD3-309-b42a, EVT-1687-CD3-436-b331 from original coding notes? Options: AUTHORIZE | DEFER | REJECT"
+53,RESEARCHER_DECISIONS_REQUIRED,decision_3,Authorize a future bounded retrieval operation for the Vogel (1690) and Buku Padang (1718) primary texts? Options: AUTHORIZE | DEFER | REJECT
+54,RESEARCHER_DECISIONS_REQUIRED,decision_4,Confirm and retrieve the correct Kathirithamby work/year for the 1781 EIC-capture episode citations? Options: AUTHORIZE | DEFER | REJECT
+55,RESEARCHER_DECISIONS_REQUIRED,decision_5,"Locate the source of the '17 Agustus 1781 (corrected from 19 Agst)' and '16 Agustus 1781 (corrected from 10 Agst)' annotations, neither of which is established by Botham's own letter? Options: AUTHORIZE | DEFER | REJECT"
+56,RESEARCHER_DECISIONS_REQUIRED,decision_6,Formally link docs/BL_IOR_G_35_198.txt as a secondary report to EVT-1686-buku-vogel-1690-458-fa01 regardless of Vogel's availability? Options: AUTHORIZE | DEFER | REJECT
+57,REPRODUCIBILITY,generated_utc,2026-09-10
+58,REPRODUCIBILITY,authoritative_head,e0b682d958e4305b898eec70c373b0bee3683dbb
+59,REPRODUCIBILITY,input_file,docs/thesis/pilot_annotation/hawkes_baseline_v2/HAWKES_BASELINE_V2_EVENT_PROVENANCE_AUDIT.csv
+60,REPRODUCIBILITY,input_sha256,40c3affe6c8a431273fb4d20e10f0b1ddfe4350b2870722c9691bb4ed5b39f0c
+61,REPRODUCIBILITY,input_file,docs/thesis/GM/xml/05/p0162.xml
+62,REPRODUCIBILITY,input_file,docs/cd/CD3.pdf
+63,REPRODUCIBILITY,input_file,docs/HenryBotham
+64,REPRODUCIBILITY,input_file,docs/BL_IOR_G_35_198.txt
+65,REPRODUCIBILITY,input_file,docs/thesis/kathirithamby-wells1976.pdf (confirmed non-matching)
+66,REPRODUCIBILITY,self_hash_treatment,"SELF_REFERENTIAL_EXTERNAL_HASH_REQUIRED (this file's own hash/bytes reported only in the terminal chat report, not embedded here)"
+67,VALIDATION_NOTE,date_statement_key_correction,"Date-role ledger canonical key corrected to date_statement_id (DS-001..DS-013); (event_id, source_object) alone was insufficient once a source object carries multiple date assertions (e.g. Botham letter: report date, packet-receipt interval, and historical-event-date-not-stated are three distinct statements)."
